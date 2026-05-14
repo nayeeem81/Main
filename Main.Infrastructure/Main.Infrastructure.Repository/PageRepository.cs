@@ -1,71 +1,70 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Main.Model.Repository;
 using Main.Model;
+using Main.Common;
 namespace Main.Infrastructure.Repository;
 
-namespace Main.Model.Repository
+public class PageRepository: IPageRepository
 {
-    public class PageRepository: IPageRepository
+    private readonly WebBusinessEntityContext _context;
+
+    public PageRepository ( WebBusinessEntityContext context )
     {
-        private readonly WebBusinessEntityContext _context;
+        _context = context;
+    }
 
-        public PageRepository ( WebBusinessEntityContext context )
+    public async Task<List<Page>> GetAllPages ( ) => await _context.Pages.ToListAsync<Page> ( );
+
+
+    public async Task<List<Page>> GetAllPages ( EnumCompanyName company ) =>
+        await _context.Pages.Where ( a => a.HostCompanyName == company ).ToListAsync<Page> ( );
+
+
+    public async Task<Page?> GetSinglePage ( int? id ) => await _context.Pages.FirstOrDefaultAsync ( m => m.PageID == id.Value );
+
+
+    public async Task<bool> UpdatePage ( Page page )
+    {
+        if ( page == null )
         {
-            _context = context;
+            return false;
         }
 
-        public async Task<List<Page>> GetAllPages ( ) => await _context.Pages.ToListAsync<Page> ( );
+        _context.Update ( page );
+
+        int result = await _context.SaveChangesAsync();
+
+        return result > 0;
+    }
 
 
-        public async Task<List<Page>> GetAllPages ( EnumCompanyName company ) =>
-            await _context.Pages.Where ( a => a.HostCompanyName == company ).ToListAsync<Page> ( );
+    public async Task<bool> PageExists ( int id )
+    {
+        return await _context.Pages.AnyAsync ( e => e.PageID == id );
+    }
 
 
-        public async Task<Page?> GetSinglePage ( int? id ) => await _context.Pages.FirstOrDefaultAsync ( m => m.PageID == id.Value );
-
-
-        public async Task<bool> UpdatePage ( Page page )
-        {
-            if ( page == null )
-            {
-                return false;
-            }
-
-            _context.Update ( page );
-
-            int result = await _context.SaveChangesAsync();
-
-            return result > 0;
-        }
-
-
-        public async Task<bool> PageExists ( int id )
-        {
-            return await _context.Pages.AnyAsync ( e => e.PageID == id );
-        }
-
-
-        public async Task<bool> CreateNewContent ( Page pageContent )
-        {
+    public async Task<bool> CreateNewContent ( Page pageContent )
+    {
            
-            _context.Update<Page> ( pageContent );
+        _context.Update<Page> ( pageContent );
 
-            int result = await _context.SaveChangesAsync ();
+        int result = await _context.SaveChangesAsync ();
 
-            return result > 0;
+        return result > 0;
 
-        }
+    }
 
 
-        public async Task<PagePanel> GetContentPanel ( int paneId)
-        {
+    public async Task<PagePanel> GetContentPanel ( int paneId)
+    {
 
-            var pagePanel = await _context.PagePanels.FirstOrDefaultAsync<PagePanel> ( a => a.PanelID == paneId );
+        var pagePanel = await _context.PagePanels.FirstOrDefaultAsync<PagePanel> ( a => a.PanelID == paneId );
 
-            if ( pagePanel != null ) 
-                return pagePanel;
+        if ( pagePanel != null ) 
+            return pagePanel;
 
-            return new PagePanel ( );
-        }
+        return new PagePanel ( );
     }
 }
+
