@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="Main.Common/Main.Common.csproj" Id="9ec1bd43-fe89-42bc-b5eb-2cc7212b86ce" />
+  <Project Path="Main.Model/Main.Model.csproj" Id="c366b620-f6f5-44ea-8d8d-6c2b55a106ec" />
+  <Project Path="Main.WebAppCore/Main.WebAppCore.csproj">
+    <BuildDependency Project="Main.Common/Main.Common.csproj" />
+    <BuildDependency Project="Main.Model/Main.Model.csproj" />
+  </Project>
+</Solution>
