@@ -8,9 +8,9 @@ namespace Repository;
 
 public class PageRepository: IPageRepository
 {
-    private readonly AppDbContext _context;
+    private readonly BussinessAppDbContext _context;
 
-    public PageRepository ( AppDbContext context )
+    public PageRepository ( BussinessAppDbContext context )
     {
         _context = context;
     }
@@ -22,7 +22,11 @@ public class PageRepository: IPageRepository
         await _context.Pages.Where ( a => a.HostCompanyName == company ).ToListAsync<Page> ( );
 
 
-    public async Task<Page?> GetSinglePage ( int? id ) => await _context.Pages.FirstOrDefaultAsync ( m => m.PageID == id.Value );
+    public async Task<Page?> GetSinglePage ( int? id ) 
+    {
+        return await _context.Pages.FirstOrDefaultAsync ( 
+            m => m.PageID == (id ??  -1 ));
+    }
 
 
     public async Task<bool> UpdatePage ( Page page )

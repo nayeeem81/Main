@@ -1,10 +1,10 @@
-using Main.Infrastructure;
+//using Main.Infrastructure;
 
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddControllersWithViews ( );
+    //builder.Services.AddControllersWithViews ( );
 
-    builder.Services.AddInfrastructureServices ( builder.Configuration );
+    //builder.Services.AddInfrastructureServices ( builder.Configuration );
 
     var app = builder.Build();
 

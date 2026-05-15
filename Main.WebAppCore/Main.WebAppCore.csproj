@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Main.Common\Main.Common.csproj" />
-    <ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,9 +9,9 @@ namespace Repository;
 public class AdminPostImageRepository: IAdminPostImageRepository
 {
 
-    private readonly AppDbContext _context;
+    private readonly BussinessAppDbContext _context;
 
-    public AdminPostImageRepository( AppDbContext context ) 
+    public AdminPostImageRepository( BussinessAppDbContext context ) 
     { 
         _context = context;
     }

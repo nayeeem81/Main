@@ -13,6 +13,8 @@ public class DatabaseSeeder (
     UserManager<IdentityUser> userManager,
     RoleManager<IdentityRole> roleManager ): IDatabaseSeeder
 {
+    public ApplicationDbContext identityDbContext { get; } = identityDbContext;
+
     public async Task SeedAsync ( )
     {
         string[] roles = ["Admin", "User","Company"];
