@@ -1,4 +1,5 @@
-﻿using Main.Common;
+﻿using Main.Common.EnumClasses;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

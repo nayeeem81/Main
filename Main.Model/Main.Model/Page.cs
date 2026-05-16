@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Main.Common;
+using Main.Common.EnumClasses;
+using Main.Common.Model;
 
 namespace Main.Model
 { 

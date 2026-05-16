@@ -14,8 +14,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Properties\serviceDependencies.json" />
+    <Content Include="Properties\serviceDependencies.local.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Main.Common\Main.Common.csproj" />
     <ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

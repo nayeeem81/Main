@@ -20,8 +20,8 @@ public class AdminPostImageRepository: IAdminPostImageRepository
     public async Task<List<AdminPost>> GetSelectAdminPosts(EnumCompanyName company)
     {
         List<AdminPost> list = await _context.AdminPosts
-                                        .Where(a => a.HostCompanyName == company)
-                                        .ToListAsync<AdminPost>();
+                    .Where(a => a.HostCompanyName == company)
+                    .ToListAsync<AdminPost>();
 
         return list;
     }

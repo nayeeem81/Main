@@ -1,9 +1,12 @@
-﻿namespace BusinessModel;
+﻿using Main.Common.Model;
+
+namespace BusinessModel;
 
 public class AdminPostDataModel : BaseDataModel
 {
     public AdminPostDataModel()
     {
+        ModelBase = new ModelBase();
     }
 
     public int AdminPostID { get; set; }
@@ -20,7 +23,6 @@ public class AdminPostDataModel : BaseDataModel
 
     public string? SearchTag { get; set; }
 
-
     public List<AdminImageFileDataModel> ListAdminPostFileImages { get; set; } = new List<AdminImageFileDataModel>();
 
     public List<AdminPostCommentDataModel> ListAdminPostComments { get; set; } = new List<AdminPostCommentDataModel>();
@@ -30,4 +32,7 @@ public class AdminPostDataModel : BaseDataModel
     public int PostTypeID { get; set; }
 
     public string? EnumAdminPostTypeDescription { get; set; } 
+
+    public ModelBase ModelBase { get; set; }
+
 }

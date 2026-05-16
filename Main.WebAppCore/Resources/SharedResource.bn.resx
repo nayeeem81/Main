@@ -1,0 +1,3034 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AudioAndSoundSystems" xml:space="preserve">
+    <value>অডিও ও সাউন্ড সিস্টেম</value>
+  </data>
+  <data name="BabyDiapers" xml:space="preserve">
+    <value>শিশুর ডায়াপার</value>
+  </data>
+  <data name="BabyGears" xml:space="preserve">
+    <value>বেবী গিয়ার্স</value>
+  </data>
+  <data name="BabyMaternity" xml:space="preserve">
+    <value>মাতৃকালীন পণ্য</value>
+  </data>
+  <data name="BathBedAndDecor" xml:space="preserve">
+    <value>বাথ, বিছানা এবং সজ্জা</value>
+  </data>
+  <data name="Beauty" xml:space="preserve">
+    <value>সৌন্দর্য</value>
+  </data>
+  <data name="BeautySupplements" xml:space="preserve">
+    <value>সৌন্দর্য সম্পূরক</value>
+  </data>
+  <data name="BeautyTools" xml:space="preserve">
+    <value>সৌন্দর্য সরঞ্জাম</value>
+  </data>
+  <data name="Beverages" xml:space="preserve">
+    <value>পানীয়</value>
+  </data>
+  <data name="CameraAndAccessories" xml:space="preserve">
+    <value>ক্যামেরা এবং আনুষাঙ্গিক</value>
+  </data>
+  <data name="CarEssentials" xml:space="preserve">
+    <value>গাড়ি/মোটরসাইকেল এসেনশিয়ালস</value>
+  </data>
+  <data name="CarOilFluids" xml:space="preserve">
+    <value>তেল ও লুব্রিকেন্ট</value>
+  </data>
+  <data name="CarServicesInstallations" xml:space="preserve">
+    <value>সেবা ও ইনস্টলেশন</value>
+  </data>
+  <data name="CoolingAndHeating" xml:space="preserve">
+    <value>শীতল এবং গরম</value>
+  </data>
+  <data name="DiyAndCleaning" xml:space="preserve">
+    <value>ধোয়া এবং পরিষ্কার</value>
+  </data>
+  <data name="Electronics" xml:space="preserve">
+    <value>ইলেক্ট্রনিক্স</value>
+  </data>
+  <data name="ExportImport" xml:space="preserve">
+    <value>আমদানী রপ্তানি</value>
+  </data>
+  <data name="ExportProducts" xml:space="preserve">
+    <value>রপ্তানি পণ্য</value>
+  </data>
+  <data name="FitnessAndLifeStyles" xml:space="preserve">
+    <value>ফিটনেস এবং লাইফ স্টাইল</value>
+  </data>
+  <data name="FitnessEquipments" xml:space="preserve">
+    <value>ফিটনেস সরঞ্জাম</value>
+  </data>
+  <data name="Furniture" xml:space="preserve">
+    <value>আসবাবপত্র</value>
+  </data>
+  <data name="GlobalFittness" xml:space="preserve">
+    <value>গ্লোবাল ফিটনেস</value>
+  </data>
+  <data name="Groceries" xml:space="preserve">
+    <value>মুদিখানা আইটেম</value>
+  </data>
+  <data name="GroceryEssentials" xml:space="preserve">
+    <value>মুদির অপরিহার্য</value>
+  </data>
+  <data name="HairBathBody" xml:space="preserve">
+    <value>চুল, বাথ এবং শরীর</value>
+  </data>
+  <data name="Health" xml:space="preserve">
+    <value>স্বাস্থ্য এবং সৌন্দর্য</value>
+  </data>
+  <data name="HireMe" xml:space="preserve">
+    <value>ভাড়া</value>
+  </data>
+  <data name="HomeAndLivings" xml:space="preserve">
+    <value>হোম, অফিস,লিভিং</value>
+  </data>
+  <data name="ImportProducts" xml:space="preserve">
+    <value>পণ্য আমদানি করুন</value>
+  </data>
+  <data name="KitchenAndDining" xml:space="preserve">
+    <value>রান্নাঘর ও ডাইনিং</value>
+  </data>
+  <data name="KitchenAppliances" xml:space="preserve">
+    <value>রান্নাঘর যন্ত্রপাতি</value>
+  </data>
+  <data name="LaptopAndComputer" xml:space="preserve">
+    <value>ল্যাপটপ এবং কম্পিউটার</value>
+  </data>
+  <data name="LargeAppliances" xml:space="preserve">
+    <value>বড় যন্ত্রপাতির</value>
+  </data>
+  <data name="Laundry" xml:space="preserve">
+    <value>লন্ড্রি</value>
+  </data>
+  <data name="Makeup" xml:space="preserve">
+    <value>মেকআপ</value>
+  </data>
+  <data name="MedicalSupplies" xml:space="preserve">
+    <value>চিকিৎসা সরঞ্জাম</value>
+  </data>
+  <data name="MenDresses" xml:space="preserve">
+    <value>পুরুষদের পোশাক</value>
+  </data>
+  <data name="MenFashion" xml:space="preserve">
+    <value>পুরুষদের ফ্যাশন</value>
+  </data>
+  <data name="MenFashionAccessories" xml:space="preserve">
+    <value>ফ্যাশন এক্সেসরিজ</value>
+  </data>
+  <data name="MenShoes" xml:space="preserve">
+    <value>পুরুষদের জুতা</value>
+  </data>
+  <data name="MenShoes1" xml:space="preserve">
+    <value>জুতা</value>
+  </data>
+  <data name="MensSportswear" xml:space="preserve">
+    <value>পুরুষদের স্পোর্টস কাপড়</value>
+  </data>
+  <data name="MenWaletBags" xml:space="preserve">
+    <value>ওয়ালেট এবং ব্যাগ</value>
+  </data>
+  <data name="MenWatches" xml:space="preserve">
+    <value>পুরুষদের ঘড়ি</value>
+  </data>
+  <data name="MobilePhone" xml:space="preserve">
+    <value>মোবাইল ফোন</value>
+  </data>
+  <data name="Motor" xml:space="preserve">
+    <value>মোটর</value>
+  </data>
+  <data name="MotorCycleEssentials" xml:space="preserve">
+    <value>মোটরসাইকেল অপরিহার্য</value>
+  </data>
+  <data name="MusicBooksGames" xml:space="preserve">
+    <value>সঙ্গীত, বই ও গেমস</value>
+  </data>
+  <data name="Nuts" xml:space="preserve">
+    <value>বাদাম</value>
+  </data>
+  <data name="OfficeFurniture" xml:space="preserve">
+    <value>অফিসের আসবাবপত্র</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>অন্যান্য</value>
+  </data>
+  <data name="OtherProductItems" xml:space="preserve">
+    <value>পণ্য</value>
+  </data>
+  <data name="OtherServiceItems" xml:space="preserve">
+    <value>সেবা</value>
+  </data>
+  <data name="PersonalCare" xml:space="preserve">
+    <value>ব্যক্তিগত যত্নের পন্য</value>
+  </data>
+  <data name="Pets" xml:space="preserve">
+    <value>পোষা প্রাণী</value>
+  </data>
+  <data name="Pharmacy" xml:space="preserve">
+    <value>ফার্মেসী পণ্য</value>
+  </data>
+  <data name="PhoneAccessorie" xml:space="preserve">
+    <value>ফোন এক্সেসরিজ</value>
+  </data>
+  <data name="SkinCare" xml:space="preserve">
+    <value>ত্বকের যত্ন পণ্য</value>
+  </data>
+  <data name="SnacksCookies" xml:space="preserve">
+    <value>খাবার কুকিজ</value>
+  </data>
+  <data name="Specticals" xml:space="preserve">
+    <value>চশমা</value>
+  </data>
+  <data name="TabletAndGadget" xml:space="preserve">
+    <value>ট্যাবলেট এবং গ্যাজেট</value>
+  </data>
+  <data name="ToysGames" xml:space="preserve">
+    <value>খেলনা এবং গেম</value>
+  </data>
+  <data name="ToysKidsAndBabies" xml:space="preserve">
+    <value>খেলনা, কিডস এবং শিশু</value>
+  </data>
+  <data name="TrainingHireTravels" xml:space="preserve">
+    <value>প্রশিক্ষণ, ভাড়া এবং ভ্রমণ</value>
+  </data>
+  <data name="TrainingPackages" xml:space="preserve">
+    <value>প্রশিক্ষণ প্যাকেজ</value>
+  </data>
+  <data name="TravelPackages" xml:space="preserve">
+    <value>ভ্রমণ প্যাকেজ</value>
+  </data>
+  <data name="TVAndHomeAudio" xml:space="preserve">
+    <value>টিভি ও ভিডিও আনুষাঙ্গিক</value>
+  </data>
+  <data name="TVHomeAppliances" xml:space="preserve">
+    <value>গৃহ সরঞ্জাম</value>
+  </data>
+  <data name="VacuumAndFloorCare" xml:space="preserve">
+    <value>ভ্যাকুয়াম এবং মেঝে কেয়ার</value>
+  </data>
+  <data name="Wellbeings" xml:space="preserve">
+    <value>নিজের যত্ন</value>
+  </data>
+  <data name="WomanFashion" xml:space="preserve">
+    <value>মহিলাদের ফ্যাশন</value>
+  </data>
+  <data name="WomenBags" xml:space="preserve">
+    <value>ব্যাগ</value>
+  </data>
+  <data name="WomenDresses" xml:space="preserve">
+    <value>মহিলাদের পোশাক</value>
+  </data>
+  <data name="WomenFashionAccessories" xml:space="preserve">
+    <value>ফ্যাশন আনুষাঙ্গিক</value>
+  </data>
+  <data name="WomenFashionWomenBoishakDress" xml:space="preserve">
+    <value>মহিলাদের বৈশাখ পোশাক</value>
+  </data>
+  <data name="WomenGolds" xml:space="preserve">
+    <value>অলংকার/গহনা</value>
+  </data>
+  <data name="WomensSportswear" xml:space="preserve">
+    <value>মহিলাদের ক্রীড়া পরিধান</value>
+  </data>
+  <data name="WomenWatches" xml:space="preserve">
+    <value>ঘড়ি</value>
+  </data>
+  <data name="AllItemMarketPageTitle" xml:space="preserve">
+    <value>সকল পণ্য পাতার শিরোনাম</value>
+  </data>
+  <data name="ButonTextPostFreeAd" xml:space="preserve">
+    <value>বিনামূল্যে বিজ্ঞাপন পোস্ট বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextAddYourProduct" xml:space="preserve">
+    <value>পণ্য যোগ করুন</value>
+  </data>
+  <data name="ButtonTextAdvancedSearch" xml:space="preserve">
+    <value>অ্যাডভ্যন্সড অনুসন্ধান বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextClose" xml:space="preserve">
+    <value>বন্ধ</value>
+  </data>
+  <data name="ButtonTextCompanyAd" xml:space="preserve">
+    <value>বিজ্ঞাপন প্রতিষ্ঠান বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextFabia" xml:space="preserve">
+    <value>FA</value>
+  </data>
+  <data name="ButtonTextForRent" xml:space="preserve">
+    <value>ভাড়া বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextForSale" xml:space="preserve">
+    <value>বিক্রয় বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextIndividualAd" xml:space="preserve">
+    <value>স্বতন্ত্র বিজ্ঞাপন</value>
+  </data>
+  <data name="ButtonTextInterest" xml:space="preserve">
+    <value>আগ্রহ</value>
+  </data>
+  <data name="ButtonTextJoinAsProvider" xml:space="preserve">
+    <value>সরবরাহকারী হিসেবে যোগদান করুন</value>
+  </data>
+  <data name="ButtonTextMarkets" xml:space="preserve">
+    <value>বাজার</value>
+  </data>
+  <data name="ButtonTextNewItem" xml:space="preserve">
+    <value>নতুন পণ্য বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextNewPostAddNewPicture" xml:space="preserve">
+    <value>নতুন পণ্যের ছবি সংযুক্তি বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextRegisterSignUp" xml:space="preserve">
+    <value>নিবন্ধন করুন বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextSignin" xml:space="preserve">
+    <value>সাইন ইন করুন বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextSpecial" xml:space="preserve">
+    <value>বিশেষ</value>
+  </data>
+  <data name="ButtonTextSubmitAd" xml:space="preserve">
+    <value>AD জমা দিন</value>
+  </data>
+  <data name="ButtonTextUrgentSale" xml:space="preserve">
+    <value>জরুরী বিক্রয় বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত পণ্য বাটনের টেক্সট</value>
+  </data>
+  <data name="CategoryMarketPageTitle" xml:space="preserve">
+    <value>বাজার</value>
+  </data>
+  <data name="ContactUsPageTitle" xml:space="preserve">
+    <value>যোগাযোগ করুন পাতার শিরোনাম</value>
+  </data>
+  <data name="ErrorMessageEmailRequired" xml:space="preserve">
+    <value>ইমেইল আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostCategory" xml:space="preserve">
+    <value>বিভাগ আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostEmail" xml:space="preserve">
+    <value>ইমেইল আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostFullName" xml:space="preserve">
+    <value>সম্পূর্ণ নাম আবশ্যক! অনুগ্রহ করে লিখুন।</value>
+  </data>
+  <data name="ErrorMessageNewPostLocation" xml:space="preserve">
+    <value>অবস্থান আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড প্রয়োজন! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostPhoneNumber" xml:space="preserve">
+    <value>ফোন নম্বর আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostPrice" xml:space="preserve">
+    <value>মূল্য আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostRePassword" xml:space="preserve">
+    <value>পুনরায় পাসওয়ার্ড দিতে হবে! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostSubCategory" xml:space="preserve">
+    <value>উপ-বিভাগ আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageNewPostTitle" xml:space="preserve">
+    <value>শিরোনাম আবশ্যক! অনুগ্রহ করে লিখুন।</value>
+  </data>
+  <data name="ErrorMessagePasswordRequired" xml:space="preserve">
+    <value>পাসওয়ার্ড প্রয়োজন। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageRegisterEmailRequired" xml:space="preserve">
+    <value>ইমেইল আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageRegisterPasswordRequired" xml:space="preserve">
+    <value>পাসওয়ার্ড প্রয়োজন। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageRegisterPersonRequired" xml:space="preserve">
+    <value>ব্যক্তি/প্রতিষ্ঠানের নাম আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageRegisterPhoneRequired" xml:space="preserve">
+    <value>ফোন নম্বর আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="ErrorMessageRegisterRePasswordRequired" xml:space="preserve">
+    <value>পুনরায় পাসওয়ার্ড দিতে হবে। অনুগ্রহ করে প্রবেশ করান।</value>
+  </data>
+  <data name="FAQPageTitle" xml:space="preserve">
+    <value>নিয়মিত জিজ্ঞাসিত প্রশ্ন পাতার শিরোনাম</value>
+  </data>
+  <data name="HomePageTitle" xml:space="preserve">
+    <value>হোমপেজ শিরোনাম</value>
+  </data>
+  <data name="ItemDetailsPageTitle" xml:space="preserve">
+    <value>পন্য ব্রিত্তান্ত পেজ শিরোনাম</value>
+  </data>
+  <data name="LabelAdvancedSearch" xml:space="preserve">
+    <value>লেবেল অ্যাডভ্যন্সড অনুসন্ধান</value>
+  </data>
+  <data name="LabelAdvertiseDetails" xml:space="preserve">
+    <value>লেবেল বিজ্ঞাপন ব্রিত্তান্ত</value>
+  </data>
+  <data name="LabelAllMarkets" xml:space="preserve">
+    <value>সমস্ত বাজার</value>
+  </data>
+  <data name="LabelDealsEndToday" xml:space="preserve">
+    <value>অফারগুলো আজই শেষ হচ্ছে!</value>
+  </data>
+  <data name="LabelDonotHaveAccount" xml:space="preserve">
+    <value>অ্যাকাউন্ট নেই? অনুগ্রহ করে</value>
+  </data>
+  <data name="LabelEnterCredentials" xml:space="preserve">
+    <value>অনুগ্রহ করে পরিচয়পত্র প্রবেশ করান:</value>
+  </data>
+  <data name="LabelFabiaService" xml:space="preserve">
+    <value>FABIA পরিষেবা</value>
+  </data>
+  <data name="LabelFeatured" xml:space="preserve">
+    <value>বিশেষ আকর্ষণ!</value>
+  </data>
+  <data name="LabelForGift" xml:space="preserve">
+    <value>উপহারের জন্য!</value>
+  </data>
+  <data name="LabelHi" xml:space="preserve">
+    <value>হাই!</value>
+  </data>
+  <data name="LabelMenAndWomen" xml:space="preserve">
+    <value>পুরুষ ও মহিলা</value>
+  </data>
+  <data name="LabelNewPostAdvertiserDetails" xml:space="preserve">
+    <value>বিজ্ঞাপনদাতার বিবরণ</value>
+  </data>
+  <data name="LabelNewPostArea" xml:space="preserve">
+    <value>এলাকা</value>
+  </data>
+  <data name="LabelNewPostBrandNew" xml:space="preserve">
+    <value>একদম নতুন</value>
+  </data>
+  <data name="LabelNewPostCategory" xml:space="preserve">
+    <value>বিভাগ *</value>
+  </data>
+  <data name="LabelNewPostCompany" xml:space="preserve">
+    <value>কোম্পানি</value>
+  </data>
+  <data name="LabelNewPostCondition" xml:space="preserve">
+    <value>অবস্থা</value>
+  </data>
+  <data name="LabelNewPostDescription" xml:space="preserve">
+    <value>আইটেম বিবরণ</value>
+  </data>
+  <data name="LabelNewPostEmail" xml:space="preserve">
+    <value>ইমেইল</value>
+  </data>
+  <data name="LabelNewPostFullName" xml:space="preserve">
+    <value>পুরো নাম</value>
+  </data>
+  <data name="LabelNewPostIAm" xml:space="preserve">
+    <value>আমি:</value>
+  </data>
+  <data name="LabelNewPostIndividual" xml:space="preserve">
+    <value>ব্যক্তি</value>
+  </data>
+  <data name="LabelNewPostLocation" xml:space="preserve">
+    <value>অবস্থান</value>
+  </data>
+  <data name="LabelNewPostNotUrgentDeal" xml:space="preserve">
+    <value>জরুরি চুক্তি নয়</value>
+  </data>
+  <data name="LabelNewPostPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড</value>
+  </data>
+  <data name="LabelNewPostPhoneNumber" xml:space="preserve">
+    <value>ফোন নম্বর</value>
+  </data>
+  <data name="LabelNewPostPrice" xml:space="preserve">
+    <value>মূল্য (বিডিটি)*</value>
+  </data>
+  <data name="LabelNewPostRePassword" xml:space="preserve">
+    <value>পুনরায় পাসওয়ার্ড</value>
+  </data>
+  <data name="LabelNewPostSearchTag" xml:space="preserve">
+    <value>অনুসন্ধান ট্যাগ</value>
+  </data>
+  <data name="LabelNewPostSignIN" xml:space="preserve">
+    <value>সাইন ইন করুন</value>
+  </data>
+  <data name="LabelNewPostSubCategory" xml:space="preserve">
+    <value>উপ বিভাগ *</value>
+  </data>
+  <data name="LabelNewPostTitle" xml:space="preserve">
+    <value>বিজ্ঞাপনের শিরোনাম *</value>
+  </data>
+  <data name="LabelNewPostUploadPicture" xml:space="preserve">
+    <value>ছবি আপলোড করুন</value>
+  </data>
+  <data name="LabelNewPostUrgentDeal" xml:space="preserve">
+    <value>জরুরী চুক্তি</value>
+  </data>
+  <data name="LabelNewPostUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত আইটেম</value>
+  </data>
+  <data name="LabelPopularCategory" xml:space="preserve">
+    <value>জনপ্রিয় বিভাগসমূহ</value>
+  </data>
+  <data name="LabelPopularProduct" xml:space="preserve">
+    <value>জনপ্রিয় পণ্য</value>
+  </data>
+  <data name="LabelPostFreeAd" xml:space="preserve">
+    <value>পোস্ট ফি বিজ্ঞাপন</value>
+  </data>
+  <data name="LabelPremiumProducts" xml:space="preserve">
+    <value>প্রিমিয়াম পণ্য</value>
+  </data>
+  <data name="LabelRegisterYourAccount" xml:space="preserve">
+    <value>আপনার অ্যাকাউন্ট নিবন্ধন করুন:</value>
+  </data>
+  <data name="LabelSkillsAndServices" xml:space="preserve">
+    <value>দক্ষতা ও পরিষেবা</value>
+  </data>
+  <data name="LabelSponsor" xml:space="preserve">
+    <value>স্পনসরড</value>
+  </data>
+  <data name="LabelStudents" xml:space="preserve">
+    <value>ছাত্রছাত্রীদের জন্য!</value>
+  </data>
+  <data name="LabelTodayPickups" xml:space="preserve">
+    <value>আজকের পিকআপগুলি</value>
+  </data>
+  <data name="LabelViewByMarkets" xml:space="preserve">
+    <value>বাজার দ্বারা দেখুন</value>
+  </data>
+  <data name="LabelWeSponsored" xml:space="preserve">
+    <value>আমরা প্রচার করি!</value>
+  </data>
+  <data name="LinkAddToCart" xml:space="preserve">
+    <value>কার্টে যোগ করুন</value>
+  </data>
+  <data name="LinkBangla" xml:space="preserve">
+    <value>Bn</value>
+  </data>
+  <data name="LinkContact" xml:space="preserve">
+    <value>যোগাযোগ</value>
+  </data>
+  <data name="LinkDeshiHutBazar" xml:space="preserve">
+    <value>Deshi Hut Bazar</value>
+  </data>
+  <data name="LinkDonate" xml:space="preserve">
+    <value>দান করুন</value>
+  </data>
+  <data name="LinkEnglish" xml:space="preserve">
+    <value>Eng</value>
+  </data>
+  <data name="LinkFaq" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="LinkForgetPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড ভুলে গেছেন?</value>
+  </data>
+  <data name="LinkLatestAds" xml:space="preserve">
+    <value>সর্বশেষ বিজ্ঞাপন</value>
+  </data>
+  <data name="LinkOurStatus" xml:space="preserve">
+    <value>আমাদের স্ট্যাটাস</value>
+  </data>
+  <data name="LinkPortalURL" xml:space="preserve">
+    <value>Deshi Hut Bazar</value>
+  </data>
+  <data name="LinkPrivacyAndTerms" xml:space="preserve">
+    <value>শর্তাবলী</value>
+  </data>
+  <data name="LinkRegister" xml:space="preserve">
+    <value>আপ</value>
+  </data>
+  <data name="LinkResources" xml:space="preserve">
+    <value>সম্পদ</value>
+  </data>
+  <data name="LinkViewMore" xml:space="preserve">
+    <value>আরও দেখুন</value>
+  </data>
+  <data name="NotePostFreeAd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostArea" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostFullName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostLocation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostPhoneNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostPrice" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostRePassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostSearchTag" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostSubCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderNewPostTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderPersonCompany" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderPriceEndsWith" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderPriceStartsFrom" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderRegisterEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderRegisterPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderRegisterPhone" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderRegisterRePassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderSelectCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderSelectState" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderSelectSubCategory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceHolderSimpleSearchTextBox" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderSpecificAreaDetails" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PrivacyPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SigninPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SignupPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpecialMarketPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMarketPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TextIndividualUserDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TextOnlineSellerUserDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LinkAddShortContent" xml:space="preserve">
+    <value>অ্যাডমিন কন্টেন্ট যোগ করুন</value>
+  </data>
+  <data name="LinkBusinessIntelligence" xml:space="preserve">
+    <value>রিপোর্ট দেখুন</value>
+  </data>
+  <data name="LinkConfigurePackage" xml:space="preserve">
+    <value>প্যাকেজ কনফিগার করুন</value>
+  </data>
+  <data name="LinkConfigurePanels" xml:space="preserve">
+    <value>কনটেন্ট কনফিগার করুন</value>
+  </data>
+  <data name="LinkConfigurePrice" xml:space="preserve">
+    <value>প্যাকেজের মূল্য কনফিগার করুন</value>
+  </data>
+  <data name="LinkEditImages" xml:space="preserve">
+    <value>ছবি পরিচালনা করুন</value>
+  </data>
+  <data name="LinkFabiaServices" xml:space="preserve">
+    <value>ফাবিয়া সার্ভিসেস</value>
+  </data>
+  <data name="LinkLogout" xml:space="preserve">
+    <value>লগ আউট করুন</value>
+  </data>
+  <data name="LinkLogReports" xml:space="preserve">
+    <value>লগ রিপোর্ট দেখুন</value>
+  </data>
+  <data name="LinkManageAccount" xml:space="preserve">
+    <value>অ্যাকাউন্ট পরিচালনা করুন</value>
+  </data>
+  <data name="LinkManageAdminContents" xml:space="preserve">
+    <value>অ্যাডমিন বিষয়বস্তু পরিচালনা করুন</value>
+  </data>
+  <data name="LinkManageBikashBills" xml:space="preserve">
+    <value>বিল পরিচালনা করুন</value>
+  </data>
+  <data name="LinkManageCompanyAccount" xml:space="preserve">
+    <value>কোম্পানির অ্যাকাউন্ট পরিচালনা করুন</value>
+  </data>
+  <data name="LinkMyFabiaServiceProviders" xml:space="preserve">
+    <value>Fabia প্রদানকারী</value>
+  </data>
+  <data name="LinkPublishedPosts" xml:space="preserve">
+    <value>প্রকাশিত বিজ্ঞাপন</value>
+  </data>
+  <data name="LinkUnpaidPosts" xml:space="preserve">
+    <value>অবৈতনিক বিজ্ঞাপন</value>
+  </data>
+  <data name="LinkAds" xml:space="preserve">
+    <value>বিজ্ঞাপন</value>
+  </data>
+  <data name="LinkCart" xml:space="preserve">
+    <value>কার্ট</value>
+  </data>
+  <data name="ButtonTextCartContinueShopping" xml:space="preserve">
+    <value>কেনাকাটা করতে থাকুন বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextCartViewCart" xml:space="preserve">
+    <value>কার্ট দেখা বাটনের টেক্সট</value>
+  </data>
+  <data name="ButtonTextContactSUBMIT" xml:space="preserve">
+    <value>জমা দিন</value>
+  </data>
+  <data name="ErrorMessageContactUsContactEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ErrorMessageContactUsContactMessageCategory" xml:space="preserve">
+    <value>Select Message Category</value>
+  </data>
+  <data name="ErrorMessageContactUsContactName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ErrorMessageContactUsContactSubject" xml:space="preserve">
+    <value>Message Subject </value>
+  </data>
+  <data name="LabelContactUs" xml:space="preserve">
+    <value>লেবেল যোগাযোগ করুন</value>
+  </data>
+  <data name="LabelContactUsContactEmail" xml:space="preserve">
+    <value>লেবেল যোগাযোগ করুন ই-মেইল</value>
+  </data>
+  <data name="LabelContactUsContactForm" xml:space="preserve">
+    <value>লেবেল যোগাযোগ করুন ফর্ম</value>
+  </data>
+  <data name="LabelContactUsContactMessage" xml:space="preserve">
+    <value>বার্তা</value>
+  </data>
+  <data name="LabelContactUsContactMessageCategory" xml:space="preserve">
+    <value>বার্তা বিভাগ</value>
+  </data>
+  <data name="LabelContactUsContactName" xml:space="preserve">
+    <value>নাম</value>
+  </data>
+  <data name="LabelContactUsContactSubject" xml:space="preserve">
+    <value>বিষয়</value>
+  </data>
+  <data name="MessageTextCartContinueMessage" xml:space="preserve">
+    <value>শপিং কার্ট আপডেট করা হয়েছে! আপনি কি কেনাকাটা চালিয়ে যেতে চান নাকি কার্টটি দেখতে চান?</value>
+  </data>
+  <data name="NoteContactUsThankyouVeryMuch" xml:space="preserve">
+    <value>Thank you very much.</value>
+  </data>
+  <data name="NotetContactUsIntroGreetingMessageText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlaceholderContactUsContactEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="PlaceholderContactUsContactMessageCategory" xml:space="preserve">
+    <value>Select Message Category</value>
+  </data>
+  <data name="PlaceholderContactUsContactName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PlaceholderContactUsContactSubject" xml:space="preserve">
+    <value>Message Subject </value>
+  </data>
+  <data name="UnwantedAccessErrorPageTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorAContactUs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorDivSupportTeam" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorH3ErrorTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorH4Reason1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorH4Reason2" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorH4ReasonsCouldBe" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorH4Solution" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorPPleaseGoTo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorPReason1Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorPReason2Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorPToReportFailure" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LinkNigeria" xml:space="preserve">
+    <value>Ng</value>
+  </data>
+  <data name="ABUYCREDITMobile" xml:space="preserve">
+    <value>ক্রেডিট কিনুন</value>
+  </data>
+  <data name="ABuyCreditSubscription" xml:space="preserve">
+    <value>সাবস্ক্রিপশন/ক্রেডিট কিনুন</value>
+  </data>
+  <data name="AccountCreditBalance112" xml:space="preserve">
+    <value>একাাউন্টের ক্রেডিট ব্যালেন্স </value>
+  </data>
+  <data name="AccountInformation" xml:space="preserve">
+    <value>একাউন্টের তথ্য </value>
+  </data>
+  <data name="AccountOwner" xml:space="preserve">
+    <value>একাউন্টের মালিক</value>
+  </data>
+  <data name="AccountSettingsClientName" xml:space="preserve">
+    <value>গ্রাহকের নাম</value>
+  </data>
+  <data name="AccountSettingsCompany" xml:space="preserve">
+    <value>প্রতিষ্ঠান</value>
+  </data>
+  <data name="AccountSettingsEmail" xml:space="preserve">
+    <value>ইমেইল</value>
+  </data>
+  <data name="AccountSettingsIamacompany" xml:space="preserve">
+    <value>আমি একটা প্রতিষ্ঠান</value>
+  </data>
+  <data name="AccountSettingsIamanindividual" xml:space="preserve">
+    <value>আমি একজন ব্যক্তি</value>
+  </data>
+  <data name="AccountSettingsIndividual" xml:space="preserve">
+    <value>ব্যক্তি</value>
+  </data>
+  <data name="AccountSettingsName" xml:space="preserve">
+    <value>নাম</value>
+  </data>
+  <data name="AccountSettingsPhone" xml:space="preserve">
+    <value>ফোন নম্বরঃ </value>
+  </data>
+  <data name="AccountSettingsUPDATEACCOUNT" xml:space="preserve">
+    <value>একাউন্ট হালনাগান করুন</value>
+  </data>
+  <data name="AChangePassword" xml:space="preserve">
+    <value>পাসওয়ার্ড বদল করুন। </value>
+  </data>
+  <data name="AChangePassword1" xml:space="preserve">
+    <value>পাসওয়ার্ড বদল করুন। </value>
+  </data>
+  <data name="ACHANGEPASSWORDMobile" xml:space="preserve">
+    <value>পাসওয়ার্ড বদল করুন। </value>
+  </data>
+  <data name="AdCategory1" xml:space="preserve">
+    <value> বিজ্ঞাপনের বিভাগ</value>
+  </data>
+  <data name="ADDTOCART1" xml:space="preserve">
+    <value>ADD TO CART</value>
+  </data>
+  <data name="AdvancedSearch" xml:space="preserve">
+    <value>উন্নত অনুসন্ধান</value>
+  </data>
+  <data name="AdvertisedBY" xml:space="preserve">
+    <value>যার দ্বারা বিজ্ঞাপিত:</value>
+  </data>
+  <data name="AgentNumber" xml:space="preserve">
+    <value>Agent Number</value>
+  </data>
+  <data name="AgentNumber1" xml:space="preserve">
+    <value>এজেন্টের নম্বর </value>
+  </data>
+  <data name="AMyAccount" xml:space="preserve">
+    <value>আমার একাউন্ট</value>
+  </data>
+  <data name="AMYACCOUNTMobile" xml:space="preserve">
+    <value>আমার একাউন্ট</value>
+  </data>
+  <data name="AMyBills" xml:space="preserve">
+    <value>আমার বিলসমূহ </value>
+  </data>
+  <data name="AMyBills1" xml:space="preserve">
+    <value>আমার বিলসমূহ </value>
+  </data>
+  <data name="AMYBILLSMobile" xml:space="preserve">
+    <value>আমার বিলসমূহ </value>
+  </data>
+  <data name="AMySubscription" xml:space="preserve">
+    <value>আমার  সাবস্ক্রিপশন</value>
+  </data>
+  <data name="AMySubscriptions" xml:space="preserve">
+    <value>আমার  সাবস্ক্রিপশন</value>
+  </data>
+  <data name="AMYSUBSCRIPTIONSMobile" xml:space="preserve">
+    <value>আমার  সাবস্ক্রিপশন</value>
+  </data>
+  <data name="AvailablePaymentOptions" xml:space="preserve">
+    <value>গ্রহনযোগ্য পেমেন্টের অপশন</value>
+  </data>
+  <data name="BACK" xml:space="preserve">
+    <value>পিছনে যান</value>
+  </data>
+  <data name="BDT" xml:space="preserve">
+    <value>টাকা</value>
+  </data>
+  <data name="BDT1" xml:space="preserve">
+    <value>টাকা</value>
+  </data>
+  <data name="BDT11" xml:space="preserve">
+    <value>শুন্য টাকা </value>
+  </data>
+  <data name="BDT2" xml:space="preserve">
+    <value>টাকা </value>
+  </data>
+  <data name="BikashDetails11" xml:space="preserve">
+    <value>Bikash Details:</value>
+  </data>
+  <data name="BikashDetails12" xml:space="preserve">
+    <value>বিকাশের বিস্তারিতঃ</value>
+  </data>
+  <data name="BikashDetailsTitleMobile" xml:space="preserve">
+    <value>বিকাশের বিস্তারিত</value>
+  </data>
+  <data name="ButtonBUYCREDIT" xml:space="preserve">
+    <value>ক্রেডিট কিনুুন</value>
+  </data>
+  <data name="ButtonBUYPACKAGE" xml:space="preserve">
+    <value>প্যাকেজ কিনুন</value>
+  </data>
+  <data name="ButtonCHANGEPASSWORD" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন করুন</value>
+  </data>
+  <data name="ButtonUPDATE" xml:space="preserve">
+    <value>হালনাগান করুন</value>
+  </data>
+  <data name="BuyNewSubscriptions" xml:space="preserve">
+    <value>নতুন সাবস্ক্রিপশন কিনুন</value>
+  </data>
+  <data name="BUYSUBSCRIPTION1" xml:space="preserve">
+    <value>সাবস্ক্রিপশন কিনুন</value>
+  </data>
+  <data name="BuySubscriptionPackages" xml:space="preserve">
+    <value>Buy Subscription Packages</value>
+  </data>
+  <data name="BuySubscriptions" xml:space="preserve">
+    <value>সাবস্ক্রিপশন কিনুন</value>
+  </data>
+  <data name="CateAccordionMarkets" xml:space="preserve">
+    <value>বাজার</value>
+  </data>
+  <data name="CateAccordionViewByMarkets" xml:space="preserve">
+    <value>বা্জার অনুযায়ী দেখুন</value>
+  </data>
+  <data name="CategoryBabyToys" xml:space="preserve">
+    <value>শিশুর এবং খেলনা</value>
+  </data>
+  <data name="CategoryBooks" xml:space="preserve">
+    <value>বই</value>
+  </data>
+  <data name="CategoryElectronics" xml:space="preserve">
+    <value>ইলেক্ট্রনিক্স</value>
+  </data>
+  <data name="CategoryFashionDress" xml:space="preserve">
+    <value>ফ্যাশন ও পোষাক</value>
+  </data>
+  <data name="CategoryHealthBeauty" xml:space="preserve">
+    <value>স্বাস্থ্য এবং সৌন্দর্য</value>
+  </data>
+  <data name="CategoryHomeFurniture" xml:space="preserve">
+    <value>বাড়ি &amp; আসবাবপত্র</value>
+  </data>
+  <data name="CategoryJobsServices" xml:space="preserve">
+    <value>চাকরি ও সেবাসমূহ</value>
+  </data>
+  <data name="CategoryOfficeFurniture" xml:space="preserve">
+    <value>অফিস ও আসবাবপত্র</value>
+  </data>
+  <data name="CategoryofPosts" xml:space="preserve">
+    <value>পোস্টের ধরণ </value>
+  </data>
+  <data name="CategoryOthers" xml:space="preserve">
+    <value>অন্যরা</value>
+  </data>
+  <data name="CategoryRealEstate" xml:space="preserve">
+    <value>আবাসন</value>
+  </data>
+  <data name="CategorySportsHobbies" xml:space="preserve">
+    <value>ক্রীড়া ও শখ</value>
+  </data>
+  <data name="CategoryTravel" xml:space="preserve">
+    <value>ভ্রমণ</value>
+  </data>
+  <data name="CategoryVehicles" xml:space="preserve">
+    <value>যানবাহন</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন করুন</value>
+  </data>
+  <data name="ChangePasswordButtonCHANGEPASSWORD" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন করুন</value>
+  </data>
+  <data name="ChangePasswordCurrentPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন করুন</value>
+  </data>
+  <data name="ChangePasswordNewPassword" xml:space="preserve">
+    <value>নতুন পাসওয়ার্ড</value>
+  </data>
+  <data name="ChangePasswordRetypeNewPassword" xml:space="preserve">
+    <value>নতুন পাসওয়ার্ড পুনরায় লিখুন</value>
+  </data>
+  <data name="CHECKOUT" xml:space="preserve">
+    <value>চেকআউট</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>বন্ধ করুন</value>
+  </data>
+  <data name="CommentCommentButton" xml:space="preserve">
+    <value>মন্তব্য</value>
+  </data>
+  <data name="CommentH4InfoMobile" xml:space="preserve">
+    <value>এই পণ্য / মূল্য / বাণিজ্য অভিজ্ঞতা সম্পর্কে মন্তব্য করুন</value>
+  </data>
+  <data name="CommentH4PublicComments" xml:space="preserve">
+    <value>পাবলিক মন্তব্য</value>
+  </data>
+  <data name="CommentLI1" xml:space="preserve">
+    <value>যদি বিক্রেতা বাজামূল্যের চেয়ে অধিক মূল্য চান তাহলে মন্তব্য করুন।</value>
+  </data>
+  <data name="CommentLI2" xml:space="preserve">
+    <value>ছাত্রদের মূল্যের মূল্য ছাড় দেওয়া না হলে মন্তব্য করুন বা ক্রেতা / বিক্রেতার কাছে এই পোর্টাল থেকে পণ্য বিজ্ঞাপনের সময় বাইরে ব্যবসা করার সময় সমস্যা আছে</value>
+  </data>
+  <data name="CommentLI3" xml:space="preserve">
+    <value>যদি এই বিজ্ঞাপনটি আপনার কাছে নকল মনে হয় তাহলে মন্তব্য করুন।</value>
+  </data>
+  <data name="CommentLI4" xml:space="preserve">
+    <value>যদি বিক্রেতার সাথে যগাযগ করা না যায় তাহলে মন্তব্য করুন।</value>
+  </data>
+  <data name="CommentLI5" xml:space="preserve">
+    <value>দি বিজ্ঞাপন বা পোর্টাল ব্যবহারকারী বা ব্যবসায়িক মডেল সম্পর্কে কোনো পরামর্শ থাকে তাহলে মন্তব্য করুন।</value>
+  </data>
+  <data name="CommentLI61" xml:space="preserve">
+    <value>যেহেতু এখানে বিনামূল্যে বিজ্ঞাপন পোস্ট করার অনুমতি দেওয়া হয়; তাই বিজ্ঞাপনদাতা এবং ক্রেতা উভয়ের কাছ থেকেই</value>
+  </data>
+  <data name="CommentLI62" xml:space="preserve">
+    <value>সুতরাং যদি আপনি অস্বাভাবিক কিছু খুঁজে পান তাহলে মন্তব্য করুন।</value>
+  </data>
+  <data name="CommentPInfoNote" xml:space="preserve">
+    <value>বিঃদ্রঃ</value>
+  </data>
+  <data name="ContactContactForm" xml:space="preserve">
+    <value>যোগাযোগ ফর্ম</value>
+  </data>
+  <data name="ContactContactUS" xml:space="preserve">
+    <value>আমাদের সাথে যোগাযোগ করুন</value>
+  </data>
+  <data name="ContactContactUSMobile" xml:space="preserve">
+    <value>আমাদের সাথে যোগাযোগ করুন</value>
+  </data>
+  <data name="ContactEmail" xml:space="preserve">
+    <value>ইমেইল</value>
+  </data>
+  <data name="ContactEmailPlaceHolder" xml:space="preserve">
+    <value>তোমার ই - মেইল ​​ঠিকানা লেখো</value>
+  </data>
+  <data name="ContactEngineeringTeam" xml:space="preserve">
+    <value>প্রকৌশল দল</value>
+  </data>
+  <data name="ContactIntroGreetingMessageText" xml:space="preserve">
+    <value>আমাদের ওয়েবসাইটকে আরও উন্নত করার জন্য অনুগ্রহ করে আপনার বার্তা দিন। আমরা আপনার মতামতকে অত্যন্ত মূল্যবান মনে করব এবং যত দ্রুত সম্ভব আপনাকে উত্তর দেব, কারণ আপনার সন্তুষ্টিই আমাদের সাফল্য।</value>
+  </data>
+  <data name="ContactMessage" xml:space="preserve">
+    <value>মেসেজ</value>
+  </data>
+  <data name="ContactMessageCategory" xml:space="preserve">
+    <value>মেসেজের ধরণ</value>
+  </data>
+  <data name="ContactName" xml:space="preserve">
+    <value>নাম</value>
+  </data>
+  <data name="ContactNamePlaceholder" xml:space="preserve">
+    <value>আপনার নাম লিখুন</value>
+  </data>
+  <data name="ContactNumber" xml:space="preserve">
+    <value>যোগাযোগের নম্বর:</value>
+  </data>
+  <data name="ContactSubject" xml:space="preserve">
+    <value>বিষয়</value>
+  </data>
+  <data name="ContactSubjectPlaceholder" xml:space="preserve">
+    <value>মেসেজের বিষয় লিখুন</value>
+  </data>
+  <data name="ContactSUBMIT" xml:space="preserve">
+    <value>জমা দিন</value>
+  </data>
+  <data name="ContactThankyouVeryMuch" xml:space="preserve">
+    <value>আপনাকে অনেক ধন্যবাদ</value>
+  </data>
+  <data name="CreatedDateTimeString" xml:space="preserve">
+    <value>তারিখ</value>
+  </data>
+  <data name="CreatedDateTimeString1" xml:space="preserve">
+    <value>তারিখ</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>ক্রেডিট ব্যালেন্স</value>
+  </data>
+  <data name="CREDITRECHARGE" xml:space="preserve">
+    <value>ক্রেডিট রিচার্জ</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>মুদ্রা</value>
+  </data>
+  <data name="CurrentPassword" xml:space="preserve">
+    <value>বর্তমান পাসওয়ার্ড:</value>
+  </data>
+  <data name="CycleOneMonth" xml:space="preserve">
+    <value>এক মাস</value>
+  </data>
+  <data name="CycleOneYear" xml:space="preserve">
+    <value>এক বছর</value>
+  </data>
+  <data name="DefaultSubscription" xml:space="preserve">
+    <value>ডিফল্ট সাবস্ক্রিপশনঃ</value>
+  </data>
+  <data name="DESCRIPTION" xml:space="preserve">
+    <value>বর্ণনা</value>
+  </data>
+  <data name="Description1" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Detailconfigurations1" xml:space="preserve">
+    <value>বিস্তারিত কনফিগারেশন</value>
+  </data>
+  <data name="DETAILS" xml:space="preserve">
+    <value>বিশদ বিবরণ</value>
+  </data>
+  <data name="DisplayCurrency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="DisplayCurrency1" xml:space="preserve">
+    <value>মুদ্রা</value>
+  </data>
+  <data name="DisplaySubCategory" xml:space="preserve">
+    <value>বিভাগ/ধরণ</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>সম্পাদন করুন</value>
+  </data>
+  <data name="EmptyImageDesktopAltText" xml:space="preserve">
+    <value>ছবি প্রদান করা নাই</value>
+  </data>
+  <data name="EntryDateTime" xml:space="preserve">
+    <value>লিপিভুক্তের তারিখ </value>
+  </data>
+  <data name="ErrorH1" xml:space="preserve">
+    <value>ভুুল</value>
+  </data>
+  <data name="ErrorH2" xml:space="preserve">
+    <value>আপনার অনুরোধ প্রক্রিয়াকরণের সময় একটি ভুল হয়েছে।</value>
+  </data>
+  <data name="ErrorViewBagTitle" xml:space="preserve">
+    <value>ভুুল</value>
+  </data>
+  <data name="Everymonthyoucanpost2freeads" xml:space="preserve">
+    <value>প্রতি মাসে আপনি ২টি বিনামূল্যে বিজ্ঞাপন পোস্ট করতে পারেন। ইতিমধ্যে আপনি এই মাসের জন্য আপনার বিনামূল্যে কোটা ব্যবহার করেছেন।</value>
+  </data>
+  <data name="Expires" xml:space="preserve">
+    <value>মেয়াদ শেষ হয়ে যাবে</value>
+  </data>
+  <data name="FAQGoToTop" xml:space="preserve">
+    <value>উপরে যান </value>
+  </data>
+  <data name="FAQQuestion1" xml:space="preserve">
+    <value>কিভাবে একটা নতুন বিজ্ঞাপন পোস্ট করবেন?</value>
+  </data>
+  <data name="FAQQuestion1Part1" xml:space="preserve">
+    <value>মোবাইল ডিভাইস থেকে nasiii.com-এ প্রবেশ করার সময়, ব্রাউজার উইন্ডোর উপরে একটি সংকুচিত মেনু আইকন দেখতে পাবেন। অনুগ্রহ করে মেনুটি প্রসারিত করুন এবং নতুন পোস্ট পৃষ্ঠায় যাওয়ার জন্য “Post Free Ad” বোতামে ক্লিক করুন। তারপর, সমস্ত আবশ্যিক ক্ষেত্রগুলি পূরণ করুন এবং “Submit Free Ad” বোতামে ক্লিক করুন। পোস্টটি জমা হয়ে যাবে এবং পরবর্তী ২০ মিনিটের মধ্যে আপনার বিজ্ঞাপনটি বাজারে প্রদর্শিত হবে।</value>
+  </data>
+  <data name="FAQQuestion1Part2" xml:space="preserve">
+    <value>ল্যাপটপ/পিসি থেকে nasiii.com-এ প্রবেশ করার সময়, ব্রাউজার উইন্ডোর উপরের ডান কোণায় “Post Free Ad” নামে একটি বাটন দেখতে পাবেন। নতুন পোস্ট পেজে যাওয়ার জন্য অনুগ্রহ করে এই বাটনটিতে ক্লিক করুন। এরপর, সমস্ত আবশ্যিক ফিল্ড পূরণ করে “Submit Free Ad” বাটনে ক্লিক করুন। পোস্টটি জমা হয়ে যাবে এবং পরবর্তী ২০ মিনিটের মধ্যে আপনার বিজ্ঞাপনটি বাজারে প্রদর্শিত হবে।</value>
+  </data>
+  <data name="FAQQuestion2" xml:space="preserve">
+    <value>কীভাবে একটি নতুন ব্যবহারকারী অ্যাকাউন্ট তৈরি করবেন?</value>
+  </data>
+  <data name="FAQQuestion2Part1" xml:space="preserve">
+    <value>যখন কোনো ব্যবহারকারী প্রথমবার বিজ্ঞাপন পোস্ট করেন, তখন বিজ্ঞাপন জমা দেওয়ার সময় তার জন্য একটি ব্যবহারকারী অ্যাকাউন্ট তৈরি করা হয়। নতুন ব্যবহারকারী হিসেবে সাইন আপ করার জন্য কোনো সুস্পষ্ট লিঙ্ক নেই। এখানে ব্যবহারকারী অ্যাকাউন্টটি শুধুমাত্র তখনই তৈরি করা হয়, যখন তিনি একটি নতুন বিজ্ঞাপন জমা দিতে যান।</value>
+  </data>
+  <data name="FAQQuestion2Part2" xml:space="preserve">
+    <value>“পোস্ট ফ্রি অ্যাড” পেজের সাইন আপ প্যানেলে (পেজের শেষ প্যানেল), ব্যবহারকারী তার ইমেল ঠিকানা পূরণ করবেন এবং তারপর সিস্টেম একটি পাসওয়ার্ড চাইবে। ব্যবহারকারী পাসওয়ার্ড পূরণ করার পর, “সাবমিট ফ্রি অ্যাড” বোতামে ক্লিক করলে, সিস্টেম স্বয়ংক্রিয়ভাবে সাইন ইন করবে এবং বিজ্ঞাপন/পোস্ট জমা দেওয়ার প্রক্রিয়াটি সম্পন্ন করবে। উপরের বিষয়টি তখনই প্রযোজ্য, যখন ব্যবহারকারীর ইমেলটি সিস্টেমে আগে থেকেই নিবন্ধিত থাকে।</value>
+  </data>
+  <data name="FAQQuestion2Part3" xml:space="preserve">
+    <value>নতুন পোস্ট জমা দেওয়ার সময়, সাইন আপ প্যানেলে ব্যবহারকারী যখন তার ইমেল ঠিকানা টাইপ করেন, তখন সিস্টেম ডেটাবেসে কোনো ব্যবহারকারী অ্যাকাউন্ট আছে কিনা তা পরীক্ষা করে। যদি ইমেল ঠিকানার সাথে কোনো ব্যবহারকারী অ্যাকাউন্ট যুক্ত না থাকে, তবে সিস্টেম তাকে “পাসওয়ার্ড” এবং “পুনরায় পাসওয়ার্ড” টাইপ করতে বলবে। এরপর “বিনামূল্যে বিজ্ঞাপন জমা দিন” বোতামে ক্লিক করলে, সিস্টেম স্বয়ংক্রিয়ভাবে একটি ব্যবহারকারী অ্যাকাউন্ট তৈরি করে পোস্ট জমা দেওয়ার প্রক্রিয়াটি সম্পন্ন করবে।</value>
+  </data>
+  <data name="FAQQuestion3" xml:space="preserve">
+    <value>আমার জমা দেওয়া বিজ্ঞাপনগুলো কীভাবে পরিচালনা করব?</value>
+  </data>
+  <data name="FAQQuestion3Part1" xml:space="preserve">
+    <value>ব্যবহারকারী উপরের ডান কোণায় থাকা “সাইন ইন” লিঙ্কে (ল্যাপটপ) অথবা প্রসারিত মেনুতে (মোবাইল) ক্লিক করে পোর্টালে সাইন ইন করবেন।</value>
+  </data>
+  <data name="FAQQuestion3Part2" xml:space="preserve">
+    <value>সাইন ইন করার পর, উপরের ডানদিকে (ল্যাপটপে) ব্যবহারকারীর নামের সাথে একটি “ব্যবহারকারী আইকন” থাকবে। ব্যবহারকারী নামটি ক্লিক করে “আমার পোস্ট” (My Posts) এ ক্লিক করলে সেই পৃষ্ঠায় যাবেন যেখানে তিনি তার জমা দেওয়া সমস্ত পোস্ট/বিজ্ঞাপন পরিচালনা (দেখা/সম্পাদনা/মুছে ফেলা) করতে পারবেন।</value>
+  </data>
+  <data name="FAQQuestion3Part3" xml:space="preserve">
+    <value>সাইন ইন করার পর, প্রসারিত মেনুতে (মোবাইল) “আমার পোস্ট” নামে একটি লিঙ্ক রয়েছে। ব্যবহারকারী তার জমা দেওয়া পোস্ট/বিজ্ঞাপনগুলি পরিচালনা (দেখা/সম্পাদনা/মুছে ফেলা) করার জন্য এই লিঙ্কে যাবেন।</value>
+  </data>
+  <data name="FAQViewBagText" xml:space="preserve">
+    <value>প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী</value>
+  </data>
+  <data name="FreeAdsperMonth1" xml:space="preserve">
+    <value>ফ্রি বিজ্ঞাপন / মাসঃ</value>
+  </data>
+  <data name="FreePostspMonth" xml:space="preserve">
+    <value> ফ্রি পোস্ট / মাস</value>
+  </data>
+  <data name="FreeQuota22" xml:space="preserve">
+    <value>১) ফ্রি কোটা</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>হইতে</value>
+  </data>
+  <data name="GoToTop" xml:space="preserve">
+    <value>উপরে যান</value>
+  </data>
+  <data name="GroupSectionASeeSimilarItems" xml:space="preserve">
+    <value>অনুরূপ আইটেম দেখুন</value>
+  </data>
+  <data name="H3ManageAccount" xml:space="preserve">
+    <value> একাউন্ট মেনেজ করুন </value>
+  </data>
+  <data name="HomeAGoToTop" xml:space="preserve">
+    <value>উপরেে যান</value>
+  </data>
+  <data name="HomeViewBagTitle" xml:space="preserve">
+    <value>হোম</value>
+  </data>
+  <data name="ImageDesktopAltText" xml:space="preserve">
+    <value>এই বিজ্ঞাপনের ছবি।</value>
+  </data>
+  <data name="Inbox" xml:space="preserve">
+    <value>ইনবক্স</value>
+  </data>
+  <data name="ItemDetailsAdDetails" xml:space="preserve">
+    <value>বিজ্ঞাপনের বিস্তারিত </value>
+  </data>
+  <data name="ItemDetailsADVERTISEMENTDETAILS" xml:space="preserve">
+    <value>বিজ্ঞাপনের বিস্তারিত</value>
+  </data>
+  <data name="ItemDetailsADVERTISERDETAILS" xml:space="preserve">
+    <value>বিজ্ঞাপনের বিস্তারিত</value>
+  </data>
+  <data name="ItemDetailsCondition" xml:space="preserve">
+    <value>পণ্যের ধরণ</value>
+  </data>
+  <data name="ItemDetailsDealer" xml:space="preserve">
+    <value>ব্যবসার ধরণ</value>
+  </data>
+  <data name="ItemDetailsDealType" xml:space="preserve">
+    <value>ডিল প্রকার</value>
+  </data>
+  <data name="ItemDetailsDescription" xml:space="preserve">
+    <value>বিবরণ</value>
+  </data>
+  <data name="ItemDetailsEmailAddress" xml:space="preserve">
+    <value>ইমেইল ঠিকানা</value>
+  </data>
+  <data name="ItemDetailsEnterEmailForSigninOrSignup" xml:space="preserve">
+    <value>সাইন ইন / সাইন আপ করার জন্য ইমেল লিখুন</value>
+  </data>
+  <data name="ItemDetailsEnterYourName" xml:space="preserve">
+    <value>আপনার নাম প্রবেশ করুন</value>
+  </data>
+  <data name="ItemDetailsEnterYourPassword" xml:space="preserve">
+    <value>আপনার পাসওয়ার্ড লিখুন</value>
+  </data>
+  <data name="ItemDetailsLocation" xml:space="preserve">
+    <value>অবস্থান</value>
+  </data>
+  <data name="ItemDetailsMessage" xml:space="preserve">
+    <value>বার্তাঃ</value>
+  </data>
+  <data name="ItemDetailsName" xml:space="preserve">
+    <value>নাম</value>
+  </data>
+  <data name="ItemDetailsNOTE" xml:space="preserve">
+    <value>বিঃদ্রঃ</value>
+  </data>
+  <data name="ItemDetailsPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড:</value>
+  </data>
+  <data name="ItemDetailsPleaseFillupTheFormBelow" xml:space="preserve">
+    <value>দয়া করে নীচের ফর্মটি পূরণ করুন এবং অবিলম্বে বিজ্ঞাপনদাতার সাথে যোগাযোগের বিস্তারিত পান। বিজ্ঞাপনদাতা আপনার বিস্তারিত পাবেন।</value>
+  </data>
+  <data name="ItemDetailsPleaseRetypePassword" xml:space="preserve">
+    <value>পাসওয়ার্ড পুনরায় টাইপ করুন</value>
+  </data>
+  <data name="ItemDetailsPrice" xml:space="preserve">
+    <value>দামঃ</value>
+  </data>
+  <data name="ItemDetailsPublicComments" xml:space="preserve">
+    <value>পাবলিক মন্তব্য:</value>
+  </data>
+  <data name="ItemDetailsRent" xml:space="preserve">
+    <value>ভাড়া</value>
+  </data>
+  <data name="ItemDetailsRePassword" xml:space="preserve">
+    <value>পাসওয়ার্ড পুনরায় দিন:</value>
+  </data>
+  <data name="ItemDetailsRequestAdvertiserContact" xml:space="preserve">
+    <value>বিজ্ঞাপনদাতার যোগাযোগের ঠিকানা অনুরোধ করুন</value>
+  </data>
+  <data name="ItemDetailsREQUESTADVERTISERDETAILSCapital" xml:space="preserve">
+    <value>বিজ্ঞাপনদাতার বিস্তারিত অনুরোধ করুন</value>
+  </data>
+  <data name="ItemDetailsSell" xml:space="preserve">
+    <value>বিক্রি করুন</value>
+  </data>
+  <data name="ItemDetailsSellOrRent" xml:space="preserve">
+    <value>বিক্রয় করুন বা ভাড়া দিন</value>
+  </data>
+  <data name="ItemDetailsSUBMITREQUEST" xml:space="preserve">
+    <value>অনুরোধ জমা দিন</value>
+  </data>
+  <data name="ItemDetailsThisAdFor" xml:space="preserve">
+    <value>এই বিজ্ঞাপনটি</value>
+  </data>
+  <data name="ItemDetailsTitle" xml:space="preserve">
+    <value>শিরোনাম</value>
+  </data>
+  <data name="LayoutFooterAbout" xml:space="preserve">
+    <value>সম্পর্কিত</value>
+  </data>
+  <data name="LayoutFooterContact" xml:space="preserve">
+    <value>যোগাযোগ</value>
+  </data>
+  <data name="LayoutFooterFAQ" xml:space="preserve">
+    <value>প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী</value>
+  </data>
+  <data name="LayoutFooterPostFreeAd" xml:space="preserve">
+    <value>ফ্রি বিজ্ঞাপন পোস্ট করুন</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>অবস্থানঃ</value>
+  </data>
+  <data name="LoginButtonSignIn" xml:space="preserve">
+    <value>সাইন ইন করুন </value>
+  </data>
+  <data name="LoginEmail" xml:space="preserve">
+    <value>ইমেইল:</value>
+  </data>
+  <data name="LoginEnterCredentials" xml:space="preserve">
+    <value>দয়া করে লগইন তথ্য লিখুন:</value>
+  </data>
+  <data name="LoginFBNote" xml:space="preserve">
+    <value>দ্রষ্টব্য: লগইন / আপনার ফেসবুক একাউন্ট ব্যবহার করে সাইন আপ করুন, ফেসবুক বাটন অনুসরণ করে ক্লিক করুন</value>
+  </data>
+  <data name="LoginLoading" xml:space="preserve">
+    <value>লোড হচ্ছে ...</value>
+  </data>
+  <data name="LoginPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড:</value>
+  </data>
+  <data name="LoginSignin" xml:space="preserve">
+    <value>প্রবেশ কর</value>
+  </data>
+  <data name="LoginTitleFBAccount" xml:space="preserve">
+    <value>ফেসবুক একাউন্ট ব্যবহার করে:</value>
+  </data>
+  <data name="LoginTitleFBText" xml:space="preserve">
+    <value>আপনার ফেসবুক একাউন্ট ব্যবহার করে সাইন ইন করতে, ফেসবুক বোতামটি অনুসরণ করুন এবং চালিয়ে যান</value>
+  </data>
+  <data name="LoginTitlePortalAccount" xml:space="preserve">
+    <value>পোর্টাল অ্যাকাউন্ট ব্যবহার করে:</value>
+  </data>
+  <data name="LoginTitlePortalAccountText" xml:space="preserve">
+    <value>আপনার পোর্টাল ব্যবহারকারী অ্যাকাউন্টের মাধ্যমে সাইন ইন করতে, শংসাপত্র লিখুন, সাইন ইন ক্লিক করুন এবং অবিরত করুন:</value>
+  </data>
+  <data name="LoginViewBagSignin" xml:space="preserve">
+    <value>প্রবেশ কর</value>
+  </data>
+  <data name="MarketAllMarketAds" xml:space="preserve">
+    <value>সমস্ত বাজার বিজ্ঞাপন</value>
+  </data>
+  <data name="MarketALLMarketItems" xml:space="preserve">
+    <value>সমস্ত বাজার আইটেম</value>
+  </data>
+  <data name="MarketEmptyImageDesktopAltText" xml:space="preserve">
+    <value>ছবি বিজ্ঞাপনদাতার দ্বারা প্রদান করা হয় না</value>
+  </data>
+  <data name="MarketGoToTop" xml:space="preserve">
+    <value>উপরে যান</value>
+  </data>
+  <data name="MarketImageDesktopAltText" xml:space="preserve">
+    <value>এই বিজ্ঞাপন ছবি।</value>
+  </data>
+  <data name="MarketItemComments" xml:space="preserve">
+    <value>মন্তব্য</value>
+  </data>
+  <data name="MarketItemCompany" xml:space="preserve">
+    <value>কোম্পানির</value>
+  </data>
+  <data name="MarketItemForRent" xml:space="preserve">
+    <value>ভাড়া জন্য</value>
+  </data>
+  <data name="MarketItemForSell" xml:space="preserve">
+    <value>বিক্রির জন্য</value>
+  </data>
+  <data name="MarketItemIndividual" xml:space="preserve">
+    <value>স্বতন্ত্র</value>
+  </data>
+  <data name="MarketItemLikes" xml:space="preserve">
+    <value>পছন্দ</value>
+  </data>
+  <data name="MarketItemNewItem" xml:space="preserve">
+    <value>নতুুন</value>
+  </data>
+  <data name="MarketItemNEWITEM1" xml:space="preserve">
+    <value>নতুুন</value>
+  </data>
+  <data name="MarketItemPostedBy" xml:space="preserve">
+    <value>কারো দ্বারা কোন কিছু ডাকঘরে পাঠানো,</value>
+  </data>
+  <data name="MarketItemPrice" xml:space="preserve">
+    <value>দাম:</value>
+  </data>
+  <data name="MarketItemPublishDate" xml:space="preserve">
+    <value>প্রকাশের তারিখ:</value>
+  </data>
+  <data name="MarketItemRegion" xml:space="preserve">
+    <value>বিভাগ</value>
+  </data>
+  <data name="MarketItemSellerIs" xml:space="preserve">
+    <value>বিক্রেতা হল:</value>
+  </data>
+  <data name="MarketItemUrgentSell" xml:space="preserve">
+    <value>জরুরী বিক্রয়</value>
+  </data>
+  <data name="MarketItemURGENTSELL1" xml:space="preserve">
+    <value>বিরক্তিকর বিক্রয়</value>
+  </data>
+  <data name="MarketItemUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত আইটেম</value>
+  </data>
+  <data name="MarketItemUSEDITEM1" xml:space="preserve">
+    <value>ব্যবহৃত আইটেম</value>
+  </data>
+  <data name="MarketTodayMarket" xml:space="preserve">
+    <value>আজকের বাজার</value>
+  </data>
+  <data name="MenuAllAds" xml:space="preserve">
+    <value>সব</value>
+  </data>
+  <data name="MenuBangla" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="MenuBanglaLanguage" xml:space="preserve">
+    <value>বাংলা</value>
+  </data>
+  <data name="MenuBikashApproval" xml:space="preserve">
+    <value>বিকাশ অনুমোদন</value>
+  </data>
+  <data name="MenuConfigureContent" xml:space="preserve">
+    <value>কন্টেন্ট কনফিগার করুন</value>
+  </data>
+  <data name="MenuConfigurePanels" xml:space="preserve">
+    <value>প্যানেল কনফিগার করুন</value>
+  </data>
+  <data name="MenuContactUs" xml:space="preserve">
+    <value>আমাদের সাথে যোগাযোগ করুন</value>
+  </data>
+  <data name="MenuEnglish" xml:space="preserve">
+    <value>ইংরেজি</value>
+  </data>
+  <data name="MenuEnglishLanguage" xml:space="preserve">
+    <value>ইংরেজি</value>
+  </data>
+  <data name="MenuFAQ" xml:space="preserve">
+    <value>প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী</value>
+  </data>
+  <data name="MenuLogout" xml:space="preserve">
+    <value>প্রস্থান</value>
+  </data>
+  <data name="MenuManageAccount" xml:space="preserve">
+    <value>অ্যাকাউন্ট পরিচালনা</value>
+  </data>
+  <data name="MenuManageBills" xml:space="preserve">
+    <value>বিল পরিচালনা করুন</value>
+  </data>
+  <data name="MenuMyMsgs" xml:space="preserve">
+    <value>আমার বার্তা</value>
+  </data>
+  <data name="MenuMyPublshedAds" xml:space="preserve">
+    <value>আমার প্রকাশিত বিজ্ঞাপন</value>
+  </data>
+  <data name="MenuMyUnpaidAds" xml:space="preserve">
+    <value>আমার অবৈতনিক বিজ্ঞাপন</value>
+  </data>
+  <data name="MenuPackageConfiguration" xml:space="preserve">
+    <value>প্যাকেজ কনফিগারেশন</value>
+  </data>
+  <data name="MenuPackageSetting" xml:space="preserve">
+    <value>প্যাকেজ সেটিং</value>
+  </data>
+  <data name="MenuPostFreeAd" xml:space="preserve">
+    <value>ফ্রি পোস্ট</value>
+  </data>
+  <data name="MenuPriceConfiguration" xml:space="preserve">
+    <value>মূল্য কনফিগারেশন</value>
+  </data>
+  <data name="MenuPriceSetting" xml:space="preserve">
+    <value>মূল্য নির্ধারণ</value>
+  </data>
+  <data name="MenuPublishedPosts" xml:space="preserve">
+    <value>প্রকাশিত পোস্ট</value>
+  </data>
+  <data name="MenuSignIn" xml:space="preserve">
+    <value>সাইনইন</value>
+  </data>
+  <data name="MenuUnpaidPosts" xml:space="preserve">
+    <value>অবৈতনিক পোস্ট</value>
+  </data>
+  <data name="MenuUserSession" xml:space="preserve">
+    <value>ব্যবহারকারী সেশন</value>
+  </data>
+  <data name="MenuUserSessionReport" xml:space="preserve">
+    <value>ব্যবহারকারী সেশন রিপোর্ট</value>
+  </data>
+  <data name="MenuViewAllAds" xml:space="preserve">
+    <value>সব বিজ্ঞাপন দেখুন</value>
+  </data>
+  <data name="MessageDetails" xml:space="preserve">
+    <value>বার্তার বিবরণ</value>
+  </data>
+  <data name="Messagereceivedon" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MessageSentOn" xml:space="preserve">
+    <value>বার্তা পাঠানো হয়েছে</value>
+  </data>
+  <data name="MM" xml:space="preserve">
+    <value>MM</value>
+  </data>
+  <data name="ModalButtonClose" xml:space="preserve">
+    <value>বন্ধ করুন</value>
+  </data>
+  <data name="ModifyPostAccountOwner" xml:space="preserve">
+    <value>অ্যাকাউন্টের মালিক</value>
+  </data>
+  <data name="ModifyPostAdCategory" xml:space="preserve">
+    <value>বিজ্ঞাপন বিভাগ:</value>
+  </data>
+  <data name="ModifyPostAdSubCategory" xml:space="preserve">
+    <value>বিজ্ঞাপনের উপ-বিভাগ:</value>
+  </data>
+  <data name="ModifyPostAdTitle" xml:space="preserve">
+    <value>বিজ্ঞাপনের শিরোনাম</value>
+  </data>
+  <data name="ModifyPostAdvertisedBY" xml:space="preserve">
+    <value> বিজ্ঞাপন দ্বারা</value>
+  </data>
+  <data name="ModifyPostArea" xml:space="preserve">
+    <value>এলাকা</value>
+  </data>
+  <data name="ModifyPostBrandNew" xml:space="preserve">
+    <value>নতুন </value>
+  </data>
+  <data name="ModifyPostBROWSE" xml:space="preserve">
+    <value>ব্রাউজ করুন </value>
+  </data>
+  <data name="ModifyPostContactNumber" xml:space="preserve">
+    <value>যোগাযোগের নম্বর</value>
+  </data>
+  <data name="ModifyPostDELETE" xml:space="preserve">
+    <value>ব্রাউজ করে পোস্ট সংশোধন করুন  </value>
+  </data>
+  <data name="ModifyPostDescription" xml:space="preserve">
+    <value>বিবরণ</value>
+  </data>
+  <data name="ModifyPostLocation" xml:space="preserve">
+    <value>অবস্থান</value>
+  </data>
+  <data name="ModifyPostNotUrgentDeal" xml:space="preserve">
+    <value>জরুুরী বিক্রি নয়</value>
+  </data>
+  <data name="ModifyPostPicture" xml:space="preserve">
+    <value>ছবি</value>
+  </data>
+  <data name="ModifyPostPosteditemisforrent" xml:space="preserve">
+    <value>পোস্ট আইটেম ভাড়া জন্য</value>
+  </data>
+  <data name="ModifyPostPosteditemisforsell" xml:space="preserve">
+    <value>পোস্ট আইটেম ভাড়া জন্য</value>
+  </data>
+  <data name="ModifyPostRent" xml:space="preserve">
+    <value>ভাড়া</value>
+  </data>
+  <data name="ModifyPostRent1" xml:space="preserve">
+    <value>ভাড়া</value>
+  </data>
+  <data name="ModifyPostSearchTags" xml:space="preserve">
+    <value>অনুসন্ধান ট্যাগ (এই ট্যাগকৃত শব্দগুলো সার্চের সময় সহজে খুঁজে পাওয়া যাবে)</value>
+  </data>
+  <data name="ModifyPostSell" xml:space="preserve">
+    <value>বিক্রি করুন  </value>
+  </data>
+  <data name="ModifyPostSell1" xml:space="preserve">
+    <value>বিক্রি করুন  </value>
+  </data>
+  <data name="ModifyPostThisAdis" xml:space="preserve">
+    <value>এটা একটি বিজ্ঞাপন </value>
+  </data>
+  <data name="ModifyPostThisAdis1" xml:space="preserve">
+    <value>এটা একটি বিজ্ঞাপন</value>
+  </data>
+  <data name="ModifyPostThisadisforanurgentsell" xml:space="preserve">
+    <value>এই বিজ্ঞাপন জরুরী বিক্রির জন্য</value>
+  </data>
+  <data name="ModifyPostThisadisnotforanurgentsell" xml:space="preserve">
+    <value>এই বিজ্ঞাপন জরুরী বিক্রির জন্য নয় </value>
+  </data>
+  <data name="ModifyPostThisisanusedsecondhanditem" xml:space="preserve">
+    <value>ব্যবহৃত পণ্য </value>
+  </data>
+  <data name="ModifyPostThisisbrandnewitem" xml:space="preserve">
+    <value>এটা একটি নতুন পণ্য </value>
+  </data>
+  <data name="ModifyPostUrgentDeal" xml:space="preserve">
+    <value>জরুরী বিক্রয়</value>
+  </data>
+  <data name="ModifyPostUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত পণ্য</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>মাস</value>
+  </data>
+  <data name="MonthlyCreditFinished11" xml:space="preserve">
+    <value>মাসিক ক্রেডিট সমাপ্ত</value>
+  </data>
+  <data name="MonthlyCreditFinished12" xml:space="preserve">
+    <value>মাসিক ক্রেডিট সমাপ্ত</value>
+  </data>
+  <data name="MonthlyFee" xml:space="preserve">
+    <value>মাসিক পেমেন্ট (পুনরাবৃত্ত):</value>
+  </data>
+  <data name="MonthlyFeePayeverymonth1" xml:space="preserve">
+    <value>মাসিক ফি (প্রতি মাসে পরিশোধ করতে হবে):</value>
+  </data>
+  <data name="MonthlyRecurringpay1" xml:space="preserve">
+    <value>মাসিক (পুনরাবৃত্তিমূলক পরিশোধ):</value>
+  </data>
+  <data name="MyBikashTransaction" xml:space="preserve">
+    <value>আমার বিকাশ লেনদেন</value>
+  </data>
+  <data name="MyMailBox" xml:space="preserve">
+    <value>আমার মেইল ​​বক্স</value>
+  </data>
+  <data name="MyPublishedAds" xml:space="preserve">
+    <value>আমার প্রকাশিত বিজ্ঞাপন</value>
+  </data>
+  <data name="MyUnpaidAds" xml:space="preserve">
+    <value>আমার অবৈতনিক বিজ্ঞাপন</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>নতুন পাসওয়ার্ড</value>
+  </data>
+  <data name="NewPostABrandNew" xml:space="preserve">
+    <value>নতুুন</value>
+  </data>
+  <data name="NewPostACompany" xml:space="preserve">
+    <value>কোম্পানির বিজ্ঞাপন</value>
+  </data>
+  <data name="NewPostAPrivate" xml:space="preserve">
+    <value>ব্যক্তিগত</value>
+  </data>
+  <data name="NewPostARent" xml:space="preserve">
+    <value>ভাড়া</value>
+  </data>
+  <data name="NewPostASell" xml:space="preserve">
+    <value>বিক্রি করুন  </value>
+  </data>
+  <data name="NewPostAUrgentDeal" xml:space="preserve">
+    <value>জরুরী বিক্রয়</value>
+  </data>
+  <data name="NewPostAUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত পণ্য</value>
+  </data>
+  <data name="NewPostButtonBROWSE" xml:space="preserve">
+    <value>ব্রাউজ করুন</value>
+  </data>
+  <data name="NewPostButtonSUBMITAD" xml:space="preserve">
+    <value>জমা দিন</value>
+  </data>
+  <data name="NewPostDivLoading" xml:space="preserve">
+    <value>চলমান</value>
+  </data>
+  <data name="NewPostH3AdvertiserDetails" xml:space="preserve">
+    <value>বিজ্ঞাপনদাতার বিবরণ</value>
+  </data>
+  <data name="NewPostH3AdvertiserDetailsMobile" xml:space="preserve">
+    <value>বিজ্ঞাপনদাতার বিবরণ</value>
+  </data>
+  <data name="NewPostH3PostFreeAd" xml:space="preserve">
+    <value>ফ্রি বিজ্ঞাপন পোস্ট করুন</value>
+  </data>
+  <data name="NewPostH3POSTFREEAD1" xml:space="preserve">
+    <value>ফ্রি বিজ্ঞাপন পোস্ট করুন</value>
+  </data>
+  <data name="NewPostH3SignIn" xml:space="preserve">
+    <value>সাইনইন করুন</value>
+  </data>
+  <data name="NewPostH3SignInMobile" xml:space="preserve">
+    <value>সাইনইন করুন</value>
+  </data>
+  <data name="NewPostH3SignUp" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="NewPostH3SignUpMobile" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="NewPostH3UploadPictures" xml:space="preserve">
+    <value>ছবি আপলোড করুন</value>
+  </data>
+  <data name="NewPostH3UploadPicturesMobile" xml:space="preserve">
+    <value>ছবি আপলোড করুন</value>
+  </data>
+  <data name="NewPostH4FacebookAccountLoginText" xml:space="preserve">
+    <value>দ্রষ্টব্য: আপনার ফেসবুক অ্যাকাউন্ট ব্যবহার করে লগইন/সাইন আপ করতে, অনুগ্রহ করে নিম্নলিখিত ফেসবুক বোতামটিতে ক্লিক করুন:</value>
+  </data>
+  <data name="NewPostH4LoginWithOurPortal" xml:space="preserve">
+    <value>আমাদের পোর্টাল অ্যাকাউন্ট ব্যবহার করে লগইন/সাইনআপ করতে, অনুগ্রহ করে নিম্নলিখিত তথ্য প্রবেশ করান এবং চালিয়ে যান।</value>
+  </data>
+  <data name="NewPostH4NOTE" xml:space="preserve">
+    <value>বিঃদ্রঃ</value>
+  </data>
+  <data name="NewPostLabelArea" xml:space="preserve">
+    <value>এলাকা</value>
+  </data>
+  <data name="NewPostLabelCategory" xml:space="preserve">
+    <value>ক্যাটাগরি</value>
+  </data>
+  <data name="NewPostLabelCondition" xml:space="preserve">
+    <value>পণ্যের ধরণ</value>
+  </data>
+  <data name="NewPostLabelEmail" xml:space="preserve">
+    <value>ইমেইল </value>
+  </data>
+  <data name="NewPostLabelFullName" xml:space="preserve">
+    <value>পুরো নাম </value>
+  </data>
+  <data name="NewPostLabelIAm" xml:space="preserve">
+    <value>বিজ্ঞাপনের ধরণ</value>
+  </data>
+  <data name="NewPostLabelItemDescription" xml:space="preserve">
+    <value>পণ্যর বর্ণনা</value>
+  </data>
+  <data name="NewPostLabelLocation" xml:space="preserve">
+    <value>বিভাগ</value>
+  </data>
+  <data name="NewPostLabelMyPhoneNo" xml:space="preserve">
+    <value>ফোন নম্বর</value>
+  </data>
+  <data name="NewPostLabelPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড</value>
+  </data>
+  <data name="NewPostLabelPrice" xml:space="preserve">
+    <value>মূল্য
+</value>
+  </data>
+  <data name="NewPostLabelRePassword" xml:space="preserve">
+    <value>পুনরায় পাসওয়ার্ড</value>
+  </data>
+  <data name="NewPostLabelSearchTag" xml:space="preserve">
+    <value>অনুসন্ধান ট্যাগ (এই ট্যাগকৃত শব্দগুলো সার্চের সময় সহজে খুঁজে পাওয়া যাবে)</value>
+  </data>
+  <data name="NewPostLabelSubCategory" xml:space="preserve">
+    <value>সাব-ক্যাটাগরি</value>
+  </data>
+  <data name="NewPostLabelThisAdFor" xml:space="preserve">
+    <value>এটি বিজ্ঞাপনের জন্য</value>
+  </data>
+  <data name="NewPostLabelThisAdIs" xml:space="preserve">
+    <value>এটি বিজ্ঞাপনের জন্য</value>
+  </data>
+  <data name="NewPostLabelTitle" xml:space="preserve">
+    <value>বিজ্ঞাপনের শিরোনাম</value>
+  </data>
+  <data name="NewPostPlaceholderEnterEmailForSignIn" xml:space="preserve">
+    <value>সাইন ইন করার জন্য ইমেল লিখুন</value>
+  </data>
+  <data name="NewPostSpanIAmCompany" xml:space="preserve">
+    <value>আমি একটি কোম্পানি</value>
+  </data>
+  <data name="NewPostSpanIAmIndividual" xml:space="preserve">
+    <value>আমি একজন ব্যক্তি</value>
+  </data>
+  <data name="NewPostSpanItemBrandNewText" xml:space="preserve">
+    <value>পণ্যটি নতুন</value>
+  </data>
+  <data name="NewPostSpanItemForRentText" xml:space="preserve">
+    <value>পণ্যটি ভাড়া জন্য</value>
+  </data>
+  <data name="NewPostSpanItemForSellText" xml:space="preserve">
+    <value>পণ্যটি বিক্রির জন্য </value>
+  </data>
+  <data name="NewPostSpanItemUsedText" xml:space="preserve">
+    <value>ব্যবহৃত পণ্য </value>
+  </data>
+  <data name="NewPostSpanQuickSubmissionText1" xml:space="preserve">
+    <value>এটা খুবই সহজ,  দ্রুত জমাদানের জন্য * চিহ্নিত ঘরগুলো </value>
+  </data>
+  <data name="NewPostSpanQuickSubmissionText2" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="NewPostSpanQuickSubmissionText3" xml:space="preserve">
+    <value>পূরণ করতে হবে।</value>
+  </data>
+  <data name="NewPostSpanThisAdUrgentSellText" xml:space="preserve">
+    <value>এই বিজ্ঞাপনটি জরুরী বিক্রয় হয়</value>
+  </data>
+  <data name="NewPostViewBagTitlePostFreeAds" xml:space="preserve">
+    <value>ফ্রি বিজ্ঞাপন পোস্ট করুন</value>
+  </data>
+  <data name="NEXT" xml:space="preserve">
+    <value>পরবর্তী</value>
+  </data>
+  <data name="NoofFreePostsMonth" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotUrgentDeal" xml:space="preserve">
+    <value>জরুরী বিক্রয় নয়</value>
+  </data>
+  <data name="NotUrgentDealText" xml:space="preserve">
+    <value>এই বিজ্ঞাপনটি  জরুরী বিক্রয় জন্য নয়</value>
+  </data>
+  <data name="OrderAmountPayable" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>অর্ডারের তারিখ</value>
+  </data>
+  <data name="ORDERDETAILS" xml:space="preserve">
+    <value>অর্ডারের বিবরণী</value>
+  </data>
+  <data name="ORDERNUMBER" xml:space="preserve">
+    <value>অর্ডারের নাম্বার </value>
+  </data>
+  <data name="OrderPackage" xml:space="preserve">
+    <value>প্যাকেজ</value>
+  </data>
+  <data name="OrderPayCycle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OrderQuota" xml:space="preserve">
+    <value>অংশ</value>
+  </data>
+  <data name="PACKAGE" xml:space="preserve">
+    <value>প্যাকেজ</value>
+  </data>
+  <data name="Package1" xml:space="preserve">
+    <value>প্যাকেজ</value>
+  </data>
+  <data name="PACKAGEDETAILS" xml:space="preserve">
+    <value>প্যাকেজ বিবরণ</value>
+  </data>
+  <data name="PackageDetailsAdCategory" xml:space="preserve">
+    <value>বিজ্ঞাপন. প্রকার </value>
+  </data>
+  <data name="PackageDetailsAdCategoryMobile" xml:space="preserve">
+    <value>বিজ্ঞাপন. প্রকার</value>
+  </data>
+  <data name="PackageDetailsAdsMonthMobile" xml:space="preserve">
+    <value>বিজ্ঞাপন / মাস</value>
+  </data>
+  <data name="PackageDetailsAllowedAdsMonth" xml:space="preserve">
+    <value>অনুমোদিত বিজ্ঞাপন</value>
+  </data>
+  <data name="PackageDetailsCurrency" xml:space="preserve">
+    <value>মুদ্রা</value>
+  </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>বিবরণ</value>
+  </data>
+  <data name="PackageDetailsPackageMobile" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PackageDetailsPosts" xml:space="preserve">
+    <value>পোস্ট</value>
+  </data>
+  <data name="PackageDetailsPriceAdMobile" xml:space="preserve">
+    <value>দাম /বিজ্ঞাপন</value>
+  </data>
+  <data name="PackageDetailsPriceAdoncequotafinished" xml:space="preserve">
+    <value>দাম /বিজ্ঞাপন</value>
+  </data>
+  <data name="PackageDetailsSubscription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PackageDetailsSubscriptionName" xml:space="preserve">
+    <value>Subscription Name:</value>
+  </data>
+  <data name="PackageDetailsSubscriptionPackageMobile" xml:space="preserve">
+    <value>প্যাকেজ</value>
+  </data>
+  <data name="PackageDetailsTotalAdQuota" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PackageExpires" xml:space="preserve">
+    <value>প্যাকেজ মেয়াদ শেষ</value>
+  </data>
+  <data name="PackageName" xml:space="preserve">
+    <value>প্যাকেজ নাম</value>
+  </data>
+  <data name="PACKAGENAME1" xml:space="preserve">
+    <value>PACKAGE NAME</value>
+  </data>
+  <data name="PackageSubscription" xml:space="preserve">
+    <value>সাবস্ক্রিপশন সমাপ্ত</value>
+  </data>
+  <data name="PackageSubscription12" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Page" xml:space="preserve">
+    <value>পৃষ্ঠা</value>
+  </data>
+  <data name="PaidAmount" xml:space="preserve">
+    <value>Paid Amount</value>
+  </data>
+  <data name="PaidAmount1" xml:space="preserve">
+    <value>পেমেন্ট পরিশোধ</value>
+  </data>
+  <data name="PassResetButtonSubmit" xml:space="preserve">
+    <value>জমা দিন</value>
+  </data>
+  <data name="PassResetEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PassResetResetPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PayableAmount" xml:space="preserve">
+    <value>Payable Amount</value>
+  </data>
+  <data name="PayableAmount1" xml:space="preserve">
+    <value>প্রয়োজনীয় পরিমাণ পরিশোধযোগ্য</value>
+  </data>
+  <data name="PayableAmount11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PAYBILL" xml:space="preserve">
+    <value>বিল পরিশোধ করুন</value>
+  </data>
+  <data name="PAYCYCLE1" xml:space="preserve">
+    <value>PAY CYCLE</value>
+  </data>
+  <data name="PAYNOW" xml:space="preserve">
+    <value>এখন পরিশোধ করুন</value>
+  </data>
+  <data name="PayPerPost" xml:space="preserve">
+    <value>প্রতি পোস্টে পরিশোধ করুন </value>
+  </data>
+  <data name="Picture" xml:space="preserve">
+    <value>ছবি</value>
+  </data>
+  <data name="PortalURL" xml:space="preserve">
+    <value>দেশি হাট বাজার . কম</value>
+  </data>
+  <data name="PortalURLCap" xml:space="preserve">
+    <value>দেশি হাট বাজার . কম</value>
+  </data>
+  <data name="Price1" xml:space="preserve">
+    <value>মূল্য</value>
+  </data>
+  <data name="PriceperPostafterfreequota" xml:space="preserve">
+    <value>মূল্য</value>
+  </data>
+  <data name="PUBLISHFAILEDPLEASEPAY1" xml:space="preserve">
+    <value>প্রকাশ্যে ব্যর্থ! দয়া করে অর্থ প্রদান করুন</value>
+  </data>
+  <data name="RECHARGE" xml:space="preserve">
+    <value>RECHARGE</value>
+  </data>
+  <data name="RechargeAccount" xml:space="preserve">
+    <value>Recharge Account</value>
+  </data>
+  <data name="RechargeAccount1" xml:space="preserve">
+    <value>রিচার্জ অ্যাকাউন্ট</value>
+  </data>
+  <data name="RechargeAccount11" xml:space="preserve">
+    <value>রিচার্জ অ্যাকাউন্ট</value>
+  </data>
+  <data name="RechargeAccount2" xml:space="preserve">
+    <value>রিচার্জ অ্যাকাউন্ট</value>
+  </data>
+  <data name="RechargeAccount3" xml:space="preserve">
+    <value>রিচার্জ অ্যাকাউন্ট</value>
+  </data>
+  <data name="RECHARGECREDITBALANCE" xml:space="preserve">
+    <value>রিচার্জ ক্রেডিট ব্যালেন্স</value>
+  </data>
+  <data name="REMOVE" xml:space="preserve">
+    <value>সরান</value>
+  </data>
+  <data name="REPLY" xml:space="preserve">
+    <value>রিপ্লাই করুন</value>
+  </data>
+  <data name="RetypeNewPassword" xml:space="preserve">
+    <value>নতুন পাসওয়ার্ড পুনরায় টাইপ করুন:</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>অনুসন্ধান</value>
+  </data>
+  <data name="SearchCompanyAds" xml:space="preserve">
+    <value>কোম্পানির বিজ্ঞাপন</value>
+  </data>
+  <data name="SearchForRent" xml:space="preserve">
+    <value>ভাড়ার জন্য</value>
+  </data>
+  <data name="SearchForSell" xml:space="preserve">
+    <value>বিক্রির জন্য </value>
+  </data>
+  <data name="SearchIndividualAds" xml:space="preserve">
+    <value>ব্যক্তিগত বিজ্ঞাপন</value>
+  </data>
+  <data name="SearchNewItem" xml:space="preserve">
+    <value>নতুুন আইটেম</value>
+  </data>
+  <data name="SearchPriceEndswith" xml:space="preserve">
+    <value>মূূল্য (শেষ হবে)</value>
+  </data>
+  <data name="SearchPriceStartsFrom" xml:space="preserve">
+    <value>মূল্য (শুরু হবে)</value>
+  </data>
+  <data name="SearchSEARCH" xml:space="preserve">
+    <value>অনুসন্ধান</value>
+  </data>
+  <data name="SearchSelectCategory" xml:space="preserve">
+    <value>ক্যাটাগরি নির্বাচন করুন</value>
+  </data>
+  <data name="SearchSelectState" xml:space="preserve">
+    <value>বিভাগ নির্বাচন করুন</value>
+  </data>
+  <data name="SearchSelectSubCategory" xml:space="preserve">
+    <value>সাব-ক্যাটাগরি নির্বাচন করুন</value>
+  </data>
+  <data name="SearchSpecificAreaDetails" xml:space="preserve">
+    <value>নির্দিষ্ট এলাকার বিস্তারিত ...</value>
+  </data>
+  <data name="SearchTypeToSearch" xml:space="preserve">
+    <value>অনুসন্ধানের জন্য টাইপ করুন ...</value>
+  </data>
+  <data name="SearchUrgentDeal" xml:space="preserve">
+    <value>জরুরি বিক্রয়</value>
+  </data>
+  <data name="SearchUsedItem" xml:space="preserve">
+    <value>ব্যবহৃত আইটেম</value>
+  </data>
+  <data name="SentMsgs" xml:space="preserve">
+    <value>পাঠানো বার্তা</value>
+  </data>
+  <data name="SingleOrderAmountPayable" xml:space="preserve">
+    <value>প্রদেয় পরিমাণ:</value>
+  </data>
+  <data name="SingleOrderBDT" xml:space="preserve">
+    <value>বাংলাদেশি টাকায় </value>
+  </data>
+  <data name="SingleOrderFreePostsMonth" xml:space="preserve">
+    <value>ফ্রি পোস্ট / মাস:</value>
+  </data>
+  <data name="SingleOrderOrderDate" xml:space="preserve">
+    <value>অর্ডারের তারিখ:</value>
+  </data>
+  <data name="SingleOrderORDERNUMBER" xml:space="preserve">
+    <value>অর্ডার নম্বর:</value>
+  </data>
+  <data name="SingleOrderPayCycleOneMonth" xml:space="preserve">
+    <value>বেতন চক্র: এক মাস</value>
+  </data>
+  <data name="SingleOrderPayCycleOneYear" xml:space="preserve">
+    <value>বেতন চক্র: এক বছর</value>
+  </data>
+  <data name="SingleOrderTotalBill" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value />
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryAcademicReference" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryAccommodationHomestays" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryApartment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryBabyProducts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryBagsWallets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryBeautyCosmeticProducts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryBedsBedroomFurniture" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryBonshai" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCameraPhotography" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCarPartsAccessories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCars" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCDDVD" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryChildren" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryChildrenFurnitures" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryClothes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCommercialProperties" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryCommercialVehicleBoat" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryDiningRoomFurniture" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryExportProduct" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryFileCabinets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryFootwearShoes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryFragrancesPerfumes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryGamesConsoles" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryGardenItems" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryHealthCare" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryHealthCareService" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryHistoryPolitics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryHouses" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryImportProduct" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryJewelry" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryJobs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryKitchenUtilitiesFurniture" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryLand" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryLifestyle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryLiteratureFiction" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryLivingRoomFurniture" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMedicalSurgical" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMenClothing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMobilephone" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMobilePhoneAccessories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMotorcycle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMotorcyclePartsAccessories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMusicalInstruments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryMusicMovies" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryNewProperties" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryOfficeChairs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryOfficeDesks" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryOtherAccessoriesParts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryOtherVehicles" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryPCLaptops" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryPCLaptopsAccessories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryPets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryPrinter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryProfessionalService" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryRooms" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryServices" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategorySlimmingProducts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategorySofaReceptionFurnitures" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategorySpecialMehedi" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategorySportsOutdoors" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryStationeriesSupplies" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategorySunglasses" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryTextbooks" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryTickets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryToursHolidays" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryToysBoardGames" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryTrainingPackages" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryTVAudioVideo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryWatches" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryWeddingAccessories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubCategoryWomenClothing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubscribedPackages" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Subscription1" xml:space="preserve">
+    <value>Subscription:</value>
+  </data>
+  <data name="SubscriptionName1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubscriptionVIEWDETAILS" xml:space="preserve">
+    <value>VIEW DETAILS</value>
+  </data>
+  <data name="SymbolColon" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateAViewMore" xml:space="preserve">
+    <value>আরও দেখুন</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tochangeplacedorder11" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TotalBill" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TransactionNumber" xml:space="preserve">
+    <value>Transaction Number</value>
+  </data>
+  <data name="TransactionNumber1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnwantedAcessErrorViewBagTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UpdateCart11" xml:space="preserve">
+    <value>Update Cart</value>
+  </data>
+  <data name="UpdateCartButton" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UpdateCartButtonMobile" xml:space="preserve">
+    <value />
+  </data>
+  <data name="VIEW" xml:space="preserve">
+    <value>VIEW</value>
+  </data>
+  <data name="View1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ViewBagTitleContact" xml:space="preserve">
+    <value>Contact</value>
+  </data>
+  <data name="ViewBagTitleManageAccount" xml:space="preserve">
+    <value>Manage Account</value>
+  </data>
+  <data name="ViewBagTitlePublishedPosts" xml:space="preserve">
+    <value>Published Ads</value>
+  </data>
+  <data name="ViewBagTitleUnpaidPosts" xml:space="preserve">
+    <value>Unpaid Ads</value>
+  </data>
+  <data name="ViewMore" xml:space="preserve">
+    <value>View More</value>
+  </data>
+  <data name="ViewPostCondition" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ViewPostPrice" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="YearlyFee" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YearlyFeeOnetimepayment1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YearlyOnetimepay1" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="Yodonthaveenoughcreditbalance" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Youhaveusedupallpostquota" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YY" xml:space="preserve">
+    <value>YY</value>
+  </data>
+  <data name="ViewBagTitleAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="ViewBagTitleAllItemMarket" xml:space="preserve">
+    <value>Market</value>
+  </data>
+  <data name="ViewBagTitleCategoryMarket" xml:space="preserve">
+    <value>Market</value>
+  </data>
+  <data name="ViewBagTitleContactUs" xml:space="preserve">
+    <value>Contact Us</value>
+  </data>
+  <data name="ViewBagTitleFAQ" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="ViewBagTitleHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="ViewBagTitleItemDetailsPage" xml:space="preserve">
+    <value>Product Details</value>
+  </data>
+  <data name="ViewBagTitleMyMessages" xml:space="preserve">
+    <value>My Messages</value>
+  </data>
+  <data name="ViewBagTitleMyPublishedPosts" xml:space="preserve">
+    <value>Published Ads</value>
+  </data>
+  <data name="ViewBagTitleMyUnppaidPosts" xml:space="preserve">
+    <value>Unpaid Ads</value>
+  </data>
+  <data name="ViewBagTitleNewPost" xml:space="preserve">
+    <value>New Ad</value>
+  </data>
+  <data name="ViewBagTitlePrivacyPolicy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="ViewBagTitleSearchResult" xml:space="preserve">
+    <value>Search Result</value>
+  </data>
+  <data name="ViewBagTitleSignIn" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="ViewBagTitleTerms" xml:space="preserve">
+    <value>Unpaid Ads</value>
+  </data>
+  <data name="ViewBagTitmeManageMySettings" xml:space="preserve">
+    <value>My Settings</value>
+  </data>
+  <data name="ViewBagTitmeResetPassword" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="ViewBagTitlePackageRecharge" xml:space="preserve">
+    <value>Recharge</value>
+  </data>
+  <data name="ViewBagTitleRecharge" xml:space="preserve">
+    <value>Recharge</value>
+  </data>
+  <data name="ViewBagTitleRechargeNotification" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>তারিখ</value>
+  </data>
+  <data name="EMAIL_NOT_IN_CORRECT_FORMAT" xml:space="preserve">
+    <value>ইমেল সঠিক বিন্যাসে হয়নি। একটি বৈধ ইমেইল ঠিকানা লিখুন</value>
+  </data>
+  <data name="PHONE_IS_NOT_IN_CORRECT_FORMAT" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_ENTER_TEXT_FOR_INPUT_FIELDS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_ENTER_VALID_EMAIL_ADDRESS" xml:space="preserve">
+    <value>দয়া করে সঠিক ইমেইলের ঠিকানা প্রবেশ করুন</value>
+  </data>
+  <data name="POST_NOT_SAVED" xml:space="preserve">
+    <value>পোস্ট সংরক্ষিত হয় নি</value>
+  </data>
+  <data name="SAVING_DATEBASE" xml:space="preserve">
+    <value>সেইভ হচ্ছে</value>
+  </data>
+  <data name="SUCCESS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="USER_EMAIL_ALREADY_IN_DATABASE_MESSAGE" xml:space="preserve">
+    <value />
+  </data>
+  <data name="VALIDATION_FAILED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YOUR_POST_HAVE_BEEN_SUBMITTED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CHARACTERS" xml:space="preserve">
+    <value>অক্ষর</value>
+  </data>
+  <data name="IS" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IS_REQUIRED" xml:space="preserve">
+    <value>আবশ্যক.</value>
+  </data>
+  <data name="MAX_LEN_FOR_THE_FIELD" xml:space="preserve">
+    <value>ক্ষেত্রের জন্য সর্বোচ্চ দৈর্ঘ্য</value>
+  </data>
+  <data name="THE_FIELD" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PASSWORD_AND_REPASSWORD_HAS_TO_BE" xml:space="preserve">
+    <value>পাসওয়ার্ড এবং পুনরায় পাসওয়ার্ড একই দৈর্ঘ্য হতে হবে</value>
+  </data>
+  <data name="PASSWORD_AND_REPASSWORD_HAS_TO_BE_SAME" xml:space="preserve">
+    <value>পাসওয়ার্ড এবং পুনরায় পাসওয়ার্ড একই হতে হবে</value>
+  </data>
+  <data name="PASSWORD_MINIMUM_HAS_TO_BE" xml:space="preserve">
+    <value>পাসওয়ার্ড সর্বনিম্ন 7 অক্ষর দীর্ঘ হতে হবে</value>
+  </data>
+  <data name="DELETED_TEXT" xml:space="preserve">
+    <value>আপনার পোস্ট মুছে ফেলা হয়েছে</value>
+  </data>
+  <data name="DELETE_CNFIRMATION" xml:space="preserve">
+    <value>নিশ্চিতকরণ মুছে দিন</value>
+  </data>
+  <data name="DELETE_SUCCESS" xml:space="preserve">
+    <value>মুছেে দেওয়া সফল হয়েছে</value>
+  </data>
+  <data name="DELETING" xml:space="preserve">
+    <value>মুছে ফেলা হচ্ছে</value>
+  </data>
+  <data name="EMAIL_OR_PASSWORD_INCORRECT" xml:space="preserve">
+    <value>ইমেল বা পাসওয়ার্ড ভুল। দয়া করে সঠিক ইমেইল এবং পাসওয়ার্ড লিখুন।</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>ভুল </value>
+  </data>
+  <data name="IMAGE_LOAD_SUCCESSFUL" xml:space="preserve">
+    <value>ছবি সফলভাবে লোড হয়েছে।</value>
+  </data>
+  <data name="LOADING" xml:space="preserve">
+    <value>লোড হচ্ছে </value>
+  </data>
+  <data name="MESSAGE_RECEIVED" xml:space="preserve">
+    <value>বার্তা পেয়েছি</value>
+  </data>
+  <data name="MESSAGE_SENT" xml:space="preserve">
+    <value>বার্তা পাঠানো</value>
+  </data>
+  <data name="MESSAGE_SENT_SUCCESSFUL" xml:space="preserve">
+    <value>আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে</value>
+  </data>
+  <data name="MESSAGE_SENT_TO_ADVERTISER_SUCCESSFULLY" xml:space="preserve">
+    <value>আপনার বার্তাটি  সফলভাবে বিজ্ঞাপনদাতার কাছে পাঠানো হয়েছে</value>
+  </data>
+  <data name="PASSWORD_CANNOT_BE_CHANGED" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন করা যাবে না</value>
+  </data>
+  <data name="PASSWORD_CHANGE_FAILED" xml:space="preserve">
+    <value>পাসওয়ার্ড পরিবর্তন ব্যর্থ হয়েছে</value>
+  </data>
+  <data name="PASSWORD_HAS_BEEN_CHANGED" xml:space="preserve">
+    <value>আপনার পাসওয়ার্ড পরিবর্তন হয়েছে</value>
+  </data>
+  <data name="PASSWORD_NOT_CHANGED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_CHECK_YOUR_PASSWORD" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_ENTER_AREA_FOR_MESSAGE" xml:space="preserve">
+    <value>দয়া করে আপনার বার্তা এলাকা লিখুন</value>
+  </data>
+  <data name="PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL" xml:space="preserve">
+    <value>দয়া করে ইমেইল জন্য সঠিক পাসওয়ার্ড লিখুন </value>
+  </data>
+  <data name="PLEASE_ENTER_EMAIL" xml:space="preserve">
+    <value>দয়া করে আপনার ইমেল লিখুন</value>
+  </data>
+  <data name="PLEASE_ENTER_MSG_TO_REPLY" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_ENTER_NAME" xml:space="preserve">
+    <value>দয়া করে আপনার নাম লিখুন</value>
+  </data>
+  <data name="PLEASE_ENTER_PASSWORD" xml:space="preserve">
+    <value>দয়া করে পাসওয়ার্ড প্রবেশ করুন</value>
+  </data>
+  <data name="PLEASE_ENTER_RePASSWORD" xml:space="preserve">
+    <value>দয়া করে পুনরায় পাসওয়ার্ড লিখুন </value>
+  </data>
+  <data name="PLEASE_ENTER_SUBJECT_FOR_MESSAGE" xml:space="preserve">
+    <value>দয়া করে বার্তা জন্য বিষয় লিখুন</value>
+  </data>
+  <data name="PLEASE_ENTER_TEXT_FOR_INPUT" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PLEASE_ENTER_VALID_EMAI" xml:space="preserve">
+    <value>দয়া করে সঠিক ইমেইল প্রবেশ করুন</value>
+  </data>
+  <data name="PLEASE_ENTER_VALID_EMAIL" xml:space="preserve">
+    <value>দয়া করে সঠিক ইমেইলের ঠিকানা প্রবেশ করুন</value>
+  </data>
+  <data name="PLEASE_ENTER_YOUR_MESSAGE" xml:space="preserve">
+    <value>দয়া করে আপনার বার্তা লিখুন</value>
+  </data>
+  <data name="PLEASE_WAIT_FOR_A_WHILE" xml:space="preserve">
+    <value>দয়া করে কিছুক্ষণ অপেক্ষা করুন</value>
+  </data>
+  <data name="POST_NOT_UPDATED" xml:space="preserve">
+    <value>পোস্ট আপডেট করা হয় নি </value>
+  </data>
+  <data name="REPLYING" xml:space="preserve">
+    <value>রিপ্লাই দেওয়া হচ্ছে</value>
+  </data>
+  <data name="REQUEST_SEND_FAILED" xml:space="preserve">
+    <value>অনুরোধ পাঠানো ব্যর্থ হয়েছে। ছবি আপলোড করা যায় নি। </value>
+  </data>
+  <data name="SUBMITTING" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UPDATEING" xml:space="preserve">
+    <value />
+  </data>
+  <data name="USER_EMAIL_ALREADY_USED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WE_WILL_CONTACT_AT_AN_EARLIEST" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YOUR_ACCOUNT_HAS_BEEN_UPDATED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="YOUR_POST_IS_NOT_DELETED_BECAUSE_OF" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ARE_YOU_SURE_TO_DLETE" xml:space="preserve">
+    <value>আপনি এই পোস্ট মুছে ফেলার জন্য নিশ্চিত?</value>
+  </data>
+  <data name="MessageAffiliateProgram" xml:space="preserve">
+    <value>অনুমোদন অনুষ্ঠান</value>
+  </data>
+  <data name="MessageBilling" xml:space="preserve">
+    <value>বিলিং</value>
+  </data>
+  <data name="MessageFeaturedAds" xml:space="preserve">
+    <value>বৈশিষ্ট্যযুক্ত বিজ্ঞাপন</value>
+  </data>
+  <data name="MessageGeneral" xml:space="preserve">
+    <value>সাধারণ</value>
+  </data>
+  <data name="MessageTechnical" xml:space="preserve">
+    <value>কারিগরী</value>
+  </data>
+  <data name="StateBarishal" xml:space="preserve">
+    <value>বরিশাল</value>
+  </data>
+  <data name="StateChittagong" xml:space="preserve">
+    <value>চট্টগ্রাম </value>
+  </data>
+  <data name="StateDhaka" xml:space="preserve">
+    <value>ঢাকা </value>
+  </data>
+  <data name="StateKhulna" xml:space="preserve">
+    <value>খুলনা</value>
+  </data>
+  <data name="StateMaimenshing" xml:space="preserve">
+    <value>ময়মনসিংহ</value>
+  </data>
+  <data name="StateRajshahi" xml:space="preserve">
+    <value>রাজশাহী</value>
+  </data>
+  <data name="StateRangpur" xml:space="preserve">
+    <value>রংপুর</value>
+  </data>
+  <data name="StateSylhet" xml:space="preserve">
+    <value>সিলেট</value>
+  </data>
+  <data name="DDL_Item_MonthlyPayment" xml:space="preserve">
+    <value>মাসিক পেমেন্ট</value>
+  </data>
+  <data name="DDL_Item_YearlyPayment" xml:space="preserve">
+    <value>বার্ষিক পেমেন্ট</value>
+  </data>
+  <data name="EnumViewAllAdsPage" xml:space="preserve">
+    <value>সব বিজ্ঞাপন পাতা দেখুন</value>
+  </data>
+  <data name="NewPostH3PostAdSpace" xml:space="preserve">
+    <value>নতুন বিজ্ঞাপন স্থান</value>
+  </data>
+  <data name="NewPostLabelCompanyName" xml:space="preserve">
+    <value>কোম্পানির নাম:</value>
+  </data>
+  <data name="NewPostLabelWebsiteUrl" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MenuNewAdSpace" xml:space="preserve">
+    <value>নতুন বিজ্ঞাপন স্থান যোগ করুন</value>
+  </data>
+  <data name="CLIENT_NAME_REQUIRED" xml:space="preserve">
+    <value>ক্লায়েন্টের নাম আবশ্যক।</value>
+  </data>
+  <data name="TITLE_IS_REQUIRED" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ViewBagTitleImageDownload" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="MenuImageFixing" xml:space="preserve">
+    <value>ছবি ডাউনলোড করুন</value>
+  </data>
+  <data name="YourPostHasBeenUpdated" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TotalPremiumPost" xml:space="preserve">
+    <value>Total Premium Posts</value>
+  </data>
+  <data name="SubscriptionPeriod" xml:space="preserve">
+    <value>Subscription Cycle:</value>
+  </data>
+  <data name="MenuHelp" xml:space="preserve">
+    <value>সাহায্য </value>
+  </data>
+  <data name="AdvertisementDetails" xml:space="preserve">
+    <value>বিজ্ঞাপনের বিস্তারিত</value>
+  </data>
+  <data name="CategoryField" xml:space="preserve">
+    <value>ক্যাটাগরি</value>
+  </data>
+  <data name="ClientNameField" xml:space="preserve">
+    <value>গ্রাহকের নাম</value>
+  </data>
+  <data name="EmailField" xml:space="preserve">
+    <value>ইমেইল</value>
+  </data>
+  <data name="PasswordField" xml:space="preserve">
+    <value>পাসওয়ার্ড</value>
+  </data>
+  <data name="PhoneField" xml:space="preserve">
+    <value>ফোন নম্বর</value>
+  </data>
+  <data name="PriceField" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RePasswordField" xml:space="preserve">
+    <value>পুনরায় পাসওয়ার্ড</value>
+  </data>
+  <data name="SubCategoryField" xml:space="preserve">
+    <value>সাব-ক্যাটাগরি</value>
+  </data>
+  <data name="TITLEField" xml:space="preserve">
+    <value>শিরোনাম</value>
+  </data>
+  <data name="LoginButtonReset" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="THANKS" xml:space="preserve">
+    <value>Thanks!</value>
+  </data>
+  <data name="AAccountDetail" xml:space="preserve">
+    <value>একাউন্টের বিস্তারিত</value>
+  </data>
+  <data name="MarketSearchResultAds" xml:space="preserve">
+    <value>অনুসন্ধান ফলাফল</value>
+  </data>
+  <data name="LayoutFooterResource" xml:space="preserve">
+    <value>সাহায্য নথি</value>
+  </data>
+  <data name="PortalLowerCaseURL" xml:space="preserve">
+    <value>deshi hut bazar .com</value>
+  </data>
+  <data name="ViewBagTitleResource" xml:space="preserve">
+    <value>সাহায্য নথি</value>
+  </data>
+  <data name="MessageBuyAdSpace" xml:space="preserve">
+    <value>Buy Ad Space</value>
+  </data>
+  <data name="Portfolio" xml:space="preserve">
+    <value>Portfolio</value>
+  </data>
+  <data name="EnterYourEmailAddress" xml:space="preserve">
+    <value>Please enter your Email</value>
+  </data>
+  <data name="VisitorEmailSubmit" xml:space="preserve">
+    <value>জমা দিন</value>
+  </data>
+  <data name="EnterYourPhoneNumber" xml:space="preserve">
+    <value>Enter your Phone number</value>
+  </data>
+  <data name="AMyPostVisitors" xml:space="preserve">
+    <value>Visited Posts</value>
+  </data>
+  <data name="AMyPostContactRequests" xml:space="preserve">
+    <value>Contact Requests</value>
+  </data>
+  <data name="UrlHomeCarosalImage1" xml:space="preserve">
+    <value>~/Images/Home/Bangla/ACTV-SELEASY-1.png</value>
+  </data>
+  <data name="UrlHomeCarosalImage2" xml:space="preserve">
+    <value>~/Images/Home/Bangla/ACTV-SELEASY-2.png</value>
+  </data>
+  <data name="UrlHomeCarosalImage3" xml:space="preserve">
+    <value>~/Images/Home/Bangla/ACTV-SELEASY-3.png</value>
+  </data>
+  <data name="ContactRequestInfo" xml:space="preserve">
+    <value>দয়া করে আপনার ফোন নম্বর আর ইমেইল আমাদের সাথে শেয়ার করুন, যাতে করে যোগ্য বিজ্ঞাপনাতা আপনাকে একটা ভাল ডিল দিতে পারে কারণ আপনি এই ধরণের পণ্য পছন্দ করেছেন।</value>
+  </data>
+  <data name="MenuPostFreeService" xml:space="preserve">
+    <value>আপনার পরিষেবা যোগ করুন</value>
+  </data>
+  <data name="MenuPostFreeProduct" xml:space="preserve">
+    <value>আপনার পণ্য যোগ করুন</value>
+  </data>
+  <data name="MenuBusinessIntelligence" xml:space="preserve">
+    <value>Analytics</value>
+  </data>
+  <data name="MenuMyFabiaServices" xml:space="preserve">
+    <value>My Fabia Services</value>
+  </data>
+  <data name="DONATE" xml:space="preserve">
+    <value>DONATE</value>
+  </data>
+  <data name="ViewBagTitleDonate" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Close1" xml:space="preserve">
+    <value>বন্ধ করুন </value>
+  </data>
+  <data name="BankInformation" xml:space="preserve">
+    <value>ব্যাংক তথ্য</value>
+  </data>
+  <data name="AccountHolderName" xml:space="preserve">
+    <value>অ্যাকাউন্ট হোল্ডারের নাম</value>
+  </data>
+  <data name="BankName" xml:space="preserve">
+    <value>ব্যাঙ্কের নাম</value>
+  </data>
+  <data name="BranchName" xml:space="preserve">
+    <value>শাখার নাম</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>অ্যাকাউন্ট নম্বর</value>
+  </data>
+  <data name="ACHolderContactNumber" xml:space="preserve">
+    <value>অ্যাকাউন্ট হোল্ডারের যোগাযোগের নম্বর</value>
+  </data>
+  <data name="BkashAccountNumber" xml:space="preserve">
+    <value>Bkash অ্যাকাউন্ট নম্বর</value>
+  </data>
+  <data name="UploadTradeLicenseFile" xml:space="preserve">
+    <value>ট্রেড লাইসেন্স ফাইল আপলোড করুন</value>
+  </data>
+  <data name="UploadTradeLicenceMessageTitle" xml:space="preserve">
+    <value>অনুগ্রহ করে আপনার ট্রেড লাইসেন্স ফাইলটির একটি ছবি ক্যামেরা দিয়ে তুলে এখানে আপলোড করুন। ফাইলটি অবশ্যই .jpg ফরম্যাটে হতে হবে।</value>
+  </data>
+  <data name="UploadFile" xml:space="preserve">
+    <value>ফাইল আপলোড করুন</value>
+  </data>
+  <data name="BDT3" xml:space="preserve">
+    <value>টাকা</value>
+  </data>
+  <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
+    <value>জরুুরী বিক্রি নয়</value>
+  </data>
+  <data name="NumberEight" xml:space="preserve">
+    <value>৮</value>
+  </data>
+  <data name="NumberFive" xml:space="preserve">
+    <value>৫</value>
+  </data>
+  <data name="NumberFour" xml:space="preserve">
+    <value>৪</value>
+  </data>
+  <data name="NumberNine" xml:space="preserve">
+    <value>৯</value>
+  </data>
+  <data name="NumberOne" xml:space="preserve">
+    <value>১</value>
+  </data>
+  <data name="NumberSeven" xml:space="preserve">
+    <value>৭</value>
+  </data>
+  <data name="NumberSix" xml:space="preserve">
+    <value>৬</value>
+  </data>
+  <data name="NumberThree" xml:space="preserve">
+    <value>৩</value>
+  </data>
+  <data name="NumberTwo" xml:space="preserve">
+    <value>২</value>
+  </data>
+  <data name="NumberZero" xml:space="preserve">
+    <value>০</value>
+  </data>
+  <data name="SearchPriceEndswith1" xml:space="preserve">
+    <value>মূূল্য (সর্বোচ্চ)</value>
+  </data>
+  <data name="SearchPriceStartsFrom1" xml:space="preserve">
+    <value>মূল্য (সর্বনিম্ন)</value>
+  </data>
+  <data name="SearchUrgentDeal1" xml:space="preserve">
+    <value>জরুরি বিক্রয়</value>
+  </data>
+  <data name="TemplateAViewMore1" xml:space="preserve">
+    <value>আরও দেখুন</value>
+  </data>
+  <data name="TotalFreePosts" xml:space="preserve">
+    <value>Total Free Posts</value>
+  </data>
+  <data name="EditPostButtonSUBMITAD" xml:space="preserve">
+    <value>আপডেট করুন</value>
+  </data>
+</root>

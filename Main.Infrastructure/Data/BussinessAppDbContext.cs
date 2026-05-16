@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Main.Common;
+
 using Main.Model;
+using Main.Common.EnumClasses;
 
 namespace Data;
 
