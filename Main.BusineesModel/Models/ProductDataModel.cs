@@ -32,7 +32,7 @@ public class ProductDataModel : BaseDataModel
 
     public string? SearchTag { get; set; }
 
-    public int? UserID { get; set; }
+    public int UserID { get; set; } 
 
     public string? CategoryText { get; set; }
 

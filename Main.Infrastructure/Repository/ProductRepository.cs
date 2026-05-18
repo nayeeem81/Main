@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Entity.Model;
+﻿using BusinessModel;
 using Data;
+using Entity.Model;
 using IRepository;
+
+using Main.Common.Enums;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
@@ -20,9 +24,33 @@ public class ProductRepository : IProductRepository
         return result > 0;
     }
 
-    public async Task<List<Product>> GetAllProducts()
+    private void MapProductEntityToProductViewModelListModel ( Product postEntity,ProductDataModel productViewModel )
     {
-        return await _Context.Products.ToListAsync();
+        productViewModel.ProductID = postEntity.ProductID;
+        productViewModel.CategoryID = postEntity.CategoryID;
+        productViewModel.SubCategoryID = postEntity.SubCategoryID;
+        productViewModel.ProductName = postEntity.ProductName;
+        productViewModel.UnitPrice = postEntity.Price;
+        productViewModel.Discount = postEntity.Discount;
+    }
+
+    public async Task<List<ProductDataModel>> GetAllProducts()
+    {
+        var listProducts = await _Context.Products.ToListAsync();
+
+        List<ProductDataModel> objListPostVM = new List<ProductDataModel>();
+
+        ProductDataModel objModel;
+
+        foreach ( Product item in listProducts.ToList ( ) )
+        {
+            objModel = new ProductDataModel ( );
+
+            MapProductEntityToProductViewModelListModel ( item,objModel );
+
+            objListPostVM.Add ( objModel );
+        }
+        return objListPostVM;
     }
 
     public async Task<bool> DeleteProduct(int productId)
@@ -52,24 +80,121 @@ public class ProductRepository : IProductRepository
         return result > 0;
     }
 
-    public async Task<Product> GetProductByProductID(int postId)
+    public async Task<ProductDataModel> GetProductByProductID(int postId)
     {
-        var product = await _Context.Products.SingleAsync<Product>(a => a.ProductID == postId);
-        return product;
+        var productEntity = await _Context.Products.SingleAsync<Product>
+             (a => a.ProductID == postId);
+
+        List<ProductFileDataModel> objListFiles = new List<ProductFileDataModel>();
+
+        if ( productEntity.ListImageFiles != null && productEntity.ListImageFiles.Count > 0 )
+        {
+            productEntity.ListImageFiles.ToList ( ).ForEach ( fileEntity =>
+            {
+                ProductFileDataModel objFileDM = new ProductFileDataModel()
+                {
+                    ProductImageFileID = fileEntity.ProductImageFileID,
+                    ImageFileContent = fileEntity.ImageFileContent,
+                    ProductID = fileEntity.ProductID
+                };
+                objListFiles.Add ( objFileDM );
+            } );
+        }
+
+
+        List<ProductCommentDataModel> objListComments = new List<ProductCommentDataModel>();
+
+        if ( productEntity.ListComments != null && productEntity.ListComments.Count > 0 )
+        {
+            productEntity.ListComments.ToList ( ).ForEach ( commentEntity =>
+            {
+                ProductCommentDataModel objCommentDM = new ProductCommentDataModel()
+                {
+                    ProductCommentID = commentEntity.ProductCommentID,
+                    Comment = commentEntity.Comment,
+                    ProductID = commentEntity.ProductID
+                };
+                objListComments.Add ( objCommentDM );
+            } );
+        }
+
+        ProductDataModel objModel = new ProductDataModel()
+        {
+            ProductID = productEntity.ProductID,
+            ProductName = productEntity.ProductName,
+            Discount = productEntity.Discount,
+            SaleCommission = productEntity.SaleCommission,
+            SearchTag = productEntity.SearchTag,
+            PostType = (EnumPostType)productEntity.PostType,
+            Description = productEntity.Description,
+            CategoryID = productEntity.CategoryID,
+            SubCategoryID = productEntity.SubCategoryID,
+            UnitPrice = productEntity.Price,
+            UserID = productEntity.UserID,
+            ListComments = objListComments,
+            ImageFiles = objListFiles
+        };
+
+        return objModel;
     }
 
-    public async Task<bool> SaveNewProduct(Product productObject, List<ProductImageFile> objListFiles)
+    public async Task<bool> SaveNewProduct(ProductDataModel objPostDM, List<ProductFileDataModel> objListFiles)
     {
-        if(productObject != null)
-        {
-            productObject.ListImageFiles = objListFiles;
-            productObject.ListComments = new List<ProductComment>();
+        Product objProductEntity = MapProductViweModelToProductEntity(objPostDM);
 
-            _Context.Products.Add(productObject);
+        objProductEntity.CreateBaseData ( objPostDM.ModelBase );
+
+        objProductEntity.UserID = objPostDM.UserID;
+        objProductEntity.User = null;
+
+        List <ProductImageFile> objListFileEntity = MapProductViweModelToProductFileEntity(objPostDM);
+
+        if (objPostDM != null)
+        {
+            objProductEntity.ListImageFiles = objListFileEntity;
+            objProductEntity.ListComments = new List<ProductComment>();
+
+            _Context.Products.Add( objProductEntity );
         }
 
         int result = await _Context.SaveChangesAsync();
+
         return result > 0;
+    }
+
+    private Product MapProductViweModelToProductEntity ( ProductDataModel productDM )
+    {
+        return new Product ( )
+        {
+            ProductName = productDM.ProductName,
+            SearchTag = 
+                string.IsNullOrWhiteSpace( productDM.SearchTag ) 
+                    ? null 
+                    : productDM.SearchTag,
+
+            Price = productDM.UnitPrice,
+            Discount = productDM.Discount,
+            SaleCommission = productDM.SaleCommission,
+            CategoryID = productDM.CategoryID,
+            SubCategoryID = productDM.SubCategoryID,
+            Description = 
+                string.IsNullOrWhiteSpace ( productDM.Description) 
+                ? null 
+                : productDM.Description,
+
+            PostType = EnumPostType.Product
+        };
+    }
+
+    private List<ProductImageFile> MapProductViweModelToProductFileEntity 
+        ( ProductDataModel productFileDM )
+    {
+        List<ProductImageFile> objListFileEntity = new List<ProductImageFile>();
+        productFileDM.ImageFiles.ForEach ( fileVM =>
+        {
+            objListFileEntity.Add ( new ProductImageFile ( fileVM.ImageFileContent ) );
+        } );
+        return objListFileEntity;
     }
 }
 

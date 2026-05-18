@@ -1,13 +1,9 @@
 ﻿using BusinessModel;
-
+using Entity.Model;
 using IRepository;
-
 using IService;                   
-
-using Main.Common;
 using Main.Common.Enums;
 using Main.Common.Model;
-using Main.Model;
 
 namespace Main.Service;
 
@@ -74,7 +70,7 @@ namespace Main.Service;
 
         }
 
-        public async Task<int> CreateNewPanels (
+        public async Task<bool> CreateNewPanels (
 
             LocalModel model,
 
@@ -86,199 +82,211 @@ namespace Main.Service;
 
             )
         {
-
-            PagePanel panelEntity = new PagePanel();
-
-            panelEntity.PanelTemplate = ( EnumPanelTemplate ) model.TemplateTypeID;
-
-            panelEntity.PanelTitle = model.PanelTitle;
-
-            panelEntity.CreateBaseData ( modelBase );
+             return await _pageRepository.CreateNewContent( 
+                 model,
+                 enumCompany,
+                 listUserSelectedPosts,
+                 modelBase );
 
 
-            listUserSelectedPosts.ForEach ( obj => {
+       
+        //PagePanel panelEntity = new PagePanel();
 
-                PanelPost panelPost = new PanelPost ( obj.EnumPostType, obj.RootID, obj.PageID )
-                {
+        //    panelEntity.PanelTemplate = ( EnumPanelTemplate ) model.TemplateTypeID;
 
-                    ImageFileContent = obj.ImageFileContent,
+        //    panelEntity.PanelTitle = model.PanelTitle;
 
-                    Price = obj.Price,
-
-                    PostTitle = obj.PostTitle,
-
-                    PostDescription = obj.PostDescription
-
-                };
+        //    panelEntity.CreateBaseData ( modelBase );
 
 
-                panelPost.CreateBaseData ( modelBase );  
+        //    listUserSelectedPosts.ForEach ( obj => {
 
-                panelEntity.CreatePanelPost ( panelPost );
+        //        PanelPost panelPost = new PanelPost ( obj.EnumPostType, obj.RootID, obj.PageID )
+        //        {
 
-            } );
+        //            ImageFileContent = obj.ImageFileContent,
+
+        //            Price = obj.Price,
+
+        //            PostTitle = obj.PostTitle,
+
+        //            PostDescription = obj.PostDescription
+
+        //        };
 
 
-            Model.Page objPageEntity =  await _pageRepository.GetSinglePage ( model.PageID );
+        //        panelPost.CreateBaseData ( modelBase );  
+
+        //        panelEntity.CreatePanelPost ( panelPost );
+
+        //    } );
+
+
+        //    Model.Page objPageEntity =  await _pageRepository.GetSinglePage ( model.PageID );
 
             
-            PageContent objPageCotentEntity = objPageEntity.GetNewOrExistingPageContent( objPageEntity.PageID, modelBase);
+        //    PageContent objPageCotentEntity = objPageEntity.GetNewOrExistingPageContent( objPageEntity.PageID, modelBase);
     
             
-            objPageCotentEntity.Page = null;
+        //    objPageCotentEntity.Page = null;
 
             
-            objPageCotentEntity.CreatePagePanel ( panelEntity );
+        //    objPageCotentEntity.CreatePagePanel ( panelEntity );
 
 
-            objPageEntity.SavePageContent ( objPageCotentEntity );
+        //    objPageEntity.SavePageContent ( objPageCotentEntity );
 
 
-            bool result = await _pageRepository.CreateNewContent( objPageEntity );
+        //    bool result = await _pageRepository.CreateNewContent( objPageEntity );
 
 
-            int newPanelID = objPageEntity.ListPageContents
-                                              .Last<PageContent>()
-                                              .ListPagePanels
-                                              .Last<PagePanel>().PanelID;
+        //    int newPanelID = objPageEntity.ListPageContents
+        //                                      .Last<PageContent>()
+        //                                      .ListPagePanels
+        //                                      .Last<PagePanel>().PanelID;
 
 
-            return newPanelID;
+        //    return newPanelID;
 
     }
 
-    public async Task<List<PanelPostDataModel>> GetSelectAdminPosts ( EnumCompanyName company )
-        {
+    
 
-            var list = await _adminPostsImageRepository.GetSelectAdminPosts(company);
+    //public async Task<List<PanelPostDataModel>> GetSelectAdminPosts ( EnumCompanyName company )
+    //    {
 
-
-            if ( list == null )
-            {
-                return new List<PanelPostDataModel> ( );
-            }
+    //        var list = await _adminPostsImageRepository.GetSelectAdminPosts(company);
 
 
-            List<PanelPostDataModel> listSelectPanelPostVM = new List<PanelPostDataModel>();
+    //        if ( list == null )
+    //        {
+    //            return new List<PanelPostDataModel> ( );
+    //        }
 
 
-            PanelPostDataModel objVM;
+    //        List<PanelPostDataModel> listSelectPanelPostVM = new List<PanelPostDataModel>();
 
 
-            list.ForEach ( entity => {
+    //        PanelPostDataModel objVM;
 
-                entity.ListAdminImageFiles.ToList ( ).ForEach ( file =>
-                {
-                    objVM = new PanelPostDataModel ( );
 
-                    objVM.RootID = entity.AdminPostID;
-                    objVM.EnumPostType = entity.PostType;
-                    objVM.PostTitle = entity.Title;
-                    objVM.ImageFileContent = file.ImageFileContent;
+    //        list.ForEach ( entity => {
 
-                    listSelectPanelPostVM.Add ( objVM );
-                } );
+    //            entity.ListAdminImageFiles.ToList ( ).ForEach ( file =>
+    //            {
+    //                objVM = new PanelPostDataModel ( );
 
-            } );
+    //                objVM.RootID = entity.AdminPostID;
+    //                objVM.EnumPostType = entity.PostType;
+    //                objVM.PostTitle = entity.Title;
+    //                objVM.ImageFileContent = file.ImageFileContent;
 
-            return listSelectPanelPostVM.OrderBy ( a => a.PostTitle ).ToList ( );
+    //                listSelectPanelPostVM.Add ( objVM );
+    //            } );
 
-        }
+    //        } );
+
+    //        return listSelectPanelPostVM.OrderBy ( a => a.PostTitle ).ToList ( );
+
+    //    }
 
         public async Task<PagePanelDataModel> GetPreviewPanel ( int panelId )
         {
-            PagePanel panelEntity = await _pageRepository.GetContentPanel(panelId);
-            
-            if ( panelEntity != null )
-            {
-                PagePanelDataModel panelVM = new PagePanelDataModel ( );
-                panelVM.PanelID = panelEntity.PanelID;
-                panelVM.PanelTemplate = panelEntity.PanelTemplate;
+            PagePanelDataModel panelDM = await _pageRepository.GetContentPanel(panelId);
 
-                PanelPostDataModel postVM;
+        //if ( panelDM != null )
+        //{
+        //    PagePanelViewModel panelVM = new PagePanelViewModel ( );
+        //    panelVM.PanelID = panelDM.PanelID;
+        //    panelVM.PanelTemplate = panelDM.PanelTemplate;
 
-                panelEntity.ListPanelPosts.ToList ( ).ForEach ( post =>
-                {
-                    postVM = new PanelPostDataModel ( );
-                    postVM.PanelPostID = post.PanelPostID;
-                    postVM.PostTitle = (string)post.PostTitle;  
-                    postVM.Price = post.Price;
-                    postVM.PostDescription = (string)post.PostDescription;
-                    postVM.ImageFileContent = post.ImageFileContent;
-                    postVM.ImageOrderID = postVM.ImageOrderID;
+        //    PanelPostDataModel postVM;
 
-                    panelVM.CreatePanelPost ( postVM );
+        //    panelDM.ListPanelPosts.ToList ( ).ForEach ( post =>
+        //    {
+        //        postVM = new PanelPostDataModel ( );
+        //        postVM.PanelPostID = post.PanelPostID;
+        //        postVM.PostTitle = (string)post.PostTitle;  
+        //        postVM.Price = post.Price;
+        //        postVM.PostDescription = (string)post.PostDescription;
+        //        postVM.ImageFileContent = post.ImageFileContent;
+        //        postVM.ImageOrderID = postVM.ImageOrderID;
 
-                } );
+        //        panelVM.CreatePanelPost ( postVM );
 
-                return panelVM;
+        //    } );
 
-            }
+        //    return panelVM;
 
-            return new PagePanelDataModel ( );
+        //}
+
+            return panelDM;
+            //return new PagePanelDataModel ( );
         }
 
         public async Task<List<PagePanelDataModel>> GetPanelList ( int pageID )
         {
 
-            Model.Page paeEntity = await _pageRepository.GetSinglePage(pageID);
+            var page = await _pageRepository.GetSinglePage(pageID);
+
+            return page.ListPagePanels;
 
 
-            if ( paeEntity != null )
-            {
-                var pageContent = paeEntity.ListPageContents.First<PageContent>();
+            //if ( paeEntity != null )
+            //{
+            //    var pageContent = paeEntity.ListPageContents.First<PageContent>();
 
-                var listPanels = pageContent.ListPagePanels.ToList();
+            //    var listPanels = pageContent.ListPagePanels.ToList();
 
-                List<PagePanelDataModel> panelListVM = new List<PagePanelDataModel>();
+            //    List<PagePanelDataModel> panelListVM = new List<PagePanelDataModel>();
 
-                PagePanelDataModel panelVM;
+            //    PagePanelDataModel panelVM;
 
-                PanelPostDataModel postVM;
-
-
-                listPanels.ForEach ( panel => 
-                { 
-
-                    panelVM = new PagePanelDataModel ( );
+            //    PanelPostDataModel postVM;
 
 
-                    panelVM.PanelID = panel.PanelID;
+            //    listPanels.ForEach ( panel => 
+            //    { 
 
-                    panelVM.PanelTemplate = panel.PanelTemplate;
+            //        panelVM = new PagePanelDataModel ( );
+
+
+            //        panelVM.PanelID = panel.PanelID;
+
+            //        panelVM.PanelTemplate = panel.PanelTemplate;
                 
-                    panelVM.PanelTitle = panel.PanelTitle;
+            //        panelVM.PanelTitle = panel.PanelTitle;
 
                     
-                    panel.ListPanelPosts.ToList ( ).ForEach ( post =>
-                    {
+            //        panel.ListPanelPosts.ToList ( ).ForEach ( post =>
+            //        {
 
-                        postVM = new PanelPostDataModel ( );
+            //            postVM = new PanelPostDataModel ( );
 
-                        postVM.PanelPostID = post.PanelPostID;
+            //            postVM.PanelPostID = post.PanelPostID;
 
-                        postVM.PostTitle = ( string ) post.PostTitle;
+            //            postVM.PostTitle = ( string ) post.PostTitle;
 
-                        postVM.Price = post.Price;
+            //            postVM.Price = post.Price;
 
-                        postVM.PostDescription = ( string ) post.PostDescription;
+            //            postVM.PostDescription = ( string ) post.PostDescription;
 
-                        postVM.ImageFileContent = post.ImageFileContent;
+            //            postVM.ImageFileContent = post.ImageFileContent;
 
-                        postVM.ImageOrderID = post.PostOrder;
+            //            postVM.ImageOrderID = post.PostOrder;
 
-                        panelVM.CreatePanelPost ( postVM );
+            //            panelVM.CreatePanelPost ( postVM );
 
-                    } );
+            //        } );
 
-                    panelListVM.Add ( panelVM );
+            //        panelListVM.Add ( panelVM );
 
-                } );
+            //    } );
 
-               return panelListVM;
-            }
+               //return panelListVM;
+            //}
 
-            return new List<PagePanelDataModel> ( );
+            //return new List<PagePanelDataModel> ( );
         }
 
     }

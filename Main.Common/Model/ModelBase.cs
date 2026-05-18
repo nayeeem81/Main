@@ -90,7 +90,7 @@ public class LocalModel
     {
     }
 
-    public string? PanelTitle
+    public string PanelTitle
     {
         get; set;
     }

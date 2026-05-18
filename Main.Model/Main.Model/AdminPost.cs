@@ -38,7 +38,7 @@ public class AdminPost : BaseEntity
     public int UserID { get; set; } 
 
     [ForeignKey("UserID")]
-    public virtual User User { get; set; }
+    public virtual User? User { get; set; }
 
     public virtual ICollection<AdminImageFile> ListAdminImageFiles { get; set; } = new HashSet<AdminImageFile>();
 

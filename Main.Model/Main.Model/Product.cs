@@ -19,7 +19,7 @@ public class Product : BaseEntity
     public int UserID { get; set; }
 
     [ForeignKey("UserID")]
-    public virtual User User { get; set; }
+    public virtual User? User { get; set; }
 
     [Required]
     public string ProductName { get; set; }

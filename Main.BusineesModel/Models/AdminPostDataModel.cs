@@ -32,7 +32,4 @@ public class AdminPostDataModel : BaseDataModel
     public int PostTypeID { get; set; }
 
     public string? EnumAdminPostTypeDescription { get; set; } 
-
-    public ModelBase ModelBase { get; set; }
-
 }

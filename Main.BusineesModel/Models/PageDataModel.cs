@@ -28,16 +28,16 @@ namespace BusinessModel
 
         public List<PagePanelDataModel> ListPagePanels { get; set; }
 
-        public void CreatePageContent(PagePanelDataModel pageContentVm)
+        public void CreatePageContent(PagePanelDataModel pageContentDM)
         {
             if (ListPagePanels == null)
             {
                 ListPagePanels = new List<PagePanelDataModel>();
             }
 
-            if (pageContentVm != null)
+            if (pageContentDM != null)
             {
-                ListPagePanels.Add(pageContentVm);
+                ListPagePanels.Add(pageContentDM);
             }
         }
     }

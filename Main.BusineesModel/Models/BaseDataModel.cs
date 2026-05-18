@@ -10,6 +10,8 @@ public class BaseDataModel
         {
             Currency = ( EnumCurrency? )  AppSettings.Current
                          .EnumCurrency;
+
+            ModelBase = new ModelBase ( );
         }
 
         public string? PageName { get; set; } = string.Empty;

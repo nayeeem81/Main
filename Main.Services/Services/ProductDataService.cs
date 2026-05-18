@@ -1,8 +1,14 @@
-﻿using Main.Common;
-using IService;
-using Main.Model;
+﻿using BusinessModel;
+
+using Entity.Model;
+
 using IRepository;
-using BusinessModel;
+
+using IService;
+
+using Main.Common;
+using Main.Common.Enums;
+using Main.Model;
 
 namespace Main.Service;
 
@@ -36,22 +42,43 @@ public class ProductDataService : IProductDataService
         return objListPostVM;
     }
 
-    public async Task<bool> SaveNewProduct(ProductDataModel objPostVm)
+    public async Task<bool> SaveNewProduct(ProductDataModel objPostDM)
     {
-        Product objProductEntity = _ProductMappingService.MapProductViweModelToProductEntity(objPostVm);
+        Product objProductEntity = MapProductViweModelToProductEntity(objPostDM);
 
-        objProductEntity.CreateBaseData(objPostVm.ModelBase);
+        objProductEntity.CreateBaseData(objPostDM.ModelBase);
 
-        objProductEntity.UserID = objPostVm.UserID.Value;
+        objProductEntity.UserID = objPostDM.UserID;
         objProductEntity.User = null;
 
-        List <ProductImageFile> objListFileEntity = _ProductMappingService.MapProductViweModelToProductFileEntity(objPostVm);
+        List <ProductImageFile> objListFileEntity = _ProductMappingService.MapProductViweModelToProductFileEntity(objPostDM);
 
         var result = await _ProductRepository.SaveNewProduct(objProductEntity, objListFileEntity);
 
         return result;
     }
 
+    
+
+    private Product MapProductViweModelToProductEntity ( ProductDataModel productDM )
+    {
+        return new Product ( )
+        {
+            ProductName = productDM.ProductName,
+            SearchTag = string.IsNullOrWhiteSpace ( productDM.SearchTag ) 
+                                ? null 
+                                : productDM.SearchTag,
+            Price = productDM.UnitPrice,
+            Discount = productDM.Discount,
+            SaleCommission = productDM.SaleCommission,
+            CategoryID = productDM.CategoryID,
+            SubCategoryID = productDM.SubCategoryID,
+            Description = string.IsNullOrWhiteSpace ( productDM.Description ) 
+                          ? null 
+                          : productDM.Description,
+            PostType = EnumPostType.Product
+        };
+    }
 
     public async Task<ProductDataModel> GetProductForEditProductID(int productID)
     {
