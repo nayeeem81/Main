@@ -1,0 +1,136 @@
+﻿To push changes recursively in Git, typically when working with 
+submodules, you use the following 
+
+command:git push --recurse-submodules=on-demand
+
+This command ensures that any local changes in your submodules are 
+pushed to their respective remote repositories before the main 
+project (superproject) is pushed. Recursive Push OptionsYou can 
+adjust how Git handles recursive pushes by changing the value of 
+the 
+
+--recurse-submodules flag:on-demand
+
+Git will look for changes in all submodules and attempt to push them 
+one by one before pushing the superproject.check: 
+
+This is a safety feature that makes the push fail if any of your 
+submodules have local commits that haven't been pushed to their 
+remotes yet.
+
+only: Used since Git version 2.12, this pushes only the submodule 
+changes and skips pushing the superproject entirely.
+
+Alternative: Using foreachFor more complex scenarios where you need 
+to run specific push commands across all submodules (including nested 
+ones), you can use the Git submodule foreach command:
+
+git submodule 
+foreach --recursive 'git push origin main'
+
+Other Recursive CommandsWhile "push" specifically refers to sending 
+commits to a remote, recursion is common in other Git tasks:
+
+Cloning: To clone a repo and all its nested submodules at once, use 
+the Git clone --recursive command.
+
+Updating: To bring all submodules up to date, you can run git 
+submodule as discussed on GitHub.
+
+update --init --recursive 
+
+Adding Files: To stage all changes in subdirectories, as 
+detailed in the Graphite guide.
+
+git add . 
+
+
+Syncing: If submodule URLs have changed, use git submodule 
+
+sync --recursive 
+
+to update them throughout your project. 
+
+Helpful TipsPulling: Since Git 2.14, you can use 
+
+git pull --recurse-submodules 
+
+to automatically update submodules after pulling changes to the main 
+repository.
+
+Automation: If you frequently work with submodules, you can find tips 
+on Medium or Stack Overflow about setting up aliases to simplify these 
+long commands.
+
+
+
+#########################################################################
+
+When we create a new branch fronm visual studeio, how dowe commit the 
+entire solution foder to the new brach.? Command and other Visua Stdio 
+alternatives:
+
+To commit and push an entire solution folder to a new branch, you must 
+first create the branch, stage all files, commit them, and then push to
+the remote repository. Here is how to do it using both the command line 
+and Visual Studio's built-in interface.Method 1: The Command Line (Most
+Reliable)Run these commands from your solution's root folder:
+
+//////////
+git checkout -b DesignChangeBranchTemp
+git add .
+git commit -m "Initial commit of entire solution folder to new branch: DesignChangeBranchTemp"
+git push -u origin DesignChangeBranchTemp
+//////////
+
+1. Create and switch to your new branch
+git checkout -b my-new-branch
+
+2. Stage every file and folder in the solution
+git add .
+
+3. Commit the staged changes
+git commit -m "Initial commit of entire solution folder to new branch"
+
+4. Push the branch and set the remote tracking
+git push -u origin my-new-branch
+
+
+
+# Method 2: Visual Studio GUI (No Code):
+
+If you prefer using the Visual Studio interface, follow these steps:
+
+Create the Branch: 
+
+Click the Git branch dropdown in the bottom-right 
+corner \(\rightarrow \) Select New Branch \(\rightarrow \) Name it and 
+click Create.
+
+Open Git Changes: Go to the top menu \(\rightarrow \) Select Git 
+\(\rightarrow \) Click Git Changes to open the side panel.
+
+Stage All Files: In the Git Changes panel, click the + (Plus) icon 
+next to the "Changes" label to stage the entire folder.Commit: Type a 
+message in the text box \(\rightarrow \) Click the Commit Staged button.
+
+Push: Click the Up Arrow (Push) icon at the top of the Git Changes window 
+to send the branch to GitHub/Azure DevOps.
+
+Troubleshooting: Files Not Showing Up?If certain folders or projects in
+your solution are missing from the Git Changes window, check your 
+.gitignore file. 
+
+Visual Studio automatically generates a .gitignore file that might be 
+hiding your build outputs (bin/, obj/) or specific user settings.
+If you want to force Git to track a hidden file, use the command line:
+
+git add -f path/to/file.config
+
+If you run into any errors during this process, let me know:
+
+What version of Visual Studio are you using?
+What error message or unexpected behavior are you seeing?
+Are there subprojects or submodules inside this solution folder?
+
+
