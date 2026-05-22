@@ -4,7 +4,7 @@ using BusinessModel;
 
 namespace Main.Service;
 
-public class AdminPostDataService: IAdminPostDataService
+public class AdminPostDataService: ICommandAdminPostService
 {
     private readonly IAdminPostRepository _AdminPostRepository;
 

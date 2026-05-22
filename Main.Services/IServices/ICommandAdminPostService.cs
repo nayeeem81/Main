@@ -2,7 +2,7 @@
 
 namespace IService;
 
-public interface IAdminPostDataService
+public interface ICommandAdminPostService
 {
     Task<List<AdminPostDataModel>> GetAllAdminPosts ( );
 

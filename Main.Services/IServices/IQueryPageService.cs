@@ -1,9 +1,9 @@
 ﻿using BusinessModel;
 using Main.Common.Enums;
 
-namespace IService;
+namespace Main.Services.IServices;
 
-public interface IPageDataService
+public interface IQueryPageService
 {
     Task<List<PageDataModel>> GetAllPages(EnumCompanyName company);
 }

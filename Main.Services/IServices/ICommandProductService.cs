@@ -2,13 +2,9 @@
 
 namespace IService;
 
-public interface IProductDataService
+public interface ICommandProductService
 {
-    Task<List<ProductDataModel>> GetAllProducts();
-
     Task<bool> SaveNewProduct(ProductDataModel objPostDm );
-
-    Task<ProductDataModel> GetProductForEditProductID(int productID);
 
     Task<bool> UpdateProduct(ProductDataModel objPostDm );
 

@@ -4,7 +4,7 @@ using IService;
 
 namespace Main.Service;
 
-public class ProductDataService : IProductDataService
+public class ProductDataService : ICommandProductService
 {
     private readonly IProductRepository _ProductRepository;
 

@@ -1,17 +1,17 @@
 ﻿using BusinessModel;
 using IRepository;
-using IService;
 using Main.Common.Enums;
+using Main.Services.IServices;
 
 namespace Main.Service;
 
-public class PageDataService: IPageDataService
+public class PageQueryService: IQueryPageService
 {
 
     public readonly IPageRepository _pageRepository;
 
 
-    public PageDataService(IPageRepository pageRepository)
+    public PageQueryService ( IPageRepository pageRepository)
     {
         _pageRepository = pageRepository;
     }

@@ -1,12 +1,11 @@
 ﻿using BusinessModel;
-using IRepository;
-using IService;                   
+using IRepository;              
 using Main.Common.Enums;
-using Main.Common.Model;
+using Main.Services.IServices;
 
 namespace Main.Service;
 
-public class PagePanelDataService: IPagePanelDataService
+public class PagePanelQueryService: IQueryPagePanelService
 {
 
     public readonly IProductImageRepository 
@@ -17,7 +16,7 @@ public class PagePanelDataService: IPagePanelDataService
     public readonly IPageRepository _pageRepository;
 
 
-    public PagePanelDataService ( 
+    public PagePanelQueryService ( 
         IProductImageRepository productImageRepository,
         IAdminPostImageRepository adminPostsImageRepository,
         IPageRepository pageRepository )
@@ -34,26 +33,6 @@ public class PagePanelDataService: IPagePanelDataService
         return await _productImageRepository
             .GetSelectProducts(company);
     }
-
-    public async Task<bool> CreateNewPanels (
-        LocalModel model,
-        EnumCompanyName enumCompany,
-        List<PanelPostDataModel> listUserSelectedPosts,
-        ModelBase modelBase
-        )
-    {
-        return await _pageRepository.CreateNewContent (
-            model,
-            enumCompany,
-            listUserSelectedPosts,
-            modelBase );
-    }
-
-    //public async Task<PagePanelDataModel>
-    //    GetPreviewPanel ( int panelId )
-    //{
-    //    PagePanelDataModel panelDM = await _pageRepository.GetContentPanel(panelId);
-    //}
 
     public async Task<PageDataModel> GetPanelList ( int pageID )
     {
