@@ -5,5 +5,6 @@ namespace IRepository;
 
 public interface IAdminPostImageRepository
 {
-    Task<List<PanelPost>> GetSelectAdminPosts ( EnumCompanyName company );
+    Task<List<PanelPost>> GetSelectAdminPosts (
+        EnumCompanyName company );
 }

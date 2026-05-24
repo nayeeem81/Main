@@ -18,25 +18,11 @@ public class PageRepository: IPageRepository
 
     public async Task<List<Page>> GetAllPages ( EnumCompanyName company )
     {
-        var listPages = 
-            await _context.Pages
+        return await _context.Pages
             .Where ( a => a.HostCompanyName == company )
             .ToListAsync<Page> ( );
 
-        List<Page> objListPageDM 
-                            = new List
-                            <Page> ();
-
-        listPages.ForEach ( 
-            pageEntity => objListPageDM
-                     .Add ( new Page ( 
-                         pageEntity.PageID,
-                         pageEntity.EnumPublicPage,
-                         company ) ) );
-
-
-        return objListPageDM
-            .ToList ( );
+        
     }
 
     public async Task<Page> GetSinglePage ( int id ) 

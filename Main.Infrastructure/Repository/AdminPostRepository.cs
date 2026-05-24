@@ -30,12 +30,12 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> DeleteAdminPost(int postId)
     {
-        var post = _Context.AdminPosts.ToList()
+        var adminPost = _Context.AdminPosts.ToList()
             .Single(a => a.AdminPostID == postId);
 
-        if (post != null)
+        if (adminPost != null)
         {
-            _Context.AdminPosts.Remove(post);
+            _Context.AdminPosts.Remove(adminPost);
         }
                 
         var result = await _Context.SaveChangesAsync();
@@ -45,15 +45,15 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> DeleteAdminPostImage(int id, int postId)
     {
-        var image = await _Context.AdminImageFiles
+        var adminImageFile = await _Context.AdminImageFiles
                         .Where(
                            a => a.AdminImageFileID == id 
                            && a.AdminPostID == postId)
                         .FirstOrDefaultAsync();
 
-        if (image != null)
+        if (adminImageFile != null)
         {
-            _Context.AdminImageFiles.Remove(image);
+            _Context.AdminImageFiles.Remove(adminImageFile);
         }
 
         var result = await _Context.SaveChangesAsync();

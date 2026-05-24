@@ -1,7 +1,6 @@
 ﻿using DataTransferModel;
 using IRepository;
 using Main.Common.Enums;
-using Main.Common.Model;
 
 namespace Application.Service;
 
@@ -40,4 +39,4 @@ public class PagePanelCommandService: ICommandPagePanelService
             modelBase );
     }
 }
-
+                                                             

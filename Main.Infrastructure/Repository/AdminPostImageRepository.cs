@@ -30,28 +30,28 @@ public class AdminPostImageRepository: IAdminPostImageRepository
             return new List<PanelPost> ( );
         }
 
-        List<PanelPost> listSelectPanelPostDM 
+        List<PanelPost> listSelectPanelPostEntity 
             = new List<PanelPost>();
 
-        PanelPost objDM;
+        PanelPost panelPostEntity;
 
-        listAdminPost.ForEach ( entity => 
+        listAdminPost.ForEach ( adminPostEntity => 
         {
-            entity.ListAdminImageFiles.ToList ( ).ForEach ( file =>
+            adminPostEntity.ListAdminImageFiles.ToList ( ).ForEach ( file =>
             {
-                objDM = new PanelPost ( );
+                panelPostEntity = new PanelPost ( );
 
-                objDM.RootID = entity.AdminPostID;
-                objDM.EnumPostType = entity.PostType;
-                objDM.PostTitle = entity.Title;
-                objDM.ImageFileContent = file.ImageFileContent;
+                panelPostEntity.RootID = adminPostEntity.AdminPostID;
+                panelPostEntity.EnumPostType = adminPostEntity.PostType;
+                panelPostEntity.PostTitle = adminPostEntity.Title;
+                panelPostEntity.ImageFileContent 
+                                = file.ImageFileContent;
 
-                listSelectPanelPostDM.Add ( objDM );
+                listSelectPanelPostEntity.Add ( panelPostEntity );
             } );
-
         } );
 
-        return listSelectPanelPostDM
+        return listSelectPanelPostEntity
             .OrderBy ( a => a.PostTitle )
             .ToList<PanelPost> ( );
     }
