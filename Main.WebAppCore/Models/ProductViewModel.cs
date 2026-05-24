@@ -1,9 +1,8 @@
 ﻿using Main.Common.Enums;
-using Main.Common.Helper;
-using Main.Common.HelperServices;
-using Main.Common.Settings; 
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+
+using WebApp.Infrastructure;
 
 namespace WebApp.ViewModel;
 

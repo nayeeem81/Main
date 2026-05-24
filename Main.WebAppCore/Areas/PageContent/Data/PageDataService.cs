@@ -1,5 +1,5 @@
-﻿using Common;
-using Data;
+﻿using IRepository;
+using Main.Common.Enums;
 
 namespace FineArtsWebApp
 {

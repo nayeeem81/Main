@@ -12,20 +12,34 @@
   <ItemGroup>
     <Compile Remove="Area.Data\**" />
     <Compile Remove="Areas\**" />
-    <Compile Remove="Controllers\**" />
+    <Compile Remove="Infrastructure\BaseController\**" />
     <Compile Remove="Service\**" />
+    <Compile Remove="ViewComponents\**" />
     <Content Remove="Area.Data\**" />
     <Content Remove="Areas\**" />
-    <Content Remove="Controllers\**" />
+    <Content Remove="Infrastructure\BaseController\**" />
     <Content Remove="Service\**" />
+    <Content Remove="ViewComponents\**" />
     <EmbeddedResource Remove="Area.Data\**" />
     <EmbeddedResource Remove="Areas\**" />
-    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="Infrastructure\BaseController\**" />
     <EmbeddedResource Remove="Service\**" />
+    <EmbeddedResource Remove="ViewComponents\**" />
     <None Remove="Area.Data\**" />
     <None Remove="Areas\**" />
-    <None Remove="Controllers\**" />
+    <None Remove="Infrastructure\BaseController\**" />
     <None Remove="Service\**" />
+    <None Remove="ViewComponents\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AccountController.cs" />
+    <Compile Remove="Controllers\AuthController.cs" />
+    <Compile Remove="Controllers\CultureController.cs" />
+    <Compile Remove="Controllers\ErrorHandlerController.cs" />
+    <Compile Remove="Controllers\HomeController.cs" />
+    <Compile Remove="Controllers\SecureController.cs" />
+    <Compile Remove="Controllers\UserSessionLogController.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,19 +47,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Properties\serviceDependencies.json" />
-    <Content Include="Properties\serviceDependencies.local.json" />
+    <Content Include="bin\Properties\serviceDependencies.json" />
+    <Content Include="bin\Properties\serviceDependencies.local.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Main.BusineesModel\Main.Businees.Model.csproj" />
     <ProjectReference Include="..\Main.Common\Main.Common.csproj" />
-    <ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
+    <ProjectReference Include="..\Main.Services\Main.Services.csproj" />
     <ProjectReference Include="..\ResourceLibrary\ResourceLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
   </ItemGroup>
 
 </Project>

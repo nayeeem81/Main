@@ -1,17 +1,21 @@
-using Infrastructure.Localization;
-using Main.Common.Settings;
-using Main.Infrastructure;
+using ResourceLibrary;
+using Main.Services;
+using WebApp.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-AppSettings.Current = 
+AppSettings.Current =
      builder.Configuration
             .GetSection ( "MyAppSettings" )
             .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
 
-builder.Services.AddCustomLocalization ( );
+builder.Services.AddHttpContextAccessor ( );
 
-builder.Services.AddInfrastructureServices( builder.Configuration );
+builder.Services.AddScoped<IUserContext,UserContext> ( );
+
+builder.Services.AddServiceDependencies ( builder.Configuration );
+
+builder.Services.AddCustomLocalization ( );
 
 builder.Services.AddControllersWithViews ( );
 

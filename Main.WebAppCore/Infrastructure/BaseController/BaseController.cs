@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 
-namespace FineArtsWebApp;
+namespace WebApp.Infrastructure;
 
 public partial class BaseController : Controller
 {

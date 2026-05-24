@@ -2,7 +2,6 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
-  <Project Path="Main.BusineesModel/Main.Businees.Model.csproj" Id="607e431c-f53e-4292-a089-0e928005d2a8" />
   <Project Path="Main.Common/Main.Common.csproj" Id="9ec1bd43-fe89-42bc-b5eb-2cc7212b86ce" />
   <Project Path="Main.Infrastructure/Main.Infrastructure.csproj" Id="58cc4f58-1b5c-48a1-a7fc-c07e576d1ebf" />
   <Project Path="Main.Migrator/Main.Migrator.csproj" Id="ce01ed80-30ff-48d5-946f-ec42382468fb" />

@@ -45,6 +45,22 @@ public class SelectListItemDropDown
         return objOfferTypeListItems.AsEnumerable();
     }
 
+    [ResponseCache ( CacheProfileName = "Cache1dayServerNBrowser" )]
+    public static IEnumerable<SelectListItem> GetAdminPostTypeList ( )
+    {
+        var listCountries = ListEnum.GetAdminPostTypeList().ToList();
+
+        List<SelectListItem> objOfferTypeListItems = new List<SelectListItem>();
+        foreach ( var item in listCountries )
+        {
+            SelectListItem objItem = new SelectListItem();
+            objItem.Text = item.Text;
+            objItem.Value = item.ValueID.ToString ( );
+            objOfferTypeListItems.Add ( objItem );
+        }
+        return objOfferTypeListItems.AsEnumerable ( );
+    }
+
 
     [ResponseCache(CacheProfileName = "Cache1dayServerNBrowser")]
     public static IEnumerable<SelectListItem> GetOfferTypeList()

@@ -454,6 +454,48 @@ public class ListEnum
         return objCountryList;
     }
 
+    public static List<ParentChildVriableModel> GetAdminPostTypeList ( )
+    {
+        List<ParentChildVriableModel> objAdminPostTypeList = new List<ParentChildVriableModel>();
+
+        Type enumType = typeof(EnumPostType);
+        var enumValues = enumType.GetEnumValues();
+
+        foreach ( EnumPostType value in enumValues )
+        {
+            if ( value == EnumPostType.Product)
+            {
+                continue;
+            }
+
+            MemberInfo memberInfo =
+                enumType.GetMember(value.ToString()).First();
+            var descriptionAttribute =
+                memberInfo.GetCustomAttribute<DescriptionAttribute>();
+
+            ParentChildVriableModel objPair = new ParentChildVriableModel
+            {
+                ValueID = (int)value
+            };
+
+            if ( descriptionAttribute != null )
+            {
+                objPair.Text = ( string ) descriptionAttribute.Description;
+            }
+            else
+            {
+                objPair.Text = value.ToString ( );
+            }
+
+            if ( objPair != null )
+            {
+                objAdminPostTypeList.Add ( objPair );
+            }
+        }
+
+        return objAdminPostTypeList;
+    }
+
     public static List<ParentChildVriableModel> GetPaidByList()
     {
         List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();

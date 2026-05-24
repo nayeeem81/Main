@@ -1,0 +1,76 @@
+﻿using Data;
+using IRepository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Repository; 
+
+namespace Main.Infrastructure;
+
+public static class RegisterDatafrastructure
+{
+    public static IServiceCollection AddInfrastructureServices ( this IServiceCollection services,IConfiguration configuration )
+    {
+
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        // Identity Context (User & Role)
+        services.AddDbContext<ApplicationDbContext> ( options =>
+        {
+            options.UseSqlServer ( connectionString,b => b.MigrationsAssembly ( typeof ( ApplicationDbContext ).Assembly.FullName ) );
+        } );
+
+        services.AddIdentityCore<IdentityUser> ( options =>
+        {
+            //SignIn
+            options.SignIn.RequireConfirmedAccount = false;
+
+            //Password
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequiredLength = 8;
+
+            // Lockout settings
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes ( 5 );
+            options.Lockout.MaxFailedAccessAttempts = 5;
+            options.Lockout.AllowedForNewUsers = true;
+
+            //User
+            options.User.RequireUniqueEmail = true;
+        } )
+        .AddEntityFrameworkStores<ApplicationDbContext> ( )
+        .AddDefaultTokenProviders( ) ; //Identity Context End
+
+
+
+        //Business DB Context (Application)
+        services.AddDbContext<BussinessAppDbContext> ( options =>
+        {
+            options.UseSqlServer ( connectionString,
+                b => b.MigrationsAssembly
+                ( typeof ( BussinessAppDbContext ).Assembly.FullName )
+                );
+        } );
+        
+        //For console app
+        services.AddScoped<DbInitializer> ( );
+        services.AddScoped<IDatabaseSeeder,DatabaseSeeder> ( );
+
+
+
+        //Register Repository
+        services.AddScoped<IUserRepository,UserRepository> ( );
+        services.AddScoped<IAdminPostImageRepository,AdminPostImageRepository> ( );
+        services.AddScoped<IAdminPostRepository,AdminPostRepository> ( );
+        services.AddScoped<IProductImageRepository,ProductImageRepository> ( );
+        services.AddScoped<IProductRepository,ProductRepository> ( );
+        services.AddScoped<IPageRepository,PageRepository> ( );
+
+        return services;
+
+    }
+}
+

@@ -1,4 +1,4 @@
-﻿namespace BusinessModel;
+﻿namespace DataTransferModel;
 
 public class AdminImageFileDataModel : BaseDataModel
 {
