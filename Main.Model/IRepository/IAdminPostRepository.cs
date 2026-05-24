@@ -1,15 +1,14 @@
-﻿using Entity.Model;
-using BusinessModel;
+﻿using Domain.Model;
 
 namespace IRepository;
 
 public interface IAdminPostRepository
 {
-    Task<AdminPostDataModel> GetAdminPostByPostID ( int postId );
+    Task<AdminPost> GetAdminPostByPostID ( int postId );
 
-    Task<List<AdminPostDataModel>> GetAllAdminContentPosts();
+    Task<List<AdminPost>> GetAllAdminContentPosts();
 
-    Task<bool> SaveNewAdminPost ( AdminPostDataModel postObject,List<AdminImageFileDataModel> objListFiles );
+    Task<bool> SaveNewAdminPost ( AdminPost adminPostEntity );
 
     Task<bool> DeleteAdminPost ( int postId );
 
@@ -18,6 +17,6 @@ public interface IAdminPostRepository
     Task<bool> SaveChanges ( );
 
     Task<bool> UpdateAdminPost (
-        AdminPostDataModel objPostDm );
+        AdminPost objPostDm );
 }
 

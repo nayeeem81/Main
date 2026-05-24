@@ -1,9 +1,9 @@
-﻿using BusinessModel;
+﻿using Domain.Model;
 using Main.Common.Enums;
 
 namespace IRepository;
 
 public interface IProductImageRepository
 {
-    Task<List<PanelPostDataModel>> GetSelectProducts ( EnumCompanyName company );
+    Task<List<Product>> GetSelectProducts ( EnumCompanyName company );
 }

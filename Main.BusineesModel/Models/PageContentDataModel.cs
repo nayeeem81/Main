@@ -1,7 +1,7 @@
 ﻿using Main.Common;
 using Main.Common.Enums;
 
-namespace BusinessModel;
+namespace DataTransferModel;
 
 public class PageContentDataModel: BaseDataModel
 {

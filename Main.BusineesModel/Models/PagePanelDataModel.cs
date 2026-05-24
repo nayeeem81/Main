@@ -1,6 +1,6 @@
 ﻿using Main.Common.Enums;
 
-namespace BusinessModel;
+namespace DataTransferModel;
 
 public class PagePanelDataModel: BaseDataModel
 {

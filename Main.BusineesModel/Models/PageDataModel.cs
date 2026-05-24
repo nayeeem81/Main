@@ -2,7 +2,7 @@
 using Main.Common.Enums;
 using Main.Common.Model;
 
-namespace BusinessModel
+namespace DataTransferModel
 {
     public class PageDataModel : ModelBase
     {

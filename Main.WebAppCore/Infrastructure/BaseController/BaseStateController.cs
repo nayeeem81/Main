@@ -1,8 +1,8 @@
-﻿using Main.Common.Model;
+﻿using DataTransferModel;
 using System.Text.Json;
 using WebApp.ViewModel;
 
-namespace FineArtsWebApp;
+namespace WebApp.Infrastructure;
 
 public partial class BaseController
 {
@@ -10,6 +10,7 @@ public partial class BaseController
     {
         HttpContext.Session.SetInt32("SubCategoryID", subCategoryID.HasValue ? subCategoryID.Value : -1);
     }
+    
     protected int GetSessionRechargeSubCategoryID()
 
     {
@@ -21,38 +22,7 @@ public partial class BaseController
     {
         HttpContext.Session.Remove("SubCategoryID");
     }
-    
-
-    #region user
-    protected void SetSessionUser(UserModel userModel)
-    {
-        SessionExtensions.SetObject<UserModel>(HttpContext.Session, "User", userModel);
-    }
-
-    protected UserModel GetSessionUser()
-    {
-        var User = SessionExtensions.GetObject<UserModel>(HttpContext.Session, "User");
-        if (User != null)
-            return User;
-
-        return new UserModel();
-    }
-
-    protected int GetSessionUserId()
-    {
-        var User = GetSessionUser();
-        if (User != null)
-            return User.UserID;
-
-        return -1;
-    }
-
-    protected void ClearSessionUser()
-    {
-        HttpContext.Session.Remove("User");
-    }
-    #endregion
-
+   
     #region search model
     protected void SetSessionSearchModel(SearchModel searchModel)
     {
@@ -73,7 +43,6 @@ public partial class BaseController
     }
 
     #endregion 
-   
 
     #region Sarcch Image Session
     protected void SetSearchResultListPostVM(List<ProductViewModel> listPostVM)
@@ -176,49 +145,49 @@ public partial class BaseController
     #endregion
 
     #region Admin Post Image Session
-    protected void SetSessionNewAdminPostImage(AdminImageFileViewModel file)
+    protected void SetSessionNewAdminPostImage( AdminImageFileDataModel file )
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList");
+        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
         if (list != null)
         {
             int count = list.Count;
             count = count + 1;
             file.AdminImageFileID = count;
             list.Add(file);
-            SessionExtensions.SetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList", list);
+            SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", list);
         }
         else
         {
             file.AdminImageFileID = 1;
-            List<AdminImageFileViewModel> objListFiles = new List<AdminImageFileViewModel>();
+            List<AdminImageFileDataModel> objListFiles = new List<AdminImageFileDataModel>();
             objListFiles.Add(file);
-            SessionExtensions.SetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList", objListFiles);
+            SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", objListFiles);
         }
     }
 
-    protected List<AdminImageFileViewModel> GetSessionNewAdminPostImage()
+    protected List<AdminImageFileDataModel> GetSessionNewAdminPostImage()
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList");
+        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
         if (list != null)
         {
             return list.ToList();
         }
         else
         {
-            return new List<AdminImageFileViewModel>();
+            return new List<AdminImageFileDataModel>();
         }
     }
 
     protected bool RemoveSessionNewAdminPostImage(long id)
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList");
+        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
         if (list != null)
         {
             var obj = list.Where(a => a.AdminImageFileID == id).FirstOrDefault();
             if (obj != null)
             {
                 list.Remove(obj);
-                SessionExtensions.SetObject<List<AdminImageFileViewModel>>(HttpContext.Session, "NewAdminPostImageList", list);
+                SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", list);
                 return true;
             }
         }
@@ -229,37 +198,6 @@ public partial class BaseController
     {
         HttpContext.Session.Remove("NewAdminPostImageList");
     }
-    #endregion
-
-    #region Base Model Session
-    protected void SetModelBaseSession(ModelBase modelBaseCreate, ModelBase modelBaseUpdate)
-    {
-        SessionExtensions.SetObject<ModelBase>(HttpContext.Session, "CreateModelBase", modelBaseCreate);
-        SessionExtensions.SetObject<ModelBase>(HttpContext.Session, "UpdateModelBase", modelBaseUpdate);
-    }
-
-    protected ModelBase? GetModelBaseSession(EnumModelBase baseFor)
-    {
-        ModelBase? modelBase = new ModelBase();
-
-        if(baseFor == EnumModelBase.Create) 
-        {
-            modelBase = SessionExtensions.GetObject<ModelBase>(HttpContext.Session, "CreateModelBase");
-        }
-        else if(baseFor == EnumModelBase.Update)
-        {
-            modelBase = SessionExtensions.GetObject<ModelBase>(HttpContext.Session, "UpdateModelBase");
-        }
-        
-        return modelBase;
-    }
-
-    protected void ClearModelBaseSession()
-    {
-        HttpContext.Session.Remove("CreateModelBase");
-        HttpContext.Session.Remove("UpdateModelBase");
-    }
-
     #endregion
 
 }

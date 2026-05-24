@@ -2,7 +2,7 @@
 using Main.Common.Model;
 using Main.Common.Settings;
 
-namespace BusinessModel;
+namespace DataTransferModel;
 
 public class BaseDataModel
 {

@@ -1,7 +1,15 @@
 ﻿using Common;
 
+using DataTransferModel;
+
+using Main.Common.Enums;
+using Main.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using WebApp.Infrastructure;
+using WebApp.ViewModel;
 
 namespace FineArtsWebApp
 {
@@ -35,14 +43,17 @@ namespace FineArtsWebApp
     [Authorize(Roles = "Admin")]
     public class PagesController : BaseController
     {
-        private readonly IPageDataService _pageDataService;
-        private readonly IPagePanelDataService _pagePanelDataService;
+        private readonly IPageService _pageService;
+        private readonly IPagePanelService _pagePanelService;
+        private readonly IUserContext _userContext;
 
-        public PagesController(IPageDataService pageDataService,
-                               IPagePanelDataService pagePanelDataService)
+        public PagesController(IPageService pageDataService,
+                               IPagePanelService pagePanelDataService,
+                               IUserContext userContext )
         {
-            _pageDataService = pageDataService;
-            _pagePanelDataService = pagePanelDataService;
+            _pageService = pageDataService;
+            _pagePanelService = pagePanelDataService;
+            _userContext = userContext;
         }
 
 
@@ -57,7 +68,7 @@ namespace FineArtsWebApp
 
                 EnumCompanyName company = StaticAppSettings.CompanyName;
 
-                listPageVM = await _pageDataService.GetAllPages(company);
+                listPageVM = await _pageService.GetAllPages(company);
 
                 informationVM.ListPages = listPageVM;
 
@@ -83,7 +94,7 @@ namespace FineArtsWebApp
 
             pageContentVM.PageID = id.Value;
 
-            List<PanelPostViewModel> listSelectProductsVM = await _pagePanelDataService.GetSelectProducts(StaticAppSettings.CompanyName);
+            List<PanelPostViewModel> listSelectProductsVM = await _pagePanelService.GetSelectProducts(StaticAppSettings.CompanyName);
 
             pageContentVM.ListSelectProducts = listSelectProductsVM;
 
@@ -100,21 +111,24 @@ namespace FineArtsWebApp
 
             try
             {
-                ModelBase modelBase = new ModelBase();
+                PagePanelDataModel pagePanelDataModel = new PagePanelDataModel();
+                pagePanelDataModel.PanelTitle = model.PanelTitle;
+                pagePanelDataModel.PageID = model.PageID;
+                pagePanelDataModel.PanelTemplate 
+                    = (EnumPanelTemplate) model.TemplateTypeID;
 
-                modelBase = GetModelBaseSession ( EnumModelBase.Create );
+                pagePanelDataModel.BaseDataModel 
+                    = _userContext.GetCreateBaseDataModel();
 
 
-                List<PanelPostViewModel> listReferencePosts = await _pagePanelDataService.GetSelectProducts(StaticAppSettings.CompanyName);
+                List<PanelPostDataModel> listReferencePosts 
+                    = _pagePanelService
+                    .GetSelectProducts((EnumCompanyName)_userContext.EnumCompanyName);
 
-                List<PanelPostViewModel> listUserSelectedPosts = listReferencePosts.Where(obj => model.Numbers.Contains(obj.PanelPostID)).ToList();
+                List<PanelPostDataModel> listUserSelectedPosts = listReferencePosts.Where(obj => model.Numbers.Contains(obj.PanelPostID)).ToList();
 
 
-                int newPanelId  = await _pagePanelDataService.CreateNewPanels (
-                                                            model,
-                                                            StaticAppSettings.CompanyName,
-                                                            listUserSelectedPosts,
-                                                            modelBase );
+                  int newPanelId  = await _pagePanelService.CreateNewPanel ( pagePanelDataModel, listUserSelectedPosts);
 
 
                 return Json ( new
@@ -142,7 +156,7 @@ namespace FineArtsWebApp
                 return NotFound ( );
             }
 
-            List<PagePanelViewModel> listPagePanelVM = await _pagePanelDataService.GetPanelList(id.Value);
+            List<PagePanelViewModel> listPagePanelVM = await _pagePanelService.GetPanelList(id.Value);
             
             return View ( listPagePanelVM );
         }

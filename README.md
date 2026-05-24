@@ -1,3 +1,4 @@
+[BestPracticeForDTOMapping.txt](https://github.com/user-attachments/files/28158313/BestPracticeForDTOMapping.txt)
 # Main (Active Branch)
 
 # .Net 8.0 

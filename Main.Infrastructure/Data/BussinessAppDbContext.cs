@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Entity.Model;
 using Main.Common.Enums;
+using Domain.Model;
 
 namespace Data;
 

@@ -1,4 +1,7 @@
 ﻿using BusinessModel;
+
+using DataTransferModel;
+
 using IRepository;
 
 namespace FineArtsWebApp
@@ -31,17 +34,17 @@ namespace FineArtsWebApp
             return objListPostVM;
         }
 
-        public async Task<bool> SaveNewAdminPost(AdminPostViewModel objAdminPostVM)
+        public async Task<bool> SaveNewAdminPost(AdminPostDataModel objAdminPostDM)
         {
-            AdminPostDataModel objAdminPostDataModel = _AdminPostMappingService.MapAdminPostViewModelToAdminPostEntity(objAdminPostVM);
+            AdminPostDataModel objAdminPostDataModel = _AdminPostMappingService.MapAdminPostViewModelToAdminPostEntity(objAdminPostDM);
 
-            objAdminPostDataModel.SetModelBase( objAdminPostVM.ModelBase);
-            objAdminPostDataModel.UserID = objAdminPostVM.UserID;
+            objAdminPostDataModel.SetModelBase( objAdminPostDM.ModelBase);
+            objAdminPostDataModel.UserID = objAdminPostDM.UserID;
             
 
             List<AdminImageFileDataModel>objListFileDataModel =        
                 _AdminPostMappingService
-                .MapAdmiFileViweModelToAdminFileEntity(objAdminPostVM);
+                .MapAdmiFileViweModelToAdminFileEntity(objAdminPostDM);
 
             var result = await _AdminPostRepository.SaveNewAdminPost(objAdminPostDataModel, objListFileDataModel);
             

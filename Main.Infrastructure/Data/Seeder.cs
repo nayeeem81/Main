@@ -1,6 +1,4 @@
-﻿// IDatabaseSeeder.cs & DatabaseSeeder.cs
-using Microsoft.AspNetCore.Identity;
-
+﻿using Microsoft.AspNetCore.Identity;
 namespace Data;
 
 public interface IDatabaseSeeder

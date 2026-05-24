@@ -1,8 +1,6 @@
-﻿using BusinessModel;
-using Data;
-using Entity.Model;
+﻿using Data;
+using Domain.Model;
 using IRepository;
-using Main.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
@@ -22,35 +20,9 @@ public class ProductRepository : IProductRepository
         return result > 0;
     }
 
-    private void MapProductEntityToProductViewModelListModel ( Product postEntity,ProductDataModel productViewModel )
+    public async Task<List<Product>> GetAllProducts()
     {
-        productViewModel.ProductID = postEntity.ProductID;
-        productViewModel.CategoryID = postEntity.CategoryID;
-        productViewModel.SubCategoryID = postEntity.SubCategoryID;
-        productViewModel.ProductName = postEntity.ProductName;
-        productViewModel.UnitPrice = postEntity.Price;
-        productViewModel.Discount = postEntity.Discount;
-    }
-
-    public async Task<List<ProductDataModel>> GetAllProducts()
-    {
-        var listProducts = await _Context.Products.ToListAsync();
-
-        List<ProductDataModel> objListPostVM 
-            = new List<ProductDataModel>();
-
-        ProductDataModel objModel;
-
-        foreach ( Product item in listProducts.ToList ( ) )
-        {
-            objModel = new ProductDataModel ( );
-
-            MapProductEntityToProductViewModelListModel ( item,objModel );
-
-            objListPostVM.Add ( objModel );
-        }
-
-        return objListPostVM;
+        return await _Context.Products.ToListAsync();
     }
 
     public async Task<bool> DeleteProduct(int productId)
@@ -92,177 +64,29 @@ public class ProductRepository : IProductRepository
         return result > 0;
     }
 
-    public async Task<ProductDataModel> GetProductByProductID(int postId)
+    public async Task<Product> GetProductByProductID(int postId)
     {
-        var productEntity = await _Context
+        return await _Context
             .Products
             .SingleAsync<Product>(a => a.ProductID == postId);
-
-        List<ProductFileDataModel> objListFiles = new List<ProductFileDataModel>();
-
-        if ( productEntity.ListImageFiles != null && productEntity.ListImageFiles.Count > 0 )
-        {
-            productEntity.ListImageFiles.ToList ( ).ForEach ( fileEntity =>
-            {
-                ProductFileDataModel objFileDM = new ProductFileDataModel()
-                {
-                    ProductImageFileID = fileEntity.ProductImageFileID,
-                    ImageFileContent = fileEntity.ImageFileContent,
-                    ProductID = fileEntity.ProductID
-                };
-                objListFiles.Add ( objFileDM );
-            } );
-        }
-
-
-        List<ProductCommentDataModel> objListComments = new List<ProductCommentDataModel>();
-
-        if ( productEntity.ListComments != null && productEntity.ListComments.Count > 0 )
-        {
-            productEntity.ListComments.ToList ( ).ForEach ( commentEntity =>
-            {
-                ProductCommentDataModel objCommentDM = new ProductCommentDataModel()
-                {
-                    ProductCommentID = commentEntity.ProductCommentID,
-                    Comment = commentEntity.Comment,
-                    ProductID = commentEntity.ProductID
-                };
-                objListComments.Add ( objCommentDM );
-            } );
-        }
-
-        ProductDataModel objModel = new ProductDataModel()
-        {
-            ProductID = productEntity.ProductID,
-            ProductName = productEntity.ProductName,
-            Discount = productEntity.Discount,
-            SaleCommission = productEntity.SaleCommission,
-            SearchTag = productEntity.SearchTag,
-            PostType = (EnumPostType)productEntity.PostType,
-            Description = productEntity.Description,
-            CategoryID = productEntity.CategoryID,
-            SubCategoryID = productEntity.SubCategoryID,
-            UnitPrice = productEntity.Price,
-            UserID = productEntity.UserID,
-            ListComments = objListComments,
-            ImageFiles = objListFiles
-        };
-
-        return objModel;
     }
 
-    public async Task<bool> SaveNewProduct(ProductDataModel objPostDM, List<ProductFileDataModel> objListFiles)
+    public async Task<bool> SaveNewProduct(Product productEntity)
     {
-        Product objProductEntity = MapProductViweModelToProductEntity(objPostDM);
-
-        objProductEntity.CreateBaseData ( objPostDM.ModelBase );
-
-        objProductEntity.UserID = objPostDM.UserID;
-        objProductEntity.User = null;
-
-        List <ProductImageFile> objListFileEntity = MapProductViweModelToProductFileEntity(objPostDM);
-
-        if (objPostDM != null)
-        {
-            objProductEntity.ListImageFiles = objListFileEntity;
-            objProductEntity.ListComments = new List<ProductComment>();
-
-            _Context.Products.Add( objProductEntity );
-        }
+        _Context.Products.Add( productEntity );
 
         int result = await _Context.SaveChangesAsync();
 
         return result > 0;
     }
-
-    private Product MapProductViweModelToProductEntity ( ProductDataModel productDM )
+    
+    public async Task<bool> UpdateProduct ( Product productEntity )
     {
-        return new Product ( )
-        {
-            ProductName = productDM.ProductName,
-            SearchTag = 
-                string.IsNullOrWhiteSpace( productDM.SearchTag ) 
-                    ? null 
-                    : productDM.SearchTag,
-
-            Price = productDM.UnitPrice,
-            Discount = productDM.Discount,
-            SaleCommission = productDM.SaleCommission,
-            CategoryID = productDM.CategoryID,
-            SubCategoryID = productDM.SubCategoryID,
-            Description = 
-                string.IsNullOrWhiteSpace ( productDM.Description) 
-                ? null 
-                : productDM.Description,
-
-            PostType = EnumPostType.Product
-        };
-    }
-
-    private List<ProductImageFile> MapProductViweModelToProductFileEntity 
-        ( ProductDataModel productFileDM )
-    {
-        List<ProductImageFile> objListFileEntity = new List<ProductImageFile>();
-        productFileDM.ImageFiles.ForEach ( fileVM =>
-        {
-            objListFileEntity.Add ( new ProductImageFile ( fileVM.ImageFileContent ) );
-        } );
-        return objListFileEntity;
-    }
-
-    public async Task<bool> UpdateProduct ( ProductDataModel objPostDm )
-    {
-        var product = await _Context.Products.SingleAsync<Product>
-             (a => a.ProductID == objPostDm.ProductID);
-
-        product.ModifyBaseData ( objPostDm.ModelBase );
-
-        product.UserID = objPostDm.UserID;
-        product.User = null;
-
-
-        List<ProductImageFile> images = new List<ProductImageFile>();
-
-        images.AddRange ( product.ListImageFiles );
-
-        objPostDm.ImageFiles.ForEach ( fileDM =>
-        {
-            var objFile = new ProductImageFile(fileDM.ImageFileContent);
-            objFile.ProductID = product.ProductID;
-            images.Add ( objFile );
-        } );
-
-
-        List<ProductComment> comments = new List<ProductComment>();
-
-        comments.AddRange ( product.ListComments );
-
-        objPostDm.ListComments.ForEach ( commentVM =>
-        {
-            var objComment = new ProductComment();
-            objComment.ProductID = product.ProductID;
-            objComment.Comment = commentVM.Comment;
-            comments.Add ( objComment );
-        } );
-
-        product.ProductName = objPostDm.ProductName;
-        product.Discount = objPostDm.Discount;
-        product.SaleCommission = objPostDm.SaleCommission;
-        product.SearchTag = objPostDm.SearchTag;
-        product.PostType = EnumPostType.Product;
-        product.Description = objPostDm.Description;
-        product.CategoryID = objPostDm.CategoryID;
-        product.SubCategoryID = objPostDm.SubCategoryID;
-        product.Price = objPostDm.UnitPrice;
-        product.ListComments = comments;
-        product.ListImageFiles = images;
-
-        _Context.Products.Update ( product );
+        _Context.Products.Update ( productEntity );
 
         var result = await _Context.SaveChangesAsync ();
 
         return result > 0;
     }
-
 }
 

@@ -1,6 +1,6 @@
 ﻿
 
-namespace BusinessModel;
+namespace DataTransferModel;
 
 public class InformationDataModel : BaseDataModel
 {

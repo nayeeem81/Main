@@ -1,5 +1,5 @@
 ﻿
-namespace BusinessModel;
+namespace DataTransferModel;
 
 public class ProductCommentDataModel : BaseDataModel
 {

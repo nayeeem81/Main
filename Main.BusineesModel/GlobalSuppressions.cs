@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage ( "Style","IDE1006:Naming Styles",Justification = "<Pending>",Scope = "member",Target = "~P:BusinessModel.AdminPostDataModel.ModelBase" )]
+[assembly: SuppressMessage ( "Style","IDE1006:Naming Styles",Justification = "<Pending>",Scope = "member",Target = "~P:DataTransferModel.AdminPostDataModel.ModelBase" )]
