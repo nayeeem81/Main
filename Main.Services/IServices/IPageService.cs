@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
 using Main.Common.Enums;
 
-namespace Application.Service;
+namespace Main.Services;
 
 public interface IPageService
 {

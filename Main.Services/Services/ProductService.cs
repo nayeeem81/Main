@@ -3,7 +3,7 @@ using Domain.Model;
 using IRepository;
 using Main.Services.Extensions;
 
-namespace Main.Services.Services;
+namespace Main.Services;
 
 public class ProductService : IProductService
 {

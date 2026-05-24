@@ -14,15 +14,12 @@ public static class ServiceConfiguration
         services.AddInfrastructureServices ( configuration );
 
         //Register Business Services
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-        services.AddScoped<IUserService,UserService> ( );
-
+        services.AddScoped<IAccountService,AccountService> ( );
+        services.AddScoped<IAdminPostService,AdminPostService> ( );
+        services.AddScoped<IProductService,ProductService> ( );
+        services.AddScoped<IPageService,PageService> ( );
+        services.AddScoped<IPagePanelService,PagePanelService> ( );
+        
         return services;
     }
 }
