@@ -5,16 +5,13 @@ namespace Main.Services;
 
 public interface IPagePanelService
 {
-    Task<bool> CreateNewPanels (
-        LocalModel model,
-        EnumCompanyName enumCompany,
-        List<PanelPostDataModel> listUserSelectedPosts,
-        ModelBase modelBase
-        );
+    Task<bool> CreateNewPanel
+    (
+          PagePanelDataModel pagePanelDataModel,List<PanelPostDataModel> listPanelPostDataModel
+    );
 
-    Task<List<PanelPostDataModel>>
-        GetSelectProducts ( EnumCompanyName company );
+    Task<List<PanelPostDataModel>> GetSelectProducts ( EnumCompanyName company );
 
-    Task<PageDataModel> GetPanelList ( int pageID );
+    Task<PageDataModel> GetPageDataModel ( int pageID );
 }
 

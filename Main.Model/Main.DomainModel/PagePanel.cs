@@ -20,8 +20,7 @@ public class PagePanel: BaseEntity
         get; set;
     }
 
-
-    public string PanelTitle
+    public string? PanelTitle
     {
         get; set;
     }
@@ -29,11 +28,14 @@ public class PagePanel: BaseEntity
     [Required]
     public EnumPanelTemplate PanelTemplate { get; set; }
 
+
     [Required]
     public int PageContentID { get; set; }
 
+
     [ForeignKey("PageContentID")]
     public virtual PageContent? PageContent { get; set; }
+
 
     public virtual ICollection<PanelPost> ListPanelPosts { get; set; } = new HashSet<PanelPost>();
 

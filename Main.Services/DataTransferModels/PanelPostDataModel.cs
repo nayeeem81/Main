@@ -19,7 +19,12 @@ public class PanelPostDataModel : DataModel
    
     public EnumPostType EnumPostType { get; set; }
     
-    public int RootID { get; set; } 
+    public int RootID { get; set; }
+
+    public int PostOrder
+    {
+        get; set;
+    }
 
     public int ImageOrderID { get; set; }
 

@@ -62,7 +62,7 @@ public class Page : BaseEntity
     }
 
 
-    public PageContent GetNewOrExistingPageContent ( int pageId, ModelBase modelBase)
+    public PageContent GetNewOrExistingPageContent ( int pageId, BaseDataModel modelBase)
     {
         ListPageContents ??= [];
 

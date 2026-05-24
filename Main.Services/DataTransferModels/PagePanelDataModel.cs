@@ -23,11 +23,9 @@ public class PagePanelDataModel: DataModel
 
     public int PanelOrderID { get; set; }
 
-    public string PanelTitle { get; set; }
+    public string? PanelTitle { get; set; }
 
     public EnumPanelTemplate PanelTemplate { get; set; }
-
-    public List<PanelPostDataModel> ListSelectProducts { get; set; }
 
     public List<PanelPostDataModel> ListPanelPosts { get; set; }
 
