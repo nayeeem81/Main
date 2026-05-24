@@ -1,16 +1,17 @@
-﻿using Data;
-using IRepository;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Repository; 
+using Main.Infrastructure.Data;
+using Repository;
+using IRepository;
 
 namespace Main.Infrastructure;
 
 public static class RegisterDatafrastructure
 {
-    public static IServiceCollection AddInfrastructureServices ( this IServiceCollection services,IConfiguration configuration )
+    public static IServiceCollection AddInfrastructureServices ( 
+        this IServiceCollection services,IConfiguration configuration )
     {
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -42,11 +43,12 @@ public static class RegisterDatafrastructure
             options.User.RequireUniqueEmail = true;
         } )
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
-        .AddDefaultTokenProviders( ) ; //Identity Context End
+        .AddDefaultTokenProviders( ) ; 
+        //Identity Context End
 
 
 
-        //Business DB Context (Application)
+        //(Web Application) Business DBContext 
         services.AddDbContext<BussinessAppDbContext> ( options =>
         {
             options.UseSqlServer ( connectionString,
@@ -54,11 +56,11 @@ public static class RegisterDatafrastructure
                 ( typeof ( BussinessAppDbContext ).Assembly.FullName )
                 );
         } );
+
         
         //For console app
-        services.AddScoped<DbInitializer> ( );
-        services.AddScoped<IDatabaseSeeder,DatabaseSeeder> ( );
-
+        //services.AddScoped<DbInitializer> ( );
+        //services.AddScoped<IDatabaseSeeder,DatabaseSeeder> ( );
 
 
         //Register Repository

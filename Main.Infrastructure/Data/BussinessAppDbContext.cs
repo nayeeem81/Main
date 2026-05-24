@@ -2,7 +2,7 @@
 using Main.Common.Enums;
 using Domain.Model;
 
-namespace Data;
+namespace Main.Infrastructure.Data;
 
 public class BussinessAppDbContext ( DbContextOptions<BussinessAppDbContext> options ): DbContext ( options )
 {
