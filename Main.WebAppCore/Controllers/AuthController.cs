@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Main.Common.HelperRelated;
+using Main.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-
 using ResourceLibrary;
 using System.Security.Claims;
-using WebApp.Infrastructure;
 using WebApp.ViewModel;
-using Main.Common.HelperRelated;
-using Main.Services;
+using WebApp.ViewModel.Extensions;
 
-namespace FineArtsWebApp;
+namespace Main.WebAppCore;
 
 public class AuthController : BaseController
 {
@@ -38,79 +38,67 @@ public class AuthController : BaseController
 
     public IActionResult Signup()
     {
-        var objModel = new AccountViewModel();
-        objModel.PageName = "Registration Page";
-               return View(objModel);
+        var objModel = new AccountDisplayViewModel("Registration Page");
+               
+        return View(objModel);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SignUp(AccountViewModel model)
+    public async Task<IActionResult> SignUp( AccountDisplayViewModel accountDisplayViewModel )
     {
-        UserAccountDataModel modelData =            MapToDataModel(model);
+        if ( accountDisplayViewModel == null )
+        {
+            _logger.LogWarning ( "Received null AccountDisplayViewModel in SignUp POST action." );
+            return RedirectToAction ( "Signup" );
+        }
+
+        if ( ModelState.IsValid )
+        {
+             return BadRequest ( "Invalid data submitted." );
+        }
+
+        if(!AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel.Password,accountDisplayViewModel.RePassword ) )
+        {
+            _logger.LogWarning ( "Password and RePassword do not match for email: {Email}",accountDisplayViewModel.Email );
+            return RedirectToAction ( "Signup" );
+        }
+
+
+        UserAccountDataModel userAccountDataModel 
+            = AuthExtensions.MapToDataModel (accountDisplayViewModel);
+
 
         bool result 
-            = await _userAccountService.CreateUserAccount ( modelData );
+            = await _userAccountService.CreateUserAccount ( userAccountDataModel );
 
         return RedirectToAction("Login");    
     }
-
-    private UserAccountDataModel MapToDataModel ( AccountViewModel model )
-    {
-        UserAccountDataModel modelData
-            = new UserAccountDataModel();
-
-        modelData.Email = model.Email;
-        modelData.PhoneNumber = model.Phone;
-        modelData.UserName
-          = StringRelated
-            .GetUserNameFromEmail ( model.Email );
-
-        modelData.NormalizedUserName
-            = model.Email.ToUpper ( );
-
-        modelData.Password = model.Password;
-
-        return modelData;
-    }
+    
 
     public IActionResult Login()
     {
-        var objModel = new AccountViewModel();
-        objModel.PageName = "Login";
+        var accountDisplayViewModel = new AccountDisplayViewModel("Login");
 
-        return View(objModel);
+        return View(accountDisplayViewModel);
     }
+
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(AccountViewModel model)
+    public async Task<IActionResult> Login(
+        AccountDisplayViewModel accountDisplayViewModel )
     {
-        var userIdentity = 
-            await _userManager
-                  .FindByEmailAsync(model.Email);
+        var result = await _userAccountService.AuthenticateUser ( accountDisplayViewModel.Email, accountDisplayViewModel.Password );
 
-        if (userIdentity == null)
+        if (result)
         {
-            return BadRequest("Invalid credentials");
-        }
-
-        var resultSignIn = await 
-                        _signInManager
-                        .PasswordSignInAsync(
-                                userIdentity, 
-                                model.Password, 
-                                true, 
-                                lockoutOnFailure: false);
-
-        if (resultSignIn.Succeeded)
-        {
-            int userID = await _userAccountService.GetSingleUser(userIdentity.Id);
+            int userID = await _userAccountService.GetSingleUser(accountDisplayViewModel.Email);
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, 
-                userID.ToString())
+                          userID.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -128,11 +116,7 @@ public class AuthController : BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
-       
-        ClearSessionUser();
-
-        ClearModelBaseSession();
+        await HttpContext.SignOutAsync();
 
         return RedirectToAction("Index", "Home");
     }
@@ -141,12 +125,9 @@ public class AuthController : BaseController
     [Authorize(Roles = "Admin,User,Company")]
     public ActionResult ResetPassword()
     {
-        if (User.Identity.IsAuthenticated)
+        if ( ! HttpContext.User.Identity.IsAuthenticated )
         {
-            var objModel = new AccountViewModel() 
-            { 
-                PageName = "Reset Password" 
-            };
+            var objModel = new AccountDisplayViewModel("Reset Password");
 
             return View(objModel);
         }
@@ -156,35 +137,37 @@ public class AuthController : BaseController
 
     [HttpPost]
     [Authorize(Roles = "Admin,User,Company")]
-    public async Task<ActionResult> ResetPassword(
-        AccountViewModel accountViewModel)  
+    public async Task<ActionResult> ResetPassword (
+        AccountDisplayViewModel accountDisplayViewModel)  
     {
-        var isValid = ValidationService
-            .IsValidEmail(accountViewModel.Email);
+        var isValid = ValidationRelated
+            .IsValidEmail(accountDisplayViewModel.Email);
         
-        _logger.LogInformation("Password reset attempt for email: {Email}, Valid Email: {IsValid}", accountViewModel.Email, isValid);
+        _logger.LogInformation("Password reset attempt for email: {Email}, Valid Email: {IsValid}", accountDisplayViewModel.Email, isValid);
         
         if(!isValid)
         {
-            _logger.LogWarning("Invalid email format for password reset: {Email}", accountViewModel.Email);
-            return RedirectToAction("ResetPassword");
-        }
+            _logger.LogWarning("Invalid email format for password reset: {Email}", accountDisplayViewModel.Email);
 
-        var user = await _userManager.FindByEmailAsync(accountViewModel.Email);
-
-        if (user == null)
-        {
-            _logger.LogWarning("Password reset attempt failed for email: {Email}", accountViewModel.Email);
             return RedirectToAction("ResetPassword");
         }
 
         try
         {
-            var result = await _userManager.ChangePasswordAsync(user, accountViewModel.CurrentPassword, accountViewModel.NewPassword);
-            
-            if (result.Succeeded)
+            var result = await _userAccountService.ChangePasswordAsync ( 
+                accountDisplayViewModel.Email,
+                accountDisplayViewModel.Password,
+                accountDisplayViewModel.RePassword );
+
+            if ( result == false )
             {
-                // Optional: Refresh sign-in to update cookies/claims
+                _logger.LogWarning ( "Password reset attempt failed for email: {Email}",accountDisplayViewModel.Email );
+
+                return RedirectToAction ( "ResetPassword" );
+            }
+
+            if (result)
+            {
                 return RedirectToAction("Login");
             }
 
@@ -193,7 +176,7 @@ public class AuthController : BaseController
         catch (Exception ex)
         {
             var msg = ex.Message;
-            _logger.LogError(ex, "Error sending password reset email to {Email}", accountViewModel.Email);
+            _logger.LogError(ex, "Error sending password reset email to {Email}", accountDisplayViewModel.Email);
             return RedirectToAction("ResetPassword");
         }
     }

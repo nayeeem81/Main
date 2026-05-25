@@ -6,5 +6,5 @@ public class BaseViewModel
         {
         }
 
-        public string? PageName { get; set; }
+        public string PageName { get; set; }
 }

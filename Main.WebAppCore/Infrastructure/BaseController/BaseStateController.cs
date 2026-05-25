@@ -1,8 +1,9 @@
 ﻿using DataTransferModel;
+using FineArtsWebApp;
 using System.Text.Json;
 using WebApp.ViewModel;
 
-namespace WebApp.Infrastructure;
+namespace Main.WebAppCore;
 
 public partial class BaseController
 {
