@@ -1,0 +1,75 @@
+﻿@using Common
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@model GroupPanelTemplateDisplayViewModel
+@{
+    TemplateDisplayViewModel post = null;
+    TemplateDisplayViewModel videoPost = null;
+    bool shouldProceed = false;
+    string categoryID = "";
+    if (Model.ListGroupPost != null &&
+        Model.ListGroupPost.Count == 2 &&
+        Model.ListGroupPost.Count(a => a.PostType == EnumPostType.ShortVideo) == 1)
+    {
+        post = Model.ListGroupPost.Where(a => a.PostType != EnumPostType.ShortVideo).FirstOrDefault();
+        videoPost = Model.ListGroupPost.Where(a => a.PostType == EnumPostType.ShortVideo).FirstOrDefault();
+        if (!string.IsNullOrEmpty(videoPost.WebsiteUrl))
+        {
+            shouldProceed = true;
+            categoryID = post.CategoryID.ToString();
+        }
+        else
+        {
+            shouldProceed = false;
+        }
+    }
+}
+@if (shouldProceed)
+{
+    <div class="container @categoryID container-gap">
+        @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <h4 class="title blue-text">
+                        @Model.GroupPanelTitle
+                    </h4>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-5 col-sm-5 col-lg-5 col-xs-12 white-bg">
+                <iframe style="width:100%;
+                                        height:200px;
+                                        max-height:200px;
+                                        min-height:200px;
+                                        vertical-align:baseline;"
+                        src="https://www.youtube.com/embed/@videoPost.WebsiteUrl.Trim()"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </div>
+            <div class="col-md-7 col-sm-7 col-lg-7 col-xs-12 white-bg">
+                <div class="market-content">
+                    <div class="market-action">
+                        <a class="sub-content"
+                           data-id="@post.PostID">
+                            <span class="main">
+                                @post.CommentsCount
+                            </span>
+                            <span class="content">
+                                @SharedLocalizer["MarketItemComments"]
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <div class="market-comment-container" id="comment">
+                    <h5>@SharedLocalizer["ItemDetailsPublicComments"]</h5>
+                    @await Html.PartialAsync("../Shared/ProductTemplates/_ItemComment", post)
+                </div>
+            </div>
+        </div>
+    </div>
+}

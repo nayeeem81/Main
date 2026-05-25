@@ -1,0 +1,51 @@
+﻿@model AccountDisplayViewModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleSignIn"];
+    Layout = "~/Views/Shared/_Layout.Mobile.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <h4 class="sub-title">@SharedLocalizer["LoginEnterCredentials"]</h4>
+                </div>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <input name="Email" type="email" class="fff" placeholder="Email" value="@Model.Email" style="padding-left:7px;" />
+                    </div>
+                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <input name="Password" type="password" class="fff" placeholder="Password" value="@Model.Password" style="padding-left:7px;" />
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <a href="@Url.Action("ResetPassword", "Auth")">Forget Password?</a>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <button class="primary-button" type="submit">
+                            @SharedLocalizer["LoginButtonSignIn"]
+                        </button>
+                    </div>
+                }
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 divider"></div>
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <h4>
+                        Don't have account? Please <a href="@Url.Action("SignUp","Auth")">SIGN UP</a>.
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="gap"></div>
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+    </script>
+}
+

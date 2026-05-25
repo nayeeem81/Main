@@ -1,0 +1,24 @@
+﻿@using FineArtsWebApp;
+@model TemplateDisplayViewModel
+@if (Model != null)
+{
+    <a class="thumbnail @Model.ImageCategoryClass">
+        @if (!string.IsNullOrEmpty(Model.WebsiteUrl))
+        {
+        <iframe class="@Model.ImageCategoryClass"
+                style="width:100%;"
+                src="https://www.youtube.com/embed/@Model.WebsiteUrl.Trim()"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        }
+    </a>
+    <div class="caption text-center">
+        <div class="truncate">
+            @Model.Title
+        </div>
+        <div class="sponsor">
+            Bangladesh BAZAAR
+        </div>
+    </div>
+}

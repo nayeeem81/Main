@@ -1,0 +1,44 @@
+﻿@using FineArtsWebApp;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@model TemplateDisplayViewModel
+@{
+    var comments = Model.ListPostComments;
+    var hasComments = comments.Any();
+}
+<div class="comment-container comment-container-template">
+    <div class="row">
+        <div class="col-md-7">
+            <ul class="comment-list" style="padding-left:0px;height:300px;max-height:300px;overflow-y:auto;">
+                @foreach (var item in comments)
+                {
+                    <li>
+                        <p class="comment">@item.Comment.Trim()</p>
+                        <p class="date">@item.CommentDate.Trim()</p>
+                    </li>
+                }
+                @if (!hasComments)
+                {
+                    <li id="noComment">
+                        <p class="comment">No Comment yet!</p>
+                        <p class="date">Leave your comment and be the first one to comment.</p>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-5">
+            <div class="row new-comment-template">
+                @Html.HiddenFor(a => a.PostID)
+                <div class="col-md-12 input-field">
+                    @Html.LabelFor(a => a.Comment)
+                    @Html.TextAreaFor(a => a.Comment, new { @class = "fff" })
+                </div>
+                <button data-id="@Model.PostID" type="submit" class="primary-button flex button-template-comment">
+                    <i class="fa fa-comment fa-fw"></i>
+                    @SharedLocalizer["CommentCommentButton"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

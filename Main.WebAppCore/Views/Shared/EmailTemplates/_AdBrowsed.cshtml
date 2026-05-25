@@ -1,0 +1,61 @@
+﻿@using FineArtsWebApp;
+@model EmailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization;
+
+
+<div class="container">
+    <h3 class="sub-title">
+        Online User Viewed your Ad 
+    </h3>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Dear Sir/Madam, <br />
+            Greetings from Deshi Hut Bazar! <br />
+            We are acknowledging here that your following product/service ad viewed by an online visitor
+            at <a href="@Model.SenderCompanyWebsite">Bangladesh BAZAAR</a>. <br />
+            Just now, one of them browsed your product/service.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            <br />
+            Product/Service Ad: @Model.PostTitle
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            <br />
+            We really appreciate your presence in <a href="@Model.SenderCompanyWebsite">Bangladesh BAZAAR</a>
+            and we want your successful business with our portal.
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            <br />
+            <br />
+            Thank you very much!
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Deshi Hut Bazar (Information Team)
+        </div>
+    </div>
+    <div class="row" style="color:red;">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            *Please donot reply to this email.
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Office: @Model.SenderCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Head Office: @Model.SenderHQCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Website: @Model.SenderCompanyWebsite
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Phone: @Model.SenderCompanyPhone
+        </div>
+    </div>
+</div>

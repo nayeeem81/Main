@@ -1,0 +1,133 @@
+﻿@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div class="advance-search-container-background" data-adv-search="modal"></div>
+<form class="advance-search-container" data-adv-search="content" method="post" action="@Url.Action("AdvancedSearch","SearchMarket")">
+    <h4>@SharedLocalizer["LabelAdvancedSearch"]</h4>
+    <div class="row padding-margin-zero">
+        <div class="col-sm-12">
+            <input name="SearchKey" type="search" class="fff" placeholder="@SharedLocalizer["PlaceHolderSimpleSearchTextBox"]" value="@Model.SearchKey" />
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <select name="CategoryID" class="fff">
+                @foreach (var cat in Model.AV_Category)
+                {
+                    var selected = Model.CategoryID.HasValue && Model.CategoryID.Value.ToString().Equals(cat.Value) ? "selected='selected'" : "";
+                    if (string.IsNullOrEmpty(cat.Value))
+                    {
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectCategory"]</option>
+                        continue;
+                    }
+                    else
+                    {
+                        <option value="@cat.Value" selected>@cat.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <select name="SubCategoryID" class="fff">
+                @foreach (var cat in Model.AV_SubCategory)
+                {
+                    var selected = Model.SubCategoryID.Equals(cat.Value) ? "selected" : string.Empty;
+
+                    if (string.IsNullOrEmpty(cat.Value))
+                    {
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectSubCategory"]</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.Value" selected>@cat.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <select name="StateID" class="fff">
+                @foreach (var cat in Model.AV_State)
+                {
+                    var selected = Model.StateID.Equals(cat.Value) ? "selected" : "";
+
+                    if (string.IsNullOrEmpty(cat.Value))
+                    {
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectState"]</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.Value">@cat.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <input name="AreaDescription" type="text" class="fff" placeholder="@SharedLocalizer["PlaceholderSpecificAreaDetails"]" />
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <input name="PriceLow" type="tel" class="fff" placeholder="@SharedLocalizer["PlaceholderPriceStartsFrom"]" />
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <input name="PriceHigh" type="tel" class="fff" placeholder="@SharedLocalizer["PlaceholderPriceEndsWith"]" />
+        </div>
+        <div class="col-sm-12">
+            <div class="chip-container">
+                <label class="chip">
+                    <input name="IsUrgent" type="checkbox" value="true" checked="@Model.IsUrgent" />
+                    <span>
+                        @SharedLocalizer["ButtonTextUrgentSale"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsUsed" type="checkbox" value="true" checked="@Model.IsUsed" />
+                    <span>
+                        @SharedLocalizer["ButtonTextUsedItem"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsBrandNew" type="checkbox" value="true" checked="@Model.IsBrandNew" />
+                    <span>
+                        @SharedLocalizer["ButtonTextNewItem"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsForSell" type="checkbox" value="true" checked="@Model.IsForSell" />
+                    <span>
+                        @SharedLocalizer["ButtonTextForSale"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsForRent" type="checkbox" value="true" checked="@Model.IsForRent" />
+                    <span>
+                        @SharedLocalizer["ButtonTextForRent"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsPrivateSeller" type="checkbox" value="true" checked="@Model.IsPrivateSeller" />
+                    <span>
+                        @SharedLocalizer["ButtonTextIndividualAd"]
+                    </span>
+                </label>
+                <label class="chip">
+                    <input name="IsCompanySeller" type="checkbox" value="true" checked="@Model.IsCompanySeller" />
+                    <span>
+                        @SharedLocalizer["ButtonTextCompanyAd"]
+                    </span>
+                </label>
+                <div class="row margin-padding-zero">
+                    <div class="col-md-6">
+                        <button class="primary-button" type="submit">
+                            <i class="fa fa-search"></i>
+                            @SharedLocalizer["ButtonTextAdvancedSearch"]
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="light-button  col-md-6" type="button" data-adv-search="modal">
+                            @SharedLocalizer["ButtonTextClose"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+                          

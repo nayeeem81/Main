@@ -1,0 +1,139 @@
+﻿@using Common
+@model GroupPanelTemplateDisplayViewModel
+@{
+    var categoryID = "";
+    List<TemplateDisplayViewModel> listProducts = null;
+    bool shouldProceed = true;
+    if (Model.ListGroupPost != null && Model.ListGroupPost.Count(a => a.Image != null) == 3)
+    {
+        listProducts = Model.ListGroupPost.Take(3).ToList();
+        categoryID = Model.ListGroupPost[0].CategoryID.ToString();
+    }
+    else
+    {
+        shouldProceed = false;
+    }
+}
+@if (shouldProceed == true)
+{
+    <div class="container @categoryID container-gap">
+        @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <h4 class="title blue-text">
+                        @Model.GroupPanelTitle
+                    </h4>
+                </div>
+            </div>
+        }
+        <div class="row">
+            @foreach (var product in listProducts.ToList())
+            {
+                <div class="col-md-4 col-sm-4 col-lg-4 col-xs-6 white-bg">
+                    @if (product.PostType == EnumPostType.AdSpace)
+                    {
+                        <a href="@product.WebsiteUrl" target="_blank" class="thumbnail only-image">
+                            @if (product.Image != null)
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", product.Image);
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", new byte[1]);
+                            }
+                        </a>
+                        <div class="caption text-center" style="margin-bottom:10px;">
+                            <div class="truncate blue-text" style="margin-bottom:3px;">
+                                @product.Title
+                            </div>
+                            <div class="truncate sponsor" style="margin-bottom:3px;">
+                                SPONSORED
+                            </div>
+                        </div>
+                    }
+                    else if (product.PostType == EnumPostType.FabiaService)
+                    {
+                        <a href="@product.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                            @if (product.Image != null)
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", product.Image);
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", new byte[1]);
+                            }
+                        </a>
+                        <div class="caption text-center" style="margin-bottom:10px;">
+                            <div class="truncate blue-text" style="margin-bottom:3px;">
+                                @product.Title
+                            </div>
+                            <div class="fabia-service truncate" style="margin-bottom:3px;">
+                                FABIA SERVICE
+                            </div>
+                        </div>
+                    }
+                    else if (product.PostType == EnumPostType.ShortVideo)
+                    {
+                        <a class="thumbnail only-image">
+                            @if (!string.IsNullOrEmpty(product.WebsiteUrl))
+                            {
+                                <iframe style="width:100%;height:240px;max-height:240px;min-height:240px;padding:0px;margin:0px;"
+                                        src="https://www.youtube.com/embed/@product.WebsiteUrl.Trim()"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                            }
+                        </a>
+                        <div class="caption text-center" style="margin-bottom:10px;">
+                            <div class="truncate blue-text" style="margin-bottom:3px;">
+                                @product.Title
+                            </div>
+                        </div>
+                    }
+                    else if (product.PostType == EnumPostType.ShortNote)
+                    {
+                        <div class="caption text-center" style="margin-bottom:10px;">
+                            <div class="truncate" style="margin-bottom:3px;">
+                                <h4 class="sub-title blue-text">
+                                    @product.Title
+                                </h4>
+                            </div>
+                            <div class="info text-justify triangle-shortnote blue-text">
+                                @product.Description
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="@product.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                            @if (product.Image != null)
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", product.Image)
+                                
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleImage", new byte[1])                             
+                            }
+                        </a>
+                        <div class="caption text-center" style="margin-bottom:10px;">
+                            <div class="truncate blue-text" style="margin-bottom:3px;">
+                                @product.Title
+                            </div>
+                            <div class="home-currency-font-color" style="margin-bottom:3px;">
+                                @product.FormattedPriceValue
+                            </div>
+                            @*@if (product.ShowCartButton)
+                            {
+                                <div class="add-to-cart sub-content" data-id="@product.PostID">
+                                    ADD TO CART
+                                </div>
+                            }*@
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}

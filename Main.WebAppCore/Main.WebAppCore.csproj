@@ -13,19 +13,47 @@
     <Compile Remove="Area.Data\**" />
     <Compile Remove="Areas\**" />
     <Compile Remove="Service\**" />
-    <Compile Remove="ViewComponents\**" />
+    <Compile Remove="Views\Account\**" />
+    <Compile Remove="Views\Home\**" />
+    <Compile Remove="Views\Shared\DesktopPostType\**" />
+    <Compile Remove="Views\Shared\DisplayTemplates\**" />
+    <Compile Remove="Views\Shared\EditorTemplates\**" />
+    <Compile Remove="Views\Shared\EmailTemplates\**" />
+    <Compile Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <Compile Remove="Views\Shared\ProductTemplates\**" />
     <Content Remove="Area.Data\**" />
     <Content Remove="Areas\**" />
     <Content Remove="Service\**" />
-    <Content Remove="ViewComponents\**" />
+    <Content Remove="Views\Account\**" />
+    <Content Remove="Views\Home\**" />
+    <Content Remove="Views\Shared\DesktopPostType\**" />
+    <Content Remove="Views\Shared\DisplayTemplates\**" />
+    <Content Remove="Views\Shared\EditorTemplates\**" />
+    <Content Remove="Views\Shared\EmailTemplates\**" />
+    <Content Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <Content Remove="Views\Shared\ProductTemplates\**" />
     <EmbeddedResource Remove="Area.Data\**" />
     <EmbeddedResource Remove="Areas\**" />
     <EmbeddedResource Remove="Service\**" />
-    <EmbeddedResource Remove="ViewComponents\**" />
+    <EmbeddedResource Remove="Views\Account\**" />
+    <EmbeddedResource Remove="Views\Home\**" />
+    <EmbeddedResource Remove="Views\Shared\DesktopPostType\**" />
+    <EmbeddedResource Remove="Views\Shared\DisplayTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\EditorTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\EmailTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <EmbeddedResource Remove="Views\Shared\ProductTemplates\**" />
     <None Remove="Area.Data\**" />
     <None Remove="Areas\**" />
     <None Remove="Service\**" />
-    <None Remove="ViewComponents\**" />
+    <None Remove="Views\Account\**" />
+    <None Remove="Views\Home\**" />
+    <None Remove="Views\Shared\DesktopPostType\**" />
+    <None Remove="Views\Shared\DisplayTemplates\**" />
+    <None Remove="Views\Shared\EditorTemplates\**" />
+    <None Remove="Views\Shared\EmailTemplates\**" />
+    <None Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <None Remove="Views\Shared\ProductTemplates\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +63,13 @@
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SecureController.cs" />
     <Compile Remove="Controllers\UserSessionLogController.cs" />
+    <Compile Remove="ViewComponents\ShoppingCartNotificationViewComponent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Shared\Error.cshtml" />
+    <Content Remove="Views\Shared\_PageContent.cshtml" />
+    <Content Remove="Views\Shared\_ShoppingCartNotification.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

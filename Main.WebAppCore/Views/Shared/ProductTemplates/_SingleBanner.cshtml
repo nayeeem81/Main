@@ -1,0 +1,70 @@
+﻿@model GroupPanelTemplateDisplayViewModel
+@{
+    var categoryID = "";
+    List<TemplateDisplayViewModel> listProducts = null;
+    bool shouldProceed = true;
+    if (Model.ListGroupPost != null && Model.ListGroupPost.Count(a => a.Image != null) == 1)
+    {
+        listProducts = Model.ListGroupPost.Take(4).ToList();
+        categoryID = Model.ListGroupPost[0].CategoryID.ToString();
+    }
+    else
+    {
+        shouldProceed = false;
+    }
+}
+@if (shouldProceed == true)
+{
+    <div class="container container-gap" style="padding:0px;margin-top:15px;">
+        <div class="row" style="padding:0px;">
+            <div class="col-md-12 col-sm-12 col-lg-12 col-xs-12 white-bg" style="padding:0px;">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    </ol>
+                    <div class="carousel-inner" role="listbox">
+                        @{
+                            var counter = 1;
+                            var active = "";
+                            foreach (var product in listProducts.ToList())
+                            {
+                                var detailsURL = "";
+                                if (!string.IsNullOrEmpty(product.WebsiteUrl))
+                                {
+                                    detailsURL = product.WebsiteUrl;
+                                }
+                                else
+                                {
+                                    detailsURL = product.PostItemDetailViewUrl;
+                                }
+                                if (counter == 1)
+                                {
+                                    active = "active";
+                                    counter++;
+                                }
+                                else
+                                {
+                                    active = "";
+                                }
+                                <div class="item @active">
+                                    @if (product.Image != null)
+                                    {
+                                        <a href="@detailsURL" target="_blank" class="thumbnail only-image">
+                                            @Html.Partial("../Shared/ProductTemplates/_StarImage", product.Image);
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        @Html.Partial("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                                    }
+                                    <div class="carousel-caption">
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

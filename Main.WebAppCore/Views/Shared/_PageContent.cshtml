@@ -1,0 +1,84 @@
+﻿@using Main.Common.Enums
+@model ContentInfoViewModel
+
+@{
+    if (Model.ListGroupPanelConfiguration != null)
+    {
+        var listAllConfigs = Model.ListGroupPanelConfiguration
+            .Where(a =>
+                // // a.Device == EnumDeviceType.Desktop &&
+                a.ShowOrHide == EnumShowOrHide.Yes)
+            .OrderBy(a => a.Order).ToList();
+        foreach (var config in listAllConfigs)
+        {
+            if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.MostPopularProduct)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_MostPopularProduct", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.PopularCategory)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_PopularCategory", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.StarPanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_StarPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.TrianglePanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_TrianglePanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.DoubleBlockSquarePanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_DoubleBlockPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.GroupSection)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_SixerGroupPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.MaxGroupSection)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_MaxGroupPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.VideoPost)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_PostVideoPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.VideoComment)
+            {
+                @await Html.PartialAsync("../Shared/_VideoCommentPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.MarketPanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_MarketPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.AllFixedButtons)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_AllFixedButton", config.FabiaInformationViewModel)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.QuardMarketPanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_QuardMarketPanel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.SimilarItemsMarketPanel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_SimilarItemsMarketPanel", config)
+            }
+            @*else if (config.EnumPanelDisplayStyle == Common.EnumPanelDisplayStyle.BannerCarousel)
+                {
+                    @Html.Partial("../Shared/ProductTemplates/_BannerCarousel", config)
+                }*@
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.TriangleCarousel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_TriangleCarousel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.StarCarousel)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_StarCarousel", config)
+            }
+            else if (config.EnumPanelDisplayStyle == EnumPanelDisplayStyle.SingleBanner)
+            {
+                @await Html.PartialAsync("../Shared/ProductTemplates/_SingleBanner", config)
+            }
+        }
+    }
+}

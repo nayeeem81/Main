@@ -1,0 +1,93 @@
+﻿@using FineArtsWebApp;
+@model ContactViewModel;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleContactUs"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+<div class="container" id="rootContact">
+    <div class="row card-form row text-justify">
+        <div class="col-md-6 col-xs-12 col-sm-6 col-lg-6" style="padding-right:10PX;">
+            <h4 class="sub-title">
+                @SharedLocalizer["ContactContactUS"]
+            </h4>
+            <p>
+                @SharedLocalizer["ContactIntroGreetingMessageText"]
+            </p>
+            <p>
+                @SharedLocalizer["ContactThankyouVeryMuch"]
+            </p>
+            <p>
+                <a href="@Url.Action("Index","Home")">
+                    @SharedLocalizer["PortalURL"]
+                </a>&nbsp;
+            </p>
+        </div>
+        <div class="col-md-6 col-xs-12 col-sm-6 col-lg-6">
+            <div class="row">
+                <h4 class="sub-title">
+                    @SharedLocalizer["ContactContactForm"]
+                </h4>
+                <form method="post" role="form">
+                    <div class="input-field col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                        <label for="ContactName">
+                            @SharedLocalizer["ContactName"]
+                        </label>
+                        <input type="text"
+                               class="fff"
+                               id="contactname">
+                    </div>
+                    <div class="input-field col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                        <label for="ContactEmail">
+                            @SharedLocalizer["ContactEmail"]
+                        </label>
+                        <input type="email"
+                               class="fff"
+                               id="contactemail">
+                    </div>
+                    <div class="input-field col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                        <label for="MessageCategory">
+                            @SharedLocalizer["ContactMessageCategory"]
+                        </label>
+                        @Html.DropDownListFor(a => a.MessageCategory, Model.AV_MessageTypeList, new { @class = "fff" })
+                    </div>
+                    <div class="input-field col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                        <label for="ContactSubject">
+                            @SharedLocalizer["ContactSubject"]
+                        </label>
+                        <input type="email"
+                               class="fff"
+                               id="contactsubject">
+                    </div>
+                    <div class="input-field col-md-12 col-xs-12 col-lg-12 col-sm-12">
+                        <label for="ContactMessage">
+                            @SharedLocalizer["ContactMessage"]
+                        </label>
+                        <textarea class="fff" id="contactmessage"></textarea>
+                    </div>
+                    <button id="btnSubmitMessage" type="submit" class="primary-button max">
+                        @SharedLocalizer["ContactSUBMIT"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+    </script>
+    <script src="~/js/UserSession/naimul.letitgo.user.session.js" type="text/javascript"></script>
+    <script src="~/js/naimul.ui.editor.phone.js" type="text/javascript"></script>
+    <script src="~/js/naimul.ui.editor.price.js" type="text/javascript"></script>
+    <script src="~/js/naimul.ui.password.validation.js" type="text/javascript"></script>
+    <script src="~/js/naimul.ui.validation.js" type="text/javascript"></script>
+    <script type="text/javascript" src="~/js/Home/naimul.ui.contact.js"></script>
+}
+
+

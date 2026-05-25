@@ -1,0 +1,36 @@
+﻿@using FineArtsWebApp;
+@model GroupPanelTemplateDisplayViewModel
+@{
+    var shouldDisplayContent = false;
+    if (Model.ListGroupPost != null &&
+        Model.ListGroupPost.Count > 0)
+    {
+        shouldDisplayContent = true;
+    }
+}
+@if (shouldDisplayContent)
+{
+    <div class="container container-gap">
+        @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <h4 class="title blue-text">
+                        @Model.GroupPanelTitle
+                    </h4>
+                </div>
+            </div>
+        }
+        else
+        {
+            <br />
+        }
+        <div class="all-market-container">
+            @foreach (var row in Model.ListGroupPost)
+            {
+                @await Html.PartialAsync("../Shared/DesktopPostType/_MarketItem", row)
+            }
+        </div>
+        @Html.EditorFor(a => a.PageingModelAll, "Paging")
+    </div>
+}

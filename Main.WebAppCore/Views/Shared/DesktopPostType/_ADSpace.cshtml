@@ -1,0 +1,22 @@
+﻿@model TemplateDisplayViewModel
+@if (Model != null)
+{
+    <a href="@Model.PostItemDetailViewUrl" target="_blank" class="thumbnail @Model.ImageCategoryClass">
+        @if (Model.Image != null)
+        {
+            @await Html.PartialAsync("../Shared/DesktopPostType/_Image", Model.Image);
+        }
+        else
+        {
+            @await Html.PartialAsync("../Shared/DesktopPostType/_Image", new byte[1]);
+        }
+    </a>
+    <div class="caption text-center">
+        <div class="truncate poster">
+            @Model.Title
+        </div>
+        <div class="sponsor">
+            SPONSORED 
+        </div>
+    </div>
+}

@@ -1,8 +1,8 @@
 ﻿using Main.Common.Enums;
-using Main.Common.Settings;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Infrastructure;
 
-namespace FineArtsWebApp
+namespace Main.WebAppCore
 {
     public class ProductCategoryMenuViewComponent : ViewComponent
     {

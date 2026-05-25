@@ -1,0 +1,83 @@
+﻿@using FineArtsWebApp;
+@model HomeViewModel;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleFAQ"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+
+<div class="container" id="top">
+    <div class="row card-form text-justify">
+        <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+            <h4 class="sub-title">FREQUENTLY ASKED QUESTIONS (FAQ)</h4>
+            <ol>
+                <li>
+                    <a href="#one">How to post a new Ad?</a>
+                </li>
+                <li>
+                    <a href="#two">How to create a new user account?</a>
+                </li>
+                <li>
+                    <a href="#three">How to manage my submitted ads?</a>
+                </li>
+            </ol>
+            <br />
+            <div id="one">
+                <h4 class="sub-title">How to post a new Ad?</h4>
+                <p>
+                    While accessing deshihutbazar.com from a mobile device, at the top of the browser window, there is a collapsed menu icon. Please expand the menu and click “Post Free Ad” button to navigate to the new post page. Then fill up all of the mandatory fields and click “Submit Free Ad.” button. Post will be submitted and within next 20 minutes, your Ad will be displayed in market.
+                </p>
+                <p>
+                    While accessing deshihutbazar.com from a laptop/PC device, at the top right corner of the browser window, there is a button “Post Free Ad”. Please click this button to navigate to the new post page. Then fill up all of the mandatory fields and click “Submit Free Ad.” button. Post will be submitted and within next 20 minutes, your Ad will be displayed in market.
+                </p>
+                <a href="#top">Go to top</a>
+            </div>
+            <br />
+            <br />
+            <div id="two">
+                <h4 class="sub-title">How to create a new user account?</h4>
+                <p>
+                    When user posts an ad for the first time, during the ad submission, a user account is created for user. There is no explicit link to sign up as a new user. Here user account is only created when user is just about to submit a new ad.
+                </p>
+                <p>
+                    In the “Post Free Ad” page, in Sign up panel (last panel in page), user will fill up his email address, and then system will ask for a password. Once user fills up the password, then upon “Submit Free Ad.” button click, system will automatically sign in and complete submission of the ad/post. Above is the case, when user email is already registered in system.
+                </p>
+                <p>
+                    During new post submission, in Sign up panel when user type his email address, system will check if any user account is available in database, if email address has no associated user account; system will ask to type in “Password”  &  “Re-Password”. Then upon “Submit Free Ad.” button click, system will automatically create a user account and complete post submission.
+                </p>
+                <a href="#top">Go to top</a>
+            </div>
+            <br />
+            <br />
+            <div id="three">
+                <h4 class="sub-title">How to manage my submitted ads?</h4>
+                <p>
+                    User will sign in in portal by clicking in the “Sign In” link at the top right corner (Laptop) or in the expanded menu (Mobile).
+                </p>
+                <p>
+                    After sign in, in the top right (Laptop) there will be one “User Icon” along with user’s name. User will click on the name and click “My Posts” to go to the page where user can manage (view/edit/delete) his/her submitted all posts/ads.
+                </p>
+                <p>
+                    After sign in, in the expanded menu (Mobile), there is a link “My Posts”. User will navigate to this link to manage (view/edit/delete) his/her submitted posts/ads.
+                </p>
+                <a href="#top">Go to top</a>
+            </div>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+    </script>
+    <script src="~/js/UserSession/naimul.letitgo.user.session.js" type="text/javascript"></script>
+}
+
+

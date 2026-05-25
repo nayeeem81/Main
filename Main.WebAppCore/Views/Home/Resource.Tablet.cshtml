@@ -1,0 +1,24 @@
+﻿@using FineArtsWebApp;
+@model HomeViewModel;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleResource"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = true;
+}
+<div class="container home-container" id="homePageContent">
+    @await Html.PartialAsync("../Shared/_PageContent", Model.ContentInfoViewModel)
+</div>
+@section scriptsapp {
+    <script type="text/javascript">
+            PAGE_NAME = '@Model.PageName';            
+    </script>
+    <script src="~/js/UserSession/naimul.letitgo.user.session.js" type="text/javascript"></script>
+}
+
+

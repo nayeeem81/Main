@@ -1,0 +1,66 @@
+﻿@using FineArtsWebApp;
+@model EmailViewModel
+<div class="container">
+    <h3 class="sub-title">
+        Online user submitted IMPORT message through online Bangladesh BAZAAR portal
+    </h3>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Dear Admin, <br />
+            Greetings from Deshi Hut Bazar! <br />
+            We are acknowledging here that following message was sent from an online user through
+            our online portal Import Message Link:
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Date/Time: @Model.SendDate.ToLongDateString()
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Messaged From: Home Page Import
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Subject: Import Message
+        </div>
+        <br />
+    </div>
+    <div class="row">        
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Phone: @Model.PhoneNofication
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Message: @Model.Message
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Thank you very much!
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Deshi Hut Bazar (Automatic Sender)
+        </div>
+    </div>
+    <div class="row" style="color:red;">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            *Please donot reply to this email.
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Office: @Model.SenderCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Head Office: @Model.SenderHQCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Website: @Model.SenderCompanyWebsite
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Phone: @Model.SenderCompanyPhone
+        </div>
+    </div>
+</div>

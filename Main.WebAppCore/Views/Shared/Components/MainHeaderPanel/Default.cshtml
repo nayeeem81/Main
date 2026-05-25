@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<div id="header-main" class="main-header">
+    <div class="header-container">
+        <a class="logo" id="ancor_Index_Home" href="@Url.Action("Index", "Home")" style="color:ghostwhite;font-size:large;font-style:italic;letter-spacing:2px;font-weight:bolder;">
+            @SharedLocalizer["LinkPortalURL"]
+        </a>
+        @await Html.PartialAsync("_SimpleSearchDesktop", Model)
+        <a id="ancor_NewPost_Post"
+               type="button"
+               class="header-action"
+               href="@Url.Action("NewPost", "Post")">
+            <i class="fa fa-plus fa-fw"></i>
+            @SharedLocalizer["LabelPostFreeAd"]
+        </a>
+    </div>
+</div>

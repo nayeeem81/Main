@@ -1,0 +1,54 @@
+﻿@model WebDeshiHutBazar.AccountViewModel
+@{
+    ViewBag.Title = Common.Language.LanguageDefault.ViewBagTitleSignIn;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <h4 class="sub-title">@Common.Language.LanguageDefault.LoginEnterCredentials</h4>
+                </div>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <input name="Email" type="email" class="fff" placeholder="Email" value="@Model.Email" style="padding-left:7px;" />
+                    </div>
+                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <input name="Password" type="password" class="fff" placeholder="Password" value="@Model.Password" style="padding-left:7px;" />
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <a href="@Url.Action("ResetPassword", "Account")">Forget Password?</a>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                        <button class="primary-button" type="submit">
+                            @Common.Language.LanguageDefault.LoginButtonSignIn
+                        </button>
+                    </div>
+                }
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 divider"></div>
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <h4>
+                        Don't have account? Please <a href="@Url.Action("SignUp","Account")">SIGN UP</a>.
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="gap"></div>
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+    </script>
+    <script src="~/Scripts/js/UserSession/naimul.letitgo.user.session.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/Account/naimul.ui.signin.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/naimul.ui.editor.phone.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/naimul.ui.editor.price.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/naimul.ui.password.validation.js" type="text/javascript"></script>
+    <script src="~/Scripts/js/naimul.ui.validation.js" type="text/javascript"></script>
+}
+

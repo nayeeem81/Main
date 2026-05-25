@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Email verification page";
+    Layout = "~/Views/Shared/_Layout.Mobile.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
+            <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+                @if (ViewBag.AlreadyDone)
+                {
+                    <h4>Please don't use this link again! Link expired already.</h4>
+                }
+                else
+                {
+                    <h4>Account verification successful!</h4>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

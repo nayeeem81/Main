@@ -1,13 +1,10 @@
 ﻿using Main.Common.Enums;
-using Main.Common.Helper;
-using Main.Common.HelperServices;
 using Main.Common.Model;
-using Main.Common.Settings;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using WebApp.ViewModel;
 
-namespace FineArtsWebApp;
+namespace Main.WebAppCore;
 
 public class MenuObjectModel
 {
@@ -20,7 +17,7 @@ public class MenuObjectModel
 
         AV_SubCategory = SelectListItemDropDown.GetSubCategoryList ( categoryFor );
         
-        AV_State = ViewComponenetDropDownDataList.GetAllStateList();
+        AV_State = SelectListItemDropDown.GetAllStateList();
     }
 
     public bool IsAdminUser { get; set; }

@@ -1,0 +1,42 @@
+﻿@using FineArtsWebApp;
+@model PagingModel
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    Guid guid = Guid.NewGuid();
+}
+
+<ul class="pagination" style="font-size:xx-large;color:black;">
+    @if (@Model.CurrPageNumber == 1)
+    {
+    }
+    else
+    {
+        <li>
+            <link rel="prev" href="@Model.PrevUrl" />
+            <link rel="prerender" href="@Model.PrevUrl" />
+            <a rel="prev" href="@Model.PrevUrl" aria-label="Previous">
+                <span aria-hidden="true" style="font-size:49px;color:black;border:none;">
+                    &nbsp; @SharedLocalizer["BACK"] &nbsp;
+                </span>
+            </a>
+        </li>
+    }
+    @if (@Model.CurrPageNumber < @Model.TotalPageCount)
+    {
+        <li>
+            <link rel="prerender" href="@Model.NextUrl" />
+            <link rel="next" href="@Model.NextUrl" />
+            <a rel="next" href="@Model.NextUrl" aria-label="Next">
+                <span aria-hidden="true" style="font-size:49px;color:black;border:none;">
+                    &nbsp;@SharedLocalizer["NEXT"]&nbsp;
+                </span>
+            </a>
+        </li>
+    }
+    else
+    {
+    }
+</ul>
