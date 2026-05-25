@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Main.Infrastructure.Data;
 using Repository;
 using IRepository;
 
@@ -19,10 +18,10 @@ public static class RegisterDatafrastructure
         // Identity Context (User & Role)
         services.AddDbContext<ApplicationDbContext> ( options =>
         {
-            options.UseSqlServer ( connectionString,b => b.MigrationsAssembly ( typeof ( ApplicationDbContext ).Assembly.FullName ) );
+            options.UseSqlServer ( connectionString );
         } );
 
-        services.AddIdentityCore<IdentityUser> ( options =>
+        services.AddIdentity<IdentityUser,IdentityRole> ( options =>
         {
             //SignIn
             options.SignIn.RequireConfirmedAccount = false;
@@ -43,7 +42,8 @@ public static class RegisterDatafrastructure
             options.User.RequireUniqueEmail = true;
         } )
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
-        .AddDefaultTokenProviders( ) ; 
+        .AddDefaultTokenProviders( )
+        .AddSignInManager ( );
         //Identity Context End
 
 
@@ -51,10 +51,7 @@ public static class RegisterDatafrastructure
         //(Web Application) Business DBContext 
         services.AddDbContext<BussinessAppDbContext> ( options =>
         {
-            options.UseSqlServer ( connectionString,
-                b => b.MigrationsAssembly
-                ( typeof ( BussinessAppDbContext ).Assembly.FullName )
-                );
+            options.UseSqlServer ( connectionString );
         } );
 
         

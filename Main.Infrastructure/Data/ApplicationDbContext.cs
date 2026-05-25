@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Main.Infrastructure.Data;
+namespace Main.Infrastructure;
 
 public class ApplicationDbContext ( DbContextOptions<ApplicationDbContext> options ): IdentityDbContext ( options )
 {

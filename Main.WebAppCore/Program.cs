@@ -9,6 +9,7 @@ AppSettings.Current =
             .GetSection ( "MyAppSettings" )
             .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
 
+
 builder.Services.AddHttpContextAccessor ( );
 
 builder.Services.AddScoped<IUserContext,UserContext> ( );

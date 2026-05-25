@@ -3,7 +3,7 @@ using IRepository;
 using Main.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using Domain.Model;
-using Main.Infrastructure.Data;
+using Main.Infrastructure;
 
 namespace Repository;
 

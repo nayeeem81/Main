@@ -2,10 +2,11 @@
 using Main.Common.Enums;
 using Domain.Model;
 
-namespace Main.Infrastructure.Data;
+namespace Main.Infrastructure;
 
 public class BussinessAppDbContext ( DbContextOptions<BussinessAppDbContext> options ): DbContext ( options )
 {
+
     public DbSet<Page> Pages { get; set; }
 
     public DbSet<PageContent> PageContents { get; set; }

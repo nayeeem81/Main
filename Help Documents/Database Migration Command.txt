@@ -1,0 +1,76 @@
+1. Identity:
+
+Add-Migration InitialIdentityMigration1 -Context Main.Infrastructure.ApplicationDbContext -OutputDir Data/Migrations/Identity
+
+Update-Database -Context Main.Infrastructure.ApplicationDbContext
+
+
+2. Business Web Context:
+
+Add-Migration InitialBusinessMigration1 -Context Main.Infrastructure.BussinessAppDbContext -OutputDir Data/Migrations/Business
+
+Update-Database -Context Main.Infrastructure.BussinessAppDbContext
+
+
+
+Question:
+
+My solution has a Infrastructure project which is self registered, through the service project; both the services, repositories and data are registered in program.cs in the web project. I want to run migration command inpackage manager console. I have two dbcontexts (Identity and business related) both have same connection string. Please give the commands and explain; how they are working. My class libraries are based on .NET 8.0.
+
+Google.com
+
+To apply migrations for your two different DbContexts in a multi-project .NET 8 solution, specify the -Context parameter so Entity Framework knows exactly which context to target. This ensures correct separation, even if both contexts share the same connection string. The Package Manager Console (PMC) Commands 
+
+Open the PMC in Visual Studio and run the following commands:
+
+1. For the Identity DbContextpowershell
+
+Add-Migration InitialIdentityMigration -Context YourNamespace.IdentityDbContextName -OutputDir Data/Migrations/Identity
+
+Update-Database -Context YourNamespace.IdentityDbContextName
+
+Use code with caution.
+
+2. For the Business DbContext powershell
+
+Add-Migration InitialBusinessMigration -Context YourNamespace.BusinessDbContextName -OutputDir Data/Migrations/Business
+
+Update-Database -Context YourNamespace.BusinessDbContextName
+
+
+Use code with caution. 
+
+How These Commands Work:
+Because your solution is decoupled with an Infrastructure layer and dependencies are registered in a Web program.cs, EF Core needs specific instructions to find everything:
+
+-Context <Namespace.DbContextName>: 
+
+Because you have two DbContexts, this tells EF which model schema to generate. Without this flag, EF will throw an ambiguous match error.
+
+
+-OutputDir <Path>: 
+
+This places the generated migration C# files in a neat, organized subfolder. It prevents the migration files for identity and business tables from clashing in the same folder.
+
+Add-Migration: 
+
+Scans your configured DbContext (and its entity configurations), compares it against a snapshot of your previous database state, and generates a C# class with the Up() and Down() methods required to modify the schema.
+
+Update-Database: 
+
+Compiles your project, resolves your services and connection string from the startup project (your Web project), and executes the migration SQL directly against the target database.
+
+How the Dependencies Resolve:
+
+Even though your DbContext classes live in the Infrastructure class library, the command still works perfectly as long as your environment is configured properly.
+
+Startup Project: 
+
+Ensure your Web project is set as the Startup Project in Visual Studio. This is crucial because EF Core must be able to read the connection strings and dependency injections configured in program.cs.
+
+Default Project: 
+
+Ensure the Infrastructure project (or whichever project holds the actual DbContext classes) is selected as the Default Project in the PMC dropdown. This tells the tooling where to save the migration C# files. 
+
+For detailed CLI options and troubleshooting, consult the official EF Core Tools Reference.
+
