@@ -32,7 +32,7 @@ public class HomeController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
+        //var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
 
         HomeViewModel homeViewModel = new HomeViewModel("Home Page");
 

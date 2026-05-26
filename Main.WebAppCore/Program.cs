@@ -20,9 +20,9 @@ builder.Services.AddCustomLocalization ( );
 
 builder.Services.AddControllersWithViews ( );
 
-builder.Services.AddAuthenticationCore ( );
+builder.Services.AddAuthentication ( );
 
-builder.Services.AddAuthorizationCore ( );
+builder.Services.AddAuthorization ( );
 
 builder.Services.AddWebOptimizer ( pipeline =>
 {
@@ -77,6 +77,8 @@ app.UseCustomLocalization ( );
 app.UseAuthentication ( );
 
 app.UseAuthorization ( );
+
+app.MapControllers ( );
 
 app.MapDefaultControllerRoute ( );
 
