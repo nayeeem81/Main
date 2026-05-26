@@ -1,0 +1,6 @@
+﻿var PAGE_NAME = "";
+var LENGTH_RULE = "LENGTH_RULE";
+var LENGTH_RULE_SIZE = "7";
+var SAME_LENGTH_RULE = "SAME_LENGTH_RULE";
+var LITERAL_COMPARE_RULE = "LITERAL_COMPARE_RULE";
+var HasCalledBrowserFunction = false;

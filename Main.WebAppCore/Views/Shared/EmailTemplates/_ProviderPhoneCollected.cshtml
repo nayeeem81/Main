@@ -1,0 +1,63 @@
+﻿@using FineArtsWebApp;
+@model EmailViewModel
+<div class="container">
+    <h3 class="sub-title">
+        Online Visitor Collected Your Phone Number
+    </h3>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Dear Sir/Madam, <br />
+            Greetings from Deshi Hut Bazar! <br />
+            <br />
+            We are acknowledging here that your Fabia Service provider phone number is collected
+            from <a href="@Model.SenderCompanyWebsite">Bangladesh BAZAAR</a>. <br />
+            Just now, one of them collected your provider's phone number.
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Fabia Service: @Model.PostTitle
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            We really appreciate your presence in <a href="@Model.SenderCompanyWebsite">Bangladesh BAZAAR</a>
+            and we want your successful business with our portal.
+            <br />
+            <br />
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Thank you very much!
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Deshi Hut Bazar (Information Team)
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row" style="color:red;">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            *Please donot reply to this email.
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Office: @Model.SenderCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Head Office: @Model.SenderHQCompanyAddress
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Website: @Model.SenderCompanyWebsite
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+            Phone: @Model.SenderCompanyPhone
+        </div>
+    </div>
+</div>

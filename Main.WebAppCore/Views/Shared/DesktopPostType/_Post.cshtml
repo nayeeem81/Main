@@ -1,0 +1,29 @@
+﻿@using FineArtsWebApp;
+@model TemplateDisplayViewModel
+@if (Model != null)
+{
+    <a href="@Model.PostItemDetailViewUrl" target="_blank" class="thumbnail @Model.ImageCategoryClass">
+        @if (Model.Image != null)
+        {
+            @await Html.PartialAsync("../Shared/DesktopPostType/_Image", Model.Image);
+        }
+        else
+        {
+            @await Html.PartialAsync("../Shared/DesktopPostType/_Image", new byte[1]);
+        }
+    </a>
+    <div class="caption text-center">
+        <div class="truncate">
+            @Model.Title
+        </div>
+        <div class="home-currency-font-color">
+            @Model.FormattedPriceValue
+        </div>
+        @*@if (Model.ShowCartButton)
+        {
+            <div class="add-to-cart sub-content" data-id="@Model.PostID">
+                ADD TO CART
+            </div>
+        }*@
+    </div>
+}

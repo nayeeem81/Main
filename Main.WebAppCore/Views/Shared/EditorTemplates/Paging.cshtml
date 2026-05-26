@@ -1,0 +1,63 @@
+﻿@using FineArtsWebApp;
+@model PagingModel
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    Guid guid = Guid.NewGuid();
+}
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <ul class="new-pagination">
+            @if (@Model.CurrPageNumber == 1)
+            {
+                <li class="disabled">
+                    <link rel="next" href="@Model.NextUrl" />
+                    <link rel="prerender" href="@Model.NextUrl" />
+                    <span aria-hidden="true" title="First Page">
+                        <i class="glyphicon glyphicon-menu-left"></i>
+                    </span>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <link rel="prev" href="@Model.PrevUrl" />
+                    <link rel="prerender" href="@Model.PrevUrl" />
+                    <a rel="prev" href="@Model.PrevUrl" aria-label="Previous">
+                        <span aria-hidden="true">
+                            <i class="glyphicon glyphicon-menu-left"></i>
+                        </span>
+                    </a>
+                </li>
+            }
+            <li class="paging-status-text">@SharedLocalizer["Page"] - @Model.CurrPageNumber / @Model.TotalPageCount</li>
+            @if (Model.CurrPageNumber < Model.TotalPageCount)
+            {
+                <li>
+                    <link rel="prerender" href="@Model.NextUrl" />
+                    <link rel="next" href="@Model.NextUrl" />
+                    <a rel="next" href="@Model.NextUrl" aria-label="Next">
+                        <span aria-hidden="true">
+                            <i class="glyphicon glyphicon-menu-right"></i>
+                        </span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="disabled">
+                    <link rel="prerender" href="@Model.PrevUrl" />
+                    <link rel="prev" href="@Model.PrevUrl" />
+                    <span aria-hidden="true" title="Last Page">
+                        <i class="glyphicon glyphicon-menu-right"></i>
+                    </span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+

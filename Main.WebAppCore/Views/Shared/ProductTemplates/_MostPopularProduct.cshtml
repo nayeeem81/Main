@@ -1,0 +1,152 @@
+﻿@using Common
+@model GroupPanelTemplateDisplayViewModel
+@{
+    var categoryID = "";
+    TemplateDisplayViewModel primaryProduct = null;
+    List<TemplateDisplayViewModel> listProducts = null;
+    bool shouldProceed = true;
+    var primaryWebURL = "";
+    if (Model.ListGroupPost != null && Model.ListGroupPost.Count(a => a.PostType == EnumPostType.Post || a.PostType == EnumPostType.Product && a.Image != null) == 9)
+    {
+        primaryProduct = Model.ListGroupPost.FirstOrDefault(a => a.PostType == EnumPostType.Post || a.PostType == EnumPostType.Product && a.Image != null);
+        listProducts = Model.ListGroupPost.Skip(1).Take(8).ToList();
+        categoryID = Model.ListGroupPost[0].CategoryID.ToString();
+        if (string.IsNullOrEmpty(primaryProduct.WebsiteUrl))
+        {
+            primaryWebURL = primaryProduct.PostItemDetailViewUrl;
+        }
+        else
+        {
+            primaryWebURL = primaryProduct.WebsiteUrl;
+        }
+    }
+    else
+    {
+        shouldProceed = false;
+    }
+}
+@if (shouldProceed == true)
+{
+<div class="container @categoryID container-gap">
+    @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+    {
+        <div class="row">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                <h4 class="title blue-text">
+                    @Model.GroupPanelTitle
+                </h4>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-lg-4 col-xs-12 white-bg">
+            <a href="@primaryWebURL" target="_blank" class="thumbnail only-image">
+                @Html.Partial("../Shared/ProductTemplates/_PrimarySquareImage", primaryProduct.Image)
+            </a>
+            <div class="caption text-center truncate blue-text" style="padding-bottom:10px;">
+                @primaryProduct.Title
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-lg-8 col-xs-12">
+            <div class="row">
+                @foreach (var product in listProducts.ToList())
+                {
+                    <div class="col-md-3 col-sm-3 col-lg-3 col-xs-6 white-bg">
+                        @if (product.PostType == EnumPostType.AdSpace)
+                        {
+                            <a href="@product.WebsiteUrl" target="_blank" class="thumbnail only-image">
+                                @if (product.Image != null)
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", product.Image);
+                                }
+                                else
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", new byte[1]);
+                                }
+                            </a>
+                            <div class="caption text-center" style="margin-bottom:10px;">
+                                <div class="truncate blue-text" style="margin-bottom:3px;">
+                                    @product.Title
+                                </div>
+                                <div class="truncate sponsor" style="margin-bottom:3px;">
+                                    SPONSORED
+                                </div>
+                            </div>
+                        }
+                        else if (product.PostType == EnumPostType.FabiaService)
+                        {
+                            <a href="@product.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                                @if (product.Image != null)
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", product.Image);
+                                }
+                                else
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", new byte[1]);
+                                }
+                            </a>
+                            <div class="caption text-center" style="margin-bottom:10px;">
+                                <div class="truncate blue-text" style="margin-bottom:3px;">
+                                    @product.Title
+                                </div>
+                                <div class="fabia-service truncate" style="margin-bottom:3px;">
+                                    FABIA SERVICE
+                                </div>
+                            </div>
+                        }
+                        else if (product.PostType == EnumPostType.ShortVideo)
+                        {
+                            <a class="thumbnail only-image">
+                                @if (!string.IsNullOrEmpty(product.WebsiteUrl))
+                                {
+                                    <iframe style="width:100%;height:110px;max-height:110px;min-height:110px;padding:0px;margin:0px;"
+                                            src="https://www.youtube.com/embed/@product.WebsiteUrl.Trim()"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen></iframe>
+                                }
+                            </a>
+                            <div class="caption text-center" style="margin-bottom:10px;">
+                                <div class="truncate blue-text" style="margin-bottom:3px;">
+                                    @product.Title
+                                </div>
+                            </div>
+                        }
+                        else if (product.PostType == EnumPostType.ShortNote)
+                        {
+                            <div class="caption text-center" style="margin-bottom:10px;">
+                                <div class="truncate" style="margin-bottom:3px;">
+                                    <h4 class="sub-title blue-text">
+                                        @product.Title
+                                    </h4>
+                                </div>
+                                <div class="info text-justify square-item-shortnote blue-text">
+                                    @product.Description
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="@product.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                                @if (product.Image != null)
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", product.Image);
+                                }
+                                else
+                                {
+                                    @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", new byte[1]);
+                                }
+                            </a>
+                            <div class="caption text-center" style="margin-bottom:10px;">
+                                <div class="truncate blue-text" style="margin-bottom:3px;">
+                                    @product.Title
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}

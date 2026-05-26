@@ -1,0 +1,250 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="application-name"
+          content="@SharedLocalizer["LinkPortalURL"]" />
+
+    <title>
+        @ViewBag.Title | @SharedLocalizer["LinkPortalURL"]
+    </title>
+
+    <link rel="shortcut icon"
+          href="~/favicon.ico"
+          type="image/x-icon" />
+    <link href="~/favicon.ico"
+          rel="icon"
+          type="image/x-icon" />
+
+    <link rel="stylesheet"
+          href="~/css/css/all.css"
+          type="text/css">
+
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+</head>
+<body>
+    <span id="pick"></span>
+    @if (ViewBag.ExcludeHeader == true)
+    {
+        <header id="layoutHeaderContainer">
+            @await Component.InvokeAsync("TopHeaderPanel")
+        </header>
+
+        <div id="layoutBodyContainer" class="body-content">
+            <main>
+                @RenderBody()
+                <div class="fixed-action-btn">
+                    <a class="btn-floating" href="#pick" role="link">
+                        <i class="glyphicon glyphicon-menu-up"></i>
+                    </a>
+                </div>
+            </main>
+        </div>      
+    }
+    else 
+    {
+        <header id="layoutHeaderContainer">
+            @await Component.InvokeAsync("TopHeaderPanel")
+            @await Component.InvokeAsync("MainHeaderPanel")
+            @await Component.InvokeAsync("BottomHeaderPanel")
+        </header>
+
+        @await Component.InvokeAsync("AdvancedSearchDesktop")
+        @* @await Component.InvokeAsync("ShoppingCartNotification") *@
+       
+        <div id="layoutBodyContainer" class="body-content">
+            <main>
+                    
+                @RenderBody()
+                   
+                <div class="fixed-action-btn">
+                    <a class="btn-floating" href="#pick" role="link">
+                        <i class="glyphicon glyphicon-menu-up"></i>
+                    </a>
+                </div>
+
+            </main>
+        </div>
+    }
+
+    <footer>
+        <div class="footer-content">
+            <a> @SharedLocalizer["LinkResources"]</a> &nbsp; |
+            <a style="color:white;" href="@Url.Action("Terms","Home")">@SharedLocalizer["LinkPrivacyAndTerms"]</a> &nbsp; |
+            <a style="color:white;" href="@Url.Action("FAQ","Home")">@SharedLocalizer["LinkFaq"]</a> &nbsp; |
+            <a style="color:white;" href="@Url.Action("Contact", "Home")">@SharedLocalizer["LinkContact"]</a> &nbsp; |
+            © 2019 @SharedLocalizer["LinkPortalURL"], All rights reserved.
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        var sessionuserurl = '@Url.Action("GetSessionUserObject", "Auth")';
+        var loginUrl = '@Url.Action("AuthorizeUser", "Auth")';
+        var authenticateurl = '@Url.Action("AuthenticateUser", "Auth")';
+        var loginadminurl = '@Url.Action("AuthenticateAdminUser", "Auth")';
+        var emailresetpassword = '@Url.Action("EmailResetPassword", "Auth")';
+        var signinaccurl = '@Url.Action("Signin", "Auth")'; 
+        var authnadmingateway = '@Url.Action("AuthenticateAdminLoginGateway", "Auth")';
+        var adminsignaccount = '@Url.Action("Signin", "Auth")';
+        var updateaccpassword = '@Url.Action("UpdateAccountPassword", "Auth")';
+        var urlVerifyEmailAccount = '@Url.Action("EmailVerify", "Auth")';
+        var userSessionUpdateUrl = '@Url.Action("SetSessionUser", "Auth")';
+
+        //Home Page Links
+        var homeurl = '@Url.Action("Index", "Home")';
+        var savecontacturl = '@Url.Action("SaveContactMessage", "Home")';
+        var browserUrl = '@Url.Action("BrowserInfo", "Home")';
+        var browserlogurl = '@Url.Action("BrowserInfo", "Home")';
+        var getsubcategoryurlsearch = '@Url.Action("GetSubCategories", "Home", new { Area=""})';
+
+        //Home Page Links
+        var changeLanguageUrl = '@Url.Action("Change", "Culture")' + '?LanguageAbbrevation=';
+
+        //Home Page Links
+        var simplesearchmarketurl = '@Url.Action("Market", "SimpleSearchMarket", new { pageLocation = "AllMarket", tab = "all", pageNumber = "1" })';
+
+        //Everywhere
+        var unwanteraccessurl = '@Url.Action("UnwantedAccessError", "Base")';
+        
+        //Not used 
+        var saveadspaceurl = '@Url.Action("SaveAdsSpace", "Advertisement")';
+        var uploadadvimageurl = '@Url.Action("ImageUpload1", "Advertisement")';
+
+        //Not used yet
+        var manageposturl = '@Url.Action("Manage", "ManagePost")';
+        //Not used yet
+        var anynewmailurl = '@Url.Action("IsThereAnyNewMessageForUser", "Message")';
+        //Not used yet
+        var updateaccount = '@Url.Action("UpdateAccount", "AccountSettings")';
+        
+        //Logging (Not used)
+        var postVisitLogUrl = '@Url.Action("LogPostVisit", "AllItemMarket")';
+        var commentLikeUrl = '@Url.Action("LikeThisComment", "AllItemMarket")';
+        var userSessionUrl = '@Url.Action("LogSession", "UserSessionLog")';
+        //var checkemailurl = '@Url.Action("", "Account")';
+
+        //Home
+        var postLikeUrl = '@Url.Action("LikeThisPost", "Post")';
+        var joinFabiaServiceUrl = '@Url.Action("JoinFabiaService", "FabiaService")';
+        var newProviderURL = '@Url.Action("NewProvider", "FabiaProvider")';
+        var newPostURL = '@Url.Action("NewPost", "Post")';
+        var addToCartURL = '@Url.Action("AddCartItem", "ProductShoppingCart")';
+        var removeImageURL = '@Url.Action("ImageRemove", "Post")?id=';
+           
+        var submitProductRequestURL = '@Url.Action("SubmitProductRequest", "RequestInformation")';
+        var submitImportRequestURL = '@Url.Action("SubmitImportRequest", "RequestInformation")';
+        var submitExportRequestURL = '@Url.Action("SubmitExportRequest", "RequestInformation")';
+            
+
+        //Constants
+        var USER_EMAIL_ALREADY_IN_DATABASE_MESSAGE = '@SharedLocalizer["USER_EMAIL_ALREADY_IN_DATABASE_MESSAGE"]';
+        var PLEASE_ENTER_VALID_EMAIL_ADDRESS = '@SharedLocalizer["PLEASE_ENTER_VALID_EMAIL_ADDRESS"]';
+        var SAVING_DATEBASE = '@SharedLocalizer["SAVING_DATEBASE"]';
+        var EMAIL_NOT_IN_CORRECT_FORMAT = '@SharedLocalizer["EMAIL_NOT_IN_CORRECT_FORMAT"]';
+        var PLEASE_ENTER_TEXT_FOR_INPUT_FIELDS = '@SharedLocalizer["PLEASE_ENTER_TEXT_FOR_INPUT_FIELDS"]';
+        var VALIDATION_FAILED = '@SharedLocalizer["VALIDATION_FAILED"]';
+        var POST_NOT_SAVED = '@SharedLocalizer["POST_NOT_SAVED"]';
+        var PHONE_IS_NOT_IN_CORRECT_FORMAT = '@SharedLocalizer["PHONE_IS_NOT_IN_CORRECT_FORMAT"]';
+        var SUCCESS ='@SharedLocalizer["SUCCESS"]';
+        var YOUR_POST_HAVE_BEEN_SUBMITTED = '@SharedLocalizer["YOUR_POST_HAVE_BEEN_SUBMITTED"]';
+        var PASSWORD_MINIMUM_HAS_TO_BE = '@SharedLocalizer["PASSWORD_MINIMUM_HAS_TO_BE"]';
+        var PASSWORD_AND_REPASSWORD_HAS_TO_BE = '@SharedLocalizer["PASSWORD_AND_REPASSWORD_HAS_TO_BE"]';
+        var PASSWORD_AND_REPASSWORD_HAS_TO_BE_SAME ='@SharedLocalizer["PASSWORD_AND_REPASSWORD_HAS_TO_BE_SAME"]';
+        var THE_FIELD = '@SharedLocalizer["THE_FIELD"]';
+        var IS_REQUIRED = '@SharedLocalizer["IS_REQUIRED"]';
+        var MAX_LEN_FOR_THE_FIELD = '@SharedLocalizer["MAX_LEN_FOR_THE_FIELD"]';
+        var IS = '@SharedLocalizer["IS"]';
+        var CHARACTERS = '@SharedLocalizer["CHARACTERS"]';
+        var PLEASE_CHECK_YOUR_PASSWORD ='@SharedLocalizer["PLEASE_CHECK_YOUR_PASSWORD"]';
+        var PLEASE_ENTER_VALID_EMAIL = '@SharedLocalizer["PLEASE_ENTER_VALID_EMAIL"]';
+        var YOUR_ACCOUNT_HAS_BEEN_UPDATED = '@SharedLocalizer["YOUR_ACCOUNT_HAS_BEEN_UPDATED"]';
+        var PLEASE_ENTER_TEXT_FOR_INPUT = '@SharedLocalizer["PLEASE_ENTER_TEXT_FOR_INPUT"]';
+        var PASSWORD_HAS_BEEN_CHANGED = '@SharedLocalizer["PASSWORD_HAS_BEEN_CHANGED"]';
+        var PASSWORD_NOT_CHANGED = '@SharedLocalizer["PASSWORD_NOT_CHANGED"]';
+        var PASSWORD_CHANGE_FAILED = '@SharedLocalizer["PASSWORD_CHANGE_FAILED"]';
+        var PASSWORD_CANNOT_BE_CHANGED = '@SharedLocalizer["PASSWORD_CANNOT_BE_CHANGED"]';
+        var EMAIL_OR_PASSWORD_INCORRECT = '@SharedLocalizer["EMAIL_OR_PASSWORD_INCORRECT"]';
+        var PLEASE_ENTER_NAME = '@SharedLocalizer["PLEASE_ENTER_NAME"]';
+        var PLEASE_ENTER_EMAIL = '@SharedLocalizer["PLEASE_ENTER_EMAIL"]';
+        var PLEASE_ENTER_VALID_EMAI = '@SharedLocalizer["PLEASE_ENTER_VALID_EMAI"]';
+        var PLEASE_ENTER_SUBJECT_FOR_MESSAGE = '@SharedLocalizer["PLEASE_ENTER_SUBJECT_FOR_MESSAGE"]';
+        var PLEASE_ENTER_AREA_FOR_MESSAGE = '@SharedLocalizer["PLEASE_ENTER_AREA_FOR_MESSAGE"]';
+        var PLEASE_ENTER_YOUR_MESSAGE = '@SharedLocalizer["PLEASE_ENTER_YOUR_MESSAGE"]';
+        var PLEASE_WAIT_FOR_A_WHILE = '@SharedLocalizer["PLEASE_WAIT_FOR_A_WHILE"]';
+        var MESSAGE_RECEIVED = '@SharedLocalizer["THANKS"]';
+        var WE_WILL_CONTACT_AT_AN_EARLIEST = '@SharedLocalizer["MESSAGE_RECEIVED"]';
+        var PLEASE_ENTER_PASSWORD = '@SharedLocalizer["PLEASE_ENTER_PASSWORD"]';
+        var PLEASE_ENTER_RePASSWORD = '@SharedLocalizer["PLEASE_ENTER_RePASSWORD"]';
+        var SUBMITTING = '@SharedLocalizer["SUBMITTING"]';
+        var PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL = '@SharedLocalizer["PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL"]';
+        var MESSAGE_SENT ='@SharedLocalizer["MESSAGE_SENT"]';
+        var MESSAGE_SENT_TO_ADVERTISER_SUCCESSFULLY = '@SharedLocalizer["MESSAGE_SENT_TO_ADVERTISER_SUCCESSFULLY"]';
+        var Error = '@SharedLocalizer["Error"]';
+        var REQUEST_SEND_FAILED = '@SharedLocalizer["Error"]';
+        var IMAGE_LOAD_SUCCESSFUL = '@SharedLocalizer["IMAGE_LOAD_SUCCESSFUL"]';
+        var LOADING = '@SharedLocalizer["LOADING"]';
+        var DELETING = '@SharedLocalizer["DELETING"]';
+        var DELETE_SUCCESS = '@SharedLocalizer["DELETE_SUCCESS"]';
+        var DELETED_TEXT = '@SharedLocalizer["DELETED_TEXT"]';
+        var DELETE_CNFIRMATION = '@SharedLocalizer["DELETE_CNFIRMATION"]';
+        var YOUR_POST_IS_NOT_DELETED_BECAUSE_OF = '@SharedLocalizer["YOUR_POST_IS_NOT_DELETED_BECAUSE_OF"]';
+        var UPDATEING ='@SharedLocalizer["UPDATEING"]';
+        var POST_NOT_UPDATED ='@SharedLocalizer["UPDATEING"]';
+        var PLEASE_ENTER_MSG_TO_REPLY = '@SharedLocalizer["PLEASE_ENTER_MSG_TO_REPLY"]';
+        var REPLYING = '@SharedLocalizer["REPLYING"]';
+        var MESSAGE_SENT_SUCCESSFUL  = '@SharedLocalizer["MESSAGE_SENT_SUCCESSFUL"]';
+        var ARE_YOU_SURE_TO_DLETE = '@SharedLocalizer["ARE_YOU_SURE_TO_DLETE"]';
+        var CLIENT_NAME_REQUIRED = '@SharedLocalizer["CLIENT_NAME_REQUIRED"]';
+        var TITLE_IS_REQUIRED = '@SharedLocalizer["TITLE_IS_REQUIRED"]';
+        var YourPostHasBeenUpdated = '@SharedLocalizer["YourPostHasBeenUpdated"]';
+        var PLEASE_ENTER_PHONE = '@SharedLocalizer["EnterYourPhoneNumber"]';
+        var TitleField = '@SharedLocalizer["TITLEField"]';
+        var CategoryField = '@SharedLocalizer["CategoryField"]';
+        var SubCategoryField = '@SharedLocalizer["SubCategoryField"]';
+        var PriceField = '@SharedLocalizer["PriceField"]';
+        var ClientNameField = '@SharedLocalizer["ClientNameField"]';
+        var PhoneField = '@SharedLocalizer["PhoneField"]';
+        var EmailField = '@SharedLocalizer["EmailField"]';
+        var PasswordField = '@SharedLocalizer["PasswordField"]';
+        var RePasswordField = '@SharedLocalizer["RePasswordField"]';
+        var interestCategoryID = '';
+    </script>
+        
+    <script src="~/js/naimul.ui.layout.global.variables.js"></script>
+    <script src="~/js/bootstrap-notify.js"></script>
+    <script src="~/js/cookei.js"></script>
+    <script src="~/js/naimul.ui.cookie.js"></script>
+    <script src="~/js/naimul.ui.layout.js"></script>
+    <script src="~/js/Chart.min.js"></script>
+    <script src="~/js/search.js"></script>
+    <script src="~/js/Home/naimul.ui.fabia.dropdown.js"></script>
+        
+    <script>
+        $(function () {
+            
+            $('#ancorLanguage').on('show.bs.dropdown', function () { });
+
+            $('#ancorLanguage').dropdown();
+
+            $(".carousel").carousel({
+                interval: 4000
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("scriptsapp", required: false)
+
+</body>
+</html>

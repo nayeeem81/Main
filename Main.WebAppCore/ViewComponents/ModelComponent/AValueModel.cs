@@ -1,35 +1,33 @@
 ﻿using Main.Common.Enums;
 
-namespace FineArtsWebApp
-{
-    public class AValueModel
-    {        
-        public AValueModel() { }
-        
-        public AValueModel(string text, EnumAllowedVariable variable)
-        {
-            if(string.IsNullOrEmpty(text))
-                throw new ArgumentException("Text not provided.");
-            Text = text;
-            Variable = variable;
-        }
-        
-        public long ValueID { get; set; }
-        
-        public string Text { get; set; }
-        
-        public EnumAllowedVariable Variable { get; set; }
-        
+namespace Main.WebAppCore;
 
-        public long ParentValueID { get; set; }
+public class AValueModel
+{        
+    public AValueModel() { }
+    
+    public AValueModel(string text, EnumAllowedVariable variable)
+    {
+        if(string.IsNullOrEmpty(text))
+            throw new ArgumentException("Text not provided.");
+        Text = text;
+        Variable = variable;
+    }
+    
+    public long ValueID { get; set; }
+    
+    public string Text { get; set; }
+    
+    public EnumAllowedVariable Variable { get; set; }
 
-        public string IconLink { get; set; }
+    public long ParentValueID { get; set; }
 
-        public List<AValueModel> ChildAValueList { get; set; }
+    public string IconLink { get; set; }
 
-        public List<AValueModel> GetAValueListByParentId(List<AValueModel> subcategoryList, long parentId)
-        {
-            return subcategoryList.Where(a => a.ParentValueID == parentId).ToList();
-        }
+    public List<AValueModel> ChildAValueList { get; set; }
+
+    public List<AValueModel> GetAValueListByParentId(List<AValueModel> subcategoryList, long parentId)
+    {
+        return subcategoryList.Where(a => a.ParentValueID == parentId).ToList();
     }
 }

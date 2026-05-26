@@ -1,0 +1,136 @@
+﻿@using FineArtsWebApp;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@model TemplateDisplayViewModel
+
+@{
+    var poster = "";
+    if (!string.IsNullOrEmpty(Model.PosterName))
+    {
+        poster = Model.PosterName;
+    }
+    else if (!string.IsNullOrEmpty(Model.ClientName))
+    {
+        poster = Model.ClientName;
+    }
+    var image = Model.Image ?? new byte[1];
+    var isPreium = new Random().Next(2) % 2 == 0;
+    var cssClass = isPreium ? "premium" : "";
+}
+@if (Model != null)
+{
+    <div class="all-market-card @cssClass">
+        <a class="image"
+           data-id="@Model.PostID"
+           href="@Model.PostItemDetailViewUrl"
+           target="_blank">
+            @await Html.PartialAsync("../Shared/DesktopPostType/_MarketItemImage", image)
+            @if (!string.IsNullOrEmpty(Model.DisplayState))
+            {
+                <div class="poster">
+                    <i class="glyphicon glyphicon-map-marker"></i>
+                    @Model.DisplayState
+                </div>
+            }
+        </a>
+        <div class="market-content">
+            <p class="title">@Model.Title</p>
+            <b class="price">@Model.FormattedPriceValue</b>
+            <p class="note">
+                @if (!string.IsNullOrEmpty(poster))
+                {
+                    <span>@poster</span>
+                }
+                - @Model.PublishDate
+            </p>
+            @if (Model.IsBrandNew)
+            {
+                <div class="tag new">
+                    <i class="fa fa-check fa-fw"></i>
+                    @SharedLocalizer["MarketItemNewItem"]
+                </div>
+            }
+            @if (Model.IsUsed)
+            {
+                <div calss="tag used">
+                    @SharedLocalizer["MarketItemUsedItem"]
+                </div>
+            }
+            @if (Model.IsUrgent)
+            {
+                <div class="tag urgent">
+                    <i class="fa fa-exclamation fa-fw"></i>
+                    @SharedLocalizer["MarketItemUrgentSell"]
+                </div>
+            }
+            @if (Model.IsForSell)
+            {
+                <div class="tag for-sell">
+                    <i class="fa fa-bullhorn fa-fw"></i>
+                    @SharedLocalizer["MarketItemForSell"]
+                </div>
+            }
+            @if (Model.IsForRent)
+            {
+                <div class="tag for-rent">
+                    <i class="fa fa-retweet fa-fw"></i>
+                    @SharedLocalizer["MarketItemForRent"]
+                </div>
+            }
+            @if (Model.IsPrivateSeller)
+            {
+                <div class="tag personal">
+                    <i class="fa fa-user fa-fw"></i>
+                    @SharedLocalizer["MarketItemIndividual"]
+                </div>
+            }
+            @if (Model.IsCompanySeller)
+            {
+                <div class="tag company">
+                    <i class="fa fa-business-time fa-fw"></i>
+                    @SharedLocalizer["MarketItemCompany"]
+                </div>
+            }
+            <div class="market-action">
+                <a class="sub-content-action">
+                    <i data-count="@Model.LikeCount"
+                       data-id="@Model.PostID"
+                       data-like-market
+                       class="fa fa-fw fa-thumbs-up green-icon-inactive">
+                    </i>
+                </a>
+                <a class="sub-content"
+                   data-id="@Model.PostID">
+                    <span class="main"
+                          data-like-count
+                          data-id="@Model.PostID">
+                        @Model.LikeCount
+                    </span>
+                    <span class="content">
+                        @SharedLocalizer["MarketItemLikes"]
+                    </span>
+                </a>
+                <a class="sub-content"
+                   data-id="@Model.PostID">
+                    <span class="main">
+                        @Model.CommentsCount
+                    </span>
+                    <span class="content">
+                        @SharedLocalizer["MarketItemComments"]
+                    </span>
+                </a>
+                @*@if (Model.ShowCartButton)
+                {
+                    <a class="sub-content pull-right">
+                        <span class="market-add-to-cart" data-id="@Model.PostID">
+                            ADD TO CART
+                        </span>
+                    </a>
+                }*@
+            </div>
+        </div>
+    </div>
+}

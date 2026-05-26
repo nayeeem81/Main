@@ -1,0 +1,51 @@
+﻿@using Main.Common.Enums
+@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    var listCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.Category).ToList();
+    var listSubCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.SubCategory).ToList();
+    var InitText = !String.IsNullOrEmpty(Model.InitCategoryText) ? Model.InitCategoryText : @SharedLocalizer["CateAccordionViewByMarkets"];
+    var categoryCss = "";
+}
+<ul class="side-menu">
+    @{
+        var counter = 1;
+        foreach (var category in listCategories.ToList())
+        {
+            <li class="category" data-category="@counter">
+                <i class="@category.IconLink"></i>
+                <span class="custom-dropdown-category-text-spacing">
+                    @category.Text
+                </span>
+                <i class="fa fa-caret-right"></i>
+            </li>
+            counter++;
+        }
+    }
+</ul>
+@{
+    var counter1 = 1;
+    foreach (var category in listCategories.ToList())
+    {
+        categoryCss = category.IconLink;
+        <div class="subcategory side-menu" data-subcategory="@counter1">
+            <h4 class="sub-category-title">@category.Text</h4>
+            <ul>
+                @foreach (var subcategory in listSubCategories.Where(a => a.ParentValueID == category.ValueID).ToList())
+                {
+                    <li class="sub-category">
+                        <a class="sub-category-li @subcategory.Text.Replace(" ", "")"
+                               data-text="@subcategory.Text"
+                               href="@Url.Action("Market", "CategoryMarket", new { subcategoryid = subcategory.ValueID, pageNumber = "1" })">
+                            <span class="sub-category">
+                                @subcategory.Text
+                            </span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+        counter1++;
+    }
+}

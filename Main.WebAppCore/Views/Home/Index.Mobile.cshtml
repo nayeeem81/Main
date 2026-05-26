@@ -1,0 +1,70 @@
+﻿@model HomeViewModel;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleHome"];
+
+    Layout = "~/Views/Shared/_Layout.Mobile.cshtml";
+
+    ViewBag.ExcludeHeader = false;
+
+ //   var banner = Model.ContentInfoViewModel.ListGroupPanelConfiguration.Where(a => a.EnumPanelDisplayStyle == EnumPanelDisplayStyle.BannerCarousel).FirstOrDefault();
+}
+
+@* 
+@if (banner != null)
+{
+    @await Html.PartialAsync("../Shared/ProductTemplates/_BannerCarousel", banner)
+} *@
+
+<div class="home-container" id="homePageContent">
+    @* @await Html.PartialAsync("../Shared/_PageContent", Model.ContentInfoViewModel) *@
+</div>
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+        var commentUrl = '@Url.Action("AddComments", "Home")';
+        
+        $(function () {
+
+            $('[data-manage-post="collapse"]').collapse(
+            {
+                parent: "#accordion",
+                toggle: true
+            });
+
+            $(document).on("click", "#btnComment", function () 
+            {
+                var that = this;
+                var $comment = $("#Comment");
+                var commentText = $comment.val();
+                var postID = $(that).data("id");
+                if (commentText != "" && commentText != undefined && commentText != null) {
+                    $.ajax({
+                        url: commentUrl + '?comment=' + commentText + '&postID=' + postID,
+                        type: 'GET',
+                        cache: false,
+                        success: function (todayDate) {
+                            $("#noComment").remove();
+                            $(".comment-list").prepend('<li>' +
+                                '<p class="comment">' + commentText + '</p>' +
+                                '<p class="date">' + todayDate + '</p>' +
+                                '</li>');
+                            $comment.val("");
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            });
+
+            loadHomeData();
+
+        });
+    </script>
+
+    @* <script src="~/js/LetItGo/naimul.letitgo.market.js" type="text/javascript"></script> *@
+}
+
+
+

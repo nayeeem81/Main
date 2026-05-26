@@ -1,0 +1,9 @@
+﻿@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+<form class="searchbar-container" method="post" action="@Url.Action("SimpleSearch", "SearchMarket")">
+    <input name="SimpleSearchKey" type="search" placeholder="@SharedLocalizer["PlaceHolderSimpleSearchTextBox"]" />
+    <div data-adv-search="button" class="advance-search">@SharedLocalizer["ButtonTextAdvancedSearch"]</div>
+    <button type="submit">
+        <i class="fa fa-search"></i>
+    </button>
+</form>

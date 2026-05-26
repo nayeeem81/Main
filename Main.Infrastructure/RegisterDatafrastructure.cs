@@ -44,21 +44,30 @@ public static class RegisterDatafrastructure
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
         .AddDefaultTokenProviders( )
         .AddSignInManager ( );
-        //Identity Context End
 
+        services.ConfigureApplicationCookie ( options =>
+        {
+            options.LoginPath = "/Auth/Login";
+            options.AccessDeniedPath = "/Auth/AccessDenied";
+            options.Cookie.Name = "YourApp_AuthCookie";
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromMinutes ( 30 );
+            options.SlidingExpiration = true;
+        } );
+        //Identity Context End
 
 
         //(Web Application) Business DBContext 
         services.AddDbContext<BussinessAppDbContext> ( options =>
         {
+            options.UseLazyLoadingProxies ( );
             options.UseSqlServer ( connectionString );
         } );
-
         
+
         //For console app
         //services.AddScoped<DbInitializer> ( );
         //services.AddScoped<IDatabaseSeeder,DatabaseSeeder> ( );
-
 
         //Register Repository
         services.AddScoped<IUserRepository,UserRepository> ( );

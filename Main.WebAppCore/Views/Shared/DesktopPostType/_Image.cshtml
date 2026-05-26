@@ -1,0 +1,17 @@
+﻿@model System.Byte[]
+@if (Model !=null && Model.Length >1)
+{
+    string imageBase64 = Convert.ToBase64String(Model);
+    string imageSrc = string.Format("data:image/gif;base64,{0}", imageBase64);
+    <img src="@imageSrc" 
+         class="img-responsive"  
+         alt="This image is provided with the Ad uploaded by advertiser!" 
+         style="width:100%;max-height:100%;max-width:100%;height:100%;"/>
+}
+else
+{
+    <img src="~/Images/Home/camera.png" 
+         class="img-responsive" 
+         alt="Image not available!" 
+         style="width:100%;max-height:100%;max-width: 100%;height: 100%;" />
+}

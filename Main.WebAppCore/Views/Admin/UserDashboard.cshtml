@@ -1,0 +1,37 @@
+﻿@model IEnumerable<IdentityUser>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ( var user in Model )
+        {
+            
+            bool isLocked = user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow;
+
+            <tr>
+                <td>@user.UserName</td>
+                <td>
+                    <span class="badge @(isLocked ? "bg-danger" : "bg-success")">
+                        @(isLocked ? "Locked Out" : "Active")
+                    </span>
+                </td>
+                <td>
+                    @if ( isLocked )
+                    {
+                        <form asp-action="UnlockUser" method="post" style="display:inline;">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="btn btn-sm btn-warning">Unlock Account</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+                

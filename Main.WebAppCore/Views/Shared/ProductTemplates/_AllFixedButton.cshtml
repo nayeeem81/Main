@@ -1,0 +1,298 @@
+﻿@using Common
+@using FineArtsWebApp;
+@model FabiaInformationViewModel
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div class="fixed-bottom-panel">
+    <i class="glyphicon glyphicon-menu-left fixed-left-fabia-btn fabia-btn" style="display:none;">
+
+    </i>
+    <i class="glyphicon glyphicon-menu-right fixed-right-fabia-btn fabia-btn" ></i>
+
+    <i id="btnFabia"
+       class="fas fa-address-card fabia-btn" style="display:none;">
+        @SharedLocalizer["ButtonTextFabia"]
+    </i>
+    <i class="fas fa-tree fabia-btn"
+       id="btnCat" style="display:none;">
+        @SharedLocalizer["ButtonTextMarkets"]
+    </i>
+    <i class="fas fa-mountain fabia-btn"
+       id="btnCustomTitle" style="display:none;">
+        @SharedLocalizer["ButtonTextSpecial"]
+    </i>
+</div>
+<a id="btnInterest" class="fixed-left-interest-btn white left-stiky-btn"
+   role="button" style="display:none;">
+    <i class="fas fa-caret-down fabia-btn">
+        @SharedLocalizer["ButtonTextInterest"]
+    </i>
+</a>
+@*<div class="fixed-left-request-btn request-not-shown left-stiky-btn"
+         id="btnRequest">
+        <a class="btn-request-floating"
+           role="button">
+            <i>
+                REQUEST
+            </i>
+        </a>
+    </div>*@
+<div class="fabia-side-menu fabia-panel" style="padding-bottom:25px;">    
+    <div class="row">
+        <div class="text-center fabia-panel-title">
+            <b>@SharedLocalizer["LabelSkillsAndServices"]</b>
+        </div>
+        @foreach (var item in Model.ListFullAlphabet)
+        {
+            if (Model.ListAlphabet.Any(a => a.Text.StartsWith(item.Text)))
+            {
+                <div class="col-sm-3 col-xs-3">
+                    <div class="text-center fabia-block-letter">
+                        <a data-id="@item.Value"
+                           class="alpha-item clickable"
+                           role="button">
+                            @item.Text
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xs-12 sub-list-@item.Value fa-service-list"
+                     style="display:none;">
+                    @foreach (var insideItem in Model.ListFabiaServices.Where(a => a.Text.StartsWith(item.Text)).ToList().OrderBy(a => a.Text))
+                    {
+                        <span class="text-center ">
+                            <a data-id="@insideItem.Value"
+                               href="@Url.Action("ViewItemDetail","FabiaService", new { postId = insideItem.Value })"
+                               class="alpha-item clickable fa-service-list-item"
+                               role="button">
+                                @insideItem.Text
+                            </a>
+                        </span>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-3 col-xs-3 " style="opacity:0.5;">
+                    <div class="text-center fabia-block-letter">
+                        <a data-id="@item.Value"
+                           class="alpha-item"
+                           role="button">
+                            @item.Text
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="text-center">
+        <button id="btnNewProvider"
+                class="fa-new-post-btn"
+                role="button">
+            <i class="fa fa-plus fa-fw">
+            </i>
+            @SharedLocalizer["ButtonTextJoinAsProvider"]
+        </button>
+    </div>
+    <embed id="emf16Audio"
+           class="fabia-side-menu"
+           src="~/Audio/f16.mp3"
+           style="width:0px;height:0px;opacity:0.0;display:block;position:relative;top:0px;left:0px;padding:0px;margin:0px;border:0px;" />
+</div>
+<div class="cat-side-menu fabia-panel" style="padding-bottom:25px;">    
+    <div class="row">
+        <div class="text-center fabia-panel-title">
+            <b>@SharedLocalizer["LabelSkillsAndServices"]</b>
+        </div>
+        @foreach (var item in Model.ListTopCategories.Where(a => !string.IsNullOrEmpty(a.IconClass)).ToList())
+        {
+            <div class="col-md-3 col-xs-3">
+                <a data-toggle="tooltip"
+                   title="@item.CategoryName"
+                   href="@Url.Action("CatMarket", "CategoryMarket", new { subcategoryid = item.CategoryID, pageNumber = "1" })">
+                    <i data-id="@item.IconClass"
+                       class="@item.IconClass fabia-cat-icon">
+                    </i>
+                </a>
+            </div>
+        }
+    </div>
+    <div class="text-center">
+        <button id="btnNewPost"
+                class="fa-new-post-btn"
+                role="button">
+            <i class="fa fa-plus fa-fw"></i>
+            @SharedLocalizer["ButtonTextAddYourProduct"]
+        </button>
+    </div>
+</div>
+<div class="custom-side-menu fabia-panel" style="padding-bottom:25px;">
+    <div class="row">
+        <div class="text-center fabia-panel-title">
+            <b>
+                @SharedLocalizer["LabelMenAndWomen"]
+            </b>
+        </div>
+        @foreach (var item in Model.ListCustomButtonSubCategories.
+            Where(a => !string.IsNullOrEmpty(a.SubCategoryName)).
+            OrderBy(a => a.CustomButtonItemType).ToList())
+        {
+            <div class="col-md-4 col-xs-4">
+                @if (item.CustomButtonItemType == EnumCustomButtonItemType.Women)
+                {
+                    <a 
+                       role="button"                      
+                       title="@item.SubCategoryName"
+                       href="@Url.Action("CustomMarket", "CategoryMarket", new { subcategoryid = item.SubCategoryID, pageNumber = "1" })"
+                       class="women">
+                        <i class="fas fa-female" style="font-size:small;">
+                            @item.SubCategoryName
+                        </i>
+                    </a>
+                }
+                else
+                {
+                    <a 
+                       role="button"                       
+                       title="@item.SubCategoryName"
+                       href="@Url.Action("CustomMarket", "CategoryMarket", new { subcategoryid = item.SubCategoryID, pageNumber = "1" })"
+                       class="men">
+                        <i class="fas fa-male"  style="font-size:small;">
+                            @item.SubCategoryName
+                        </i>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+<div class="left-interest-side-menu card-form fabia-panel">
+    <div class="row"
+         style="margin-top:15px;">
+        @foreach (var item in Model.ListTopCategories.Where(a => !string.IsNullOrEmpty(a.IconClass)).ToList())
+        {
+            <div class="col-md-12 col-xs-12 interest-item interest-item-color int-@item.CategoryID.ToString()"
+                 data-id="@item.CategoryID.ToString()"
+                 data-name="@item.CategoryName.Replace(" ", "").Trim().ToString()">
+                <div data-toggle="tooltip"
+                     title="@item.CategoryName">
+                    <i data-id="@item.IconClass"
+                       class="fa-star fas star-interest fa-1x"></i>
+                    @item.CategoryName
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="left-request-side-menu card-form fabia-panel">
+    <div class="text-center fabia-panel-title" style="color:#757575">
+        <b>WRITE REQUESTS</b>
+    </div>
+    <h5 class="sub-title text-center"
+        style="color:#757575;">
+        Write Your Request to Find Product/Service
+    </h5>
+    <div class="row"
+         style="margin-top:15px;">
+        <div class="col-md-12 col-xs-12 text-justify "
+             style="margin-bottom:25px;color:#757575;">
+            <br />
+            We will help you to find the best (price/quality/quantity) product and service
+            available in local and international markets.
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <input id="txtRequestPhoneNumber"
+                   type="tel" class="fff"
+                   placeholder="Country Code - Phone Number"
+                   style="color:darkolivegreen;" />
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <textarea id="txtRequestDescription"
+                      class="fff"
+                      placeholder="Product/Service Description"
+                      style="color:darkolivegreen;"></textarea>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <button id="btnSubmitRequest"
+                    class="primary-button max"
+                    role="button">
+                SUBMIT REQUEST
+            </button>
+        </div>
+    </div>
+</div>
+<div class="left-import-side-menu card-form fabia-panel">
+    <div class="text-center fabia-panel-title" style="color:#757575">
+        <b>IMPORT REQUEST</b>
+    </div>
+    <h5 class="sub-title text-center"
+        style="color:#757575;">
+        Write Your Request to Import Product/Service
+    </h5>
+    <div class="row"
+         style="margin-top:15px;">
+        <div class="col-md-12 col-xs-12 text-justify "
+             style="margin-bottom:25px;color:#757575;">
+            <br />
+            We will help you to find the best (price/quality/quantity)
+            product and service principles (sellers/dealers/vendors) from international market.
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <input id="txtImportPhoneNumber"
+                   type="tel" class="fff"
+                   placeholder="Country Code - Phone Number"
+                   style="color:darkolivegreen;" />
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <textarea id="txtImportDescription"
+                      class="fff"
+                      placeholder="Product/Service Description"
+                      style="color:darkolivegreen;"></textarea>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <button id="btnSubmitImport"
+                    class="primary-button max"
+                    role="button">
+                SUBMIT REQUEST
+            </button>
+        </div>
+    </div>
+</div>
+<div class="left-export-side-menu card-form fabia-panel">
+    <div class="text-center fabia-panel-title" style="color:#757575">
+        <b>EXPORT REQUEST</b>
+    </div>
+    <h5 class="sub-title text-center"
+        style="color:#757575;">
+        Write Your Request to Export Product/Service
+    </h5>
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-12 col-xs-12 text-justify "
+             style="margin-bottom:25px;color:#757575;">
+            <br />
+            We will help you to find appropriate international buyers to export your products and services.
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <input id="txtExportPhoneNumber"
+                   type="tel"
+                   class="fff"
+                   placeholder="Country Code - Phone Number"
+                   style="color:darkolivegreen;" />
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <textarea id="txtExportDescription"
+                      class="fff"
+                      placeholder="Product/Service Description"
+                      style="color:darkolivegreen;"></textarea>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <button id="btnSubmitExport"
+                    class="primary-button max"
+                    role="button">
+                SUBMIT REQUEST
+            </button>
+        </div>
+    </div>
+</div>

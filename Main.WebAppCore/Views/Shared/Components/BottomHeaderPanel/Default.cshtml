@@ -1,0 +1,57 @@
+﻿@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div id="header-bottom" class="bottom-header">
+    <div class="header-container">
+        <div id="headerCategoryDropdown" class="market-list-dropdown">
+            @await Component.InvokeAsync("ProductCategoryMenu")
+        </div>
+        <ul class="header-menu-list">
+            <li class="main-menu" id="btnMainMenu">
+                <span>
+                    @SharedLocalizer["LabelViewByMarkets"]
+                </span>
+                <i class="fa fa-list"></i>
+            </li>
+            @* mock up only *@
+            <li>
+                <span class="badge-button">
+                    <a href="@Url.Action("Donate", "Donate")">
+                        <i class="fa fa-anchor fa-1x"></i>
+                        @SharedLocalizer["LinkDonate"]
+                    </a>
+                </span>
+            </li>
+                 
+            <li>
+                <span class="badge-button">
+                    <i class="fa fa-ad fa-1x"> </i>
+                    <a href="@Url.Action("Market", "AllItemMarket", new { pageNumber = "1" })">
+                        @SharedLocalizer["LinkLatestAds"]
+                    </a>
+                </span>
+            </li>
+            <li>
+                <span class="badge-button">
+                    <i class="fa fa-thermometer-full  fa-1x" aria-hidden="true"></i>
+                    <a href="@Url.Action("Notice", "Home")">
+                        <i class=""></i>
+                        @SharedLocalizer["LinkOurStatus"]
+                    </a>
+                </span>
+
+                @*<span class="badge bg-info">
+            <a id="ancor_About_Home"
+               href="@Url.Action("Resource", "Home")">
+                <span>@SharedLocalizer["LayoutFooterResource</span>
+            </a>
+        </span>*@
+            </li>
+            @*  <li>
+                    @*NOTICE: Post one free Ad before 28-Feb-2019 and enjoy 2500 BDT free credit when paid posting will start on 01-Mar-2019!
+                </li> *@
+            @*<li>New Arrival</li>
+                    <li>Year End Sale</li>*@
+        </ul>
+    </div>
+</div>

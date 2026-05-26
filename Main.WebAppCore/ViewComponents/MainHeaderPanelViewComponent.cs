@@ -1,17 +1,17 @@
 ﻿using Main.Common.Enums;
-using Main.Common.Settings;
 using Microsoft.AspNetCore.Mvc;
+using WebApp.Infrastructure;
 
-namespace FineArtsWebApp.ViewComponents
+namespace Main.WebAppCore;
+
+public class MainHeaderPanelViewComponent : ViewComponent
 {
-    public class MainHeaderPanelViewComponent : ViewComponent
+    public async Task<IViewComponentResult> InvokeAsync()
     {
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
-            MenuObjectModel menuObjectModel 
-                = new MenuObjectModel((EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
+        MenuObjectModel menuObjectModel 
+            = new MenuObjectModel((EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
 
-            return View(menuObjectModel);
-        }
+        return View(menuObjectModel);
     }
 }
+

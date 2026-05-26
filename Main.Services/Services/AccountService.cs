@@ -1,7 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DataTransferModel;
+
 using Domain.Model;
+
 using IRepository;
+
 using Main.Common.HelperRelated;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Main.Services;
 
@@ -147,7 +153,7 @@ public class AccountService : IAccountService
                 await _userRepository
                       .AddUser ( userEntity );
             
-            // if Not Success (Reverce)
+            
             await RemoveIdentityUser
                 ( !success,userAccountDataModel.Email );
 
@@ -180,5 +186,46 @@ public class AccountService : IAccountService
         }
     }
 
+    public async Task<bool> UnlockUser ( string userId )
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if ( user == null )
+        {
+            return false;
+        }
+        
+        var lockoutResult = await _userManager.SetLockoutEndDateAsync(user, null);
+
+        if ( !lockoutResult.Succeeded )
+        {
+            return false;
+        }
+        
+        var resetResult = await _userManager.ResetAccessFailedCountAsync(user);
+
+        if ( !resetResult.Succeeded )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public async Task<List<IdentityUserDataModel>?> Users ( )
+    {
+        List<IdentityUser> identityUsers = await _userManager.Users.ToListAsync<IdentityUser>();
+
+        List<IdentityUserDataModel> identityUserDataModel = identityUsers.Select(u => new IdentityUserDataModel
+        {
+            UserId = u.Id,
+            UserName = u.UserName,
+            LockoutEnd = u.LockoutEnd
+        }).ToList<IdentityUserDataModel>();
+
+        return identityUserDataModel;  
+    }
+
     #endregion
 }
+

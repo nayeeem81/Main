@@ -13,28 +13,74 @@
     <Compile Remove="Area.Data\**" />
     <Compile Remove="Areas\**" />
     <Compile Remove="Service\**" />
-    <Compile Remove="ViewComponents\**" />
+    <Compile Remove="Views\Account\**" />
+    <Compile Remove="Views\Shared\DesktopPostType\**" />
+    <Compile Remove="Views\Shared\DisplayTemplates\**" />
+    <Compile Remove="Views\Shared\EditorTemplates\**" />
+    <Compile Remove="Views\Shared\EmailTemplates\**" />
+    <Compile Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <Compile Remove="Views\Shared\ProductTemplates\**" />
     <Content Remove="Area.Data\**" />
     <Content Remove="Areas\**" />
     <Content Remove="Service\**" />
-    <Content Remove="ViewComponents\**" />
+    <Content Remove="Views\Account\**" />
+    <Content Remove="Views\Shared\DesktopPostType\**" />
+    <Content Remove="Views\Shared\DisplayTemplates\**" />
+    <Content Remove="Views\Shared\EditorTemplates\**" />
+    <Content Remove="Views\Shared\EmailTemplates\**" />
+    <Content Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <Content Remove="Views\Shared\ProductTemplates\**" />
     <EmbeddedResource Remove="Area.Data\**" />
     <EmbeddedResource Remove="Areas\**" />
     <EmbeddedResource Remove="Service\**" />
-    <EmbeddedResource Remove="ViewComponents\**" />
+    <EmbeddedResource Remove="Views\Account\**" />
+    <EmbeddedResource Remove="Views\Shared\DesktopPostType\**" />
+    <EmbeddedResource Remove="Views\Shared\DisplayTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\EditorTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\EmailTemplates\**" />
+    <EmbeddedResource Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <EmbeddedResource Remove="Views\Shared\ProductTemplates\**" />
     <None Remove="Area.Data\**" />
     <None Remove="Areas\**" />
     <None Remove="Service\**" />
-    <None Remove="ViewComponents\**" />
+    <None Remove="Views\Account\**" />
+    <None Remove="Views\Shared\DesktopPostType\**" />
+    <None Remove="Views\Shared\DisplayTemplates\**" />
+    <None Remove="Views\Shared\EditorTemplates\**" />
+    <None Remove="Views\Shared\EmailTemplates\**" />
+    <None Remove="Views\Shared\HomeSpecialDayBanner\**" />
+    <None Remove="Views\Shared\ProductTemplates\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="11Program.cs" />
     <Compile Remove="Controllers\AccountController.cs" />
     <Compile Remove="Controllers\CultureController.cs" />
-    <Compile Remove="Controllers\ErrorHandlerController.cs" />
-    <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SecureController.cs" />
     <Compile Remove="Controllers\UserSessionLogController.cs" />
+    <Compile Remove="ViewComponents\ShoppingCartNotificationViewComponent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\Home\Contact.cshtml" />
+    <Content Remove="Views\Home\Contact.Mobile.cshtml" />
+    <Content Remove="Views\Home\Contact.Tablet.cshtml" />
+    <Content Remove="Views\Home\FAQ.cshtml" />
+    <Content Remove="Views\Home\FAQ.Mobile.cshtml" />
+    <Content Remove="Views\Home\FAQ.Tablet.cshtml" />
+    <Content Remove="Views\Home\Notice.cshtml" />
+    <Content Remove="Views\Home\Notice.Mobile.cshtml" />
+    <Content Remove="Views\Home\Notice.Tablet.cshtml" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
+    <Content Remove="Views\Home\Resource.cshtml" />
+    <Content Remove="Views\Home\Resource.Mobile.cshtml" />
+    <Content Remove="Views\Home\Resource.Tablet.cshtml" />
+    <Content Remove="Views\Home\Terms.cshtml" />
+    <Content Remove="Views\Home\Terms.Mobile.cshtml" />
+    <Content Remove="Views\Home\Terms.Tablet.cshtml" />
+    <Content Remove="Views\Shared\_PageContent.cshtml" />
+    <Content Remove="Views\Shared\_ShoppingCartNotification.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +106,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.3" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+    <PackageReference Include="snipervld.WebOptimizer.Dotless" Version="3.3.0" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />

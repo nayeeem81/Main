@@ -1,0 +1,48 @@
+﻿@using Common
+@model GroupPanelTemplateDisplayViewModel
+@{
+    List<TemplateDisplayViewModel> listProducts = null;
+    bool shouldProceed = true;
+    if (Model.ListGroupPost != null && Model.ListGroupPost.Count(
+                                        a => a.Image != null &&
+                                        a.PostType == EnumPostType.Post ||
+                                        a.PostType == EnumPostType.Product) == 12)
+    {
+        listProducts = Model.ListGroupPost.Take(12).ToList();
+    }
+    else
+    {
+        shouldProceed = false;
+    }
+}
+@if (shouldProceed == true)
+{
+    <div class="container container-gap">
+        @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <h4 class="title blue-text">
+                        @Model.GroupPanelTitle
+                    </h4>
+                </div>
+            </div>
+        }
+        <div class="row">
+            @foreach (var product in listProducts.ToList())
+            {
+                <div class="col-md-2 col-sm-2 col-lg-2 col-xs-6 white-bg">
+                    <a href="@product.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                        @Html.Partial("../Shared/ProductTemplates/_ItemSquareImage", product.Image)
+                    </a>
+                    <div class="caption text-center blue-text truncate" style="margin-bottom:10px;margin-top:2px;">
+                        @product.DisplaySubCategory
+                    </div>
+                    <div class="text-center" style="margin-top:2px;margin-bottom:15px;">
+                        <a href="@product.ViewMoreUrl" class="btn-view-more" role="button">VIEW MORE</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

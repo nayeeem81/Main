@@ -1,0 +1,394 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model MenuObjectModel
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+@{
+    var adminLinkDisplayClass = "d-none";
+    var advertiserLinkDisplayClass = "d-none";
+    var isUserSignedClass = "d-none";
+    var isShowHomeLabelClass = "d-none";
+    string? clientName = "";
+    var companyLinkDisplayClass = "d-none";
+    
+   
+    @if (User.IsInRole("Admin"))
+    {
+        adminLinkDisplayClass = "d-block";
+        advertiserLinkDisplayClass = "d-none";
+        companyLinkDisplayClass = "d-none";
+        isUserSignedClass = "d-block";
+        isShowHomeLabelClass = "d-none";
+        string? name = SignInManager.UserManager.GetUserName(User);
+        clientName = name;
+    }
+    else if (User.IsInRole("Company"))
+    {
+        adminLinkDisplayClass = "d-none";
+        advertiserLinkDisplayClass = "d-none";
+        companyLinkDisplayClass = "d-block";
+        isUserSignedClass = "d-block";
+        isShowHomeLabelClass = "d-none";
+        string? name = SignInManager.UserManager.GetUserName(User);
+        clientName = name;
+    }
+    else if (User.IsInRole("Advertiser"))
+    {
+        adminLinkDisplayClass = "d-none";
+        companyLinkDisplayClass = "d-none";
+        advertiserLinkDisplayClass = "d-block";
+        isUserSignedClass = "d-block";
+        isShowHomeLabelClass = "d-none";
+        string? name = SignInManager.UserManager.GetUserName(User);
+        clientName = name;
+    }
+    else
+    {
+        adminLinkDisplayClass = "d-none";
+        advertiserLinkDisplayClass = "d-none";
+        companyLinkDisplayClass = "d-none";
+        isUserSignedClass = "d-none";
+        isShowHomeLabelClass = "d-block";
+        clientName = "";
+    }
+}
+
+<div class="top-header">
+    <div class="header-container">
+        <ul>
+            <li>
+                <span class="@isShowHomeLabelClass">
+                    @SharedLocalizer["LabelHi"]
+                    <a id="ancorSignin_Account"
+                           href="@Url.Action("Login", "Auth")">
+                        @SharedLocalizer["LoginSignin"]
+                    </a>
+                    /
+                    <a id="ancorSignup_Account"
+                           href="@Url.Action("Signup", "Auth")">
+                        @SharedLocalizer["Register"]
+                    </a>
+                </span>
+                <div class="dropdown @isUserSignedClass">
+                    <a class="dropdown-toggle text-truncate"
+                           data-toggle="dropdown"
+                           role="button"
+                           aria-haspopup="true"
+                           data-userid="@Model.UserID"
+                           data-bs-toggle="dropdown">
+                        <i class="fa fa-user fa-1x"></i>
+                        <span>@clientName</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
+                        <li class="advertiser-menu @advertiserLinkDisplayClass">
+                            <a class="dropdown-item dropdown-item-text" asp-area="Advertizer" asp-controller="AccountSettings" asp-action="ManageAccount">
+                                @* <a href="@Url.Action("ManageAccount", "AccountSettings")"> *@
+                                <i class="fa fa-cog fa-fw fa-1x"></i>
+                                <span>
+                                    @SharedLocalizer["LinkManageAccount"]
+                                </span>
+                            </a>
+                        </li>
+                        <li class="advertiser-menu @advertiserLinkDisplayClass">
+                            <a class="dropdown-item dropdown-item-text" asp-area="Advertizer" asp-controller="PostLogReport" asp-action="Index">
+                                @* <a href="@Url.Action("Index", "PostLogReport")"> *@
+                                <i class="fa fa-cog fa-fw fa-1x"></i>
+                                <span>
+                                    @SharedLocalizer["LinkBusinessIntelligence"]
+                                </span>
+                            </i>
+                        </a>
+                    </li>
+                    <li class="advertiser-menu  @advertiserLinkDisplayClass">
+                        <a class="dropdown-item dropdown-item-text" asp-area="Advertizer" asp-controller="ManagePost" asp-action="OnlyPublishedPosts" asp-route-pageNumber="1">
+                            @* <a href="@Url.Action("OnlyPublishedPosts", "ManagePost", new {pageNumber = "1"})"> *@
+                            <i class="fa fa-cog fa-fw fa-1x"></i>
+                        </i>
+                        <span>
+                            @SharedLocalizer["LinkPublishedPosts"]
+                        </span>
+                    </a>
+                </li>
+                <li class="advertiser-menu  @advertiserLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Advertizer" asp-controller="ManagePost" asp-action="UnpaidPost" asp-route-pageNumber="1">
+                        @* <a href="@Url.Action("UnpaidPost", "ManagePost", new {pageNumber = "1"})"> *@
+                        <i class="fa fa-pencil-alt fa-fw"></i>
+                        <span>
+                            @SharedLocalizer["LinkUnpaidPosts"]
+                        </span>
+                    </a>
+                </li>
+                <li class="advertiser-menu  @advertiserLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Advertizer" asp-controller="FabiaProvider" asp-action="Index" asp-route-pageNumber="1">
+                        @* <a href="@Url.Action("Index", "FabiaProvider", new {pageNumber = "1"})"> *@
+                        <i class="fa fa-pencil-alt fa-fw"></i>
+                        <span>
+                            @SharedLocalizer["LinkMyFabiaServiceProviders"]
+                        </span>
+                    </a>
+                </li>
+
+
+
+
+
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="AdminContent" asp-controller="ManageAdminPost" asp-action="Index">
+                        @* href="@Url.Action("Index", "ManageFabiaService", new { pageNumber = 1 } )" *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkManageAdminContents"]
+                        </span>
+                    </a>
+                </li>
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="AdminContent" asp-controller="ManageAdminPost" asp-action="NewAdminContent">
+                        @* href="@Url.Action("Index", "ManageFabiaService", new { pageNumber = 1 } )" *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkAddShortContent"]
+                        </span>
+                    </a>
+                </li>
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageFabiaService" asp-action="Index">
+                        @* href="@Url.Action("Index", "ManageFabiaService", new { pageNumber = 1 } )" *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkFabiaServices"]
+                        </span>
+                    </a>
+                </li>
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="Image" asp-action="Index">
+                        @* <a href="@Url.Action("Index", "Image")"> *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkEditImages"]
+                        </span>
+                    </a>
+                </li>
+
+
+
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="PageContent" asp-controller="Pages" asp-action="Index">
+                        @* href="@Url.Action("Index", "ContentPanelConfiguration")" *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkConfigurePanels"]
+                        </span>
+                    </a>
+                </li>
+
+                <li class="admin-menu @adminLinkDisplayClass"><hr class="dropdown-divider"></li>
+                           
+                           
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="PackageConfiguration" asp-action="Index">
+                        @* <a href="@Url.Action("Index", "PackageConfiguration")"> *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkConfigurePackage"]
+                        </span>
+                    </a>
+                </li>
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageConfiguration" asp-action="Index">
+                        @* <a href="@Url.Action("Index", "ManageConfiguration")"> *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkConfigurePrice"]
+                        </span>
+                    </a>
+                </li>
+
+                <li class="admin-menu @adminLinkDisplayClass"><hr class="dropdown-divider"></li>
+
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="BikashBillTransactons" asp-action="Index">
+                        @* <a href="@Url.Action("Index", "BikashBillTransactons")"> *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkManageBikashBills"]
+                        </span>
+                    </a>
+                </li>
+                            
+                <li class="admin-menu @adminLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Report" asp-controller="ApplicationLogReport" asp-action="Index">
+                        @* <a href="@Url.Action("Index", "ApplicationLogReport")"> *@
+                        <i class="fa fa-address-book fa-fw fa-1x"></i>
+                        <span>
+                            @SharedLocalizer["LinkLogReports"]
+                        </span>
+                    </a>
+                </li>
+
+
+
+
+
+
+                 <li class="company-menu @companyLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Company" asp-controller="CompanySettings" asp-action="ManageAccount">
+                         @* <a href="@Url.Action("ManageAccount", "CompanySettings")">  *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                           User Account
+                        </span>
+                    </a> 
+                </li> 
+
+
+                 <li class="company-menu @companyLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="Index">
+                         @* <a href="@Url.Action("Index", "ManageProducts")">  *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                                Manage Products
+                        </span>
+                    </a>
+                </li> 
+                <li class="company-menu @companyLinkDisplayClass">
+                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="NewProduct">
+                        @* <a href="@Url.Action("NewPost", "NewProduct")"> *@
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                                Add New Product
+                        </span>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                            
+                <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
+                    <li>
+                        <button type="submit" class="dropdown-item dropdown-item-text"> @SharedLocalizer["LinkLogout"]</button>
+                    </li>
+                </form>
+            </ul>
+                        
+        </div>
+    </li>
+    <li>
+
+    </li>
+    <li>
+
+    </li>
+    <li>
+        <a id="ancor_AllItemMarket_Market" class=""
+               href="@Url.Action("Market", "AllItemMarket", new { pageNumber = "1" })">
+            <i class="fa fa-ad fa-1x link-dark"> </i>
+            @* @SharedLocalizer["LinkAds"] *@
+        </a>
+    </li>
+    <li>
+
+    </li>
+    <li>
+        <a id="ancor_Cart_Product_Shop" class=""
+               href="@Url.Action("GetShoppingCart", "ProductShoppingCart", new { pageNumber = "1" })">
+            <i class="fa fa-shopping-basket fa-1x link-dark"></i>
+            @* @SharedLocalizer["LinkCart"] *@
+        </a>
+    </li>
+</ul>
+<div class="flex-grow"></div>
+<ul>
+    <li>
+        <div class="dropdown">
+            <a id="ancorMyHelp"
+                   href="#"
+                   class="dropdown-toggle"
+                   data-toggle="dropdown"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false"
+                   data-bs-toggle="dropdown">
+                <i class="fa fa-info fa-1x"></i>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown dropdown-menu" id="divMenuMyHomeHelp">
+                <li>
+                    <a id="ancor_FAQ_Home" class="dropdown-item"
+                           href="@Url.Action("FAQ", "Home")">
+                        <i class="fa fa-fw fa-question link-dark"></i>
+                        <span>@SharedLocalizer["LinkFaq"]</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="ancor_About_Home" class="dropdown-item"
+                           href="@Url.Action("Resource", "Home")">
+                        <i class="fa fa-fw fa-info link-dark"></i>
+                        <span>@SharedLocalizer["LinkResources"]</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="ancor_Contact_Home" class="dropdown-item"
+                           href="@Url.Action("Contact", "Home")">
+                        <i class="fa fa-fw fa-phone link-dark"></i>
+                        <span>@SharedLocalizer["LinkContact"]</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <li></li>
+    <li>
+        <div class="dropdown">
+            <a id="ancorLanguage"
+                   class="dropdown-toggle"
+                   data-toggle="dropdown"
+                   role="button"
+                   aria-haspopup="true"
+                   aria-expanded="false"
+                   data-bs-toggle="dropdown">
+                <img class="flag" src="~/css/images/flags/uk.png" id="imgEnglishFlag" />
+                <span id="spnEnglishFlag">
+                    @SharedLocalizer["LinkEnglish"]
+                </span>
+                <img style="display:none;" class="flag" src="~/css/images/flags/bangladesh.png" id="imgBanglaFlag" />
+                <span style="display:none;" id="spnBanglaFlag">
+                    @SharedLocalizer["LinkBangla"]
+                </span>
+                <img style="display:none;" class="flag" src="~/css/images/flags/nigeria.png" id="imgNigeriaFlag" />
+                <span style="display:none;" id="spnNigeriaFlag">
+                    @SharedLocalizer["LinkNigeria"]
+                </span>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown dropdown-menu">
+                <li>
+                    <a id="ancorEnglishLanguage" class="dropdown-item">
+                        <img class="flag" src="~/css/images/flags/uk.png" />
+                        <span>
+                            @SharedLocalizer["LinkEnglish"]
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a id="ancorBanglaLanguage" class="dropdown-item">
+                        <img class="flag" src="~/css/images/flags/bangladesh.png" />
+                        <span>
+                            @SharedLocalizer["LinkBangla"]
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a id="ancorNigeriaLanguage" class="dropdown-item">
+                        <img class="flag" src="~/css/images/flags/nigeria.png" />
+                        <span>
+                            @SharedLocalizer["LinkNigeria"]
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>
+</div>
+</div>

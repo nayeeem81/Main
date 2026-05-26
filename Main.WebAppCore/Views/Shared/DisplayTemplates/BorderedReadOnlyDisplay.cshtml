@@ -1,0 +1,13 @@
+﻿@model string
+
+<div class="light-color read-only-display"
+     style="word-wrap:break-word;
+            overflow:auto;
+            white-space:pre-wrap;
+            vertical-align:middle;
+            border:thin solid;
+            border-color:lightgray;
+            padding:2px;
+            margin:0px;">
+     @(!string.IsNullOrEmpty(Model) ? Model : "")
+</div>

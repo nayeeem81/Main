@@ -1,0 +1,25 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div class="request-container-background" id="requesCartViewBackground"></div>
+<div class="request-container" id="requestCartViewFormContent">
+    <div id="requestVisitorEmailForm">
+        <h4 class="sub-title">
+            @SharedLocalizer["MessageTextCartContinueMessage"]
+        </h4>
+        <div class="gap"></div>
+        <div class="row">
+            <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <a id="continueShopping"
+                       class="light-button">
+                    @SharedLocalizer["ButtonTextCartContinueShopping"]
+                </a>
+            </div>
+            <div class="col-md-6 col-xs-6 col-sm-6 col-lg-6">
+                <a class="primary-button"
+                       href="@Url.Action("GetShoppingCart", "ProductShoppingCart")">
+                    @SharedLocalizer["ButtonTextCartViewCart"]
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

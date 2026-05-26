@@ -1,0 +1,262 @@
+﻿@using Common
+@model GroupPanelTemplateDisplayViewModel
+@{
+    long categoryID = 0;
+    TemplateDisplayViewModel videoPost = null;
+    TemplateDisplayViewModel itemPost1 = null;
+    TemplateDisplayViewModel itemPost2 = null;
+    bool shouldProceed = false;
+    if (Model.ListGroupPost.Count >= 3 &&
+        Model.ListGroupPost.Count(a => a.PostType == EnumPostType.ShortVideo) >= 1 &&
+        Model.ListGroupPost.Count(a => a.PostType != EnumPostType.ShortVideo) >= 2)
+    {
+        videoPost = Model.ListGroupPost.FirstOrDefault(a => a.PostType == EnumPostType.ShortVideo);
+        var posts = Model.ListGroupPost.Where(a => a.PostType != EnumPostType.ShortVideo).ToList();
+        itemPost1 = posts[0];
+        itemPost2 = posts[1];
+        categoryID = itemPost1.CategoryID;
+        shouldProceed = true;
+    }
+    else
+    {
+        shouldProceed = false;
+    }
+}
+@if (shouldProceed == true)
+{
+    <div class="container @categoryID container-gap">
+        @if (!string.IsNullOrEmpty(Model.GroupPanelTitle))
+        {
+            <div class="row">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-lg-12">
+                    <h4 class="title blue-text">
+                        @Model.GroupPanelTitle
+                    </h4>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3 white-bg">
+                @if (itemPost1.PostType == EnumPostType.AdSpace)
+                {
+                    <a href="@itemPost1.WebsiteUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost1.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost1.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost1.Title
+                        </div>
+                        <div class="truncate sponsor" style="margin-bottom:3px;">
+                            SPONSORED
+                        </div>
+                    </div>
+                }
+                else if (itemPost1.PostType == EnumPostType.FabiaService)
+                {
+                    <a href="@itemPost1.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost1.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost1.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost1.Title
+                        </div>
+                        <div class="fabia-service truncate" style="margin-bottom:3px;">
+                            FABIA SERVICE
+                        </div>
+                    </div>
+                }
+                else if (itemPost1.PostType == EnumPostType.ShortVideo)
+                {
+                    <a class="thumbnail only-image">
+                        @if (!string.IsNullOrEmpty(itemPost1.WebsiteUrl))
+                        {
+                            <iframe style="width:100%;height:200px;max-height:200px;min-height:200px;padding:0px;margin:0px;"
+                                    src="https://www.youtube.com/embed/@itemPost1.WebsiteUrl.Trim()"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost1.Title
+                        </div>
+                    </div>
+                }
+                else if (itemPost1.PostType == EnumPostType.ShortNote)
+                {
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate" style="margin-bottom:3px;">
+                            <h4 class="sub-title blue-text">
+                                @itemPost1.Title
+                            </h4>
+                        </div>
+                        <div class="info text-justify star-shortnote blue-text">
+                            @itemPost1.Description
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a href="@itemPost1.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost1.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost1.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost1.Title
+                        </div>
+                        <div class="home-currency-font-color" style="margin-bottom:3px;">
+                            @itemPost1.FormattedPriceValue
+                        </div>
+                        @if (itemPost1.ShowCartButton)
+                        {
+                            <div class="add-to-cart sub-content" data-id="@itemPost1.PostID">
+                                ADD TO CART
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-3 col-sm-3 col-lg-3 col-xs-3 white-bg">
+                @if (itemPost2.PostType == EnumPostType.AdSpace)
+                {
+                    <a href="@itemPost2.WebsiteUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost2.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost2.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost2.Title
+                        </div>
+                        <div class="truncate sponsor" style="margin-bottom:3px;">
+                            SPONSORED
+                        </div>
+                    </div>
+                }
+                else if (itemPost2.PostType == EnumPostType.FabiaService)
+                {
+                    <a href="@itemPost2.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost2.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost2.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost2.Title
+                        </div>
+                        <div class="fabia-service truncate" style="margin-bottom:3px;">
+                            FABIA SERVICE
+                        </div>
+                    </div>
+                }
+                else if (itemPost2.PostType == EnumPostType.ShortVideo)
+                {
+                    <a class="thumbnail only-image">
+                        @if (!string.IsNullOrEmpty(itemPost2.WebsiteUrl))
+                        {
+                            <iframe style="width:100%;height:200px;max-height:200px;min-height:200px;padding:0px;margin:0px;"
+                                    src="https://www.youtube.com/embed/@itemPost2.WebsiteUrl.Trim()"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost2.Title
+                        </div>
+                    </div>
+                }
+                else if (itemPost2.PostType == EnumPostType.ShortNote)
+                {
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate" style="margin-bottom:3px;">
+                            <h4 class="sub-title blue-text">
+                                @itemPost2.Title
+                            </h4>
+                        </div>
+                        <div class="info text-justify star-shortnote blue-text">
+                            @itemPost2.Description
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a href="@itemPost2.PostItemDetailViewUrl" target="_blank" class="thumbnail only-image">
+                        @if (itemPost2.Image != null)
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", itemPost2.Image);
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("../Shared/ProductTemplates/_StarImage", new byte[1]);
+                        }
+                    </a>
+                    <div class="caption text-center" style="margin-bottom:10px;">
+                        <div class="truncate blue-text" style="margin-bottom:3px;">
+                            @itemPost2.Title
+                        </div>
+                        <div class="home-currency-font-color" style="margin-bottom:3px;">
+                            @itemPost2.FormattedPriceValue
+                        </div>
+                        @if (itemPost2.ShowCartButton)
+                        {
+                            <div class="add-to-cart sub-content" data-id="@itemPost2.PostID">
+                                ADD TO CART
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-md-6 col-sm-6 col-lg-6 col-xs-6 white-bg">
+                <a class="thumbnail only-image">
+                    @if (!string.IsNullOrEmpty(videoPost.WebsiteUrl))
+                    {
+                        <iframe style="width:100%;height:265px;max-height:265px;min-height:265px;padding:20px;margin:0px;"
+                                src="https://www.youtube.com/embed/@videoPost.WebsiteUrl.Trim()"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                    }
+                </a>
+                <div class="caption text-center" style="margin-bottom:10px;">
+                    <div class="truncate blue-text" style="margin-bottom:3px;padding-bottom:5px;">
+                        @videoPost.Title
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

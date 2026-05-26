@@ -1,0 +1,22 @@
+﻿.login-container {
+    max-width: 500px;
+    background-color: #fff;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.spinner {
+    height: $button-height;
+    line-height: $button-height;
+    background-color: #4267b2;
+    border: none;
+    color: $header-color;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+
+    &.flex {
+        max-width: 250px;
+    }
+}

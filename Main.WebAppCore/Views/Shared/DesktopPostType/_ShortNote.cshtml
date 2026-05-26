@@ -1,0 +1,30 @@
+﻿@using FineArtsWebApp;
+@model TemplateDisplayViewModel
+@if (Model != null)
+{
+    if (!string.IsNullOrEmpty(Model.Title) &&
+        !string.IsNullOrEmpty(Model.Description) &&
+        !string.IsNullOrEmpty(Model.PosterName))
+    {
+        <div class="card-form">
+            <div class="@Model.ImageCategoryClass">
+                <div class="caption text-center sub-title truncate"
+                     style="opacity:0.8;background-color:white;padding:5px;border-bottom:40px darkred solid;border-top:24px darkgreen solid;">
+                    @Model.Title
+                </div>
+                <p class="text-justify"
+                   style="padding:7px;line-height:18pt;">
+                    @Model.Description
+                </p>
+            </div>
+            <div class="caption text-center">
+                <div class="truncate">
+                    @Model.PosterName
+                </div>
+                <div class="home-currency-font-color">
+                    Bangladesh BAZAAR
+                </div>
+            </div>
+        </div>
+    }
+}

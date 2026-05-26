@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace FineArtsWebApp
-{
-    public class ErrorHandlerController : BaseController
-    {
-        public ErrorHandlerController()
-        { }
+namespace Main.WebAppCore;
 
-        public ActionResult Index()
-        {
-            return View();
-        }
+public class ErrorHandlerController : Controller
+{
+    public ErrorHandlerController()
+    { }
+
+    public ActionResult Index()
+    {
+        return View();
     }
 }

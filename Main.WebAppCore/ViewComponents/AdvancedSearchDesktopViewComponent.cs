@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Main.Common.Settings;
 using Main.Common.Enums;
+using WebApp.Infrastructure;
 
-namespace FineArtsWebApp
+namespace Main.WebAppCore;
+
+public class AdvancedSearchDesktopViewComponent : ViewComponent
 {
-    public class AdvancedSearchDesktopViewComponent : ViewComponent
+    public async Task<IViewComponentResult> InvokeAsync()
     {
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
-            MenuObjectModel menuObjectModel = 
-                new MenuObjectModel(
-                    (EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
+        MenuObjectModel menuObjectModel = 
+            new MenuObjectModel(
+                (EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
 
-            return View(menuObjectModel);
-        }
+        return View(menuObjectModel);
     }
 }

@@ -1,0 +1,98 @@
+﻿@model AccountDisplayViewModel;
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["ViewBagTitleSignIn"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+<div class="container">
+    <div class="row" style="margin-top:15px;">
+        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
+            <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+                <h4 class="sub-title">NEW REGISTRATION</h4>
+            </div>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                @* @Html.HiddenFor(a => a.IsCompanySeller) *@
+               @*  <div class="radio-field col-md-offset-4 col-sm-offset-3 col-sm-9 col-xs-12 col-md-6 col-lg-offset-4 col-lg-6">
+                    <label>
+                        @Html.RadioButtonFor(a => a.IsPrivateSeller, true, new { @id = "IsPrivateSeller1" })
+                        <img src="~/lib/Images/Home/AdvertiserUserTransparent.png" style="width:50px;height:50px;" />
+                    </label>
+                    <label>
+                        @Html.RadioButtonFor(a => a.IsPrivateSeller, false, new { @id = "IsPrivateSeller2" })
+                        <img src="~/lib/Images/Home/BusinessUserTransparent.png" style="width:50px;height:50px;" />
+                    </label>
+                </div> *@
+                
+               @*  <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12 info text-justify" style="margin-top:40px;">
+                    <div id="divAdvertiserUserText" style="margin-bottom:20px;">
+                        <b>Individual / Private Advertiser Account:</b> Individual Advertiser users post ads to sell products or services. They can only publish ads in this online portal to find buyers. Visitors view ads and call directly to the advertiser to buy products or avail services.
+                    </div>
+                    <div id="divBusinessUserText" style="display:none;">
+                        <b>Business / Online Seller Account:</b> Business users post their product or service details in this portal and online visitors buy those products using online payment gateway. A business user represents a company which must be registered to operate business in Bangladesh.
+                    </div>
+                    <br />
+                </div> *@
+
+                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+                    <label>Client Name (Company)</label>
+                    @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff", @placeholder = "Person / Company Name" } })
+                    @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "custom-inline-field-error" })
+                </div>
+              
+                <div class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
+                    <label>Phone</label>
+                    @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", @placeholder = "Phone" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "custom-inline-field-error" })
+                </div>
+                
+                <div class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
+                    <label>Email</label>
+                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", @placeholder = "Email" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "custom-inline-field-error" })
+                </div>
+
+                <div class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
+                    <label>Password</label>
+                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff", @placeholder = "Password" })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "custom-inline-field-error" })
+                </div>
+
+                <div class="col-sm-6 col-xs-12 col-md-6 col-lg-6">
+                    @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff", @placeholder = "Re-Password" })
+                    @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "custom-inline-field-error" })
+                </div>
+                <div class="gap"></div>
+                <div class="col-sm-12 col-xs-12 col-md-12 text-center" style="margin-top:30px;">
+                    <button class="primary-button flex max" type="submit">
+                       REGISTER
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scriptsapp {
+    <script type="text/javascript">
+        PAGE_NAME = '@Model.PageName';
+        $(function () {
+            $(document).on("change", "input[name='IsPrivateSeller']", function () {
+                if ($(this).val() == "False") {
+                    $("#IsCompanySeller").val(true);
+                    $("#divAdvertiserUserText").hide();
+                    $("#divBusinessUserText").show();                    
+                } else if ($(this).val() == "True") {
+                    $("#IsCompanySeller").val(false);
+                    $("#divBusinessUserText").hide();
+                    $("#divAdvertiserUserText").show();
+                }
+            });
+        });
+    </script>
+}
+

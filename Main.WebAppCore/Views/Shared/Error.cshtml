@@ -1,0 +1,56 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    ViewBag.Title = SharedLocalizer["UnwantedAccessErrorPageTitle"];
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 col-sm-offset-3 col-sm-6 col-xs-12 col-lg-offset-3 col-lg-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <h3 class="error">
+                            @SharedLocalizer["UnwantedAcessErrorH3ErrorTitle"]
+                        </h3>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <h4>
+                        <b>
+                            @SharedLocalizer["UnwantedAcessErrorH4ReasonsCouldBe"]
+                        </b>
+                    </h4>
+                    <h4>
+                        @SharedLocalizer["UnwantedAcessErrorH4Reason1"]
+                    </h4>
+                    <p>
+                        @SharedLocalizer["UnwantedAcessErrorPReason1Text"]
+                    </p>
+                    <br />
+                    <h4>
+                        @SharedLocalizer["UnwantedAcessErrorH4Reason2"]
+                    </h4>
+                    <p>
+                        @SharedLocalizer["UnwantedAcessErrorPReason2Text"]
+                    </p>
+                    <br />
+                    <h4>
+                        @SharedLocalizer["UnwantedAcessErrorH4Solution"]
+                    </h4>
+                    <p>
+                        @SharedLocalizer["UnwantedAcessErrorPPleaseGoTo"]
+                        <a href="@Url.Action( "Contact","Home" )">
+                            @SharedLocalizer["UnwantedAcessErrorAContactUs"]
+                        </a>
+                        @SharedLocalizer["UnwantedAcessErrorPToReportFailure"]
+                    </p>
+                </div>
+                <div class="panel-footer">
+                    <a href="@Url.Action( "Index","Home" )">
+                        @SharedLocalizer["LinkPortalURL"]
+                    </a>&nbsp;
+                    @SharedLocalizer["UnwantedAcessErrorDivSupportTeam"]
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
