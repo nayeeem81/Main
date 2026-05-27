@@ -1,7 +1,9 @@
-﻿namespace ResourceLibrary;
+﻿namespace ResourceLibrary.Resources;
 
-public class SharedResource
+public class SharedResources
 {
-    public SharedResource() { }
+    public SharedResources ( )
+    {
+    }
 }
                                   

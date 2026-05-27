@@ -53,7 +53,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="11Program.cs" />
     <Compile Remove="Controllers\AccountController.cs" />
     <Compile Remove="Controllers\CultureController.cs" />
     <Compile Remove="Controllers\SecureController.cs" />

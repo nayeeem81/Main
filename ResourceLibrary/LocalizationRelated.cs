@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace ResourceLibrary;
+namespace ResourceLibrary.Resources;
                               
 public static class GlobalResources
 {

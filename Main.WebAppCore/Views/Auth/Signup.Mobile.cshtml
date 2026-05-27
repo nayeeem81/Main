@@ -1,70 +1,122 @@
 ﻿@model AccountDisplayViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 @{
-    ViewBag.Title = SharedLocalizer["ViewBagTitleSignIn"];
+    ViewBag.Title = @Model.PageName;
+
+   // Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = "~/Views/Shared/_Layout.Mobile.cshtml";
+    //Layout = "~/Views/Shared/_Layout.Tablet.cshtml";
+
+
     ViewBag.ExcludeHeader = false;
 }
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
-            <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                <h4 class="sub-title">NEW REGISTRATION</h4>
-            </div>
-            @using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
-                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    <label>Client Name (Company)</label>
-                    @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff", @placeholder = "Client Name" } })
-                    @Html.ValidationMessageFor(model => model.ClientName, "The field Client Name is required.", new { @class = "custom-inline-field-error" })
-                </div>
+
+    <h4 class="sub-title"> @SharedLocalizer["ViewBagTitleSignUp"] </h4>
+   
+    <div class="card-form row">
+        
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="col-sm-12 
+                        col-xs-12 
+                        col-md-12 
+                        col-lg-12">
+
+                @Html.LabelFor( a => a.ClientName )
+
+                @Html.EditorFor(a => a.ClientName, new { @class = "fff" } )
+                    
+                @Html.ValidationMessageFor( model => model.ClientName, "", new { @class = "custom-inline-field-error text-danger" } )
                 
-                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    <label>Phone</label>
-                    @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", @placeholder = "Phone" } })
-                    @Html.ValidationMessageFor(model => model.Phone, "The field Phone is required.", new { @class = "custom-inline-field-error" })
-                </div>
+            </div>
+              
+            <div class="col-sm-12  
+                        col-xs-12 
+                        col-md-12 
+                        col-lg-12">
 
-                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    <label>Email</label>
-                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", @placeholder = "Email" } })
-                    @Html.ValidationMessageFor(model => model.Email, "The field Email is required.", new { @class = "custom-inline-field-error" })
-                </div>
+                @Html.LabelFor( a => a.Phone )
+
+                @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", 
+                                                                           @placeholder = "Enter your Phone" } })
+
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "custom-inline-field-error" })
+
+            </div>
+                
+            <div class="col-sm-12
+                        col-xs-12
+                        col-md-12
+                        col-lg-12">
+
+                @Html.LabelFor( a => a.Email )
+
+                @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", 
+                                                                           @placeholder = "Enter your Email" } })
+
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "custom-inline-field-error" })
+
+            </div>
+
+            <div class="col-sm-12
+                        col-xs-12
+                        col-md-12
+                        col-lg-12">
                
-                <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    <label>Password</label>
-                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
-                    @Html.ValidationMessageFor(model => model.Password, "The field Password is required.", new { @class = "custom-inline-field-error" })
-                </div>
+                @Html.LabelFor( a => a.Password )
 
-               <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
-                    @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff" })
-                    @Html.ValidationMessageFor(model => model.RePassword, "The field Re-Password is required.", new { @class = "custom-inline-field-error" })
-                </div>
+                @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff", 
+                                                                          @placeholder = "Enter your Password" })
 
-                <div class="gap"></div>
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "custom-inline-field-error" })
 
-                <div class="col-sm-12 col-xs-12 col-md-12 text-center">
-                    <button class="primary-button flex max" type="submit">
-                        REGISTER
-                    </button>
-                </div>
-            }
-        </div>
+            </div>
+
+            <div class="col-sm-12
+                        col-xs-12
+                        col-md-12
+                        col-lg-12">
+
+                @Html.LabelFor( a => a.RePassword )
+
+                @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff", 
+                                                                              @placeholder = "Enter your Password again" })
+
+                @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "custom-inline-field-error" })
+
+            </div>
+
+            <div class="gap"></div>
+
+            <div class="col-sm-12 
+                        col-xs-12 
+                        col-md-12 
+                        text-center">
+
+                <button class="primary-button 
+                               flex max" 
+                               type="submit">
+
+                    @SharedLocalizer["ButtonTextRegister"]
+                
+                </button>
+
+            </div>
+        }
     </div>
 </div>
 
+
 @section scriptsapp {
-    <script type="text/javascript">
+
+    <script>
+
         PAGE_NAME = '@Model.PageName';
-        $(function () {
-        });
+
     </script>
 }
-
-
-
 

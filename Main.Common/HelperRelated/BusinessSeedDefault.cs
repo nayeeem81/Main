@@ -1,7 +1,7 @@
 ﻿using Main.Common;
 using Main.Common.Enums;
 using Main.Common.Model;
-using ResourceLibrary; 
+using ResourceLibrary.Resources; 
 
 //Default (Vendor: DeshiHutBazar)
 public static class BusinessSeedDefault

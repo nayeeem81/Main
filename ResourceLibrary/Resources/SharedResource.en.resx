@@ -945,9 +945,6 @@
   <data name="AccountOwner" xml:space="preserve">
     <value>Account Owner:</value>
   </data>
-  <data name="AccountSettingsClientName" xml:space="preserve">
-    <value>Client Name:</value>
-  </data>
   <data name="AccountSettingsCompany" xml:space="preserve">
     <value>Company</value>
   </data>
@@ -2817,9 +2814,6 @@
   <data name="MenuNewAdSpace" xml:space="preserve">
     <value>Add New Ad Space</value>
   </data>
-  <data name="CLIENT_NAME_REQUIRED" xml:space="preserve">
-    <value>Client Name is required.</value>
-  </data>
   <data name="TITLE_IS_REQUIRED" xml:space="preserve">
     <value>Title is required.</value>
   </data>
@@ -2891,9 +2885,6 @@
   </data>
   <data name="CategoryField" xml:space="preserve">
     <value>Category</value>
-  </data>
-  <data name="ClientNameField" xml:space="preserve">
-    <value>Client Name</value>
   </data>
   <data name="EmailField" xml:space="preserve">
     <value>Email</value>
@@ -3033,10 +3024,25 @@
   <data name="EditPostButtonSUBMITAD" xml:space="preserve">
     <value>UPDATE</value>
   </data>
+  <data name="ClientName" xml:space="preserve">
+    <value>Your Name:</value>
+  </data>
+  <data name="ClientNameRequired" xml:space="preserve">
+    <value>Please enter your name!</value>
+  </data>
+  <data name="ClientNamePlaceholder" xml:space="preserve">
+    <value>Enter your Name _ _ _ _</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
+  </data>
+  <data name="ViewBagTitleSignUp" xml:space="preserve">
+    <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
+  </data>
+  <data name="ButtonTextRegister" xml:space="preserve">
+    <value>RIGESTER</value>
   </data>
 </root>

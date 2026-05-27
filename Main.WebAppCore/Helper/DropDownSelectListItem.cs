@@ -4,7 +4,7 @@ using Main.Common.HelperServices;
 using Main.Common.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ResourceLibrary;
+using ResourceLibrary.Resources;
 using System.Globalization;
 
 namespace WebApp.ViewModel;

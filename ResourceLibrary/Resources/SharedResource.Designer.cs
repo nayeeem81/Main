@@ -133,15 +133,6 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client Name:.
-        /// </summary>
-        public static string AccountSettingsClientName {
-            get {
-                return ResourceManager.GetString("AccountSettingsClientName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Company.
         /// </summary>
         public static string AccountSettingsCompany {
@@ -1159,20 +1150,29 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client Name is required..
+        ///   Looks up a localized string similar to ClientName.
         /// </summary>
-        public static string CLIENT_NAME_REQUIRED {
+        public static string ClientName {
             get {
-                return ResourceManager.GetString("CLIENT_NAME_REQUIRED", resourceCulture);
+                return ResourceManager.GetString("ClientName", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client Name.
+        ///   Looks up a localized string similar to ClientNamePlaceholder.
         /// </summary>
-        public static string ClientNameField {
+        public static string ClientNamePlaceholder {
             get {
-                return ResourceManager.GetString("ClientNameField", resourceCulture);
+                return ResourceManager.GetString("ClientNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ClientNameRequired.
+        /// </summary>
+        public static string ClientNameRequired {
+            get {
+                return ResourceManager.GetString("ClientNameRequired", resourceCulture);
             }
         }
         

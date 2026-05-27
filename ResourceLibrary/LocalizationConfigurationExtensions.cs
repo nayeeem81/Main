@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ResourceLibrary;
+namespace ResourceLibrary.Resources;
 
 public static class LocalizationConfigurationExtensions
 {
@@ -38,7 +38,7 @@ public static class LocalizationConfigurationExtensions
             SupportedUICultures = SupportedCultures
         };
 
-        localizationOptions.RequestCultureProviders = new           List<IRequestCultureProvider>
+        localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
         {
             new QueryStringRequestCultureProvider(),
             new CookieRequestCultureProvider(),
