@@ -58,10 +58,10 @@ else
 
 app.UseStatusCodePages ( );
 
-builder.Services.AddHttpsRedirection ( options =>
-{
-    options.HttpsPort = 443;
-} );
+//builder.Services.AddHttpsRedirection ( options =>
+//{
+//    options.HttpsPort = 443;
+//} );
 
 app.UseWebOptimizer ( );
 

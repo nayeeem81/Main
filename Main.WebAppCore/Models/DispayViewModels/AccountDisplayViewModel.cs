@@ -13,31 +13,30 @@ public class AccountDisplayViewModel: BaseViewModel
     public int UserID { get; set; }
 
 
-    [Required ( ErrorMessage = "Please enter your user name!" )]
-    [Display(Name = "User Name:")]
+    [Required ( ErrorMessageResourceName = "UserNameRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "UserName",Prompt = "UserNamePlaceholder",ResourceType = typeof ( SharedResource ) )]
     public string UserName { get; set; }
 
 
-    [Required ( ErrorMessage = "Please enter your email!" )]
-    [Display(Name = "Email:")]
+    [Required ( ErrorMessageResourceName = "EmailRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "Email",Prompt = "EmailPlaceholder",ResourceType = typeof ( SharedResource ) )]
     public string Email { get; set; }
 
 
-    [Required ( ErrorMessage = "Please enter your phone number!" )]
-    [Display(Name = "Phone Number:")]
+    [Required ( ErrorMessageResourceName = "PhoneRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "Phone",Prompt = "PhonePlaceholder",ResourceType = typeof ( SharedResource ) )]
     public string Phone { get; set; }
 
-    [Required ( ErrorMessage = "Please enter your password!" )]
-    [Display(Name = "Password:")]
+    [Required ( ErrorMessageResourceName = "PasswordRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "Password",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
     [DataType ( DataType.Password )]
     public string Password { get; set; }
 
 
-    [Required ( ErrorMessage = "Please re-enter your password!" )] 
-    [Display(Name = "Re-Password:")]
+    [Required ( ErrorMessageResourceName = "RePasswordRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "RePassword",Prompt = "RePasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
     [DataType ( DataType.Password )]
     public string RePassword { get; set; }
-
 
 
     [Required ( ErrorMessageResourceName = "ClientNameRequired", ErrorMessageResourceType = typeof ( SharedResource ) )]

@@ -3039,8 +3039,8 @@
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
   </data>
-  <data name="ViewBagTitleSignUp" xml:space="preserve">
-    <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
+  <data name="TitleRegisterPage" xml:space="preserve">
+    <value>Register Account Here!</value>
   </data>
   <data name="ButtonTextRegister" xml:space="preserve">
     <value>RIGESTER</value>

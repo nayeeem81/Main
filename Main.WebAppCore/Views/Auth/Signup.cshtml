@@ -8,106 +8,129 @@
     //Layout = "~/Views/Shared/_Layout.Tablet.cshtml";
 
 
-    ViewBag.ExcludeHeader = false;
+    ViewBag.ExcludeHeader = true;
 }
 
 <div class="container">
-
-    <h4 class="sub-title"> @SharedLocalizer["ViewBagTitleSignUp"] </h4>
-       
-        <div class="card-form row">
         
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+            <div class="offset-1 col-10 card-form">
 
-            <div class="col-sm-12 
-                        col-xs-12 
-                        col-md-12 
+                <div class="row">
+                    <div class="col-sm-12
+                        col-xs-12
+                        col-md-12
                         col-lg-12">
+                        
+                    <h4 class="card-title"> @SharedLocalizer["TitleRegisterPage"] </h4>
 
-                @Html.LabelFor( a => a.ClientName )
+                    </div>
+                </div>
 
-                @Html.EditorFor(a => a.ClientName, new { @class = "fff" } )
+                <div class="gap"></div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="row">
+                        <div class="col-sm-12 
+                                    col-xs-12 
+                                    col-md-12 
+                                    col-lg-12">
+
+                            @Html.LabelFor( a => a.ClientName )
+
+                            @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff"} })
                     
-                @Html.ValidationMessageFor( model => model.ClientName, "", new { @class = "custom-inline-field-error text-danger" } )
+                            @Html.ValidationMessageFor( model => model.ClientName, "", 
+                                    new { @class = "custom-inline-field-error text-danger" } )
                 
-            </div>
-              
-            <div class="col-sm-12  
-                        col-xs-12 
-                        col-md-12 
-                        col-lg-12">
+                        </div>
+                    </div>
+            
 
-                @Html.LabelFor( a => a.Phone )
+                    <div class="row">
+                        <div class="col-sm-12  
+                                    col-xs-12 
+                                    col-md-12 
+                                    col-lg-12">
 
-                @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", 
-                                                                           @placeholder = "Enter your Phone" } })
+                            @Html.LabelFor( a => a.Phone )
 
-                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "custom-inline-field-error" })
+                            @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff"} })
 
-            </div>
-                
-            <div class="col-sm-12
-                        col-xs-12
-                        col-md-12
-                        col-lg-12">
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "custom-inline-field-error" })
 
-                @Html.LabelFor( a => a.Email )
+                        </div>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-sm-12
+                                    col-xs-12
+                                    col-md-12
+                                    col-lg-12">
 
-                @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", 
-                                                                           @placeholder = "Enter your Email" } })
+                            @Html.LabelFor( a => a.Email )
 
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "custom-inline-field-error" })
+                            @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff" } })
 
-            </div>
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "custom-inline-field-error" })
 
-            <div class="col-sm-12
-                        col-xs-12
-                        col-md-12
-                        col-lg-12">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12
+                                    col-xs-12
+                                    col-md-12
+                                    col-lg-12">
                
-                @Html.LabelFor( a => a.Password )
+                            @Html.LabelFor( a => a.Password )
 
-                @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff", 
-                                                                          @placeholder = "Enter your Password" })
+                            @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
 
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "custom-inline-field-error" })
 
-            </div>
+                        </div>
+                    </div>
 
-            <div class="col-sm-12
-                        col-xs-12
-                        col-md-12
-                        col-lg-12">
+                    <div class="row">
+                        <div class="col-sm-12
+                                    col-xs-12
+                                    col-md-12
+                                    col-lg-12">
 
-                @Html.LabelFor( a => a.RePassword )
+                            @Html.LabelFor( a => a.RePassword )
 
-                @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff", 
-                                                                              @placeholder = "Enter your Password again" })
+                            @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff" })
 
-                @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "custom-inline-field-error" })
 
-            </div>
+                        </div>
+                    </div>
 
-            <div class="gap"></div>
+                    <div class="gap"></div>
 
-            <div class="col-sm-12 
-                        col-xs-12 
-                        col-md-12 
-                        text-center">
+                    <div class="row">
+                        <div class="col-sm-12 
+                                    col-xs-12 
+                                    col-md-12 
+                                    text-center">
 
-                <button class="primary-button 
-                               flex max" 
-                               type="submit">
+                            <button class="primary-button
+                                flex max"
+                                    type="submit">
 
-                    @SharedLocalizer["ButtonTextRegister"]
-                
-                </button>
+                                @SharedLocalizer["ButtonTextRegister"]
 
-            </div>
-        }
+                            </button>
+
+                        </div>
+                    </div>
+                }
+        </div>
     </div>
+    
 </div>
 
 

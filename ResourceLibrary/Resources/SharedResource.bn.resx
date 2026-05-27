@@ -3031,8 +3031,8 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
-  <data name="ViewBagTitleSignUp" xml:space="preserve">
-    <value>Register Account Here!</value>
+  <data name="TitleRegisterPage" xml:space="preserve">
+    <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
   </data>
   <data name="ButtonTextRegister" xml:space="preserve">
     <value>নিবন্ধন করুন</value>
