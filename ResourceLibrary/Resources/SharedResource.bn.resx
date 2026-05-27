@@ -939,9 +939,6 @@
   <data name="AccountOwner" xml:space="preserve">
     <value>একাউন্টের মালিক</value>
   </data>
-  <data name="AccountSettingsClientName" xml:space="preserve">
-    <value>গ্রাহকের নাম</value>
-  </data>
   <data name="AccountSettingsCompany" xml:space="preserve">
     <value>প্রতিষ্ঠান</value>
   </data>
@@ -2812,9 +2809,6 @@
   <data name="MenuNewAdSpace" xml:space="preserve">
     <value>নতুন বিজ্ঞাপন স্থান যোগ করুন</value>
   </data>
-  <data name="CLIENT_NAME_REQUIRED" xml:space="preserve">
-    <value>ক্লায়েন্টের নাম আবশ্যক।</value>
-  </data>
   <data name="TITLE_IS_REQUIRED" xml:space="preserve">
     <value />
   </data>
@@ -2841,9 +2835,6 @@
   </data>
   <data name="CategoryField" xml:space="preserve">
     <value>ক্যাটাগরি</value>
-  </data>
-  <data name="ClientNameField" xml:space="preserve">
-    <value>গ্রাহকের নাম</value>
   </data>
   <data name="EmailField" xml:space="preserve">
     <value>ইমেইল</value>
@@ -2977,6 +2968,18 @@
   <data name="UploadFile" xml:space="preserve">
     <value>ফাইল আপলোড করুন</value>
   </data>
+  <data name="EditPostButtonSUBMITAD" xml:space="preserve">
+    <value>আপডেট করুন</value>
+  </data>
+  <data name="ClientName" xml:space="preserve">
+    <value>আপনার নাম:</value>
+  </data>
+  <data name="ClientNameRequired" xml:space="preserve">
+    <value>অনুগ্রহ করে আপনার নাম লিখুন!</value>
+  </data>
+  <data name="ClientNamePlaceholder" xml:space="preserve">
+    <value>আপনার নাম লিখুন _ _ _ _</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3028,7 +3031,10 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
-  <data name="EditPostButtonSUBMITAD" xml:space="preserve">
-    <value>আপডেট করুন</value>
+  <data name="ViewBagTitleSignUp" xml:space="preserve">
+    <value>Register Account Here!</value>
+  </data>
+  <data name="ButtonTextRegister" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
   </data>
 </root>

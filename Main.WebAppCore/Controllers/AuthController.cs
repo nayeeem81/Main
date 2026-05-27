@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using ResourceLibrary;
+using ResourceLibrary.Resources;
 using System.Security.Claims;
 using WebApp.ViewModel;
 using WebApp.ViewModel.Extensions;

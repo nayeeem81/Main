@@ -1,4 +1,4 @@
-using ResourceLibrary;
+using ResourceLibrary.Resources;
 using Main.Services;
 using WebApp.Infrastructure;
 
@@ -58,7 +58,10 @@ else
 
 app.UseStatusCodePages ( );
 
-app.UseHttpsRedirection ( );
+builder.Services.AddHttpsRedirection ( options =>
+{
+    options.HttpsPort = 443;
+} );
 
 app.UseWebOptimizer ( );
 

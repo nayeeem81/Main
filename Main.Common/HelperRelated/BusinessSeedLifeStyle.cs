@@ -1,7 +1,7 @@
 ﻿using Main.Common;
 using Main.Common.Enums;
 using Main.Common.Model;
-using ResourceLibrary;
+using ResourceLibrary.Resources;
 
 namespace Main.Common.Helper;
 

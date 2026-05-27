@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Main.Services;
-using ResourceLibrary;
+using ResourceLibrary.Resources;
 using Main.Common.Enums;
 using WebApp.ViewModel;
 
