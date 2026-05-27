@@ -3034,4 +3034,7 @@
   <data name="ClientNamePlaceholder" xml:space="preserve">
     <value>ClientNamePlaceholder</value>
   </data>
+  <data name="TitleRegisterPage" xml:space="preserve">
+    <value>Register Account Here!</value>
+  </data>
 </root>
