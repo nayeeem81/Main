@@ -54,7 +54,6 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountController.cs" />
-    <Compile Remove="Controllers\CultureController.cs" />
     <Compile Remove="Controllers\SecureController.cs" />
     <Compile Remove="Controllers\UserSessionLogController.cs" />
     <Compile Remove="ViewComponents\ShoppingCartNotificationViewComponent.cs" />

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 using System.Globalization;
 
-namespace FineArtsWebApp
+namespace Main.WebAppCore
 {
     public class CultureController : BaseController
     {
@@ -26,7 +27,7 @@ namespace FineArtsWebApp
 
             Response.Cookies.Append(
                                CookieRequestCultureProvider.DefaultCookieName,
-                               CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(LanguageAbbrevation)),
+                               CookieRequestCultureProvider.MakeCookieValue(new RequestCulture( culture: LanguageAbbrevation )),
                                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
             Response.Cookies.Append("Language", LanguageAbbrevation);

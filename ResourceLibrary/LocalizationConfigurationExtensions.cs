@@ -9,8 +9,8 @@ public static class LocalizationConfigurationExtensions
 {
     private static readonly CultureInfo[] SupportedCultures = new[]
     {
-        new CultureInfo("en-US"),
-        new CultureInfo("bn-BD")
+        new CultureInfo("en"),
+        new CultureInfo("bn")
     };
     
     public static IServiceCollection AddCustomLocalization ( this IServiceCollection services )
@@ -33,7 +33,7 @@ public static class LocalizationConfigurationExtensions
     {
         var localizationOptions = new RequestLocalizationOptions
         {
-            DefaultRequestCulture = new RequestCulture("en-US"),
+            DefaultRequestCulture = new RequestCulture("en"),
             SupportedCultures = SupportedCultures,
             SupportedUICultures = SupportedCultures
         };

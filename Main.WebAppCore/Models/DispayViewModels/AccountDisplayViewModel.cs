@@ -5,6 +5,10 @@ namespace WebApp.ViewModel;
 
 public class AccountDisplayViewModel: BaseViewModel
 {
+    public AccountDisplayViewModel ( )
+    {
+    }
+
     public AccountDisplayViewModel ( string pageName)
     {
         PageName = pageName;

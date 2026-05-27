@@ -420,9 +420,6 @@
   <data name="ContactUsPageTitle" xml:space="preserve">
     <value>যোগাযোগ করুন পাতার শিরোনাম</value>
   </data>
-  <data name="ErrorMessageEmailRequired" xml:space="preserve">
-    <value>ইমেইল আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
-  </data>
   <data name="ErrorMessageNewPostCategory" xml:space="preserve">
     <value>বিভাগ আবশ্যক! অনুগ্রহ করে প্রবেশ করান।</value>
   </data>
@@ -464,9 +461,6 @@
   </data>
   <data name="ErrorMessageRegisterPersonRequired" xml:space="preserve">
     <value>ব্যক্তি/প্রতিষ্ঠানের নাম আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
-  </data>
-  <data name="ErrorMessageRegisterPhoneRequired" xml:space="preserve">
-    <value>ফোন নম্বর আবশ্যক। অনুগ্রহ করে প্রবেশ করান।</value>
   </data>
   <data name="ErrorMessageRegisterRePasswordRequired" xml:space="preserve">
     <value>পুনরায় পাসওয়ার্ড দিতে হবে। অনুগ্রহ করে প্রবেশ করান।</value>
@@ -664,9 +658,6 @@
     <value>আরও দেখুন</value>
   </data>
   <data name="NotePostFreeAd" xml:space="preserve">
-    <value />
-  </data>
-  <data name="PlaceholderEmail" xml:space="preserve">
     <value />
   </data>
   <data name="PlaceholderNewPostArea" xml:space="preserve">
@@ -1178,9 +1169,6 @@
   </data>
   <data name="ContactEmail" xml:space="preserve">
     <value>ইমেইল</value>
-  </data>
-  <data name="ContactEmailPlaceHolder" xml:space="preserve">
-    <value>তোমার ই - মেইল ​​ঠিকানা লেখো</value>
   </data>
   <data name="ContactEngineeringTeam" xml:space="preserve">
     <value>প্রকৌশল দল</value>
@@ -2581,6 +2569,9 @@
   <data name="PHONE_IS_NOT_IN_CORRECT_FORMAT" xml:space="preserve">
     <value />
   </data>
+  <data name="PHONE_IS_NOT_IN_CORRECT_FORMAT1" xml:space="preserve">
+    <value />
+  </data>
   <data name="PLEASE_ENTER_TEXT_FOR_INPUT_FIELDS" xml:space="preserve">
     <value />
   </data>
@@ -2686,6 +2677,9 @@
   <data name="PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL" xml:space="preserve">
     <value>দয়া করে ইমেইল জন্য সঠিক পাসওয়ার্ড লিখুন </value>
   </data>
+  <data name="PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL1" xml:space="preserve">
+    <value>দয়া করে ইমেইল জন্য সঠিক পাসওয়ার্ড লিখুন </value>
+  </data>
   <data name="PLEASE_ENTER_EMAIL" xml:space="preserve">
     <value>দয়া করে আপনার ইমেল লিখুন</value>
   </data>
@@ -2698,7 +2692,13 @@
   <data name="PLEASE_ENTER_PASSWORD" xml:space="preserve">
     <value>দয়া করে পাসওয়ার্ড প্রবেশ করুন</value>
   </data>
+  <data name="PLEASE_ENTER_PASSWORD1" xml:space="preserve">
+    <value>দয়া করে পাসওয়ার্ড প্রবেশ করুন</value>
+  </data>
   <data name="PLEASE_ENTER_RePASSWORD" xml:space="preserve">
+    <value>দয়া করে পুনরায় পাসওয়ার্ড লিখুন </value>
+  </data>
+  <data name="PLEASE_ENTER_RePASSWORD1" xml:space="preserve">
     <value>দয়া করে পুনরায় পাসওয়ার্ড লিখুন </value>
   </data>
   <data name="PLEASE_ENTER_SUBJECT_FOR_MESSAGE" xml:space="preserve">
@@ -2848,8 +2848,8 @@
   <data name="PriceField" xml:space="preserve">
     <value />
   </data>
-  <data name="RePasswordField" xml:space="preserve">
-    <value>পুনরায় পাসওয়ার্ড</value>
+  <data name="RePassword" xml:space="preserve">
+    <value>পুনরায় - পাসওয়ার্ড</value>
   </data>
   <data name="SubCategoryField" xml:space="preserve">
     <value>সাব-ক্যাটাগরি</value>
@@ -2933,7 +2933,7 @@
     <value>Donate</value>
   </data>
   <data name="Register" xml:space="preserve">
-    <value>Register</value>
+    <value>নিবন্ধন</value>
   </data>
   <data name="Close1" xml:space="preserve">
     <value>বন্ধ করুন </value>
@@ -2972,13 +2972,61 @@
     <value>আপডেট করুন</value>
   </data>
   <data name="ClientName" xml:space="preserve">
-    <value>আপনার নাম:</value>
+    <value>আপনার নাম</value>
   </data>
   <data name="ClientNameRequired" xml:space="preserve">
     <value>অনুগ্রহ করে আপনার নাম লিখুন!</value>
   </data>
   <data name="ClientNamePlaceholder" xml:space="preserve">
-    <value>আপনার নাম লিখুন _ _ _ _</value>
+    <value>আপনার নাম লিখুন...</value>
+  </data>
+  <data name="TitleRegisterPage" xml:space="preserve">
+    <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>অ্যাকাউন্টের ব্যবহারকারীর নাম লিখুন!</value>
+  </data>
+  <data name="UserNamePlaceholder" xml:space="preserve">
+    <value>অ্যাকাউন্টের ব্যবহারকারীর নাম লিখুন...</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>অ্যাকাউন্টের নাম (ব্যবহারকারী)</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>আপনার ইমেল ঠিকানা লিখুন!</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>ইমেল ঠিকানা লিখুন...</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>ইমেইল </value>
+  </data>
+  <data name="PhoneRequired" xml:space="preserve">
+    <value>ফোন নম্বর লিখুন!</value>
+  </data>
+  <data name="PhonePlaceholder" xml:space="preserve">
+    <value>ফোন নম্বর লিখুন...</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>ফোন নম্বর</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>পাসওয়ার্ড</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>অনুগ্রহ করে পাসওয়ার্ড দিন!</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>পাসওয়ার্ড লিখুন...</value>
+  </data>
+  <data name="RePasswordRequired" xml:space="preserve">
+    <value>অনুগ্রহ করে পাসওয়ার্ড দিন!</value>
+  </data>
+  <data name="RePasswordPaceholder" xml:space="preserve">
+    <value>অনুগ্রহ করে আবার পাসওয়ার্ড দিন...</value>
+  </data>
+  <data name="RePasswordPlaceholder" xml:space="preserve">
+    <value>আবার পাসওয়ার্ড দিন...</value>
   </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
@@ -3030,9 +3078,6 @@
   </data>
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
-  </data>
-  <data name="TitleRegisterPage" xml:space="preserve">
-    <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
   </data>
   <data name="ButtonTextRegister" xml:space="preserve">
     <value>নিবন্ধন করুন</value>
