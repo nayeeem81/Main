@@ -790,6 +790,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RIGESTER.
+        /// </summary>
+        public static string ButtonTextRegister {
+            get {
+                return ResourceManager.GetString("ButtonTextRegister", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign Up.
         /// </summary>
         public static string ButtonTextRegisterSignUp {
@@ -1330,15 +1339,6 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter your email address.
-        /// </summary>
-        public static string ContactEmailPlaceHolder {
-            get {
-                return ResourceManager.GetString("ContactEmailPlaceHolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to engineering team.
         /// </summary>
         public static string ContactEngineeringTeam {
@@ -1726,6 +1726,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email is not in correct format. Please enter a valid Email address..
         /// </summary>
         public static string EMAIL_NOT_IN_CORRECT_FORMAT {
@@ -1749,6 +1758,24 @@ namespace ResourceLibrary.Resources {
         public static string EmailField {
             get {
                 return ResourceManager.GetString("EmailField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EmailPlaceholder.
+        /// </summary>
+        public static string EmailPlaceholder {
+            get {
+                return ResourceManager.GetString("EmailPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EmailRequired.
+        /// </summary>
+        public static string EmailRequired {
+            get {
+                return ResourceManager.GetString("EmailRequired", resourceCulture);
             }
         }
         
@@ -1857,15 +1884,6 @@ namespace ResourceLibrary.Resources {
         public static string ErrorMessageContactUsContactSubject {
             get {
                 return ResourceManager.GetString("ErrorMessageContactUsContactSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email is required. Please enter..
-        /// </summary>
-        public static string ErrorMessageEmailRequired {
-            get {
-                return ResourceManager.GetString("ErrorMessageEmailRequired", resourceCulture);
             }
         }
         
@@ -1992,15 +2010,6 @@ namespace ResourceLibrary.Resources {
         public static string ErrorMessageRegisterPersonRequired {
             get {
                 return ResourceManager.GetString("ErrorMessageRegisterPersonRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Phone is required. Please enter..
-        /// </summary>
-        public static string ErrorMessageRegisterPhoneRequired {
-            get {
-                return ResourceManager.GetString("ErrorMessageRegisterPhoneRequired", resourceCulture);
             }
         }
         
@@ -5812,6 +5821,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password and Re Password has to be same length..
         /// </summary>
         public static string PASSWORD_AND_REPASSWORD_HAS_TO_BE {
@@ -5880,6 +5898,24 @@ namespace ResourceLibrary.Resources {
         public static string PasswordField {
             get {
                 return ResourceManager.GetString("PasswordField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PasswordPlaceholder.
+        /// </summary>
+        public static string PasswordPlaceholder {
+            get {
+                return ResourceManager.GetString("PasswordPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PasswordRequired.
+        /// </summary>
+        public static string PasswordRequired {
+            get {
+                return ResourceManager.GetString("PasswordRequired", resourceCulture);
             }
         }
         
@@ -5974,11 +6010,29 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string Phone {
+            get {
+                return ResourceManager.GetString("Phone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Phone is not in correct format. Please enter only digits for Phone number.
         /// </summary>
         public static string PHONE_IS_NOT_IN_CORRECT_FORMAT {
             get {
                 return ResourceManager.GetString("PHONE_IS_NOT_IN_CORRECT_FORMAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone is not in correct format. Please enter only digits for Phone number.
+        /// </summary>
+        public static string PHONE_IS_NOT_IN_CORRECT_FORMAT1 {
+            get {
+                return ResourceManager.GetString("PHONE_IS_NOT_IN_CORRECT_FORMAT1", resourceCulture);
             }
         }
         
@@ -5997,6 +6051,24 @@ namespace ResourceLibrary.Resources {
         public static string PhoneField {
             get {
                 return ResourceManager.GetString("PhoneField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PhonePlaceholder.
+        /// </summary>
+        public static string PhonePlaceholder {
+            get {
+                return ResourceManager.GetString("PhonePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PhoneRequired.
+        /// </summary>
+        public static string PhoneRequired {
+            get {
+                return ResourceManager.GetString("PhoneRequired", resourceCulture);
             }
         }
         
@@ -6042,15 +6114,6 @@ namespace ResourceLibrary.Resources {
         public static string PlaceholderContactUsContactSubject {
             get {
                 return ResourceManager.GetString("PlaceholderContactUsContactSubject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Email.
-        /// </summary>
-        public static string PlaceholderEmail {
-            get {
-                return ResourceManager.GetString("PlaceholderEmail", resourceCulture);
             }
         }
         
@@ -6316,6 +6379,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter correct password for this Email addres.
+        /// </summary>
+        public static string PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL1 {
+            get {
+                return ResourceManager.GetString("PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter your Email..
         /// </summary>
         public static string PLEASE_ENTER_EMAIL {
@@ -6352,11 +6424,29 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter Password..
+        /// </summary>
+        public static string PLEASE_ENTER_PASSWORD1 {
+            get {
+                return ResourceManager.GetString("PLEASE_ENTER_PASSWORD1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter Re Password..
         /// </summary>
         public static string PLEASE_ENTER_RePASSWORD {
             get {
                 return ResourceManager.GetString("PLEASE_ENTER_RePASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter Re Password..
+        /// </summary>
+        public static string PLEASE_ENTER_RePASSWORD1 {
+            get {
+                return ResourceManager.GetString("PLEASE_ENTER_RePASSWORD1", resourceCulture);
             }
         }
         
@@ -6624,9 +6714,36 @@ namespace ResourceLibrary.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Re-Password.
         /// </summary>
-        public static string RePasswordField {
+        public static string RePassword {
             get {
-                return ResourceManager.GetString("RePasswordField", resourceCulture);
+                return ResourceManager.GetString("RePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RePasswordPaceholder.
+        /// </summary>
+        public static string RePasswordPaceholder {
+            get {
+                return ResourceManager.GetString("RePasswordPaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RePasswordPlaceholder.
+        /// </summary>
+        public static string RePasswordPlaceholder {
+            get {
+                return ResourceManager.GetString("RePasswordPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RePasswordRequired.
+        /// </summary>
+        public static string RePasswordRequired {
+            get {
+                return ResourceManager.GetString("RePasswordRequired", resourceCulture);
             }
         }
         
@@ -7873,6 +7990,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Register Account Here!.
+        /// </summary>
+        public static string TitleRegisterPage {
+            get {
+                return ResourceManager.GetString("TitleRegisterPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to to .
         /// </summary>
         public static string To {
@@ -8265,6 +8391,33 @@ namespace ResourceLibrary.Resources {
         public static string USER_EMAIL_ALREADY_USED {
             get {
                 return ResourceManager.GetString("USER_EMAIL_ALREADY_USED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserName.
+        /// </summary>
+        public static string UserName {
+            get {
+                return ResourceManager.GetString("UserName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNamePlaceholder.
+        /// </summary>
+        public static string UserNamePlaceholder {
+            get {
+                return ResourceManager.GetString("UserNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserNameRequired.
+        /// </summary>
+        public static string UserNameRequired {
+            get {
+                return ResourceManager.GetString("UserNameRequired", resourceCulture);
             }
         }
         

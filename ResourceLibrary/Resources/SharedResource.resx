@@ -423,9 +423,6 @@
   <data name="ContactUsPageTitle" xml:space="preserve">
     <value>Contact Us</value>
   </data>
-  <data name="ErrorMessageEmailRequired" xml:space="preserve">
-    <value>Email is required. Please enter.</value>
-  </data>
   <data name="ErrorMessageNewPostCategory" xml:space="preserve">
     <value>Category is required! Please enter.</value>
   </data>
@@ -467,9 +464,6 @@
   </data>
   <data name="ErrorMessageRegisterPersonRequired" xml:space="preserve">
     <value>Person/Company name is required. Please enter.</value>
-  </data>
-  <data name="ErrorMessageRegisterPhoneRequired" xml:space="preserve">
-    <value>Phone is required. Please enter.</value>
   </data>
   <data name="ErrorMessageRegisterRePasswordRequired" xml:space="preserve">
     <value>Re-Password is required. Please enter.</value>
@@ -668,9 +662,6 @@
   </data>
   <data name="NotePostFreeAd" xml:space="preserve">
     <value>NOTE: It is very simple. For quick submission, please fill up only the * fields.</value>
-  </data>
-  <data name="PlaceholderEmail" xml:space="preserve">
-    <value>Email</value>
   </data>
   <data name="PlaceholderNewPostArea" xml:space="preserve">
     <value>Area Details</value>
@@ -1184,9 +1175,6 @@
   </data>
   <data name="ContactEmail" xml:space="preserve">
     <value>Email :</value>
-  </data>
-  <data name="ContactEmailPlaceHolder" xml:space="preserve">
-    <value>Enter your email address</value>
   </data>
   <data name="ContactEngineeringTeam" xml:space="preserve">
     <value>engineering team</value>
@@ -2586,6 +2574,9 @@
   <data name="PHONE_IS_NOT_IN_CORRECT_FORMAT" xml:space="preserve">
     <value>Phone is not in correct format. Please enter only digits for Phone number</value>
   </data>
+  <data name="PHONE_IS_NOT_IN_CORRECT_FORMAT1" xml:space="preserve">
+    <value>Phone is not in correct format. Please enter only digits for Phone number</value>
+  </data>
   <data name="PLEASE_ENTER_TEXT_FOR_INPUT_FIELDS" xml:space="preserve">
     <value>Please enter text for input fields, following the inline the validation messages in red color just below the controls and then click submit button again.</value>
   </data>
@@ -2691,6 +2682,9 @@
   <data name="PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL" xml:space="preserve">
     <value>Please enter correct password for this Email addres</value>
   </data>
+  <data name="PLEASE_ENTER_CORRECT_PASS_FOR_EMAIL1" xml:space="preserve">
+    <value>Please enter correct password for this Email addres</value>
+  </data>
   <data name="PLEASE_ENTER_EMAIL" xml:space="preserve">
     <value>Please enter your Email.</value>
   </data>
@@ -2703,7 +2697,13 @@
   <data name="PLEASE_ENTER_PASSWORD" xml:space="preserve">
     <value>Please enter Password.</value>
   </data>
+  <data name="PLEASE_ENTER_PASSWORD1" xml:space="preserve">
+    <value>Please enter Password.</value>
+  </data>
   <data name="PLEASE_ENTER_RePASSWORD" xml:space="preserve">
+    <value>Please enter Re Password.</value>
+  </data>
+  <data name="PLEASE_ENTER_RePASSWORD1" xml:space="preserve">
     <value>Please enter Re Password.</value>
   </data>
   <data name="PLEASE_ENTER_SUBJECT_FOR_MESSAGE" xml:space="preserve">
@@ -2898,8 +2898,9 @@
   <data name="PriceField" xml:space="preserve">
     <value>Price</value>
   </data>
-  <data name="RePasswordField" xml:space="preserve">
+  <data name="RePassword" xml:space="preserve">
     <value>Re-Password</value>
+    <comment>Re Passwrd for Label</comment>
   </data>
   <data name="SubCategoryField" xml:space="preserve">
     <value>Sub-Category</value>
@@ -3036,5 +3037,68 @@
   </data>
   <data name="TitleRegisterPage" xml:space="preserve">
     <value>Register Account Here!</value>
+  </data>
+  <data name="UserNameRequired" xml:space="preserve">
+    <value>UserNameRequired</value>
+    <comment>User Name Required</comment>
+  </data>
+  <data name="UserNamePlaceholder" xml:space="preserve">
+    <value>UserNamePlaceholder</value>
+    <comment>User Name Placeholder</comment>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>UserName</value>
+    <comment>User Name for Label</comment>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>EmailRequired</value>
+    <comment>Email Required Error Message</comment>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>EmailPlaceholder</value>
+    <comment>Email Placeholder</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>Email for Label</comment>
+  </data>
+  <data name="PhoneRequired" xml:space="preserve">
+    <value>PhoneRequired</value>
+    <comment>Phone Required for Error Message</comment>
+  </data>
+  <data name="PhonePlaceholder" xml:space="preserve">
+    <value>PhonePlaceholder</value>
+    <comment>Phone Placeholder</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+    <comment>Phone for Label</comment>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+    <comment>Password</comment>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>PasswordRequired</value>
+    <comment>Password Required for Error Message</comment>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>PasswordPlaceholder</value>
+    <comment>Password Placeholder</comment>
+  </data>
+  <data name="RePasswordRequired" xml:space="preserve">
+    <value>RePasswordRequired</value>
+    <comment>RePassword Required for Error Message</comment>
+  </data>
+  <data name="RePasswordPaceholder" xml:space="preserve">
+    <value>RePasswordPaceholder</value>
+    <comment>RePassword Paceholder</comment>
+  </data>
+  <data name="RePasswordPlaceholder" xml:space="preserve">
+    <value>RePasswordPlaceholder</value>
+    <comment>RePassword Placeholder </comment>
+  </data>
+  <data name="ButtonTextRegister" xml:space="preserve">
+    <value>RIGESTER</value>
   </data>
 </root>
