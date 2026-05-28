@@ -43,7 +43,7 @@
                             @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff"} })
                     
                             @Html.ValidationMessageFor( model => model.ClientName, "", 
-                                    new { @class = "custom-inline-field-error text-danger" } )
+                                    new { @class = "inline-field-error text-danger" } )
                 
                         </div>
                     </div>
@@ -59,7 +59,7 @@
 
                             @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff"} })
 
-                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "inline-field-error text-danger" })
 
                         </div>
                     </div>
@@ -74,7 +74,7 @@
 
                             @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff" } })
 
-                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "inline-field-error text-danger" })
 
                         </div>
                     </div>
@@ -89,7 +89,7 @@
 
                             @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
 
-                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "inline-field-error text-danger" })
 
                         </div>
                     </div>
@@ -104,7 +104,7 @@
 
                             @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff" })
 
-                            @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "custom-inline-field-error" })
+                            @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "inline-field-error text-danger" })
 
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                                     text-center">
 
                             <button class="primary-button
-                                flex max"
+                                           flex max"
                                     type="submit">
 
                                 @SharedLocalizer["ButtonTextRegister"]
@@ -135,6 +135,8 @@
 
 
 @section scriptsapp {
+
+    @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
 
     <script>
 
