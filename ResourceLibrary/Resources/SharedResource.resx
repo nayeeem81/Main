@@ -1455,8 +1455,9 @@
   <data name="Location" xml:space="preserve">
     <value>Location:</value>
   </data>
-  <data name="LoginButtonSignIn" xml:space="preserve">
+  <data name="LoginButtonText" xml:space="preserve">
     <value>SIGN IN</value>
+    <comment>Login Button Text</comment>
   </data>
   <data name="LoginEmail" xml:space="preserve">
     <value>Email :</value>
@@ -3100,5 +3101,13 @@
   </data>
   <data name="ButtonTextRegister" xml:space="preserve">
     <value>RIGESTER</value>
+  </data>
+  <data name="ResetPasswordAncorLinkText" xml:space="preserve">
+    <value>ResetPasswordAncorLinkText</value>
+    <comment>Reset Password Ancor Text</comment>
+  </data>
+  <data name="SignUpLinkText" xml:space="preserve">
+    <value>SignUpAncorLinkText</value>
+    <comment>SignUp Ancor Link Text</comment>
   </data>
 </root>

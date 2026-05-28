@@ -3600,9 +3600,9 @@ namespace ResourceLibrary.Resources {
         /// <summary>
         ///   Looks up a localized string similar to SIGN IN.
         /// </summary>
-        public static string LoginButtonSignIn {
+        public static string LoginButtonText {
             get {
-                return ResourceManager.GetString("LoginButtonSignIn", resourceCulture);
+                return ResourceManager.GetString("LoginButtonText", resourceCulture);
             }
         }
         
@@ -6784,6 +6784,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ResetPasswordAncorLinkText.
+        /// </summary>
+        public static string ResetPasswordAncorLinkText {
+            get {
+                return ResourceManager.GetString("ResetPasswordAncorLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retype New Password:.
         /// </summary>
         public static string RetypeNewPassword {
@@ -6960,6 +6969,15 @@ namespace ResourceLibrary.Resources {
         public static string SigninPageTitle {
             get {
                 return ResourceManager.GetString("SigninPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SignUpAncorLinkText.
+        /// </summary>
+        public static string SignUpLinkText {
+            get {
+                return ResourceManager.GetString("SignUpLinkText", resourceCulture);
             }
         }
         

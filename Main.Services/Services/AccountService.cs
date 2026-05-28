@@ -21,7 +21,6 @@ public class AccountService : IAccountService
     private readonly SignInManager<IdentityUser> _signInManager;
 
     public AccountService ( 
-        IUserContext userContext, 
         IUserRepository userRepository,
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager
@@ -55,9 +54,9 @@ public class AccountService : IAccountService
 
     public async Task<int> GetSingleUser ( string email )
     {
-        User userEntity  = await _userRepository.GetSingleUser ( email );
+        User? userEntity  = await _userRepository.GetSingleUser ( email.Trim() );
 
-        return userEntity.UserID;
+        return userEntity?.UserID ?? 0;
     }
 
     public async Task<IdentityUser?> GetIdentityUser ( string email )
@@ -72,7 +71,7 @@ public class AccountService : IAccountService
     {
         var userIdentity =
             await _userManager
-                  .FindByEmailAsync(email);
+                  .FindByEmailAsync(email.Trim());
 
         if ( userIdentity == null )
         {

@@ -1455,14 +1455,14 @@
   <data name="Location" xml:space="preserve">
     <value>Location:</value>
   </data>
-  <data name="LoginButtonSignIn" xml:space="preserve">
+  <data name="LoginButtonText" xml:space="preserve">
     <value>SIGN IN</value>
   </data>
   <data name="LoginEmail" xml:space="preserve">
     <value>Email :</value>
   </data>
   <data name="LoginEnterCredentials" xml:space="preserve">
-    <value>Please enter credentials:</value>
+    <value>LOG IN</value>
   </data>
   <data name="LoginFBNote" xml:space="preserve">
     <value>NOTE: To Login/Sign up using your Facebook account, please click following Facebook button:</value>
@@ -3067,13 +3067,13 @@
     <value>Password</value>
   </data>
   <data name="PasswordRequired" xml:space="preserve">
-    <value>Please enter Password!</value>
+    <value>Please enter password!</value>
   </data>
   <data name="PasswordPlaceholder" xml:space="preserve">
     <value>Enter password...</value>
   </data>
   <data name="RePasswordRequired" xml:space="preserve">
-    <value>Please enter Password!</value>
+    <value>Please enter password!</value>
   </data>
   <data name="RePasswordPaceholder" xml:space="preserve">
     <value>Please enter Password again...</value>
@@ -3081,13 +3081,19 @@
   <data name="RePasswordPlaceholder" xml:space="preserve">
     <value>Enter password again...</value>
   </data>
+  <data name="ButtonTextRegister" xml:space="preserve">
+    <value>RIGESTER</value>
+  </data>
+  <data name="ResetPasswordAncorLinkText" xml:space="preserve">
+    <value>You lost your password? Reset it here.</value>
+  </data>
+  <data name="SignUpLinkText" xml:space="preserve">
+    <value>Don't have account?  Register.</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
-  </data>
-  <data name="ButtonTextRegister" xml:space="preserve">
-    <value>RIGESTER</value>
   </data>
 </root>
