@@ -26,26 +26,26 @@ public class UserRepository : IUserRepository
         return ( user != null ? user.UserID : 0 );
     }
 
-    public async Task<User> GetSingleUser(string email)
+    public async Task<User?> GetSingleUser(string email)
     {
         if (string.IsNullOrEmpty(email))
-            return new User();
+            return null;
         
-        return await _Context.Users.SingleAsync(a => a.Email == email);
+        return await _Context.Users.FirstOrDefaultAsync(a => a.Email == email.Trim());
     }
 
-    public async Task<User> GetSingleUserByIdentityID(string identityUserId)
+    public async Task<User?> GetSingleUserByIdentityID(string identityUserId)
     {
         if (string.IsNullOrEmpty(identityUserId))
-            return new User(); 
+            return null;
 
-        return await _Context.Users.SingleAsync<User> 
+        return await _Context.Users.FirstOrDefaultAsync<User> 
                         (a => a.IdentityUserID == identityUserId);
     }
 
-    public async Task<User> GetSingleUser(int userID)
+    public async Task<User?> GetSingleUser(int userID)
     {
-        var userEntity = await _Context.Users.SingleAsync<User>
+        var userEntity = await _Context.Users.FirstOrDefaultAsync<User>
                                              (a => a.UserID == userID);
 
         return userEntity;

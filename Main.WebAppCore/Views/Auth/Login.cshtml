@@ -1,51 +1,134 @@
 ﻿@model AccountDisplayViewModel
+
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 
 @{
-    ViewBag.Title = SharedLocalizer["ViewBagTitleSignIn"];
+    ViewBag.Title = @Model.PageName;
+
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.ExcludeHeader = false;
+
+    ViewBag.ExcludeHeader = true;
 }
 
 <div class="container">
-    <div class="row" style="margin-top:15px;">
-        <div class="col-md-offset-3 col-md-6 col-xs-12 col-sm-offset-2 col-sm-10 col-lg-offset-3 col-lg-6 card-form">
-            <div class="row">
-                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                    <h4 class="sub-title">@SharedLocalizer["LoginEnterCredentials"]</h4>
-                </div>
-                @using (Html.BeginForm())
-                {
-                    @Html.AntiForgeryToken()
-                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                        <input name="Email" type="email" class="fff" placeholder="Email" value="@Model.Email" style="padding-left:7px;" />
-                    </div>
-                    <div class="input-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                        <input name="Password" type="password" class="fff" placeholder="Password" value="@Model.Password"  style="padding-left:7px;" />
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                        <a href="@Url.Action("ResetPassword", "Auth")">Forget Password?</a>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                        <button class="primary-button" type="submit">
-                            @SharedLocalizer["LoginButtonSignIn"]
-                        </button>
-                    </div>
-                }
-                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12 divider"></div>
-                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
-                    <h4>
-                        Don't have account? Please <a href="@Url.Action("SignUp","Auth")">SIGN UP</a>.
-                    </h4>
-                </div>
+
+    <div class="offset-3 col-6">
+
+        <div class="row card-form">
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
+                <h4 class="card-title">
+
+                    @SharedLocalizer["LoginEnterCredentials"]
+
+                </h4>
+
             </div>
-        </div>
+
+            <div class="gap"></div>
+
+        @using (Html.BeginForm())
+        {
+                @Html.AntiForgeryToken()
+
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12">
+                    
+                    @Html.LabelFor( a => a.Email )
+
+                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff" } })
+
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "inline-field-error text-danger" })
+
+                </div>
+
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12">
+
+                    @Html.LabelFor( a => a.Password )
+
+                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
+
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "inline-field-error text-danger" })
+                    
+                </div>
+                    
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12">
+
+                    <a href="@Url.Action("ResetPassword", "Auth")">
+
+                        @SharedLocalizer["ResetPasswordAncorLinkText"]
+
+                    </a>
+                    
+                </div>
+
+                <div class="gap"></div>
+
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12">
+
+                    <button class="primary-button flex max"
+                            type="submit">
+
+                        @SharedLocalizer["LoginButtonText"]
+
+                    </button>
+
+                </div>
+        }
+
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12 
+                            divider">
+                </div>
+
+                <div class="col-sm-12 
+                            col-md-12 
+                            col-xs-12 
+                            col-lg-12">
+
+                    <h5 class="card-subtitle">
+
+                        
+
+                        <a href="@Url.Action("SignUp","Auth")">
+
+                            @SharedLocalizer["SignUpLinkText"]
+
+                        </a>
+
+                    </h5>
+
+                </div>
+
+                <div class="gap"></div>
+
+            </div>
+
+        
+
     </div>
+
 </div>
-<div class="gap"></div>
+
+
+
 @section scriptsapp {
-    <script type="text/javascript">
-        PAGE_NAME = '@Model.PageName';
-    </script>
+
+    @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
+
 }
 

@@ -8,11 +8,11 @@ public interface IUserRepository
 
     Task<bool> UpdateUser(User user);
 
-    Task<User> GetSingleUser(string email);
+    Task<User?> GetSingleUser(string email);
 
-    Task<User> GetSingleUser(int userId);
+    Task<User?> GetSingleUser(int userId);
 
-    Task<User> GetSingleUserByIdentityID(string identityUserId);
+    Task<User?> GetSingleUserByIdentityID(string identityUserId);
 
     Task<bool> DoesUserEmailExists(string email);
 

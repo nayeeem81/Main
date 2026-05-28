@@ -1449,14 +1449,14 @@
   <data name="Location" xml:space="preserve">
     <value>অবস্থানঃ</value>
   </data>
-  <data name="LoginButtonSignIn" xml:space="preserve">
-    <value>সাইন ইন করুন </value>
+  <data name="LoginButtonText" xml:space="preserve">
+    <value>সাইন ইন </value>
   </data>
   <data name="LoginEmail" xml:space="preserve">
     <value>ইমেইল:</value>
   </data>
   <data name="LoginEnterCredentials" xml:space="preserve">
-    <value>দয়া করে লগইন তথ্য লিখুন:</value>
+    <value>লগইন:</value>
   </data>
   <data name="LoginFBNote" xml:space="preserve">
     <value>দ্রষ্টব্য: লগইন / আপনার ফেসবুক একাউন্ট ব্যবহার করে সাইন আপ করুন, ফেসবুক বাটন অনুসরণ করে ক্লিক করুন</value>
@@ -3028,6 +3028,15 @@
   <data name="RePasswordPlaceholder" xml:space="preserve">
     <value>আবার পাসওয়ার্ড দিন...</value>
   </data>
+  <data name="ButtonTextRegister" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="ResetPasswordAncorLinkText" xml:space="preserve">
+    <value>আপনার পাসওয়ার্ড ভুলে গেছেন? এখানে রিসেট করুন।</value>
+  </data>
+  <data name="SignUpLinkText" xml:space="preserve">
+    <value>অ্যাকাউন্ট নেই? নিবন্ধন করুন।</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3078,8 +3087,5 @@
   </data>
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
-  </data>
-  <data name="ButtonTextRegister" xml:space="preserve">
-    <value>নিবন্ধন করুন</value>
   </data>
 </root>

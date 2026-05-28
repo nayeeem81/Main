@@ -77,7 +77,7 @@ public class AuthController : BaseController
 
     public IActionResult Login()
     {
-        var accountDisplayViewModel = new AccountDisplayViewModel("Login");
+        var accountDisplayViewModel = new AccountDisplayViewModel("Sign in");
 
         return View(accountDisplayViewModel);
     }
@@ -93,6 +93,11 @@ public class AuthController : BaseController
         if (result)
         {
             int userID = await _userAccountService.GetSingleUser(accountDisplayViewModel.Email);
+
+            if (userID == 0)
+            {
+                return BadRequest("Invalid credentials");
+            }
 
             var claims = new List<Claim>
             {
