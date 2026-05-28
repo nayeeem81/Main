@@ -65,10 +65,6 @@ public static class RegisterDatafrastructure
         } );
         
 
-        //For console app
-        //services.AddScoped<DbInitializer> ( );
-        //services.AddScoped<IDatabaseSeeder,DatabaseSeeder> ( );
-
         //Register Repository
         services.AddScoped<IUserRepository,UserRepository> ( );
         services.AddScoped<IAdminPostImageRepository,AdminPostImageRepository> ( );
