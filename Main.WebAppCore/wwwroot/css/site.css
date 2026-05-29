@@ -1485,3 +1485,7 @@ ul.new-nav-tabs {
 /* Icons Missing */
 .fa-usd:after {
   content: "\f155"; }
+
+.all-caps {
+    text-transform: uppercase;
+}
