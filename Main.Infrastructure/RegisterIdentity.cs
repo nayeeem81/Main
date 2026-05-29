@@ -13,7 +13,7 @@ public static class RegisterIdentity
         services.AddIdentity<IdentityUser,IdentityRole> ( options =>
         {
             //SignIn
-            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedEmail = true;
 
             //Password
             options.Password.RequireDigit = true;
@@ -29,6 +29,7 @@ public static class RegisterIdentity
 
             //User
             options.User.RequireUniqueEmail = true;
+            
         } )
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
         .AddDefaultTokenProviders( )

@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataTransferModel;
+using Main.Common.HelperRelated;
+using Main.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using ResourceLibrary.Resources;
 using System.Security.Claims;
+using System.Web;
 
 using WebApp.ViewModel;
 using WebApp.ViewModel.Extensions;
-using Main.Services;
-using Main.Common.HelperRelated;
-using ResourceLibrary.Resources;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-
 
 namespace Main.WebAppCore;
 
@@ -20,13 +21,13 @@ public class AuthController : BaseController
     private readonly IUserContext _userContext;
     private readonly ILogger<AuthController> _logger;
     private readonly IAccountService _userAccountService;
-
-    public IUserContext UserContext => _userContext;
+    private readonly IEmailSenderService _emailService;
 
     public AuthController (
         ILogger<AuthController> logger,
         IStringLocalizer<SharedResource> localizer,
         IAccountService userAccountService,
+        IEmailSenderService emailService,
         IUserContext userContext
        )
     {
@@ -34,6 +35,7 @@ public class AuthController : BaseController
         _localizer = localizer;
         _logger = logger;
         _userContext = userContext;
+        _emailService = emailService;
     }
 
 
@@ -46,26 +48,40 @@ public class AuthController : BaseController
     }
 
 
+    public async Task<IActionResult> VerifyEmailAsync ( string email, string token )
+    {
+        if ( string.IsNullOrEmpty ( email ) || string.IsNullOrEmpty ( token ) )
+        {
+            return BadRequest ( "Invalid verification request parameters." );
+        }
+
+        var result = await _userAccountService.CreateAppicationUser ( email, token );
+
+
+        return RedirectToAction ( "Login" );
+    }
+
+
+
+    public IActionResult VerifyEmail ( VerifyEmailViewModel verifyEmailViewModel )
+    {
+        return View ( verifyEmailViewModel );
+    }
+
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SignUp( AccountDisplayViewModel accountDisplayViewModel )
+    public async Task<IActionResult> SignUp ( AccountDisplayViewModel accountDisplayViewModel )
     {
-        if ( accountDisplayViewModel == null )
-        {
-            _logger.LogWarning ( "Received null AccountDisplayViewModel in SignUp POST action." );
-
-            return RedirectToAction ( "Signup" );
-        }
-
-
-        if ( ModelState.IsValid )
+        
+        if ( accountDisplayViewModel == null && !ModelState.IsValid )
         {
             return RedirectToAction ( "Signup" );
         }
 
 
-        if(!AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel.Password,accountDisplayViewModel.RePassword ) )
+        if(!AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel.Password, accountDisplayViewModel.RePassword ) )
         {
             _logger.LogWarning ( "Password and RePassword do not match for email: {Email}",accountDisplayViewModel.Email );
 
@@ -78,10 +94,35 @@ public class AuthController : BaseController
 
 
         bool result 
-            = await _userAccountService.CreateUserAccount ( userAccountDataModel );
+            = await _userAccountService.CreateIdentityUserAccount ( userAccountDataModel );
 
 
-        return RedirectToAction("Login");    
+        if ( result )
+        {
+            var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( accountDisplayViewModel.Email.Trim() );
+
+
+            if(!string.IsNullOrEmpty(emailVerifyToken))
+            {
+                var encodedToken = HttpUtility.UrlEncode(emailVerifyToken);
+
+                VerifyEmailDataModel verifyEmailDataModel = new VerifyEmailDataModel(accountDisplayViewModel.Email, emailVerifyToken);
+
+                verifyEmailDataModel.Subject = "Please, first Verify Your Email to Login.";
+                
+                verifyEmailDataModel.VerifyLink = 
+                    Url.Action ( "VerifyEmail","Auth", new {
+                        email = accountDisplayViewModel.Email,
+                        token = encodedToken
+                    }, protocol: Request.Scheme ); 
+
+                await _emailService.SendEmailVerificationAsync(verifyEmailDataModel);
+
+                return RedirectToAction ( "VerifyEmail", verifyEmailDataModel );
+            }
+        }
+
+        return RedirectToAction ( "Signup" );
     }
     
 
@@ -135,7 +176,7 @@ public class AuthController : BaseController
         return RedirectToAction ( "Login" );
     }
 
-
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
@@ -144,6 +185,7 @@ public class AuthController : BaseController
 
         return RedirectToAction("Index", "Home");
     }
+
 
 
     [Authorize (Roles = "Admin,User,Company")]
@@ -206,30 +248,4 @@ public class AuthController : BaseController
             return RedirectToAction("ResetPassword");
         }
     }
-
-    //[HttpPost]
-    //public async Task<JsonResult> EmailVerify()
-    //{
-    //    try
-    //    {
-    //        var codeValue = "";
-    //        UserModel userModel = GetSessionUser();
-    //        if (!userModel.IsVerifiedUser.Value && userModel != null)
-    //        {
-    //            codeValue = await _userAccountService.UpdateVerifyCode(userModel.UserID);
-    //            var objEmailViewModel = _EmailService.GetVerifyEmailViewModel(codeValue);
-    //            objEmailViewModel.MessageBodyHTMLText = await FindMyView(this, "_VerifyEmail", objEmailViewModel);
-    //            objEmailViewModel.ReceiverEmail = userModel.Email;
-    //            _EmailService.SendAccountVerifyEmail(objEmailViewModel);
-    //            return Json(false);
-    //        }
-    //        return Json(true);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _logger.LogError(ex, "Error sending account verification email to user ID: {UserID}", GetSessionUser()?.UserID);
-    //        var msg = ex.Message;
-    //        return Json(false);
-    //    }
-    //}
 }

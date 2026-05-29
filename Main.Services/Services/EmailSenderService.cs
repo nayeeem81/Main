@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using FluentEmail.Core;
+using DataTransferModel;
 
 namespace Main.Services;
 
-public class EmailSenderService: IEmailSender
+public class EmailSenderService: IEmailSender, IEmailSenderService
 {
     private readonly IFluentEmailFactory _emailFactory;
-    public readonly UserManager<IdentityUser> _userManager;
+
+    private readonly UserManager<IdentityUser> _userManager;
+    
 
     public EmailSenderService (  
         IFluentEmailFactory emailFactory,
@@ -16,6 +19,8 @@ public class EmailSenderService: IEmailSender
         _emailFactory = emailFactory;
         _userManager = userManager;
     }
+
+
 
     public async Task<string> SendEmailAsync ( string userId )
     {
@@ -30,7 +35,9 @@ public class EmailSenderService: IEmailSender
         return identityUser?.UserName ?? string.Empty;
     }
 
-    public async Task SendEmailAsync ( string email,string subject,string htmlMessage )
+
+
+    public async Task SendEmailAsync ( string email, string subject, string htmlMessage )
     {
         var response = await _emailFactory
                 .Create()
@@ -41,8 +48,34 @@ public class EmailSenderService: IEmailSender
 
         if ( !response.Successful )
         {
-            // Throw an exception or log the errors returned in response.ErrorMessages
             throw new Exception ( $"Email delivery failed: {string.Join ( ", ",response.ErrorMessages )}" );
         }
+    }
+
+
+
+    public async Task SendEmailVerificationAsync ( VerifyEmailDataModel verifyEmailDataModel )
+    {
+        string Name = verifyEmailDataModel.UserName;
+        string? LinkUrl = verifyEmailDataModel.VerifyLink;
+
+        string template 
+            = @"
+            <html>
+            <body>
+                <p>Hi {{ Name }},</p>
+                <p>Please click the link below to verify your email:</p>
+                <p>
+                    <a href='{{ LinkUrl }}' style='color: #007bff; text-decoration: underline;'>
+                        Verify Email
+                    </a>
+                </p>
+            </body>
+            </html>";
+
+        await SendEmailAsync ( 
+            verifyEmailDataModel.Email,
+            verifyEmailDataModel.Subject,
+            template );
     }
 }

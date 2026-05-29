@@ -8,6 +8,11 @@ public static class AuthExtensions
 {
     public static bool CheckPasswordMatch ( string password,string rePassword )
     {
+        if ( password == null || rePassword == null )
+        {
+            return false;
+        }
+
         if ( password.Length != rePassword.Length )
         {
             return false;
