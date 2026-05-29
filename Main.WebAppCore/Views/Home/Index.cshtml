@@ -2,7 +2,7 @@
 @inject IStringLocalizer<SharedResource> SharedLocalizer
 
 @{
-    ViewBag.Title = SharedLocalizer["ViewBagTitleHome"];
+    ViewBag.Title = Model.PageName;
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = false;
 
@@ -20,7 +20,7 @@
 @section scriptsapp {
     <script>
 
-        PAGE_NAME = '@Model.PageName';
+        
         var commentUrl = '@Url.Action("AddComments", "Home")';
 
         $(function () {
@@ -56,7 +56,7 @@
                 }
             });
 
-            loadHomeData();
+            //loadHomeData();
 
         });
     </script>

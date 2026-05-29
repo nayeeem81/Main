@@ -1,7 +1,7 @@
 ﻿using Main.Common.Model;
 using Main.Common.Enums;
-using Main.Services;
 using System.Security.Claims;
+using Main.Services;
 
 namespace WebApp.Infrastructure;
 
@@ -15,14 +15,11 @@ public class UserContext: IUserContext
     }
     
     private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
-
     
     //Current User
     public string UserId => User?.FindFirst ( ClaimTypes.NameIdentifier )?.Value ?? string.Empty;
 
     public string IdentityId => User?.FindFirst ( "IdentityId" )?.Value ?? string.Empty;
-
-
 
     //Configuration file
     public EnumCategoryFor EnumCategoryFor => ( EnumCategoryFor ) AppSettings.Current.EnumCategoryFor;
@@ -34,6 +31,11 @@ public class UserContext: IUserContext
     public EnumCountry EnumCountry => ( EnumCountry ) AppSettings.Current.EnumCountry;
 
     public int SeedUserId => ( int ) AppSettings.Current.SeedUserId;
+
+    ClaimsPrincipal? IUserContext.User
+    {
+        get => User;
+    }
 
     public DateTime GetLocalNow ( )
     {

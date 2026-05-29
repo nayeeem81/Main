@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+
 namespace Main.Services;
 
 public interface IProductService

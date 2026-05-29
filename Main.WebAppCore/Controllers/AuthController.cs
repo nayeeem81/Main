@@ -1,39 +1,42 @@
-﻿using Main.Common.HelperRelated;
-using Main.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using ResourceLibrary.Resources;
 using System.Security.Claims;
+
 using WebApp.ViewModel;
 using WebApp.ViewModel.Extensions;
+using Main.Services;
+using Main.Common.HelperRelated;
+using ResourceLibrary.Resources;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Main.WebAppCore;
 
 public class AuthController : BaseController
 {
     private readonly IStringLocalizer<SharedResource> _localizer;
-    private readonly IConfiguration _configuration; 
     private readonly IUserContext _userContext;
     private readonly ILogger<AuthController> _logger;
     private readonly IAccountService _userAccountService;
 
+    public IUserContext UserContext => _userContext;
+
     public AuthController (
         ILogger<AuthController> logger,
-        IConfiguration configuration,
         IStringLocalizer<SharedResource> localizer,
         IAccountService userAccountService,
         IUserContext userContext
        )
     {
-        _configuration = configuration;
         _userAccountService = userAccountService;
         _localizer = localizer;
         _logger = logger;
         _userContext = userContext;
     }
+
+
 
     public IActionResult Signup()
     {
@@ -42,6 +45,8 @@ public class AuthController : BaseController
         return View(objModel);
     }
 
+
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SignUp( AccountDisplayViewModel accountDisplayViewModel )
@@ -49,17 +54,21 @@ public class AuthController : BaseController
         if ( accountDisplayViewModel == null )
         {
             _logger.LogWarning ( "Received null AccountDisplayViewModel in SignUp POST action." );
+
             return RedirectToAction ( "Signup" );
         }
 
+
         if ( ModelState.IsValid )
         {
-             return BadRequest ( "Invalid data submitted." );
+            return RedirectToAction ( "Signup" );
         }
+
 
         if(!AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel.Password,accountDisplayViewModel.RePassword ) )
         {
             _logger.LogWarning ( "Password and RePassword do not match for email: {Email}",accountDisplayViewModel.Email );
+
             return RedirectToAction ( "Signup" );
         }
 
@@ -70,6 +79,7 @@ public class AuthController : BaseController
 
         bool result 
             = await _userAccountService.CreateUserAccount ( userAccountDataModel );
+
 
         return RedirectToAction("Login");    
     }
@@ -85,36 +95,46 @@ public class AuthController : BaseController
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(
-        AccountDisplayViewModel accountDisplayViewModel )
+    public async Task<IActionResult> Login( AccountDisplayViewModel accountDisplayViewModel )
     {
+        if ( ModelState.IsValid )
+        {
+            return RedirectToAction ( "Login" );
+        }
+
         var result = await _userAccountService.AuthenticateUser ( accountDisplayViewModel.Email, accountDisplayViewModel.Password );
+
 
         if (result)
         {
+
             int userID = await _userAccountService.GetSingleUser(accountDisplayViewModel.Email);
 
             if (userID == 0)
             {
-                return BadRequest("Invalid credentials");
+                return RedirectToAction ( "Login" );
             }
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, 
-                          userID.ToString())
-            };
+           
+            var claims = new List<Claim> {
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                new Claim ( ClaimTypes.Name, accountDisplayViewModel.Email ) ,
+                new Claim ( ClaimTypes.NameIdentifier, userID.ToString()) 
 
-            await HttpContext.SignInAsync ( CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal ( claimsIdentity ) );
+            };   
 
-            return RedirectToAction("Index", "Home");
+            var identity = new ClaimsIdentity ( claims, IdentityConstants.ApplicationScheme  );
+
+            var principal = new ClaimsPrincipal (identity);
+
+            await HttpContext.SignInAsync ( IdentityConstants.ApplicationScheme, principal );
+
+            return RedirectToAction ("Index", "Home");
         }
 
-        return BadRequest("Invalid credentials");
+        return RedirectToAction ( "Login" );
     }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -126,26 +146,28 @@ public class AuthController : BaseController
     }
 
 
-    [Authorize(Roles = "Admin,User,Company")]
-    public ActionResult ResetPassword()
+    [Authorize (Roles = "Admin,User,Company")]
+    public IActionResult ResetPassword( )
     {
-        if ( ! HttpContext.User.Identity.IsAuthenticated )
+        if ( _userContext.User == null )
         {
-            var objModel = new AccountDisplayViewModel("Reset Password");
-
-            return View(objModel);
+            _logger.LogWarning ( "User context is null in ResetPassword GET action." );
+            return RedirectToAction ( "Login","Auth" );
         }
+                    
+        var objModel = new AccountDisplayViewModel("Reset Password");
 
-        return RedirectToAction("Login", "Auth");
+        return View(objModel);
     }
+
+
 
     [HttpPost]
     [Authorize(Roles = "Admin,User,Company")]
     public async Task<ActionResult> ResetPassword (
         AccountDisplayViewModel accountDisplayViewModel)  
     {
-        var isValid = ValidationRelated
-            .IsValidEmail(accountDisplayViewModel.Email);
+        var isValid = ValidationRelated.IsValidEmail(accountDisplayViewModel.Email);
         
         _logger.LogInformation("Password reset attempt for email: {Email}, Valid Email: {IsValid}", accountDisplayViewModel.Email, isValid);
         
@@ -159,9 +181,9 @@ public class AuthController : BaseController
         try
         {
             var result = await _userAccountService.ChangePasswordAsync ( 
-                accountDisplayViewModel.Email,
-                accountDisplayViewModel.Password,
-                accountDisplayViewModel.RePassword );
+                                            accountDisplayViewModel.Email,
+                                            accountDisplayViewModel.Password,
+                                            accountDisplayViewModel.RePassword );
 
             if ( result == false )
             {

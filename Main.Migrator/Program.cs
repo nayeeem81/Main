@@ -22,7 +22,7 @@ class Program
             .ConfigureServices((context, services) =>
             {
 
-                services.AddInfrastructureServices(context.Configuration);
+                services.AddDataInfrastructureServices(context.Configuration);
                
                 services.AddLogging(logging => logging.AddConsole());
 

@@ -17,4 +17,9 @@ public partial class BaseController : Controller
     {
         return RedirectToAction("Index", "Home");
     }
+
+    public HttpContext GetHttpContext ( )
+    {
+        return HttpContext;
+    }
 }
