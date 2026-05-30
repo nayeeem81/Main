@@ -20,16 +20,12 @@ public static class ApplcationEmailServices
 
         services.AddFluentEmail ( smtpSection["SenderEmail"], smtpSection["SenderName"] )
                 
-                .AddSmtpSender ( new SmtpClient ( smtpSection["Server"] ) 
-                 {
-                        Port = int.Parse ( smtpSection["Port"] ?? "587" ),
-
-                        Credentials = new NetworkCredential ( 
-                                                smtpSection["User"],
-                                                smtpSection["Pass"] 
-                            ),
-                            EnableSsl = true
-                 } );
+                .AddSmtpSender (
+                        smtpSection["Server"],
+                        int.Parse ( smtpSection["Port"] ?? "587" ),
+                        smtpSection["User"],
+                        smtpSection["Pass"]
+                 );
 
 
         services.AddTransient<IEmailSender,EmailSenderService> ( );
