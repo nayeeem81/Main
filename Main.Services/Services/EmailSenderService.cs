@@ -70,9 +70,13 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
             </body>
             </html>";
 
+        string populatedTemplate = template
+            .Replace("{{ Name }}", Name)
+            .Replace("{{ LinkUrl }}", LinkUrl ?? string.Empty);
+
         await SendEmailAsync ( 
             verifyEmailDataModel.Email,
             verifyEmailDataModel.Subject,
-            template );
+            populatedTemplate );
     }
 }
