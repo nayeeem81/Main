@@ -56,8 +56,10 @@ public class UserContext: IUserContext
         baseDataModel.HostCountry = EnumCountry;
         baseDataModel.Currency = EnumCurrency;
 
-        baseDataModel.CreatedBy = (int) Convert.ToUInt32(UserId.ToString());
-        baseDataModel.ModifiedBy = ( int ) Convert.ToUInt32 ( UserId.ToString ( ) );
+        int userId =  UserId != string.Empty && UserId != null ? Convert.ToInt32 ( UserId ) : SeedUserId;
+
+        baseDataModel.CreatedBy = userId;
+        baseDataModel.ModifiedBy = userId;
 
         return baseDataModel;
     }

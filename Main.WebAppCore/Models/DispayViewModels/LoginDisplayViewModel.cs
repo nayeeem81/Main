@@ -23,4 +23,6 @@ public class LoginDisplayViewModel: BaseViewModel
     [Display ( Name = "Password",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
     [DataType ( DataType.Password )]
     public string Password { get; set; }
+
+    public string Message { get; set; } = string.Empty;
 }

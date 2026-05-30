@@ -7,6 +7,7 @@ using Domain.Model;
 using IRepository;
 
 using Main.Common.HelperRelated;
+using Main.Common.Model;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,7 @@ public class AccountService : IAccountService
 
 
 
-    public async Task<bool> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel )
+    public async Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel )
     {
         IdentityUser userIdentityEntity = CreateIdentityUser(userAccountDataModel);
 
@@ -46,12 +47,8 @@ public class AccountService : IAccountService
                                         .CreateAsync(userIdentityEntity, 
                                          userAccountDataModel.Password);
 
-        if ( resultCreateIdentityUser.Succeeded )
-        {
-            return true;
-        }
-
-        return false;
+        
+        return resultCreateIdentityUser;
     }
 
 
@@ -124,16 +121,19 @@ public class AccountService : IAccountService
 
 
 
-    public async Task<bool> CreateAppicationUser ( string email, string token )
+    public async Task<bool> CreateAppicationUser ( string email, string token, BaseDataModel baseDataModel )
     {
         var userIdentity = await _userManager.FindByEmailAsync (email);
 
-        var success = await CreateUser( userIdentity );
+        var success = await CreateUser( userIdentity, baseDataModel );
 
        
         if ( success  && userIdentity != null)
         {
-            await _userManager.ConfirmEmailAsync ( userIdentity, token );
+            //await _userManager.ConfirmEmailAsync ( userIdentity, token );
+
+            userIdentity.EmailConfirmed = true;
+            await _userManager.UpdateAsync ( userIdentity );
 
             await _userManager.AddToRoleAsync ( userIdentity, "User" );
 
@@ -147,7 +147,7 @@ public class AccountService : IAccountService
 
     #region Priate Methods (CreateUser, CreateIdentityUser, CreateAppicationUser, RemoveIdentityUser)
 
-    private async Task<bool> CreateUser ( IdentityUser? userIdentity )
+    private async Task<bool> CreateUser ( IdentityUser? userIdentity, BaseDataModel baseDataModel )
     {
         UserAccountDataModel userAccountDataModel = new UserAccountDataModel
         {
@@ -156,7 +156,9 @@ public class AccountService : IAccountService
             PhoneNumber = userIdentity != null && userIdentity.PhoneNumber != null ? userIdentity.PhoneNumber.Trim() : string.Empty,
 
             UserName = userIdentity != null && userIdentity.UserName != null ? userIdentity.UserName.Trim() : string.Empty
-        };
+        };  
+
+        userAccountDataModel.BaseDataModel = baseDataModel;
 
         User userEntity = CreateUserEntity ( userIdentity != null ? userIdentity.Id : string.Empty, userAccountDataModel );
 

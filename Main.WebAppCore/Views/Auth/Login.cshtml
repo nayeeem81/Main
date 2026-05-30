@@ -28,6 +28,18 @@
 
             <div class="gap"></div>
 
+            <div class="col-sm-12
+                        col-md-12
+                        col-xs-12
+                        col-lg-12">
+
+                <p class="text-danger">
+                    @Model.Message
+                </p>
+
+            </div>
+            
+
         @using (Html.BeginForm())
         {
                 @Html.AntiForgeryToken()
@@ -78,7 +90,9 @@
                             col-xs-12 
                             col-lg-12">
 
-                    <button class="primary-button flex max"
+                    @Html.HiddenFor( a => a.PageName )
+
+                    <button id="loginButton" class="primary-button flex max"
                             type="submit">
 
                         @SharedLocalizer["LoginButtonText"]
@@ -124,6 +138,21 @@
 @section scriptsapp {
 
     @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
+
+    <script>
+
+        function validateMyForm()
+        {
+            var loginButton = document.getElementById("loginButton");
+            var $form = $(loginButton).closest('form');
+            $form.valid();
+        }
+
+        $(function() {
+            
+        })
+
+    </script>
 
 }
 

@@ -1,11 +1,14 @@
 ﻿using DataTransferModel;
+
+using Main.Common.Model;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace Main.Services;
 
 public interface IAccountService
 {
-    Task<bool> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
+    Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
 
     Task<int> GetSingleUser ( string email );
 
@@ -21,5 +24,5 @@ public interface IAccountService
 
     Task<string?> GetEmailVerifyToken ( string email );
 
-    Task<bool> CreateAppicationUser ( string email, string token );
+    Task<bool> CreateAppicationUser ( string email, string token,BaseDataModel baseDataModel );
 }

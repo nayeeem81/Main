@@ -1,5 +1,7 @@
 ﻿using DataTransferModel;
+using Main.Common.Enums;
 using Main.Common.HelperRelated;
+using Main.Common.Model;
 using Main.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +11,6 @@ using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 using System.Security.Claims;
 using System.Web;
-
 using WebApp.ViewModel;
 using WebApp.ViewModel.Extensions;
 
@@ -48,7 +49,7 @@ public class AuthController : BaseController
     }
 
 
-    public async Task<IActionResult> VerifyEmailAsync ( string email, string token )
+    public async Task<IActionResult> VerifyEmail ( string email, string token )
     {
         _logger.LogWarning ( "Verifying email for address: {Email} with token: {Token}", email, token );
 
@@ -59,7 +60,10 @@ public class AuthController : BaseController
 
         _logger.LogWarning ( "Attempting to create application user for email: {Email} with token: {Token}", email, token );
 
-        var result = await _userAccountService.CreateAppicationUser ( email, token );
+        BaseDataModel baseDataModel = new BaseDataModel();
+        baseDataModel = _userContext.GetCreateBaseDataModel ( );
+
+        var result = await _userAccountService.CreateAppicationUser ( email, token, baseDataModel );
 
         _logger.LogWarning ( "Application user creation result for email: {Email} with token: {Token} is {Result}", email, token, result );
 
@@ -68,10 +72,10 @@ public class AuthController : BaseController
 
 
 
-    public IActionResult VerifyEmail ( VerifyEmailViewModel verifyEmailViewModel )
-    {
-        return View ( verifyEmailViewModel );
-    }
+    //public IActionResult VerifyEmail ( VerifyEmailViewModel verifyEmailViewModel )
+    //{
+    //    return View ( verifyEmailViewModel );
+    //}
 
 
 
@@ -79,16 +83,16 @@ public class AuthController : BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SignUp ( AccountDisplayViewModel accountDisplayViewModel )
     {
-        
-        if ( accountDisplayViewModel == null && !ModelState.IsValid )
+
+        if ( !ModelState.IsValid )
         {
-            _logger.LogWarning ( "AccountDisplayViewModel is null or invalid for email: {Email}", accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
-            
+            _logger.LogWarning ( "Validation: Invalid for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
+
             return RedirectToAction ( "Signup" );
         }
 
 
-        if(!AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel != null ? accountDisplayViewModel.Password : string.Empty, accountDisplayViewModel != null ? accountDisplayViewModel.RePassword : string.Empty ) )
+        if ( !AuthExtensions.CheckPasswordMatch ( accountDisplayViewModel != null ? accountDisplayViewModel.Password : string.Empty,accountDisplayViewModel != null ? accountDisplayViewModel.RePassword : string.Empty ) )
         {
             _logger.LogWarning ( "Password and RePassword do not match for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
@@ -96,24 +100,24 @@ public class AuthController : BaseController
         }
 
 
-        UserAccountDataModel userAccountDataModel 
+        UserAccountDataModel userAccountDataModel
             = AuthExtensions.MapToDataModel (accountDisplayViewModel != null ? accountDisplayViewModel : new AccountDisplayViewModel());
 
         _logger.LogWarning ( "Mapping (Data Model) completed for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
-        bool result 
+        IdentityResult result
             = await _userAccountService.CreateIdentityUserAccount ( userAccountDataModel );
 
-        _logger.LogWarning ( "User account creation result for email: {Email} is {Result}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty, result );
+        _logger.LogWarning ( "User account creation result for email: {Email} is {Result}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,result );
 
-        if ( result )
+        if ( result.Succeeded )
         {
             var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
-            _logger.LogWarning ( "Email verification token for email: {Email} is {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty, emailVerifyToken );
+            _logger.LogWarning ( "Email verification token for email: {Email} is {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,emailVerifyToken );
 
 
-            if (!string.IsNullOrEmpty(emailVerifyToken))
+            if ( !string.IsNullOrEmpty ( emailVerifyToken ) )
             {
 
                 var encodedToken = HttpUtility.UrlEncode(emailVerifyToken);
@@ -135,16 +139,21 @@ public class AuthController : BaseController
                 ////return RedirectToAction ( "VerifyEmail", verifyEmailDataModel );
                 ///
 
-            _logger.LogWarning ( "Redirecting to VerifyEmail action for email: {Email} with token: {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,encodedToken );
+                _logger.LogWarning ( "Redirecting to VerifyEmail action for email: {Email} with token: {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,encodedToken );
 
-                return RedirectToAction ( "VerifyEmail", new
-            {
-                email = accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,
-                token = encodedToken
-            } );
+                return RedirectToAction ( "VerifyEmail",new
+                {
+                    email = accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,
+                    token = encodedToken
+                } );
 
             }
         }
+        else
+        {
+            _logger.LogWarning ( "User account creation failed for email: {Email} with errors: {Errors}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,string.Join ( ", ",result.Errors.Select ( e => e.Description ) ) );
+        }
+
 
         _logger.LogWarning ( "Failed to create user account for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
@@ -168,7 +177,9 @@ public class AuthController : BaseController
         {
             _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
 
-            return RedirectToAction ( "Login" );
+            loginDisplayViewModel.Message = "Validation failed: Please check your credentials.";
+
+            return View ( loginDisplayViewModel );
         }
 
         var result = await _userAccountService.AuthenticateUser ( loginDisplayViewModel.Email, loginDisplayViewModel.Password );
@@ -213,27 +224,36 @@ public class AuthController : BaseController
 
         if ( result.IsNotAllowed )
         {
-            ModelState.AddModelError ( string.Empty, "You must confirm your email before logging in." );
+            ModelState.AddModelError ( "Email", "You must confirm your email before logging in." );
 
             _logger.LogWarning ( "User attempted to log in without confirming email: {Email}", loginDisplayViewModel.Email );
+
+            loginDisplayViewModel.Message = "Your Message: You must confirm your email before logging in. Please check your email for the verification link or contact support.";
+
 
             return View ( loginDisplayViewModel );
         }
 
         if ( result.IsLockedOut )
         {
-            _logger.LogWarning ( "User account is locked out for email: {Email}",loginDisplayViewModel.Email );
+            ModelState.AddModelError ( "Email","User account is locked out for this email. Contact support." );
 
-            return View ( "Lockout" );
+            loginDisplayViewModel.Message = "User account is locked out for this email. Contact support.";
+
+            _logger.LogWarning ( "User account is locked out for email: {Email}", loginDisplayViewModel.Email );
+
+            return View ( loginDisplayViewModel );
         }
 
         _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
 
-        ModelState.AddModelError ( string.Empty, "Invalid login attempt." );
+        ModelState.AddModelError ( "Email", "Invalid login attempt. Please verify your email address. Or contact support." );
 
         _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
 
-        return RedirectToAction ( "Login" );
+        loginDisplayViewModel.Message = "Invalid login attempt. Please verify your email address. Or contact support.";
+
+        return View ( loginDisplayViewModel );
     }
 
     
