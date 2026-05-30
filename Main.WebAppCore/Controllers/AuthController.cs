@@ -50,13 +50,18 @@ public class AuthController : BaseController
 
     public async Task<IActionResult> VerifyEmailAsync ( string email, string token )
     {
+        _logger.LogWarning ( "Verifying email for address: {Email} with token: {Token}", email, token );
+
         if ( string.IsNullOrEmpty ( email ) || string.IsNullOrEmpty ( token ) )
         {
             return BadRequest ( "Invalid verification request parameters." );
         }
 
+        _logger.LogWarning ( "Attempting to create application user for email: {Email} with token: {Token}", email, token );
+
         var result = await _userAccountService.CreateAppicationUser ( email, token );
 
+        _logger.LogWarning ( "Application user creation result for email: {Email} with token: {Token} is {Result}", email, token, result );
 
         return RedirectToAction ( "Login" );
     }
@@ -77,6 +82,8 @@ public class AuthController : BaseController
         
         if ( accountDisplayViewModel == null && !ModelState.IsValid )
         {
+            _logger.LogWarning ( "AccountDisplayViewModel is null or invalid for email: {Email}", accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
+            
             return RedirectToAction ( "Signup" );
         }
 
@@ -92,17 +99,21 @@ public class AuthController : BaseController
         UserAccountDataModel userAccountDataModel 
             = AuthExtensions.MapToDataModel (accountDisplayViewModel != null ? accountDisplayViewModel : new AccountDisplayViewModel());
 
+        _logger.LogWarning ( "Mapping (Data Model) completed for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
         bool result 
             = await _userAccountService.CreateIdentityUserAccount ( userAccountDataModel );
 
+        _logger.LogWarning ( "User account creation result for email: {Email} is {Result}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty, result );
 
         if ( result )
         {
             var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
+            _logger.LogWarning ( "Email verification token for email: {Email} is {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty, emailVerifyToken );
 
-            if(!string.IsNullOrEmpty(emailVerifyToken))
+
+            if (!string.IsNullOrEmpty(emailVerifyToken))
             {
 
                 var encodedToken = HttpUtility.UrlEncode(emailVerifyToken);
@@ -111,20 +122,22 @@ public class AuthController : BaseController
 
                 ////verifyEmailDataModel.Subject = "Please, first Verify Your Email to Login.";
 
-            //    verifyEmailDataModel.VerifyLink =
-            //        Url.Action ( "VerifyEmail","Auth",new
-            //        {
-            //            email = accountDisplayViewModel.Email,
-            //            token = encodedToken
-            //        }, protocol:
-            //Request.Scheme );
+                //    verifyEmailDataModel.VerifyLink =
+                //        Url.Action ( "VerifyEmail","Auth",new
+                //        {
+                //            email = accountDisplayViewModel.Email,
+                //            token = encodedToken
+                //        }, protocol:
+                //Request.Scheme );
 
-            ////await _emailService.SendEmailVerificationAsync(verifyEmailDataModel);
+                ////await _emailService.SendEmailVerificationAsync(verifyEmailDataModel);
 
-            ////return RedirectToAction ( "VerifyEmail", verifyEmailDataModel );
-            ///
+                ////return RedirectToAction ( "VerifyEmail", verifyEmailDataModel );
+                ///
 
-            return RedirectToAction ( "VerifyEmail", new
+            _logger.LogWarning ( "Redirecting to VerifyEmail action for email: {Email} with token: {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,encodedToken );
+
+                return RedirectToAction ( "VerifyEmail", new
             {
                 email = accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,
                 token = encodedToken
@@ -132,6 +145,8 @@ public class AuthController : BaseController
 
             }
         }
+
+        _logger.LogWarning ( "Failed to create user account for email: {Email}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
         return RedirectToAction ( "Signup" );
     }
@@ -149,29 +164,36 @@ public class AuthController : BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login( LoginDisplayViewModel loginDisplayViewModel )
     {
-        if ( ModelState.IsValid )
+        if ( !ModelState.IsValid )
         {
+            _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
+
             return RedirectToAction ( "Login" );
         }
 
         var result = await _userAccountService.AuthenticateUser ( loginDisplayViewModel.Email, loginDisplayViewModel.Password );
 
+        _logger.LogWarning ( "Authentication result for email: {Email} is {Result}", loginDisplayViewModel.Email, result.Succeeded );
 
         if (result.Succeeded)
         {
 
             int userID = await _userAccountService.GetSingleUser(loginDisplayViewModel.Email);
 
+            _logger.LogWarning ( "Retrieved user ID for email: {Email} is {UserID}", loginDisplayViewModel.Email, userID );
+
             if (userID == 0)
             {
+                _logger.LogWarning ( "Failed to retrieve user ID for email: {Email}", loginDisplayViewModel.Email );
+
                 return RedirectToAction ( "Login" );
             }
 
            
             var claims = new List<Claim> {
 
-                new Claim ( ClaimTypes.Name, loginDisplayViewModel.Email ) ,
-                new Claim ( ClaimTypes.NameIdentifier, userID.ToString()) 
+                new ( ClaimTypes.Name, loginDisplayViewModel.Email ) ,
+                new ( ClaimTypes.NameIdentifier, userID.ToString() )
 
             };   
 
@@ -179,7 +201,12 @@ public class AuthController : BaseController
 
             var principal = new ClaimsPrincipal (identity);
 
+            _logger.LogWarning ( "Signing in user for email: {Email}", loginDisplayViewModel.Email );
+
             await HttpContext.SignInAsync ( IdentityConstants.ApplicationScheme, principal );
+
+
+            _logger.LogWarning ( "User signed in successfully for email: {Email}", loginDisplayViewModel.Email );
 
             return RedirectToAction ("Index", "Home");
         }
@@ -187,15 +214,24 @@ public class AuthController : BaseController
         if ( result.IsNotAllowed )
         {
             ModelState.AddModelError ( string.Empty, "You must confirm your email before logging in." );
+
+            _logger.LogWarning ( "User attempted to log in without confirming email: {Email}", loginDisplayViewModel.Email );
+
             return View ( loginDisplayViewModel );
         }
 
         if ( result.IsLockedOut )
         {
+            _logger.LogWarning ( "User account is locked out for email: {Email}",loginDisplayViewModel.Email );
+
             return View ( "Lockout" );
         }
 
+        _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
+
         ModelState.AddModelError ( string.Empty, "Invalid login attempt." );
+
+        _logger.LogWarning ( "Invalid login attempt for email: {Email}", loginDisplayViewModel.Email );
 
         return RedirectToAction ( "Login" );
     }
@@ -206,6 +242,8 @@ public class AuthController : BaseController
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync();
+
+        _logger.LogWarning ( "User signed out for email: {Email}",HttpContext != null && HttpContext.User != null && HttpContext.User.Identity != null ? HttpContext.User.Identity.Name : "Unknown" );
 
         return RedirectToAction("Index", "Home");
     }
@@ -218,6 +256,7 @@ public class AuthController : BaseController
         if ( _userContext.User == null )
         {
             _logger.LogWarning ( "User context is null in ResetPassword GET action." );
+
             return RedirectToAction ( "Login","Auth" );
         }
                     
@@ -260,6 +299,8 @@ public class AuthController : BaseController
 
             if (result)
             {
+                _logger.LogWarning ( "Password reset successful for email: {Email}", accountDisplayViewModel.Email );
+
                 return RedirectToAction("Login");
             }
 
@@ -268,7 +309,9 @@ public class AuthController : BaseController
         catch (Exception ex)
         {
             var msg = ex.Message;
+
             _logger.LogError(ex, "Error sending password reset email to {Email}", accountDisplayViewModel.Email);
+
             return RedirectToAction("ResetPassword");
         }
     }

@@ -37,7 +37,7 @@
 
                     @Html.LabelFor( a => a.ClientName )
 
-                    @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff"} })
+                    @Html.EditorFor(a => a.ClientName, new { htmlAttributes = new { @class = "fff", @autocomplete = "on"} })
                     
                     @Html.ValidationMessageFor( model => model.ClientName, "", 
                             new { @class = "inline-field-error text-danger" } )
@@ -54,7 +54,7 @@
 
                     @Html.LabelFor( a => a.Phone )
 
-                    @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff"} })
+                    @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", @autocomplete = "on"} })
 
                     @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "inline-field-error text-danger" })
 
@@ -69,7 +69,7 @@
 
                     @Html.LabelFor( a => a.Email )
 
-                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff" } })
+                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", @autocomplete = "off" } })
 
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "inline-field-error text-danger" })
 
@@ -84,7 +84,7 @@
                
                     @Html.LabelFor( a => a.Password )
 
-                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
+                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff", @autocomplete = "off" })
 
                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "inline-field-error text-danger" })
 
@@ -99,7 +99,7 @@
 
                     @Html.LabelFor( a => a.RePassword )
 
-                    @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff" })
+                    @Html.PasswordFor(x => x.RePassword, new { id = "RePassword", @class = "fff", @autocomplete = "off" })
 
                     @Html.ValidationMessageFor(model => model.RePassword, "", new { @class = "inline-field-error text-danger" })
 

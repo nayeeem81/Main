@@ -39,7 +39,7 @@
                     
                     @Html.LabelFor( a => a.Email )
 
-                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff" } })
+                    @Html.EditorFor(a => a.Email, new { htmlAttributes = new { @class = "fff", @autocomplete = "on" } })
 
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "inline-field-error text-danger" })
 
@@ -52,7 +52,7 @@
 
                     @Html.LabelFor( a => a.Password )
 
-                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff" })
+                    @Html.PasswordFor(x => x.Password, new { id = "Password", @class = "fff", @autocomplete = "on" })
 
                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "inline-field-error text-danger" })
                     
