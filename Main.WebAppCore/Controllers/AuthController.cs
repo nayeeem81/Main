@@ -60,8 +60,7 @@ public class AuthController : BaseController
 
         _logger.LogWarning ( "Attempting to create application user for email: {Email} with token: {Token}", email, token );
 
-        BaseDataModel baseDataModel = new BaseDataModel();
-        baseDataModel = _userContext.GetCreateBaseDataModel ( );
+        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
 
         var result = await _userAccountService.CreateAppicationUser ( email, token, baseDataModel );
 
