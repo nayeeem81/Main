@@ -173,10 +173,9 @@ public class AuthController : BaseController
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login ( LoginDisplayViewModel loginDisplayViewModel )
     {
-        if ( !ModelState.IsValid )
+        if ( ModelState.IsValid )
             return View ( loginDisplayViewModel );
 
         var user = await _userManager.FindByEmailAsync(loginDisplayViewModel.Email);
@@ -184,12 +183,15 @@ public class AuthController : BaseController
         if ( user == null )
         {
             ModelState.AddModelError ( "","Invalid login attempt." );
+            loginDisplayViewModel.Message = "Invalid login attempt. Your accont is locked. Please, contant suport.";
             return View ( loginDisplayViewModel );
         }
 
         if ( !await _userManager.IsEmailConfirmedAsync ( user ) )
         {
             ModelState.AddModelError ( "","You must verify your email before logging in." );
+            loginDisplayViewModel.Message = "You must verify your email before logging in. Please, check your email for verification link.";
+
             return View ( loginDisplayViewModel );
         }
 
@@ -213,20 +215,13 @@ public class AuthController : BaseController
 
             string? roleName = userRole != null ? userRole.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Role)?.Value : "User";
 
-            var claims = new List<Claim> {
-                new ( ClaimTypes.Name, loginDisplayViewModel.Email ) ,
-                new ( ClaimTypes.NameIdentifier, userID.ToString() ) ,
-                new ( ClaimTypes.Role, roleName != null ? roleName : "User" )
-            };
+            
+            await _userManager.AddClaimAsync ( user,new ( ClaimTypes.Name, user.UserName != null ? user.UserName : "" ) );
 
-            var identity = new ClaimsIdentity ( claims, IdentityConstants.ApplicationScheme  );
+            await _userManager.AddClaimAsync ( user,new ( ClaimTypes.NameIdentifier,userID.ToString ( ) ) );
 
-            var principal = new ClaimsPrincipal (identity);
-
-            _logger.LogWarning ( "Signing in user for email: {Email}",loginDisplayViewModel.Email );
-
-            await HttpContext.SignInAsync ( IdentityConstants.ApplicationScheme,principal );
-
+            await _userManager.AddClaimAsync ( user,
+                new ( ClaimTypes.Role,roleName != null ? roleName : "User" ) );
 
             _logger.LogWarning ( "User signed in successfully for email: {Email}",loginDisplayViewModel.Email );
 
