@@ -63,4 +63,8 @@ Install-Package Microsoft.EntityFrameworkCore.Design -Version 8.0.0
 
 # The Best Practices used in the Main Project: 
 
+1. I used View Components to make the code modular and readble in the layout page.
+2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
+3. Zero use of EF core packages and references in the web project.
+
 
