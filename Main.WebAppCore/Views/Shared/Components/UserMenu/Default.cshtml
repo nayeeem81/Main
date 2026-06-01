@@ -1,0 +1,35 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
+{
+    @if ( User.IsInRole ( "User" ) )
+    {
+        <div class="dropdown">
+            <a class="dropdown-toggle text-truncate"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                data-userid="@Model.UserID"
+                data-bs-toggle="dropdown">
+                <i class="fa fa-user fa-1x"></i>
+                <span>@User.Identity.Name</span>
+                <span class="caret"></span>
+            </a>
+                    
+            <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
+
+                <li class="user-menu">
+                    <a class="dropdown-item dropdown-item-text" asp-controller="Account" asp-action="Profile">
+                        <i class="fa fa-cog fa-fw"></i>
+                        <span>
+                            Profile
+                        </span>
+                    </a>
+                </li>
+
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )
+                
+            </ul>
+        </div>
+    }
+}   

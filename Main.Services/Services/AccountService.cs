@@ -101,6 +101,15 @@ public class AccountService : IAccountService
 
 
 
+    public async Task<string> GetBussUserEmail ( int userId )
+    {
+        var user = await _userRepository.GetSingleUser ( userId );
+
+        return user?.Email ?? string.Empty;
+    }
+
+
+
     public async Task<string?> GetEmailVerifyToken ( string email )
     {
         IdentityUser? user = await _userManager.FindByEmailAsync ( email );

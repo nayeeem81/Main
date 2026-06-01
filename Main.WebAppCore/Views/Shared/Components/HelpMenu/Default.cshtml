@@ -1,0 +1,40 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+
+<div class="dropdown">
+    <a id="ancorMyHelp"
+       href="#"
+       class="dropdown-toggle"
+       data-toggle="dropdown"
+       role="button"
+       aria-haspopup="true"
+       aria-expanded="false"
+       data-bs-toggle="dropdown">
+        <i class="fa fa-info fa-1x"></i>
+        <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown dropdown-menu" id="divMenuMyHomeHelp">
+        <li>
+            <a id="ancor_FAQ_Home" class="dropdown-item"
+               href="@Url.Action( "FAQ","Home" )">
+                <i class="fa fa-fw fa-question link-dark"></i>
+                <span>@SharedLocalizer["LinkFaq"]</span>
+            </a>
+        </li>
+        <li>
+            <a id="ancor_About_Home" class="dropdown-item"
+               href="@Url.Action( "Resource","Home" )">
+                <i class="fa fa-fw fa-info link-dark"></i>
+                <span>@SharedLocalizer["LinkResources"]</span>
+            </a>
+        </li>
+        <li>
+            <a id="ancor_Contact_Home" class="dropdown-item"
+               href="@Url.Action( "Contact","Home" )">
+                <i class="fa fa-fw fa-phone link-dark"></i>
+                <span>@SharedLocalizer["LinkContact"]</span>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -29,4 +29,6 @@ public interface IAccountService
     Task<bool> CreateAppicationUser ( string email, string token,BaseDataModel baseDataModel );
 
     Task<ClaimsIdentity?> GetUserRole ( string email );
+
+    Task<string> GetBussUserEmail ( int userId );
 }

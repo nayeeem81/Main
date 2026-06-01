@@ -1,6 +1,5 @@
 ﻿using Main.Common.Model;
 using Main.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -19,7 +18,6 @@ public class AuthController : BaseController
     private readonly ILogger<AuthController> _logger;
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
-
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IConfiguration _configuration;
@@ -112,8 +110,6 @@ public class AuthController : BaseController
 
         if ( result.Succeeded )
         {
-            
-
             var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty );
 
             _logger.LogWarning ( "Email verification token for email: {Email} is {Token}",accountDisplayViewModel != null ? accountDisplayViewModel.Email : string.Empty,emailVerifyToken );
@@ -170,6 +166,8 @@ public class AuthController : BaseController
         return View(loginDisplayViewModel);
     }
 
+
+
     [HttpPost]
     public async Task<IActionResult> Login ( LoginDisplayViewModel loginDisplayViewModel )
     {
@@ -216,10 +214,12 @@ public class AuthController : BaseController
             
             await _userManager.AddClaimAsync ( user,new ( ClaimTypes.Name, user.UserName != null ? user.UserName : "" ) );
 
-            await _userManager.AddClaimAsync ( user,new ( ClaimTypes.NameIdentifier,userID.ToString ( ) ) );
+            await _userManager.AddClaimAsync ( user,new ( ClaimTypes.Email,loginDisplayViewModel.Email ) );
 
             await _userManager.AddClaimAsync ( user,
                 new ( ClaimTypes.Role,roleName != null ? roleName : "User" ) );
+
+            await _userManager.AddClaimAsync ( user,new ( ClaimTypes.NameIdentifier, user.Id ) );
 
             _logger.LogWarning ( "User signed in successfully for email: {Email}",loginDisplayViewModel.Email );
 
@@ -243,8 +243,12 @@ public class AuthController : BaseController
 
 
     [HttpGet]
-    public IActionResult ForgotPassword ( ) {
+    public IActionResult ForgotPassword ( ) 
+    {
         var model = new ForgotPasswordViewModel();
+
+        ViewData["Title"] = "Forgot Password";
+
         return View(model);
     }
 
@@ -283,58 +287,84 @@ public class AuthController : BaseController
 
 
     [HttpGet]
-    public IActionResult ForgotPasswordConfirmation ( ) => View ( );
-
-
-
-    public IActionResult ResetPassword ( )
+    public IActionResult ForgotPasswordConfirmation ( )
     {
-        if ( _userContext.User == null )
-        {
-            _logger.LogWarning ( "User context is null in ResetPassword GET action." );
+        ViewData["Title"] = "Forgot Password Confirmation";
 
+        return View ( );
+    }
+
+    [HttpGet]
+    public IActionResult ResetPasswordConfirmation ( )
+    {
+        ViewData["Title"] = "Reset Password Confirmation";
+
+        return View ( );
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> ChangePassword ( )
+    {
+        if ( User == null )
+        {
             return RedirectToAction ( "Login","Auth" );
         }
 
-        var objModel = new AccountDisplayViewModel("Reset Password");
+        var changePasswordViewModel = new ChangePasswordViewModel();
 
-        return View ( objModel );
+        changePasswordViewModel.Email = User.Claims.FirstOrDefault ( c => c.Type == ClaimTypes.Email )?.Value ?? "";
+
+
+        return View ( changePasswordViewModel );
     }
 
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ResetPassword ( ResetPasswordViewModel model )
+    public async Task<IActionResult> ChangePassword ( ChangePasswordViewModel changePasswordViewModel )
     {
-        if ( !ModelState.IsValid )
-            return View ( model );
+        if ( ! ModelState.IsValid )
+            return View ( changePasswordViewModel );
 
-        var user = await _userManager.FindByEmailAsync(model.Email);
-        if ( user == null )
+        var userIdentity = await _userManager.FindByEmailAsync(changePasswordViewModel.Email);
+
+
+        if ( userIdentity == null )
         {
-            // Mitigate account enumeration by redirecting to completion page anyway
-            return RedirectToAction ( nameof ( ResetPasswordConfirmation ) );
+            return View ( changePasswordViewModel );
         }
 
-        // Internal token validation, history validation, and hashing occurs natively here
-        var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+        
+        var result = await _userManager
+            .ChangePasswordAsync(userIdentity,changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
+                                          
+        _logger.LogWarning ("Password change attempt for email: {Email}", changePasswordViewModel.Email);
 
         if ( result.Succeeded )
         {
-            return RedirectToAction ( nameof ( ResetPasswordConfirmation ) );
+            _logger.LogWarning ( "Password change successful for email: {Email}", changePasswordViewModel.Email );
+
+            return RedirectToAction ( nameof ( ChangePasswordConfirmation ) );
         }
 
         foreach ( var error in result.Errors )
         {
-            ModelState.AddModelError ( string.Empty,error.Description );
+            ModelState.AddModelError ( string.Empty, error.Description );
         }
 
-        return View ( model );
+        return View ( changePasswordViewModel );
     }
 
 
 
     [HttpGet]
-    public IActionResult ResetPasswordConfirmation ( ) => View ( );
+    public IActionResult ChangePasswordConfirmation ( )
+    {
+        ViewData["Title"] = "Password Change Confirmation";
+
+        return View ( );
+    }
+
 }

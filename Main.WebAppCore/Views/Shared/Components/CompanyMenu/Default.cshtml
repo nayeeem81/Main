@@ -1,0 +1,50 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
+{
+    @if ( User.IsInRole ( "Company" ) )
+    {
+        <div class="dropdown">
+            <a class="dropdown-toggle text-truncate"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                data-userid="@Model.UserID"
+                data-bs-toggle="dropdown">
+                <i class="fa fa-user fa-1x"></i>
+                <span>@User.Identity.Name</span>
+                <span class="caret"></span>
+            </a>
+                    
+            <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
+
+                <li class="company-menu">
+                    <a class="dropdown-item dropdown-item-text" asp-area="Company" asp-controller="CompanySettings" asp-action="ManageAccount">
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            User Account
+                        </span>
+                    </a>
+                </li>
+                <li class="company-menu">
+                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="Index">
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            Manage Products
+                        </span>
+                    </a>
+                </li>
+                <li class="company-menu">
+                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="NewProduct">
+                        <i class="fa fa-cog fa-fw fa-1x"></i>
+                        <span>
+                            Add New Product
+                        </span>
+                    </a>
+                </li>
+ 
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )
+        </ul>
+    </div>
+    }
+} 
