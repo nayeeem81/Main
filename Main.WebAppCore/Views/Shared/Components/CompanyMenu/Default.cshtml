@@ -42,15 +42,8 @@
                         </span>
                     </a>
                 </li>
-
-
-            <li><hr class="dropdown-divider"></li>
-
-            <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
-                <li>
-                    <button type="submit" class="dropdown-item dropdown-item-text"> @SharedLocalizer["LinkLogout"]</button>
-                </li>
-            </form>
+ 
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )
         </ul>
     </div>
     }
