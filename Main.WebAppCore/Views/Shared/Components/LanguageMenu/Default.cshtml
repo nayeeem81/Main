@@ -1,0 +1,52 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+<div class="dropdown">
+    <a id="ancorLanguage"
+       class="dropdown-toggle"
+       data-toggle="dropdown"
+       role="button"
+       aria-haspopup="true"
+       aria-expanded="false"
+       data-bs-toggle="dropdown">
+        <img class="flag" src="~/css/images/flags/uk.png" id="imgEnglishFlag" />
+        <span id="spnEnglishFlag">
+            @SharedLocalizer["LinkEnglish"]
+        </span>
+        <img style="display:none;" class="flag" src="~/css/images/flags/bangladesh.png" id="imgBanglaFlag" />
+        <span style="display:none;" id="spnBanglaFlag">
+            @SharedLocalizer["LinkBangla"]
+        </span>
+        <img style="display:none;" class="flag" src="~/css/images/flags/nigeria.png" id="imgNigeriaFlag" />
+        <span style="display:none;" id="spnNigeriaFlag">
+            @SharedLocalizer["LinkNigeria"]
+        </span>
+        <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown dropdown-menu">
+        <li>
+            <a id="ancorEnglishLanguage" class="dropdown-item">
+                <img class="flag" src="~/css/images/flags/uk.png" />
+                <span>
+                    @SharedLocalizer["LinkEnglish"]
+                </span>
+            </a>
+        </li>
+        <li>
+            <a id="ancorBanglaLanguage" class="dropdown-item">
+                <img class="flag" src="~/css/images/flags/bangladesh.png" />
+                <span>
+                    @SharedLocalizer["LinkBangla"]
+                </span>
+            </a>
+        </li>
+        <li>
+            <a id="ancorNigeriaLanguage" class="dropdown-item">
+                <img class="flag" src="~/css/images/flags/nigeria.png" />
+                <span>
+                    @SharedLocalizer["LinkNigeria"]
+                </span>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,106 @@
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+
+@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
+{
+    @if ( User.IsInRole ( "Admin" ) )
+    {
+        <div class="dropdown">
+            <a class="dropdown-toggle text-truncate"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                data-userid="@Model.UserID"
+                data-bs-toggle="dropdown">
+                <i class="fa fa-user fa-1x"></i>
+                <span>@User.Identity.Name</span>
+                <span class="caret"></span>
+            </a>
+                    
+            <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
+
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="AdminContent" asp-controller="ManageAdminPost" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkManageAdminContents"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="AdminContent" asp-controller="ManageAdminPost" asp-action="NewAdminContent">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkAddShortContent"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageFabiaService" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkFabiaServices"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="Image" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkEditImages"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="PageContent" asp-controller="Pages" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkConfigurePanels"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu"><hr class="dropdown-divider"></li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="PackageConfiguration" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkConfigurePackage"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageConfiguration" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkConfigurePrice"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu"><hr class="dropdown-divider"></li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="BikashBillTransactons" asp-action="Index">
+                    <i class="fa fa-cog fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkManageBikashBills"]
+                    </span>
+                </a>
+            </li>
+            <li class="admin-menu">
+                <a class="dropdown-item dropdown-item-text" asp-area="Report" asp-controller="ApplicationLogReport" asp-action="Index">
+                    <i class="fa fa-address-book fa-fw fa-1x"></i>
+                    <span>
+                        @SharedLocalizer["LinkLogReports"]
+                    </span>
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+
+            <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
+                <li>
+                    <button type="submit" class="dropdown-item dropdown-item-text"> @SharedLocalizer["LinkLogout"]</button>
+                </li>
+            </form>
+        </ul>
+    </div>
+    }
+}      
