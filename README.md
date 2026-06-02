@@ -42,7 +42,7 @@ More information on the best practices, please check the Help Documents folder i
 # Web App Project:
 
 Identity (Signin, Signout, Email veirficaton, Acoount lock, Roles based authorizaton):
-For auntication, we are using te .Net 8.0 Identity with default configuratin. The tables are IdentityUser and IdentityRole. Authorization is Role based. Middleware configuration and registratin is done in the Infrastructure project. Settings are kept in the Appsetts.json file in te Web Project.
+For auntication, we are using te .Net 8.0 Identity with default configuratin. The tables are IdentityUser and IdentityRole. Authorization is Role based. Middleware configuration and registratin is done in the Infrastructure project. Settings are kept in the Appsettings.json file in te Web Project.
 
 Currently the roles are: Admin, Company & User
 
