@@ -156,7 +156,7 @@ public class AuthController: BaseController
     public async Task<IActionResult> Login ( LoginDisplayViewModel loginDisplayViewModel )
     {
 
-        if ( !ModelState.IsValid )
+        if ( ModelState.IsValid )
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
 
