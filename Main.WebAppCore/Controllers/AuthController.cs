@@ -1,19 +1,12 @@
 ﻿using DataTransferModel;
-
-using FluentEmail.Core;
-
 using Main.Common.Model;
 using Main.Services;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-
 using ResourceLibrary.Resources;
-
 using System.Security.Claims;
 using System.Web;
-
 using WebApp.ViewModel;
 using WebApp.ViewModel.Extensions;
 
@@ -280,16 +273,11 @@ public class AuthController: BaseController
 
         if ( !string.IsNullOrEmpty ( emailVerifyToken ) )
         {
-            var encodedToken = HttpUtility.UrlEncode(emailVerifyToken);
-
-            _logger.LogWarning ( "Redirecting to VerifyEmail action for email: {Email} with token: {Token}",email,encodedToken );
-
-
-            var verifyLink = Url.Action ( "VerifyEmail", "Auth", new VerifyEmailViewModel ()
+            var verifyLink = Url.Action ( "VerifyEmail", "Auth", new 
             {
                 Email = email,
-                Token = encodedToken
-            },  protocol: Request.Scheme );
+                Token = emailVerifyToken
+            },  Request.Scheme );
 
             var verifyEmailDataModel = new VerifyEmailDataModel ()
             {
@@ -359,17 +347,16 @@ public class AuthController: BaseController
 
         if ( !string.IsNullOrEmpty ( token ) )
         {
-            var encodedToken = HttpUtility.UrlEncode(token);
-
+          
             var callbackUrl = Url.Action("ResetPassword", "Auth",
-                                    new ResetPasswordViewModel()
+                                    new 
                                     {
-                                        Token = encodedToken,
-                                        Email = email
+                                        Email = email ,
+                                        Token = token
                                     },
-                                    protocol: Request.Scheme);
+                                    Request.Scheme);
 
-            var callbackUrlString = $"Link: {callbackUrl}";
+            var callbackUrlString = $"Please click the link to reset your password: <a href='{callbackUrl}'>Reset Password</a>";
 
             var encodedCallbackUrl = HttpUtility.HtmlEncode ( callbackUrlString );
 
@@ -395,20 +382,41 @@ public class AuthController: BaseController
 
     // Forget Password Reset Flow - Step 4: User clicks the password reset link, which includes the secure token, and is taken to the password reset form
     [HttpPost]
-    public async Task<IActionResult> ResetPassword ( ResetPasswordViewModel resetPasswordViewModel )
+    public async Task<IActionResult> ResetPassword (string email, string token )
+    {
+
+        if ( string.IsNullOrEmpty ( email ) || string.IsNullOrEmpty ( token ) )
+        {
+            return BadRequest ( "Invalid password reset request parameters." );
+        }
+
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if ( user == null )
+        {
+            return BadRequest ( "Invalid password reset request parameters." );
+        }
+
+        var resetPasswordViewModel = new ResetPasswordViewModel()
+        {
+            Email = email,
+            Token = token
+        };  
+
+        return View ( "ResetPasswordView", resetPasswordViewModel);
+                                                                   
+    }
+
+
+    // Forget Password Reset Flow - Step 5: User submits the new password, which triggers the ResetPassword action that validates the token, resets the password, invalidates the token, and redirects to a confirmation page
+    [HttpPost]
+    public async Task<IActionResult> ResetPasswordView ( ResetPasswordViewModel resetPasswordViewModel )
     {
 
         if ( !ModelState.IsValid )
             return View ( resetPasswordViewModel );
 
-
         var user = await _userManager.FindByEmailAsync(resetPasswordViewModel.Email);
-
-
-        if ( user == null )
-        {
-            return RedirectToAction ( "Login","Auth" );
-        }
 
 
         // Reset with new passwrd and invalidate the token and timestamp to prevent reuse (OWASP Mitigation)
@@ -426,13 +434,12 @@ public class AuthController: BaseController
             ModelState.AddModelError ( string.Empty,error.Description );
         }
 
-
         return View ( resetPasswordViewModel );
-    }
+    } 
 
 
 
-    // Forget Password Reset Flow - Step 5: User is shown a confirmation page that the password has been reset successfully
+    // Forget Password Reset Flow - Step 6: User is shown a confirmation page that the password has been reset successfully
     [HttpGet]
     public IActionResult ResetPasswordConfirmation ( )
     {
