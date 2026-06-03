@@ -356,7 +356,7 @@ public class AuthController: BaseController
                                     },
                                     Request.Scheme);
 
-            var callbackUrlString = $"Please click the link to reset your password: <a href='{callbackUrl}'>Reset Password</a>";
+            var callbackUrlString = $"Please click the link to reset your password: {callbackUrl}";
 
             var encodedCallbackUrl = HttpUtility.HtmlEncode ( callbackUrlString );
 
