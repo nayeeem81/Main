@@ -1186,6 +1186,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ClickForLoginMessage.
+        /// </summary>
+        public static string ClickForLoginMessage {
+            get {
+                return ResourceManager.GetString("ClickForLoginMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ClientName.
         /// </summary>
         public static string ClientName {
@@ -1812,6 +1821,15 @@ namespace ResourceLibrary.Resources {
         public static string EmailRequired {
             get {
                 return ResourceManager.GetString("EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EmailVerifyMessage.
+        /// </summary>
+        public static string EmailVerifyMessage {
+            get {
+                return ResourceManager.GetString("EmailVerifyMessage", resourceCulture);
             }
         }
         
@@ -5866,6 +5884,33 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PageNameResetPassword.
+        /// </summary>
+        public static string PageNameResetPassword {
+            get {
+                return ResourceManager.GetString("PageNameResetPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameResetPasswordComplete.
+        /// </summary>
+        public static string PageNameResetPasswordComplete {
+            get {
+                return ResourceManager.GetString("PageNameResetPasswordComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameVerifyEmailConfirm.
+        /// </summary>
+        public static string PageNameVerifyEmailConfirm {
+            get {
+                return ResourceManager.GetString("PageNameVerifyEmailConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paid Amount.
         /// </summary>
         public static string PaidAmount {
@@ -6015,6 +6060,15 @@ namespace ResourceLibrary.Resources {
         public static string PasswordResetEmailSentTitle {
             get {
                 return ResourceManager.GetString("PasswordResetEmailSentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PasswordsDoNotMatch.
+        /// </summary>
+        public static string PasswordsDoNotMatch {
+            get {
+                return ResourceManager.GetString("PasswordsDoNotMatch", resourceCulture);
             }
         }
         
@@ -6811,6 +6865,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RegistrationUpdateMessageTitle.
+        /// </summary>
+        public static string RegistrationUpdateMessageTitle {
+            get {
+                return ResourceManager.GetString("RegistrationUpdateMessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to REMOVE.
         /// </summary>
         public static string REMOVE {
@@ -6906,6 +6969,33 @@ namespace ResourceLibrary.Resources {
         public static string ResetPasswordButtonText {
             get {
                 return ResourceManager.GetString("ResetPasswordButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ResetPasswordCompleteTitle.
+        /// </summary>
+        public static string ResetPasswordCompleteTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordCompleteTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ResetPasswordConfirmMessage.
+        /// </summary>
+        public static string ResetPasswordConfirmMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ResetPasswordTitle.
+        /// </summary>
+        public static string ResetPasswordTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordTitle", resourceCulture);
             }
         }
         
@@ -8458,6 +8548,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to UpdatePasswordButtonText.
+        /// </summary>
+        public static string UpdatePasswordButtonText {
+            get {
+                return ResourceManager.GetString("UpdatePasswordButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload File.
         /// </summary>
         public static string UploadFile {
@@ -8607,6 +8706,24 @@ namespace ResourceLibrary.Resources {
         public static string VALIDATION_FAILED {
             get {
                 return ResourceManager.GetString("VALIDATION_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerifyEmailConfirmMessage.
+        /// </summary>
+        public static string VerifyEmailConfirmMessage {
+            get {
+                return ResourceManager.GetString("VerifyEmailConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerifyEmailConfirmTitle.
+        /// </summary>
+        public static string VerifyEmailConfirmTitle {
+            get {
+                return ResourceManager.GetString("VerifyEmailConfirmTitle", resourceCulture);
             }
         }
         

@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = ViewData["Title"];
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = @SharedLocalizer["RegistrationUpdateMessageTitle"];
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -20,7 +22,9 @@
                     col-md-12
                     col-lg-12">
 
-                    <h4 class="card-title all-caps"> @ViewData["Title"] </h4>
+                    <h4 class="card-title all-caps">
+                        @SharedLocalizer["RegistrationUpdateMessageTitle"]
+                    </h4>
 
                 </div>
             </div>
@@ -35,7 +39,9 @@
                     col-lg-12">
 
                     <p>
-                        Email is sent. Please, check the inbox.
+
+                        @SharedLocalizer["EmailVerifyMessage"]
+                       
                     </p>
 
                 </div>

@@ -3162,4 +3162,56 @@
     <value>ProfileLinkText</value>
     <comment>Profile Link Text</comment>
   </data>
+  <data name="VerifyEmailConfirmMessage" xml:space="preserve">
+    <value>VerifyEmailConfirmMessage</value>
+    <comment>Verify Email Confirm Message</comment>
+  </data>
+  <data name="ClickForLoginMessage" xml:space="preserve">
+    <value>ClickForLoginMessage</value>
+    <comment>Click For Login Message</comment>
+  </data>
+  <data name="ResetPasswordConfirmMessage" xml:space="preserve">
+    <value>ResetPasswordConfirmMessage</value>
+    <comment>Reset Password Confirm Message</comment>
+  </data>
+  <data name="EmailVerifyMessage" xml:space="preserve">
+    <value>EmailVerifyMessage</value>
+    <comment>Email Verify Message</comment>
+  </data>
+  <data name="RegistrationUpdateMessageTitle" xml:space="preserve">
+    <value>RegistrationUpdateMessageTitle</value>
+    <comment>Registration Update Message Title</comment>
+  </data>
+  <data name="ResetPasswordCompleteTitle" xml:space="preserve">
+    <value>ResetPasswordCompleteTitle</value>
+    <comment>Reset Password Complete Title</comment>
+  </data>
+  <data name="PageNameResetPasswordComplete" xml:space="preserve">
+    <value>PageNameResetPasswordComplete</value>
+    <comment>Page Name Reset Password Complete</comment>
+  </data>
+  <data name="VerifyEmailConfirmTitle" xml:space="preserve">
+    <value>VerifyEmailConfirmTitle</value>
+    <comment>Verify Email Confirm Title</comment>
+  </data>
+  <data name="PageNameVerifyEmailConfirm" xml:space="preserve">
+    <value>PageNameVerifyEmailConfirm</value>
+    <comment>Page Name Verify Email Confirm</comment>
+  </data>
+  <data name="PageNameResetPassword" xml:space="preserve">
+    <value>PageNameResetPassword</value>
+    <comment>Page Name Reset Password</comment>
+  </data>
+  <data name="ResetPasswordTitle" xml:space="preserve">
+    <value>ResetPasswordTitle</value>
+    <comment>Reset Password Title</comment>
+  </data>
+  <data name="UpdatePasswordButtonText" xml:space="preserve">
+    <value>UpdatePasswordButtonText</value>
+    <comment>Update Password Button Text</comment>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>PasswordsDoNotMatch</value>
+    <comment>Passwords Do Not Match</comment>
+  </data>
 </root>

@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = ViewData["Title"];
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewBag.Title = SharedLocalizer["PageNameVerifyEmailConfirm"];
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -20,7 +22,7 @@
                     col-md-12
                     col-lg-12">
 
-                    <h4 class="card-title all-caps"> @ViewData["Title"] </h4>
+                    <h4 class="card-title all-caps"> @SharedLocalizer["VerifyEmailConfirmTitle"] </h4>
 
                 </div>
             </div>
@@ -35,8 +37,13 @@
                     col-lg-12">
 
                     <p>
-                        Your email has been confirmed.
-                        Please <a asp-action="Login" asp-controller="Auth">click here to log in</a>.
+                        @SharedLocalizer["VerifyEmailConfirmMessage"]  
+
+                        @SharedLocalizer["ClickForLoginMessage"]
+                       
+                        <a asp-action="Login" asp-controller="Auth">
+                            @SharedLocalizer["LoginSignin"]
+                        </a>
                     </p>
 
                 </div>

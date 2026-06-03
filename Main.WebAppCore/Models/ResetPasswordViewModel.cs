@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ResourceLibrary.Resources;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.ViewModel;
 
@@ -17,15 +19,15 @@ public class ResetPasswordViewModel : BaseViewModel
     public string Email { get; set; } = string.Empty;
 
 
-    [Required]
-    [StringLength ( 100, ErrorMessage = "The password must be at least {2} characters long.",MinimumLength = 8 )]
+    [Required ( ErrorMessageResourceName = "PasswordRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "Password",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
     [DataType ( DataType.Password )]
     public string Password { get; set; } = string.Empty;
 
 
 
     [DataType ( DataType.Password )]
-    [Display ( Name = "Confirm password" )]
-    [Compare ( "Password", ErrorMessage = "The password and confirmation password do not match." )]
+    [Display ( Name = "Confirm password",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
+    [Compare ( "Password", ErrorMessageResourceName = "PasswordsDoNotMatch",ErrorMessageResourceType = typeof ( SharedResource ) )]
     public string ConfirmPassword { get; set; } = string.Empty;
 }

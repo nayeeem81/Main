@@ -1474,7 +1474,7 @@
     <value>Password :</value>
   </data>
   <data name="LoginSignin" xml:space="preserve">
-    <value>Sign in</value>
+    <value>Log in</value>
   </data>
   <data name="LoginTitleFBAccount" xml:space="preserve">
     <value>Using Facebook Account:</value>
@@ -3126,13 +3126,52 @@
   <data name="ChangePasswordLinkText" xml:space="preserve">
     <value>Change Password</value>
   </data>
+  <data name="ProfileLinkText" xml:space="preserve">
+    <value>Account Profile</value>
+  </data>
+  <data name="VerifyEmailConfirmMessage" xml:space="preserve">
+    <value>Your email has been confirmed and updated.</value>
+  </data>
+  <data name="ClickForLoginMessage" xml:space="preserve">
+    <value>Please click here to:</value>
+  </data>
+  <data name="ResetPasswordConfirmMessage" xml:space="preserve">
+    <value>Your password has been successfully updated.</value>
+  </data>
+  <data name="EmailVerifyMessage" xml:space="preserve">
+    <value>Please check email in your inbox or spam folder to verify your email and log in.</value>
+  </data>
+  <data name="RegistrationUpdateMessageTitle" xml:space="preserve">
+    <value>Registration Update</value>
+  </data>
+  <data name="ResetPasswordCompleteTitle" xml:space="preserve">
+    <value>Reset Password Completed!</value>
+  </data>
+  <data name="PageNameResetPasswordComplete" xml:space="preserve">
+    <value>Reset Complete</value>
+  </data>
+  <data name="VerifyEmailConfirmTitle" xml:space="preserve">
+    <value>Email Verified &amp; Updated</value>
+  </data>
+  <data name="PageNameVerifyEmailConfirm" xml:space="preserve">
+    <value>Verify Email</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
   </data>
-  <data name="ProfileLinkText" xml:space="preserve">
-    <value>Account Profile</value>
+  <data name="PageNameResetPassword" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="ResetPasswordTitle" xml:space="preserve">
+    <value>Reset Password </value>
+  </data>
+  <data name="UpdatePasswordButtonText" xml:space="preserve">
+    <value>Update Password</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>Passwords do not match!</value>
   </data>
 </root>
