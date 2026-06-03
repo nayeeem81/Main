@@ -3110,4 +3110,16 @@
     <value>SignUpAncorLinkText</value>
     <comment>SignUp Ancor Link Text</comment>
   </data>
+  <data name="ForgetPasswordInitPageTitle" xml:space="preserve">
+    <value>Forget Password Init Page Title</value>
+    <comment>Forget Password Init Page Title (Take Email Form)</comment>
+  </data>
+  <data name="ResetPasswordButtonText" xml:space="preserve">
+    <value>ResetPasswordButtonText</value>
+    <comment>Reset Password Button Text</comment>
+  </data>
+  <data name="PageNameForgotPasswordResetInit" xml:space="preserve">
+    <value>PageNameForgotPasswordResetInit</value>
+    <comment>Page Name Forgot Password Reset Init (Take email for reset email)</comment>
+  </data>
 </root>

@@ -3090,6 +3090,15 @@
   <data name="SignUpLinkText" xml:space="preserve">
     <value>Don't have account?  Register.</value>
   </data>
+  <data name="ForgetPasswordInitPageTitle" xml:space="preserve">
+    <value>Reset your Password!</value>
+  </data>
+  <data name="ResetPasswordButtonText" xml:space="preserve">
+    <value>SUBMIT EMAIL</value>
+  </data>
+  <data name="PageNameForgotPasswordResetInit" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>

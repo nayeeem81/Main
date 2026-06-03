@@ -3037,6 +3037,15 @@
   <data name="SignUpLinkText" xml:space="preserve">
     <value>অ্যাকাউন্ট নেই? নিবন্ধন করুন।</value>
   </data>
+  <data name="ForgetPasswordInitPageTitle" xml:space="preserve">
+    <value>আপনার পাসওয়ার্ড পুনরায় সেট করুন!</value>
+  </data>
+  <data name="ResetPasswordButtonText" xml:space="preserve">
+    <value>ইমেল জমা দিন</value>
+  </data>
+  <data name="PageNameForgotPasswordResetInit" xml:space="preserve">
+    <value>পাসওয়ার্ড রিসেট</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
