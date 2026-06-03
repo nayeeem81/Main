@@ -3051,7 +3051,7 @@
     <value>পাসওয়ার্ড রিসেট</value>
   </data>
   <data name="ForgotPasswordSentMeaasge" xml:space="preserve">
-    <value>যদি কোনো অ্যাকাউন্ট সেই ইমেল ঠিকানার সাথে মিলে যায়, তাহলে একটি পাসওয়ার্ড রিসেট লিঙ্ক পাঠানো হয়েছে। অনুগ্রহ করে আপনার ইনবক্স এবং স্প্যাম ফোল্ডার চেক করুন।</value>
+    <value>ইমেল ঠিকানা থাকলে, একটি রিসেট ইমেল পাঠানো হয়। অনুগ্রহ করে আপনার ইনবক্স এবং স্প্যাম ফোল্ডার চেক করুন।</value>
   </data>
   <data name="PasswordResetEmailSentTitle" xml:space="preserve">
     <value>পাসওয়ার্ড রিসেট সংক্রান্ত আপডেট!</value>
@@ -3119,6 +3119,9 @@
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>পাসওয়ার্ডগুলো মিলছে না!</value>
   </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড নিশ্চিত করুন</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3169,8 +3172,5 @@
   </data>
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
-  </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>পাসওয়ার্ড নিশ্চিত করুন</value>
   </data>
 </root>
