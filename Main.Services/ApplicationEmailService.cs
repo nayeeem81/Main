@@ -23,9 +23,11 @@ public static class ApplcationEmailServices
                 .AddSmtpSender (
                         smtpSection["Server"],
                         int.Parse ( smtpSection["Port"] ?? "587" ),
-                        smtpSection["User"],
-                        smtpSection["Pass"]
+                        smtpSection["Username"],
+                        smtpSection["Password"]
                  );
+
+       
 
 
         services.AddTransient<IEmailSender,EmailSenderService> ( );

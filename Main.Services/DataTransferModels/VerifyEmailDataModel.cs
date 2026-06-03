@@ -7,10 +7,10 @@ public class VerifyEmailDataModel
     }
 
 
-    public VerifyEmailDataModel ( string email, string code )
+    public VerifyEmailDataModel ( string email, string token )
     {
         Email = email;
-        Code = code;
+        Token = token;
     }
 
     public string UserName { get; set; } 
@@ -25,15 +25,15 @@ public class VerifyEmailDataModel
     }   
 
 
-    public string Code { get; set; }
+    public string Token { get; set; }
 
 
     public string Message { get; set; }
 
 
-    public string? LinkUrl
+    public string LinkUrl
     {
         get;
-        internal set;
+        set;
     }
 }

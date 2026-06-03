@@ -1,9 +1,13 @@
-﻿namespace WebApp.ViewModel;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace WebApp.ViewModel;
 
 public class VerifyEmailViewModel: BaseViewModel
 {
     public VerifyEmailViewModel ( )                          
     {
+        PageName = "Email Verification";
+        Subject = "Please, first Verify Your Email to Login.";
     }
 
 
@@ -23,7 +27,7 @@ public class VerifyEmailViewModel: BaseViewModel
     }   
 
 
-    public string Code { get; set; }
+    public string Token { get; set; }
 
 
     public string Message { get; set; }
