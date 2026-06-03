@@ -1339,6 +1339,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ConfirmPassword.
+        /// </summary>
+        public static string ConfirmPassword {
+            get {
+                return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contact Form.
         /// </summary>
         public static string ContactContactForm {

@@ -3107,6 +3107,18 @@
   <data name="PageNameVerifyEmailConfirm" xml:space="preserve">
     <value>ইমেল যাচাই সম্পন্ন </value>
   </data>
+  <data name="PageNameResetPassword" xml:space="preserve">
+    <value>রিসেট </value>
+  </data>
+  <data name="ResetPasswordTitle" xml:space="preserve">
+    <value>পাসওয়ার্ড রিসেট করুন</value>
+  </data>
+  <data name="UpdatePasswordButtonText" xml:space="preserve">
+    <value>পাসওয়ার্ড আপডেট করুন</value>
+  </data>
+  <data name="PasswordsDoNotMatch" xml:space="preserve">
+    <value>পাসওয়ার্ডগুলো মিলছে না!</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3158,16 +3170,7 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
-  <data name="PageNameResetPassword" xml:space="preserve">
-    <value>রিসেট </value>
-  </data>
-  <data name="ResetPasswordTitle" xml:space="preserve">
-    <value>পাসওয়ার্ড রিসেট করুন</value>
-  </data>
-  <data name="UpdatePasswordButtonText" xml:space="preserve">
-    <value>পাসওয়ার্ড আপডেট করুন</value>
-  </data>
-  <data name="PasswordsDoNotMatch" xml:space="preserve">
-    <value>পাসওয়ার্ডগুলো মিলছে না!</value>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>পাসওয়ার্ড নিশ্চিত করুন</value>
   </data>
 </root>

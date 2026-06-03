@@ -27,7 +27,7 @@ public class ResetPasswordViewModel : BaseViewModel
 
 
     [DataType ( DataType.Password )]
-    [Display ( Name = "Confirm password",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
+    [Display ( Name = "ConfirmPassword",Prompt = "PasswordPlaceholder",ResourceType = typeof ( SharedResource ) )]
     [Compare ( "Password", ErrorMessageResourceName = "PasswordsDoNotMatch",ErrorMessageResourceType = typeof ( SharedResource ) )]
     public string ConfirmPassword { get; set; } = string.Empty;
 }

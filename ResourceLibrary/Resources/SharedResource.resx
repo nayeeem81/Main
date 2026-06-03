@@ -3214,4 +3214,8 @@
     <value>PasswordsDoNotMatch</value>
     <comment>Passwords Do Not Match</comment>
   </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>ConfirmPassword</value>
+    <comment>Confirm Password</comment>
+  </data>
 </root>

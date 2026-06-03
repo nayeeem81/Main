@@ -3156,12 +3156,6 @@
   <data name="PageNameVerifyEmailConfirm" xml:space="preserve">
     <value>Verify Email</value>
   </data>
-  <data name="BDT3" xml:space="preserve">
-    <value>BDT</value>
-  </data>
-  <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
-    <value>Not Urgent Deal</value>
-  </data>
   <data name="PageNameResetPassword" xml:space="preserve">
     <value>Reset Password</value>
   </data>
@@ -3173,5 +3167,14 @@
   </data>
   <data name="PasswordsDoNotMatch" xml:space="preserve">
     <value>Passwords do not match!</value>
+  </data>
+  <data name="BDT3" xml:space="preserve">
+    <value>BDT</value>
+  </data>
+  <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
+    <value>Not Urgent Deal</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
   </data>
 </root>
