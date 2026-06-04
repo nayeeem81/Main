@@ -3,6 +3,7 @@ using Main.Common.Model;
 using Main.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 using System.Security.Claims;
@@ -113,16 +114,16 @@ public class AuthController: BaseController
 
 
     // Registration Flow: User clicks the email verification link, which triggers the VerifyEmail action that validates the token, activates the user account, and redirects to a confirmation page (Complete)
-    public async Task<IActionResult> VerifyLink ( VerifyEmailViewModel verifyEmailViewModel )
+    public async Task<IActionResult> VerifyLink ( string email, string token  )
     {
-        if ( string.IsNullOrEmpty ( verifyEmailViewModel.Email ) || string.IsNullOrEmpty ( verifyEmailViewModel.Token ) )
+        if ( string.IsNullOrEmpty ( email ) || string.IsNullOrEmpty ( token  ) )
         {
             return BadRequest ( "Invalid verification request parameters." );
         }
 
         BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
 
-        var result = await _userAccountService.CreateAppicationUser ( verifyEmailViewModel.Email, verifyEmailViewModel.Token, baseDataModel );
+        var result = await _userAccountService.CreateAppicationUser ( email, token , baseDataModel );
 
         return RedirectToAction ( "VerifyComplete" );
     }
@@ -269,18 +270,17 @@ public class AuthController: BaseController
 
         if ( !string.IsNullOrEmpty ( emailVerifyToken ) )
         {
-            var verifyLink = Url.Action ( "VerifyEmail", "Auth", new 
+            var verifyLink = Url.Action ( "VerifyLink", "Auth", new 
             {
                 Email = email,
                 Token = emailVerifyToken
             },  Request.Scheme );
 
-            var verifyEmailDataModel = new VerifyEmailDataModel ()
+            var verifyEmailDataModel = new VerifyDataModel ()
             {
                 Email = email,
-                LinkUrl = verifyLink != null    ?
-                          verifyLink.ToString() : string.Empty,
-                Subject = "Confirm your email verification"
+                VerifyLink = verifyLink != null    ?
+                          verifyLink.ToString() : string.Empty
             };
 
             await _emailService.SendEmailVerificationAsync ( verifyEmailDataModel );
@@ -317,7 +317,7 @@ public class AuthController: BaseController
             await SendVerifyEmail ( forgotPasswordViewModel.Email );
 
             // Do not reveal if the user exists or is verified
-            return RedirectToAction ( nameof ( ResetEmailSent ));
+            return RedirectToAction ( nameof ( SendVerifyEmail ));
         }
 
         // Step 2.1: Send email with password reset link
@@ -347,13 +347,12 @@ public class AuthController: BaseController
             var callbackUrl = Url.Action("ResetLink", "Auth", 
                               new  { Email = email , Token = token }, Request.Scheme);
 
-            var resetPasswordDataModel = new ResetPasswordDataModel() {
+            var resetDataModel = new ResetDataModel() {
                 Email = email,
-                LinkUrl = callbackUrl != null ? callbackUrl.ToString() : string.Empty,
-                Subject = "Password Reset Request"
+                ResetLink = callbackUrl != null ? callbackUrl.ToString() : string.Empty
             };
 
-            await _emailService.SendResetPasswordEmailAsync(resetPasswordDataModel);
+            await _emailService.SendResetPasswordEmailAsync(resetDataModel);
         }
     }
 
@@ -363,7 +362,7 @@ public class AuthController: BaseController
     [HttpGet]
     public IActionResult ResetEmailSent ( )
     {
-        ViewData["Title"] = "Forgot Password";
+        ViewData["Title"] = "Reset Email Sent";
 
         return View ( );
     }
@@ -376,14 +375,14 @@ public class AuthController: BaseController
 
         if ( string.IsNullOrEmpty ( email ) || string.IsNullOrEmpty ( token ) )
         {
-            return BadRequest ( "Invalid password reset request parameters." );
+            return BadRequest ( "Invalid link request." );
         }
 
         var user = await _userManager.FindByEmailAsync(email);
 
         if ( user == null )
         {
-            return BadRequest ( "Invalid password reset request parameters." );
+            return BadRequest ( "Invalid link request." );
         }
 
         var resetPasswordViewModel = new ResetPasswordViewModel()
@@ -392,7 +391,7 @@ public class AuthController: BaseController
             Token = token
         };  
 
-        return View ( "ResetPassword", resetPasswordViewModel);
+        return RedirectToAction ( "ResetPassword", resetPasswordViewModel);
                                                                    
     }
 

@@ -8,7 +8,7 @@ public interface IEmailSenderService
 
     Task SendEmailAsync ( string email,string subject,string htmlMessage );
 
-    Task SendEmailVerificationAsync ( VerifyEmailDataModel verifyEmailDataModel);
+    Task SendEmailVerificationAsync ( VerifyDataModel verifyEmailDataModel);
 
-    Task SendResetPasswordEmailAsync ( ResetPasswordDataModel resetEmailDataModel );
+    Task SendResetPasswordEmailAsync ( ResetDataModel resetEmailDataModel );
 }

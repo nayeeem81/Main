@@ -2491,6 +2491,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to InvalidEmailFormat.
+        /// </summary>
+        public static string InvalidEmailFormat {
+            get {
+                return ResourceManager.GetString("InvalidEmailFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to is.
         /// </summary>
         public static string IS {
@@ -5907,6 +5916,15 @@ namespace ResourceLibrary.Resources {
         public static string PageNameRegistration {
             get {
                 return ResourceManager.GetString("PageNameRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameResetEmail.
+        /// </summary>
+        public static string PageNameResetEmail {
+            get {
+                return ResourceManager.GetString("PageNameResetEmail", resourceCulture);
             }
         }
         

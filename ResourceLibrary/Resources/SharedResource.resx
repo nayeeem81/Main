@@ -3234,4 +3234,12 @@
     <value>PageNameRegistration</value>
     <comment>Page Name Registration</comment>
   </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>InvalidEmailFormat</value>
+    <comment>Invalid Email Format</comment>
+  </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>PageNameResetEmail</value>
+    <comment>Page Name Reset Email</comment>
+  </data>
 </root>

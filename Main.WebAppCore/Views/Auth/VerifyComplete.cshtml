@@ -1,4 +1,4 @@
-﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿
 
 @{
     ViewBag.Title = SharedLocalizer["PageNameVerifyEmailConfirm"];
@@ -37,14 +37,21 @@
                     col-lg-12">
 
                     <p>
-                        @SharedLocalizer["VerifyEmailConfirmMessage"]  
+                        <small>
 
-                        @SharedLocalizer["ClickForLoginMessage"]
-                       
-                        <a asp-action="Login" asp-controller="Auth">
-                            @SharedLocalizer["LoginSignin"]
-                        </a>
+                            <mark>
+                                @SharedLocalizer["VerifyEmailConfirmMessage"]
+                            </mark>
+
+                            @SharedLocalizer["ClickForLoginMessage"]
+
+                            <a asp-action="Login" asp-controller="Auth">
+                                @SharedLocalizer["LoginSignin"]
+                            </a>
+
+                        </small>
                     </p>
+
 
                 </div>
 

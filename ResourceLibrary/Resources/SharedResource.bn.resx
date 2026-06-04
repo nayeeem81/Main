@@ -3125,6 +3125,18 @@
   <data name="PageNameVerifyEmailSent" xml:space="preserve">
     <value>যাচাইকরণ আপডেট</value>
   </data>
+  <data name="PageNameLogin" xml:space="preserve">
+    <value>লগ ইন </value>
+  </data>
+  <data name="PageNmaeRegister" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="PageNameRegistration" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>ইমেল ঠিকানার ফরম্যাট ঠিক নেই!</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3176,13 +3188,7 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
-  <data name="PageNameLogin" xml:space="preserve">
-    <value>লগ ইন </value>
-  </data>
-  <data name="PageNmaeRegister" xml:space="preserve">
-    <value>নিবন্ধন করুন</value>
-  </data>
-  <data name="PageNameRegistration" xml:space="preserve">
-    <value>নিবন্ধন করুন</value>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>রিসেট</value>
   </data>
 </root>

@@ -3174,12 +3174,6 @@
   <data name="PageNameVerifyEmailSent" xml:space="preserve">
     <value>Verification Update</value>
   </data>
-  <data name="BDT3" xml:space="preserve">
-    <value>BDT</value>
-  </data>
-  <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
-    <value>Not Urgent Deal</value>
-  </data>
   <data name="PageNameLogin" xml:space="preserve">
     <value>Log in</value>
   </data>
@@ -3188,5 +3182,17 @@
   </data>
   <data name="PageNameRegistration" xml:space="preserve">
     <value>Register</value>
+  </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>Email address format is not valid!</value>
+  </data>
+  <data name="BDT3" xml:space="preserve">
+    <value>BDT</value>
+  </data>
+  <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
+    <value>Not Urgent Deal</value>
+  </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>Reset Password</value>
   </data>
 </root>
