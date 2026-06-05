@@ -62,8 +62,8 @@ jobs:
         file: Main.WebAppCore/Dockerfile
         push: true
         tags: |
-          ghcr.io/${{ env.REPO_LOWER }}/main-webapp:latest
-          ghcr.io/${{ env.REPO_LOWER }}/main-webapp:${{ env.VERSION }}
+          ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:latest
+          ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
 
     # 8. Compile a zip package of raw binaries as a fallback release artifact
     - name: Publish Raw Binaries
@@ -81,7 +81,7 @@ jobs:
         body: |
           Automated release compiled from merge to master branch.
           
-          **Docker Image URI:** `ghcr.io/${{ env.REPO_LOWER }}/main-webapp:${{ env.VERSION }}`  # <-- Fixed to use REPO_LOWER
+          **Docker Image URI:** `ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}`  # <-- Fixed to use REPO_LOWER
         draft: false
         prerelease: false
         files: release-package.zip
