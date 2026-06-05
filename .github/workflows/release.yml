@@ -44,12 +44,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    # NEW STEP: Convert repository name to lowercase to satisfy Docker requirements
+    - name: Downcase Repository Name
+      run: |
+        echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
     # 6. Generate a unique version tag based on build number
     - name: Generate Version Tag
       id: vars
       run: echo "VERSION=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
-    # 7. Build the single container and push it to GHCR
+    # 7. Build the single container and push it to GHCR (Using the lowercase variable)
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
@@ -57,8 +62,8 @@ jobs:
         file: Main.WebAppCore/Dockerfile
         push: true
         tags: |
-          ghcr.io/${{ github.repository }}/main-webapp:latest
-          ghcr.io/${{ github.repository }}/main-webapp:${{ env.VERSION }}
+          ghcr.io/${{ env.REPO_LOWER }}/main-webapp:latest
+          ghcr.io/${{ env.REPO_LOWER }}/main-webapp:${{ env.VERSION }}
 
     # 8. Compile a zip package of raw binaries as a fallback release artifact
     - name: Publish Raw Binaries
