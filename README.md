@@ -110,4 +110,6 @@ Install-Package Microsoft.EntityFrameworkCore.Design -Version 8.0.0
 2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
 3. Zero use of EF core packages and references in the web project.
 
+# Github Action (Release.yml) & Docker file (Continuous Integration)
+
 
