@@ -21,7 +21,7 @@ public static class AuthExtensions
         return string.Compare ( password,rePassword,StringComparison.Ordinal ) == 0;
     }
 
-    public static UserAccountDataModel MapToDataModel ( AccountDisplayViewModel accountDisplayViewModel )
+    public static UserAccountDataModel MapToDataModel ( RegistrationViewModel accountDisplayViewModel )
     {
         UserAccountDataModel userAccountDataModel
             = new UserAccountDataModel();

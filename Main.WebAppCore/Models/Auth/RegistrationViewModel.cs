@@ -3,15 +3,10 @@ using ResourceLibrary.Resources;
 
 namespace WebApp.ViewModel;
 
-public class AccountDisplayViewModel: BaseViewModel
+public class RegistrationViewModel: BaseViewModel
 {
-    public AccountDisplayViewModel ( )
+    public RegistrationViewModel ( )
     {
-    }
-
-    public AccountDisplayViewModel ( string pageName)
-    {
-        PageName = pageName;
     }
 
     [Required ( ErrorMessageResourceName = "UserNameRequired",ErrorMessageResourceType = typeof ( SharedResource ) )]

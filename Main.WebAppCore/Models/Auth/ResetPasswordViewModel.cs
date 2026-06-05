@@ -1,12 +1,12 @@
 ﻿using ResourceLibrary.Resources;
-
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.ViewModel;
 
 public class ResetPasswordViewModel : BaseViewModel
 {
-    public ResetPasswordViewModel() {
+    public ResetPasswordViewModel() 
+    {
         PageName = "Reset Password";
     }
 

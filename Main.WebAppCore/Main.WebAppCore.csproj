@@ -122,4 +122,10 @@
     <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Area.AdminPost\" />
+    <Folder Include="Models\Area.Product\" />
+    <Folder Include="Models\Area.Page\" />
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,7 @@
 ﻿@model ForgotPasswordViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 @{
-    ViewBag.Title = SharedLocalizer["PageNameForgotPasswordResetInit"];
+    ViewBag.Title = SharedLocalizer["PageNameResetEmail"];
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -22,7 +21,7 @@
 
                     <h4 class="card-title all-caps">
 
-                        @SharedLocalizer["ForgetPasswordInitPageTitle"]
+                        @SharedLocalizer["ResetPasswordTitle"]
 
                     </h4>
 
@@ -32,9 +31,11 @@
 
             <div class="gap"></div>
 
-            <form asp-action="ForgotPassword" method="post">
+            <form id="resetEmailForm" asp-action="ResetEmail" method="post">
 
                 @Html.AntiForgeryToken( )
+
+                @Html.HiddenFor( m => m.PageName )
 
                 <div class="row">
 
@@ -75,5 +76,13 @@
 @section scriptsapp {
 
     @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
+
+    <script>
+
+        $(function() {
+            $("#resetEmailForm").valid();
+        });
+
+    </script>
 
 }

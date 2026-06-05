@@ -1,4 +1,4 @@
-﻿namespace FineArtsWebApp;
+﻿namespace WebApp.ViewModel;
 
 public class UserModel
 {

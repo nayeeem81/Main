@@ -1,18 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-
+﻿
 namespace DataTransferModel;
 
-public class ResetPasswordDataModel
+public class ResetDataModel
 {
-    public ResetPasswordDataModel ( )                          
+    public ResetDataModel ( )                          
     {
-    }
-
-
-    public ResetPasswordDataModel ( string email, string token )
-    {
-        Email = email;
-        Token = token;
+        Subject = "Please, reset your password with this link.";
     }
 
     public string UserName
@@ -35,7 +28,7 @@ public class ResetPasswordDataModel
     public string Message { get; set; }
 
 
-    public string LinkUrl
+    public string ResetLink
     {
         get;
         set;

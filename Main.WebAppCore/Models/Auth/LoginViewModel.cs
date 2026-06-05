@@ -3,13 +3,13 @@ using ResourceLibrary.Resources;
 
 namespace WebApp.ViewModel;
 
-public class LoginDisplayViewModel: BaseViewModel
+public class LoginViewModel: BaseViewModel
 {
-    public LoginDisplayViewModel ( )
+    public LoginViewModel ( )
     {
     }
 
-    public LoginDisplayViewModel ( string pageName)
+    public LoginViewModel ( string pageName)
     {
         PageName = pageName;
     }

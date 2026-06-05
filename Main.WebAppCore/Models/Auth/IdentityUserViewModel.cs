@@ -1,8 +1,8 @@
 ﻿namespace WebApp.ViewModel;
 
-public class IdentityUserDisplayViewModel
+public class IdentityUserViewModel
 {
-    public IdentityUserDisplayViewModel ( ) { }
+    public IdentityUserViewModel ( ) { }
 
     public string UserId
     {

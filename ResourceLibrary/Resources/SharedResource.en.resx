@@ -1461,7 +1461,7 @@
   <data name="LoginEmail" xml:space="preserve">
     <value>Email :</value>
   </data>
-  <data name="LoginEnterCredentials" xml:space="preserve">
+  <data name="LoginTitle" xml:space="preserve">
     <value>LOG IN</value>
   </data>
   <data name="LoginFBNote" xml:space="preserve">
@@ -3033,7 +3033,7 @@
   <data name="ClientNamePlaceholder" xml:space="preserve">
     <value>Enter your name...</value>
   </data>
-  <data name="TitleRegisterPage" xml:space="preserve">
+  <data name="RegisterTitle" xml:space="preserve">
     <value>Register Account Here!</value>
   </data>
   <data name="UserNameRequired" xml:space="preserve">
@@ -3138,10 +3138,10 @@
   <data name="ResetPasswordConfirmMessage" xml:space="preserve">
     <value>Your password has been successfully updated.</value>
   </data>
-  <data name="EmailVerifyMessage" xml:space="preserve">
+  <data name="EmailVerifySentMessage" xml:space="preserve">
     <value>Please check email in your inbox or spam folder to verify your email and log in.</value>
   </data>
-  <data name="RegistrationUpdateMessageTitle" xml:space="preserve">
+  <data name="VerifyEmailSentTitle" xml:space="preserve">
     <value>Registration Update</value>
   </data>
   <data name="ResetPasswordCompleteTitle" xml:space="preserve">
@@ -3171,10 +3171,28 @@
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password</value>
   </data>
+  <data name="PageNameVerifyEmailSent" xml:space="preserve">
+    <value>Verification Update</value>
+  </data>
+  <data name="PageNameLogin" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="PageNmaeRegister" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="PageNameRegistration" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>Email address format is not valid!</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
+  </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>Reset Password</value>
   </data>
 </root>

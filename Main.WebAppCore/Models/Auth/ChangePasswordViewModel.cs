@@ -1,5 +1,4 @@
 ﻿using ResourceLibrary.Resources;
-
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApp.ViewModel;

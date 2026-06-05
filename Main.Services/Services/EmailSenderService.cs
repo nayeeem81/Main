@@ -54,7 +54,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
 
 
-    public async Task SendEmailVerificationAsync ( VerifyEmailDataModel verifyEmailDataModel )
+    public async Task SendEmailVerificationAsync ( VerifyDataModel verifyEmailDataModel )
     {
         string template 
             = @"
@@ -72,7 +72,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
         string populatedTemplate = template
                     .Replace("{{ Name }}", verifyEmailDataModel.UserName)
-                    .Replace("{{ LinkUrl }}", verifyEmailDataModel.LinkUrl ?? string.Empty);
+                    .Replace("{{ LinkUrl }}", verifyEmailDataModel.VerifyLink ?? string.Empty);
 
         await SendEmailAsync ( 
             verifyEmailDataModel.Email,
@@ -81,7 +81,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
     }
 
 
-    public async Task SendResetPasswordEmailAsync ( ResetPasswordDataModel resetEmailDataModel )
+    public async Task SendResetPasswordEmailAsync ( ResetDataModel resetEmailDataModel )
     {
         string template
             = @"
@@ -99,7 +99,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
         string populatedTemplate = template
                     .Replace("{{ Name }}", resetEmailDataModel.UserName)
-                    .Replace("{{ LinkUrl }}", resetEmailDataModel.LinkUrl ?? string.Empty);
+                    .Replace("{{ LinkUrl }}", resetEmailDataModel.ResetLink ?? string.Empty);
 
         await SendEmailAsync (
             resetEmailDataModel.Email,

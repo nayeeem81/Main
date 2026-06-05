@@ -1455,8 +1455,8 @@
   <data name="LoginEmail" xml:space="preserve">
     <value>ইমেইল:</value>
   </data>
-  <data name="LoginEnterCredentials" xml:space="preserve">
-    <value>লগইন:</value>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>লগইন</value>
   </data>
   <data name="LoginFBNote" xml:space="preserve">
     <value>দ্রষ্টব্য: লগইন / আপনার ফেসবুক একাউন্ট ব্যবহার করে সাইন আপ করুন, ফেসবুক বাটন অনুসরণ করে ক্লিক করুন</value>
@@ -2984,7 +2984,7 @@
   <data name="ClientNamePlaceholder" xml:space="preserve">
     <value>আপনার নাম লিখুন...</value>
   </data>
-  <data name="TitleRegisterPage" xml:space="preserve">
+  <data name="RegisterTitle" xml:space="preserve">
     <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>
   </data>
   <data name="UserNameRequired" xml:space="preserve">
@@ -3089,10 +3089,10 @@
   <data name="ResetPasswordConfirmMessage" xml:space="preserve">
     <value>আপনার পাসওয়ার্ড সফলভাবে আপডেট করা হয়েছে।</value>
   </data>
-  <data name="EmailVerifyMessage" xml:space="preserve">
+  <data name="EmailVerifySentMessage" xml:space="preserve">
     <value>আপনার ইমেল যাচাই করতে এবং লগ ইন করতে অনুগ্রহ করে আপনার ইনবক্স বা স্প্যাম ফোল্ডার দেখুন।</value>
   </data>
-  <data name="RegistrationUpdateMessageTitle" xml:space="preserve">
+  <data name="VerifyEmailSentTitle" xml:space="preserve">
     <value>নিবন্ধন আপডেট</value>
   </data>
   <data name="ResetPasswordCompleteTitle" xml:space="preserve">
@@ -3121,6 +3121,21 @@
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>পাসওয়ার্ড নিশ্চিত করুন</value>
+  </data>
+  <data name="PageNameVerifyEmailSent" xml:space="preserve">
+    <value>যাচাইকরণ আপডেট</value>
+  </data>
+  <data name="PageNameLogin" xml:space="preserve">
+    <value>লগ ইন </value>
+  </data>
+  <data name="PageNmaeRegister" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="PageNameRegistration" xml:space="preserve">
+    <value>নিবন্ধন করুন</value>
+  </data>
+  <data name="InvalidEmailFormat" xml:space="preserve">
+    <value>ইমেল ঠিকানার ফরম্যাট ঠিক নেই!</value>
   </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
@@ -3172,5 +3187,8 @@
   </data>
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
+  </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>রিসেট</value>
   </data>
 </root>

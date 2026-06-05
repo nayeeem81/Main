@@ -1,16 +1,10 @@
 ﻿namespace DataTransferModel;
 
-public class VerifyEmailDataModel
+public class VerifyDataModel
 {
-    public VerifyEmailDataModel ( )                          
+    public VerifyDataModel ( )                          
     {
-    }
-
-
-    public VerifyEmailDataModel ( string email, string token )
-    {
-        Email = email;
-        Token = token;
+        Subject = "Please, first Verify Your Email to Login.";
     }
 
     public string UserName { get; set; } 
@@ -31,7 +25,7 @@ public class VerifyEmailDataModel
     public string Message { get; set; }
 
 
-    public string LinkUrl
+    public string VerifyLink
     {
         get;
         set;

@@ -1,7 +1,7 @@
-﻿@model AccountDisplayViewModel
+﻿@model RegistrationViewModel
 
 @{
-    ViewBag.Title = Model.PageName;
+    ViewBag.Title = SharedLocalizer["PageNameRegister"];
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -19,9 +19,8 @@
                     col-xs-12
                     col-md-12
                     col-lg-12">
-                        
-                <h4 class="card-title all-caps"> @SharedLocalizer["TitleRegisterPage"] </h4>
 
+                         <h4 class="card-title all-caps"> @SharedLocalizer["RegisterTitle"] </h4>
                 </div>
             </div>
 

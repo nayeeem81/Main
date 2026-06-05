@@ -1834,11 +1834,11 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EmailVerifyMessage.
+        ///   Looks up a localized string similar to EmailVerifySentMessage.
         /// </summary>
-        public static string EmailVerifyMessage {
+        public static string EmailVerifySentMessage {
             get {
-                return ResourceManager.GetString("EmailVerifyMessage", resourceCulture);
+                return ResourceManager.GetString("EmailVerifySentMessage", resourceCulture);
             }
         }
         
@@ -2487,6 +2487,15 @@ namespace ResourceLibrary.Resources {
         public static string Inbox {
             get {
                 return ResourceManager.GetString("Inbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to InvalidEmailFormat.
+        /// </summary>
+        public static string InvalidEmailFormat {
+            get {
+                return ResourceManager.GetString("InvalidEmailFormat", resourceCulture);
             }
         }
         
@@ -3697,15 +3706,6 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter credentials:.
-        /// </summary>
-        public static string LoginEnterCredentials {
-            get {
-                return ResourceManager.GetString("LoginEnterCredentials", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to NOTE: To Login/Sign up using your Facebook account, please click following Facebook button:.
         /// </summary>
         public static string LoginFBNote {
@@ -3738,6 +3738,15 @@ namespace ResourceLibrary.Resources {
         public static string LoginSignin {
             get {
                 return ResourceManager.GetString("LoginSignin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter credentials:.
+        /// </summary>
+        public static string LoginTitle {
+            get {
+                return ResourceManager.GetString("LoginTitle", resourceCulture);
             }
         }
         
@@ -5884,11 +5893,38 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PageNameLogin.
+        /// </summary>
+        public static string PageNameLogin {
+            get {
+                return ResourceManager.GetString("PageNameLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PageNamePasswordResetEmailSent.
         /// </summary>
         public static string PageNamePasswordResetEmailSent {
             get {
                 return ResourceManager.GetString("PageNamePasswordResetEmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameRegistration.
+        /// </summary>
+        public static string PageNameRegistration {
+            get {
+                return ResourceManager.GetString("PageNameRegistration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameResetEmail.
+        /// </summary>
+        public static string PageNameResetEmail {
+            get {
+                return ResourceManager.GetString("PageNameResetEmail", resourceCulture);
             }
         }
         
@@ -5916,6 +5952,24 @@ namespace ResourceLibrary.Resources {
         public static string PageNameVerifyEmailConfirm {
             get {
                 return ResourceManager.GetString("PageNameVerifyEmailConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNameVerifyEmailSent.
+        /// </summary>
+        public static string PageNameVerifyEmailSent {
+            get {
+                return ResourceManager.GetString("PageNameVerifyEmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PageNmaeRegister.
+        /// </summary>
+        public static string PageNmaeRegister {
+            get {
+                return ResourceManager.GetString("PageNmaeRegister", resourceCulture);
             }
         }
         
@@ -6874,11 +6928,11 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to RegistrationUpdateMessageTitle.
+        ///   Looks up a localized string similar to Register Account Here!.
         /// </summary>
-        public static string RegistrationUpdateMessageTitle {
+        public static string RegisterTitle {
             get {
-                return ResourceManager.GetString("RegistrationUpdateMessageTitle", resourceCulture);
+                return ResourceManager.GetString("RegisterTitle", resourceCulture);
             }
         }
         
@@ -8224,15 +8278,6 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Register Account Here!.
-        /// </summary>
-        public static string TitleRegisterPage {
-            get {
-                return ResourceManager.GetString("TitleRegisterPage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to to .
         /// </summary>
         public static string To {
@@ -8733,6 +8778,15 @@ namespace ResourceLibrary.Resources {
         public static string VerifyEmailConfirmTitle {
             get {
                 return ResourceManager.GetString("VerifyEmailConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VerifyEmailSentTitle.
+        /// </summary>
+        public static string VerifyEmailSentTitle {
+            get {
+                return ResourceManager.GetString("VerifyEmailSentTitle", resourceCulture);
             }
         }
         

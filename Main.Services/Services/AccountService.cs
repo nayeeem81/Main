@@ -135,10 +135,7 @@ public class AccountService : IAccountService
        
         if ( success  && userIdentity != null)
         {
-            //await _userManager.ConfirmEmailAsync ( userIdentity, token );
-
-            userIdentity.EmailConfirmed = true;
-            await _userManager.UpdateAsync ( userIdentity );
+            await _userManager.ConfirmEmailAsync ( userIdentity, token );
 
             return true;
         }

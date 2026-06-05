@@ -2,7 +2,6 @@
 using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using WebApp.ViewModel;
 
 [Authorize ( Roles = "Admin" )]
@@ -25,14 +24,14 @@ public class AdminController: Controller
     {
         List<IdentityUserDataModel>? listIdentityUserDataModel = await _accountService.Users ( );
 
-        List<IdentityUserDisplayViewModel> listIdentityUserDisplayViewModels 
-            = new List<IdentityUserDisplayViewModel>();
+        List<IdentityUserViewModel> listIdentityUserDisplayViewModels 
+            = new List<IdentityUserViewModel>();
 
-        IdentityUserDisplayViewModel identityUserDisplayViewModel;
+        IdentityUserViewModel identityUserDisplayViewModel;
 
         listIdentityUserDataModel?.ForEach ( identityUserDataModel =>
         {
-            identityUserDisplayViewModel = new IdentityUserDisplayViewModel
+            identityUserDisplayViewModel = new IdentityUserViewModel
             {
                 UserId = identityUserDataModel.UserId,
                 UserName = identityUserDataModel.UserName,

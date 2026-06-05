@@ -1,9 +1,6 @@
-﻿@model LoginDisplayViewModel
-
-@inject IStringLocalizer<SharedResource> SharedLocalizer
-
+﻿@model LoginViewModel
 @{
-    ViewBag.Title = Model.PageName;
+    ViewBag.Title = SharedLocalizer["PageNameLogin"];  
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 
@@ -22,7 +19,7 @@
 
                 <h4 class="card-title all-caps">
 
-                    @SharedLocalizer["LoginEnterCredentials"]
+                    @SharedLocalizer["LoginTitle"]
 
                 </h4>
 
@@ -75,7 +72,7 @@
                             col-xs-12 
                             col-lg-12">
 
-                    <a href="@Url.Action( "ForgotPasswordResetInit","Auth" )">
+                        <a href="@Url.Action( "ResetEmail","Auth" )">
 
                         @SharedLocalizer["ResetPasswordAncorLinkText"]
 
