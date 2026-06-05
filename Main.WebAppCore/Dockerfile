@@ -9,7 +9,7 @@ COPY ["Main.Infrastructure/Main.Infrastructure.csproj", "Main.Infrastructure/"]
 COPY ["Main.Model/Main.Model.csproj", "Main.Model/"]
 COPY ["Main.Common/Main.Common.csproj", "Main.Common/"]
 COPY ["ResourceLibrary/ResourceLibrary.csproj", "ResourceLibrary/"]
-COPY ["*.sln", "./"]
+COPY ["*.sln", "Main.WebAppCore/"]
 
 # Restore dependencies for the entire solution layout
 RUN dotnet restore
