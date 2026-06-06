@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class AdminPostViewModel : BaseViewModel
 {
@@ -58,6 +58,7 @@ public class AdminPostViewModel : BaseViewModel
 
     public IEnumerable<SelectListItem> AV_PostType { get; set; }
 
+
     [Display(Name = "Post Type")]
-    public string? EnumAdminPostTypeDescription { get; set; } 
+    public string? DisplayEnumAdminPostType { get; set; } 
 }

@@ -1,4 +1,4 @@
-﻿namespace WebApp.ViewModel;
+﻿namespace WebAppCore.ViewModel;
 
 public class AdminImageFileViewModel : BaseViewModel
 {

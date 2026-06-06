@@ -1,5 +1,4 @@
 ﻿@model AdminPostViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 <div id="newAdminPostContainerPartial" class="card-form row">
 
@@ -15,7 +14,6 @@
        
         @Html.AntiForgeryToken()
         @Html.HiddenFor(a => a.PageName)
-        @Html.HiddenFor(a => a.ModelBase)
 
         <h4 class="card-subtitle">Post Information</h4>
 

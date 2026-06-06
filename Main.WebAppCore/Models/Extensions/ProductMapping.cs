@@ -2,7 +2,7 @@
 using Domain.Model;
 using Main.Common.Enums;
 
-namespace WebApp.ViewModel.Extensions;
+namespace WebAppCore.ViewModel.Extensions;
 
 public static class ProductMapping
 {

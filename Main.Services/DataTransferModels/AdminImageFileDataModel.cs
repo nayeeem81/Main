@@ -1,19 +1,32 @@
 ﻿namespace DataTransferModel;
 
-public class AdminImageFileDataModel : DataModel
+public class ImageFile
 {
-    public AdminImageFileDataModel()
+    public ImageFile ( )
     {
     }
 
-    public AdminImageFileDataModel ( byte[] imageFileContent )
+    public ImageFile ( byte[] fileContent)
     {
-        ImageFileContent = imageFileContent;
+        FileContent = fileContent;
+        IsNew = true;
+        FileID += 1;
+        PostID = null;
     }
 
-    public int AdminImageFileID { get; set; }
+    public ImageFile ( byte[] fileContent, int? postId, int fileId )
+    {
+        FileContent = fileContent;
+        IsNew = false;
+        FileID = fileId;
+        PostID = postId;
+    }
+
+    public int FileID { get; set; } = 0;
    
-    public byte[] ImageFileContent { get; set; }
+    public byte[] FileContent { get; set; }
    
-    public int AdminPostID { get; set; }
+    public int? PostID { get; set; }
+
+    public bool IsNew { get; set; }
 }

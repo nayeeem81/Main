@@ -1,117 +1,111 @@
 ﻿using DataTransferModel;
-using Domain.Model;
 using Main.Common.Enums;
+using WebAppCore.ViewModel;
 
-namespace WebApp.ViewModel.Extensions;
+namespace WebAppCore.ViewModel.Extensions;
 
 public static class AdminPostMapping
 {
-    public static AdminPostDataModel MapAdminPostDataModel ( AdminPost postEntity )
+    public static AdminPostDataModel MapAdminPostDataModel ( AdminPostViewModel adminPostViewModel )
     {
-        if ( postEntity == null )
+        if ( adminPostViewModel == null )
         {
             return new AdminPostDataModel ( );
         }
 
-        List<AdminImageFileDataModel> objDMListFiles
-            = new List<AdminImageFileDataModel>();
-
-
-        if ( postEntity.ListAdminImageFiles != null
-                    && postEntity.ListAdminImageFiles.Count > 0 )
+        AdminPostDataModel adminPostDataModel = new AdminPostDataModel()
         {
-            postEntity.ListAdminImageFiles.ToList ( ).ForEach ( fileEntity =>
-            {
-                AdminImageFileDataModel objFileDM = new AdminImageFileDataModel()
-                {
-                    AdminImageFileID = fileEntity.AdminImageFileID,
-                    ImageFileContent = fileEntity.ImageFileContent,
-                    AdminPostID = fileEntity.AdminPostID
-                };
-
-                objDMListFiles.Add ( objFileDM );
-            } );
-        }
-
-
-        List<AdminPostCommentDataModel> objDMListComments
-            = new List<AdminPostCommentDataModel>();
-
-
-        if ( postEntity.ListAdminPostComments != null
-            && postEntity.ListAdminPostComments.Count > 0 )
-        {
-
-            postEntity.ListAdminPostComments.ToList ( ).ForEach ( commentEntity =>
-            {
-
-                AdminPostCommentDataModel objCommentDM = new AdminPostCommentDataModel()
-                {
-                    AdminPostCommentID = commentEntity.AdminPostCommentID,
-                    Comment = commentEntity.Comment,
-                    AdminPostID = commentEntity.AdminPostID
-                };
-
-                objDMListComments.Add ( objCommentDM );
-
-            } );
-        }
-
-        AdminPostDataModel objDataModel = new AdminPostDataModel()
-        {
-            AdminPostID = postEntity.AdminPostID,
-            PosterName = postEntity.PosterName,
-            PostTitle = postEntity.Title,
-            PosterContactNumber = postEntity.PosterContactNumber,
-            WebsiteUrl = postEntity.WebsiteUrl,
-            ShortNote = postEntity.ShortNote,
-            SearchTag = postEntity.SearchTag,
-            UserID = postEntity.UserID,
-            PostTypeID = (int)postEntity.PostType,
-            ListAdminPostFileImages = objDMListFiles,
-            ListAdminPostComments = objDMListComments
-            
+            AdminPostID = adminPostViewModel.AdminPostID,
+            PosterName = adminPostViewModel.PosterName,
+            PostTitle = adminPostViewModel.PostTitle,
+            PosterContactNumber = adminPostViewModel.PosterContactNumber,
+            WebsiteUrl = adminPostViewModel.WebsiteUrl,
+            ShortNote = adminPostViewModel.ShortNote,
+            SearchTag = adminPostViewModel.SearchTag,
+            UserID = adminPostViewModel.UserID,
+            PostTypeID = (int)adminPostViewModel.PostTypeID
         };
 
-        return objDataModel;
+        return adminPostDataModel;
     }
 
-    public static AdminPostDataModel MapAdminPostDataModel (AdminPostViewModel objAdminPostVM)
+    public static List<AdminImageFileDataModel> MapAdminFileDataModel(AdminPostViewModel adminFileViewModel)
     {
-        return new AdminPostDataModel()
-        {
-            PosterName = objAdminPostVM.PosterName,
-            PostTitle = objAdminPostVM.PostTitle,
-            PostTypeID = objAdminPostVM.PostTypeID,
-            WebsiteUrl = objAdminPostVM.WebsiteUrl,
-            SearchTag = objAdminPostVM.SearchTag,
-            ShortNote = objAdminPostVM.ShortNote,
-            ListAdminPostFileImages = new List<AdminImageFileDataModel>(),
-            ListAdminPostComments = new List<AdminPostCommentDataModel>(),
-            PosterContactNumber = objAdminPostVM.PosterContactNumber 
-        };
-    }
+        List<AdminImageFileDataModel> listAdminImageFileDataModel = new List<AdminImageFileDataModel>();
 
-    public static List<AdminImageFileDataModel> MapAdminFileDataModel(AdminPostViewModel adminFileVM)
-    {
-        List<AdminImageFileDataModel> objListFileDM = new List<AdminImageFileDataModel>();
-        adminFileVM.ListAdminPostFileImages.ForEach(fileVM =>
+        adminFileViewModel.ListAdminPostFileImages.ForEach(fileViewModel =>
         {
-            objListFileDM.Add(new AdminImageFileDataModel ( fileVM.ImageFileContent));
+            listAdminImageFileDataModel.Add(new AdminImageFileDataModel ( fileViewModel.ImageFileContent));
         });
-        return objListFileDM;
+
+        return listAdminImageFileDataModel;
     }
 
-    public static void MapAdminPostViewModel(AdminPostDataModel postDM, AdminPostViewModel postViewModel)
+    public static void MapAdminPostViewModel(AdminPostDataModel adminPostDatatModel, AdminPostViewModel adminPostViewModel)
     {
-        postViewModel.AdminPostID = postDM.AdminPostID;
-        postViewModel.PostTitle = postDM.PostTitle;
-        postViewModel.PosterContactNumber = postDM.PosterContactNumber;
-        postViewModel.PosterName = postDM.PosterName;
-        postViewModel.WebsiteUrl = postDM.WebsiteUrl;
-        postViewModel.PostTypeID = postDM.PostTypeID;
-        postViewModel.SearchTag = postDM.SearchTag;
-        postViewModel.ShortNote = postDM.ShortNote;
-        postViewModel.EnumAdminPostTypeDescription = EnumDescription.GetDescription((EnumPostType) postDM.PostTypeID);
+        adminPostViewModel.AdminPostID = adminPostDatatModel.AdminPostID;
+        adminPostViewModel.PostTitle = adminPostDatatModel.PostTitle;
+        adminPostViewModel.PosterContactNumber = adminPostDatatModel.PosterContactNumber;
+        adminPostViewModel.PosterName = adminPostDatatModel.PosterName;
+        adminPostViewModel.WebsiteUrl = adminPostDatatModel.WebsiteUrl;
+        adminPostViewModel.PostTypeID = adminPostDatatModel.PostTypeID;
+        adminPostViewModel.SearchTag = adminPostDatatModel.SearchTag;
+        adminPostViewModel.ShortNote = adminPostDatatModel.ShortNote;
+        adminPostViewModel.DisplayEnumAdminPostType = EnumDescription.GetDescription((EnumPostType) adminPostDatatModel.PostTypeID);
+    }
+
+    public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList ( List<AdminPostDisplayModel> adminPostDisplayModelList )
+    {
+        var displayViewModels = new List<AdminPostDisplayViewModel>();
+
+        foreach (var model in adminPostDisplayModelList)
+        {
+            displayViewModels.Add(new AdminPostDisplayViewModel
+            {
+                AdminPostID = model.AdminPostID,
+                PosterName = model.PosterName,
+                PostTitle = model.PostTitle,
+                UserID = model.UserID,
+                PostTypeID = model.PostTypeID,
+                DiispayPostType = EnumDescription.GetDescription((EnumPostType) model.PostTypeID),
+                HostCompanyName = model.HostCompanyName,
+                DiispayCompanyName = EnumDescription.GetDescription(model.HostCompanyName)
+            });
+        }
+
+        return displayViewModels;
+    }
+
+    public static List<AdminImageFileViewModel> MapAdminImageFileViewModelList ( List<AdminImageFileDataModel> adminImageFileList )
+    {
+        var imageFileViewModels = new List<AdminImageFileViewModel>();
+
+        foreach (var model in adminImageFileList)
+        {
+            imageFileViewModels.Add(new AdminImageFileViewModel
+            {
+                ImageFileContent = model.ImageFileContent,
+                AdminImageFileID = model.AdminImageFileID,
+                AdminPostID = model.AdminPostID
+            });
+        }
+
+        return imageFileViewModels;
+    }
+
+    public static List<AdminImageFileViewModel> GetAdminPostViewModelImages ( List<AdminImageFileDataModel> listAdminPostFileImages )
+    {
+        var imageFileViewModels = new List<AdminImageFileViewModel>();
+
+        listAdminPostFileImages.ForEach ( imgFile =>
+        {
+            imageFileViewModels.Add ( new AdminImageFileViewModel
+            {
+                AdminImageFileID = imgFile.AdminImageFileID,
+                ImageFileContent = imgFile.ImageFileContent
+            } );
+        } );
+
+        return imageFileViewModels;
     }
 }

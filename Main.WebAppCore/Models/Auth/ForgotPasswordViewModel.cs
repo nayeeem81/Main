@@ -1,7 +1,7 @@
 ﻿using ResourceLibrary.Resources;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class ForgotPasswordViewModel : BaseViewModel
 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ResourceLibrary.Resources;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class RegistrationViewModel: BaseViewModel
 {

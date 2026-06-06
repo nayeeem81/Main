@@ -1,8 +1,7 @@
 ﻿using Main.Common.Enums;
 using Main.Common.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
-using WebApp.ViewModel;
+using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore;
 

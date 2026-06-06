@@ -3,7 +3,7 @@ using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class PageContentViewModel: BaseViewModel
 {

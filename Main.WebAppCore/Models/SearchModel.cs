@@ -1,4 +1,4 @@
-﻿namespace FineArtsWebApp;
+﻿namespace WebAppCore.ViewModel;
 
 public class SearchModel
 {

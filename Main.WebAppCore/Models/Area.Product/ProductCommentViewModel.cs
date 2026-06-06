@@ -1,5 +1,5 @@
 ﻿
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class ProductCommentViewModel : BaseViewModel
 {

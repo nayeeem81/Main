@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
 using FineArtsWebApp;
 using System.Text.Json;
-using WebApp.ViewModel;
+using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore;
 
@@ -145,62 +145,75 @@ public partial class BaseController
 
     #endregion
 
-    #region Admin Post Image Session
-    protected void SetSessionNewAdminPostImage( AdminImageFileDataModel file )
+   
+    protected void SetSessionImageFile( ImageFile imageFile )
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
-        if (list != null)
+        List<ImageFile>? listImageFile = SessionExtensions.GetObject<List<ImageFile>> (
+            HttpContext.Session, "ImageFileList");
+
+        if ( listImageFile == null )
         {
-            int count = list.Count;
-            count = count + 1;
-            file.AdminImageFileID = count;
-            list.Add(file);
-            SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", list);
+            imageFile.FileID = 1;
+            List<ImageFile> objListFiles = new List<ImageFile>();
+            objListFiles.Add ( imageFile );
+
+            SessionExtensions.SetObject<List<ImageFile>>
+                ( HttpContext.Session,"ImageFileList",objListFiles );
         }
-        else
-        {
-            file.AdminImageFileID = 1;
-            List<AdminImageFileDataModel> objListFiles = new List<AdminImageFileDataModel>();
-            objListFiles.Add(file);
-            SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", objListFiles);
-        }
+
+
+        int listLength = listImageFile!.Count;
+        imageFile.FileID = listLength + 1;
+        listImageFile.Add(imageFile);
+
+        SessionExtensions.SetObject<List<ImageFile>>
+            (HttpContext.Session, "ImageFileList", listImageFile);
     }
 
-    protected List<AdminImageFileDataModel> GetSessionNewAdminPostImage()
+    protected List<ImageFile> GetAllSessionImages()
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
-        if (list != null)
+        List<ImageFile>? listImageFiles = SessionExtensions.GetObject<List<ImageFile>>(
+            HttpContext.Session, "ImageFileList");
+        
+        if (listImageFiles != null)
         {
-            return list.ToList();
+            return listImageFiles.ToList();
         }
-        else
-        {
-            return new List<AdminImageFileDataModel>();
-        }
+            
+        return new List<ImageFile> ();
     }
 
-    protected bool RemoveSessionNewAdminPostImage(long id)
+    protected bool RemoveSessionImageFile(int iageFileId)
     {
-        var list = SessionExtensions.GetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList");
-        if (list != null)
+        List<ImageFile>? listImageFiles = SessionExtensions.GetObject<List<ImageFile>>
+                                (HttpContext.Session, "ImageFileList");
+
+        if ( listImageFiles == null )
         {
-            var obj = list.Where(a => a.AdminImageFileID == id).FirstOrDefault();
-            if (obj != null)
-            {
-                list.Remove(obj);
-                SessionExtensions.SetObject<List<AdminImageFileDataModel>>(HttpContext.Session, "NewAdminPostImageList", list);
-                return true;
-            }
+            return false;
         }
-        return false;
+            
+        ImageFile? imageFile = listImageFiles.Where(a => a.FileID == iageFileId)
+                                             .FirstOrDefault();
+
+        if ( imageFile == null )
+        {
+            return false;
+        }
+        
+        listImageFiles.Remove(imageFile);
+
+        SessionExtensions.SetObject<List<ImageFile>>
+            (HttpContext.Session, "ImageFileList", listImageFiles);
+
+        return true;
+        
     }
 
-    protected void ClearNewAdminPostImageSessions()
+    protected void ClearImageFileListSession ( )
     {
-        HttpContext.Session.Remove("NewAdminPostImageList");
-    }
-    #endregion
-
+        HttpContext.Session.Remove( "ImageFileList" );
+    }  
 }
 
 

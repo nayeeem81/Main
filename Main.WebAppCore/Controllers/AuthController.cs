@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 using System.Security.Claims;
-using WebApp.ViewModel;
-using WebApp.ViewModel.Extensions;
+using WebAppCore.ViewModel;
+using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore;
 

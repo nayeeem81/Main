@@ -8,11 +8,16 @@ public class MyConfigSettings
 
     public EnumCompanyName EnumCompanyName { get; set; } 
 
-    public EnumCategoryFor EnumCategoryFor { get; set; }
-
     public EnumCurrency EnumCurrency { get; set; } 
 
     public int SeedUserId { get; set; }
+
+    public int MaxImageFileSize { get; set; }
+
+    public EnumCategoryFor EnumCategoryFor
+    {
+        get; set;
+    }
 }
 
 public static class AppSettings

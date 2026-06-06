@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <Compile Remove="Area.Data\**" />
-    <Compile Remove="Areas\**" />
+    <Compile Remove="Areas\CompanyContent\**" />
+    <Compile Remove="Areas\Identity\**" />
+    <Compile Remove="Areas\PageContent\**" />
     <Compile Remove="Service\**" />
     <Compile Remove="Views\Account\**" />
     <Compile Remove="Views\Shared\DesktopPostType\**" />
@@ -29,7 +31,9 @@
     <Compile Remove="Views\Shared\HomeSpecialDayBanner\**" />
     <Compile Remove="Views\Shared\ProductTemplates\**" />
     <Content Remove="Area.Data\**" />
-    <Content Remove="Areas\**" />
+    <Content Remove="Areas\CompanyContent\**" />
+    <Content Remove="Areas\Identity\**" />
+    <Content Remove="Areas\PageContent\**" />
     <Content Remove="Service\**" />
     <Content Remove="Views\Account\**" />
     <Content Remove="Views\Shared\DesktopPostType\**" />
@@ -39,7 +43,9 @@
     <Content Remove="Views\Shared\HomeSpecialDayBanner\**" />
     <Content Remove="Views\Shared\ProductTemplates\**" />
     <EmbeddedResource Remove="Area.Data\**" />
-    <EmbeddedResource Remove="Areas\**" />
+    <EmbeddedResource Remove="Areas\CompanyContent\**" />
+    <EmbeddedResource Remove="Areas\Identity\**" />
+    <EmbeddedResource Remove="Areas\PageContent\**" />
     <EmbeddedResource Remove="Service\**" />
     <EmbeddedResource Remove="Views\Account\**" />
     <EmbeddedResource Remove="Views\Shared\DesktopPostType\**" />
@@ -49,7 +55,9 @@
     <EmbeddedResource Remove="Views\Shared\HomeSpecialDayBanner\**" />
     <EmbeddedResource Remove="Views\Shared\ProductTemplates\**" />
     <None Remove="Area.Data\**" />
-    <None Remove="Areas\**" />
+    <None Remove="Areas\CompanyContent\**" />
+    <None Remove="Areas\Identity\**" />
+    <None Remove="Areas\PageContent\**" />
     <None Remove="Service\**" />
     <None Remove="Views\Account\**" />
     <None Remove="Views\Shared\DesktopPostType\**" />
@@ -123,7 +131,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Area.AdminPost\" />
     <Folder Include="Models\Area.Product\" />
     <Folder Include="Models\Area.Page\" />
   </ItemGroup>

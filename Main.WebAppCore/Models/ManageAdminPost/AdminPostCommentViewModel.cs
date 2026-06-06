@@ -1,5 +1,4 @@
-﻿namespace WebApp.ViewModel;
-
+﻿namespace WebAppCore.ViewModel;
 public class AdminPostCommentViewModel : BaseViewModel
 {
     public AdminPostCommentViewModel()
