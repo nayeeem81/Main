@@ -54,5 +54,4 @@ public interface IUserContext
 
     BaseDataModel GetUpdateBaseDataModel ( );
 
-
 }

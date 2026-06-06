@@ -10,10 +10,13 @@ public class ProductComment : BaseEntity
     [Key] 
     public int ProductCommentID { get; set; }
 
+
     [Required]
     public string Comment { get; set; }
 
+
     public int ProductID { get; set; }
+
 
     [ForeignKey("ProductID")]
     public virtual Product Product { get; set; }

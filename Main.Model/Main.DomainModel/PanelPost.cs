@@ -49,12 +49,15 @@ public class PanelPost : BaseEntity
 
     public string? PostDescription { get; set; }
 
+
     public void SetOptions( string description )
     {
         PostDescription = description;
     }
 
+
     public decimal? Price { get; set; }
+
 
     public void SetOptions(EnumPostType enumPostType, decimal price)
     {
@@ -66,6 +69,7 @@ public class PanelPost : BaseEntity
 
     public string? WebsiteUrl { get; set; }
 
+
     public void SetUrl(string url)
     {
         WebsiteUrl = url;
@@ -73,6 +77,7 @@ public class PanelPost : BaseEntity
 
     [Required]
     public int PanelID { get; set; }
+
 
     [ForeignKey("PanelID")]
     public virtual PagePanel? PagePanel { get; set; }

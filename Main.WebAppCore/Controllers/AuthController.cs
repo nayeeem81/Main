@@ -231,7 +231,7 @@ public class AuthController: BaseController
 
        
         await _userManager.AddClaimAsync ( userIdentity,new ( ClaimTypes.NameIdentifier,
-            userID.ToString ( ) ) );
+            userIdentity.Id.ToString ( ) ) );
     }
 
 

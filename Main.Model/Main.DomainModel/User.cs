@@ -5,7 +5,8 @@ namespace Domain.Model;
 
 public class User : BaseEntity
 {                
-    public User() {
+    public User() 
+    {
     }
 
     public User(string identityUserID,
@@ -14,16 +15,17 @@ public class User : BaseEntity
                 EnumCountry country, 
                 EnumCompanyName company)
     {
-        IdentityUserID = identityUserID;
         Email = email;
         ClientName = clientName;
         HostCompanyName = company;
         HostCountry = country;
 
-        CreatedBy = 1; //Admin (Hard Coded Seed Data)
-        ModifiedBy = 1; //Admin  (Hard Coded Seed Data)
+        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1"; //Admin 
+        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1"; //Admin 
         CreatedDate = DateTime.Now;
         ModifiedDate = DateTime.Now;
+
+        IdentityUserId = identityUserID; 
     }
 
     //Seed Data Constructor
@@ -31,39 +33,44 @@ public class User : BaseEntity
                 string email,
                 string clientName)
     {
-        IdentityUserID = identityUserID;
         Email = email;
         ClientName = clientName;
         
-        ModifiedBy = 1;
-        CreatedBy = 1;
+        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
+        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedDate = DateTime.MinValue;
         ModifiedDate = DateTime.MinValue;
 
         HostCountry = EnumCountry.Bangladesh;
         HostCompanyName = EnumCompanyName.FineArts;
         IsActive = true;
+
+        IdentityUserId = identityUserID;
     }
     
     
     [Key]
-    public int UserID { get; set; }
+    public int Id { get; set; }
 
-    [Required]
-    public string IdentityUserID { get; set; }
 
     [Required]
     public EnumAccountType UserAccountType { get; set; }
 
+
     public string ClientName { get; set; }
+
 
     public string Email { get; set; }
 
+
     public string? Website { get; set; }
+
 
     public string? Phone { get; set; }
 
+
     public string? Remarks { get; set; }
+
 
     public double? AccountBalance { get; set; }
 }

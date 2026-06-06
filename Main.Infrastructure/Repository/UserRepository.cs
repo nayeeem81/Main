@@ -23,7 +23,7 @@ public class UserRepository : IUserRepository
             await _Context.SaveChangesAsync();
         }
 
-        return ( user != null ? user.UserID : 0 );
+        return ( user != null ? user.Id : 0 );
     }
 
     public async Task<User?> GetSingleUser(string email)
@@ -40,13 +40,13 @@ public class UserRepository : IUserRepository
             return null;
 
         return await _Context.Users.FirstOrDefaultAsync<User> 
-                        (a => a.IdentityUserID == identityUserId);
+                        (a => a.IdentityUserId == identityUserId);
     }
 
     public async Task<User?> GetSingleUser(int userID)
     {
         var userEntity = await _Context.Users.FirstOrDefaultAsync<User>
-                                             (a => a.UserID == userID);
+                                             (a => a.Id == userID);
 
         return userEntity;
     }

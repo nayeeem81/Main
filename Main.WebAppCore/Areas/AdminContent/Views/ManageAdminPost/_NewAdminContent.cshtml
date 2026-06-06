@@ -20,14 +20,11 @@
             <div class="gap"></div>
 
             <form id="myMainForm" 
-                  asp-action="@Url.Action( "SaveNewAdminContent","ManageAdminPost" )"
-                  asp-controller="ManageAdminPost"
-                  asp-area="AdminContent"
-                  method="post">
+                  action="@Url.Action( "SaveNewAdminContent","ManageAdminPost" )"
+                  method="POST">
        
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(a => a.PageName)
-                @Html.HiddenFor( a => a.AdminPostID )
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     <h4 class="card-subtitle all-caps">Post Information</h4>

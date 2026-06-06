@@ -45,10 +45,10 @@ public class UserContext: IUserContext
 
         TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
 
-        return TimeZoneInfo.ConvertTimeFromUtc ( DateTime.UtcNow,userTimeZone );
+        return TimeZoneInfo.ConvertTimeFromUtc ( DateTime.UtcNow, userTimeZone );
     }
 
-    public BaseDataModel GetCreateBaseDataModel ( )
+    public BaseDataModel GetCreateBaseDataModel ()
     {
         BaseDataModel baseDataModel = new BaseDataModel();
         
@@ -57,11 +57,8 @@ public class UserContext: IUserContext
         baseDataModel.HostCompanyName = EnumCompanyName;
         baseDataModel.HostCountry = EnumCountry;
         baseDataModel.Currency = EnumCurrency;
-
-        int userId =  UserId != string.Empty && UserId != null ? Convert.ToInt32 ( UserId ) : SeedUserId;
-
-        baseDataModel.CreatedBy = userId;
-        baseDataModel.ModifiedBy = userId;
+        baseDataModel.CreatedBy = IdentityId;
+        baseDataModel.ModifiedBy = IdentityId;
 
         return baseDataModel;
     }
@@ -74,7 +71,7 @@ public class UserContext: IUserContext
         baseDataModel.HostCompanyName = EnumCompanyName;
         baseDataModel.HostCountry = EnumCountry;
         baseDataModel.Currency = EnumCurrency;
-        baseDataModel.ModifiedBy = ( int ) Convert.ToUInt32 ( UserId.ToString ( ) );
+        baseDataModel.ModifiedBy = IdentityId;
 
         return baseDataModel;
     }

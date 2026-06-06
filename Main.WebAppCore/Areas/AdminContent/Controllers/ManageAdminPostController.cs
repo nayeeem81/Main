@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using WebAppCore.ViewModel;
-using Main.WebAppCore;
 using WebAppCore.ViewModel.Extensions;
 using WebApp.Infrastructure;
 
-namespace FineArtsWebApp;
+namespace Main.WebAppCore;
 
 [Area("AdminContent")]
 [Authorize(Roles = "Admin")]
@@ -22,7 +21,7 @@ public class ManageAdminPostController : BaseController
     public ManageAdminPostController( IAdminPostService adminPostService,
         IMemoryCache cache, 
         ILogger<ManageAdminPostController> logger,
-        IUserContext userContext)
+        IUserContext userContext )
     {
         _adminPostService = adminPostService;
         _cache = cache;
@@ -30,7 +29,7 @@ public class ManageAdminPostController : BaseController
         _userContext = userContext;
     }
 
-    private void SetImageInDataModel(AdminPostDataModel postDataModel)
+    private void SetImageInDataModel( AdminPostDataModel postDataModel )
     {
         List<AdminImageFileDataModel> listAdminImageFileDataModel
             = new List<AdminImageFileDataModel>();
@@ -84,7 +83,7 @@ public class ManageAdminPostController : BaseController
         }
     }
 
-
+    [HttpGet]
     [Authorize(Roles = "Admin")]
     public ViewResult NewAdminContent()
     {
@@ -110,15 +109,15 @@ public class ManageAdminPostController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> SaveNewAdminContent(AdminPostViewModel collection)
     {
-        if (ModelState.IsValid)
+        if ( !ModelState.IsValid )
         {
-            return BadRequest(ModelState);
+            return BadRequest ( error: "Invalid model state" );
         }
 
         try
         {
             AdminPostDataModel adminPostDataModel = MapNewDataModel ( collection );
-            
+
             SetImageInDataModel ( adminPostDataModel );
 
             var result = await _adminPostService.SaveNewAdminPost(adminPostDataModel);
@@ -129,7 +128,8 @@ public class ManageAdminPostController : BaseController
         } 
         catch (Exception ex)
         {
-            return BadRequest( new { success = false, message = ex.InnerException?.Message } );
+            _logger.LogWarning ( "Error saving new admin post" + ex.Message );
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 
@@ -162,7 +162,7 @@ public class ManageAdminPostController : BaseController
 
             
             var adminPostViewModel = new AdminPostViewModel();
-            AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel, adminPostViewModel );
+            AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel, adminPostViewModel);
 
             adminPostViewModel.ListAdminPostFileImages =            AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages ); 
 
@@ -195,6 +195,7 @@ public class ManageAdminPostController : BaseController
             SetImageInDataModel ( adminPostDataModel );
 
             adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
+
             adminPostDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ( );
 
             bool result = await _adminPostService.UpdateAdminPost(adminPostDataModel);

@@ -1,6 +1,5 @@
 ﻿using DataTransferModel;
 using Domain.Model;
-//using FluentEmail.Core;
 using IRepository;
 using Main.Common.HelperRelated;
 using Main.Common.Model;
@@ -53,7 +52,15 @@ public class AccountService : IAccountService
     {
         User? userEntity  = await _userRepository.GetSingleUser ( email.Trim() );
 
-        return userEntity?.UserID ?? 0;
+        return userEntity?.Id ?? 0;
+    }
+
+
+    public async Task<int> GetBusinessUserId ( string identityId )
+    {
+        User? userEntity  = await _userRepository.GetSingleUser ( identityId.Trim() );
+
+        return userEntity?.Id ?? 0;
     }
 
 
@@ -207,7 +214,7 @@ public class AccountService : IAccountService
     {
         User objUserEntity = new User();
 
-        objUserEntity.IdentityUserID = idetytyId;
+        objUserEntity.IdentityUserId = idetytyId;
 
         objUserEntity.Email = userAccountDataModel.Email != null ? userAccountDataModel.Email.Trim() : string.Empty;
 

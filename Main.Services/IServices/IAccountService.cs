@@ -10,6 +10,8 @@ namespace Main.Services;
 
 public interface IAccountService
 {
+    Task<int> GetBusinessUserId ( string identityId );
+
     Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
 
     Task<int> GetSingleUser ( string email );

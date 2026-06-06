@@ -1,8 +1,4 @@
 ﻿using DataTransferModel;
-using FineArtsWebApp;
-
-using Microsoft.EntityFrameworkCore.Design;
-
 using System.Text.Json;
 using WebAppCore.ViewModel;
 

@@ -12,6 +12,8 @@ public class BaseEntity
 
     public void CreateBaseData ( BaseDataModel modelBase )
     {
+        IdentityUserId = modelBase.Id.Trim();
+
         CreatedDate = modelBase.CreatedDate;
         CreatedBy = modelBase.CreatedBy;
 
@@ -35,11 +37,11 @@ public class BaseEntity
         IsActive = true;
     }
 
-    public int CreatedBy { get; set; }
+    public string CreatedBy { get; set; }
    
     public DateTime CreatedDate { get; set; }
    
-    public int ModifiedBy { get; set; }
+    public string ModifiedBy { get; set; }
    
     public DateTime ModifiedDate { get; set; }
   
@@ -48,4 +50,7 @@ public class BaseEntity
     public EnumCountry HostCountry { get; set; }
 
     public bool IsActive { get; set; }
+
+    //User Identity from Identity Server, not the UserID from User table
+    public string IdentityUserId { get; set; }
 }

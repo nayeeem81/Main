@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class AdminPostComment
+public class AdminPostComment : BaseEntity
 {
     public AdminPostComment()
     {
