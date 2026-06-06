@@ -15,7 +15,7 @@ WORKDIR /src/Main.WebAppCore
 RUN dotnet publish -c Release -o /app/publish /p:UseAppHost=false
 
 # --- Stage 2: Runtime Environment ---
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
 # 4. Open ports for the web server
