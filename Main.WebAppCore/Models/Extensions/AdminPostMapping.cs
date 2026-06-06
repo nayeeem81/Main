@@ -1,6 +1,6 @@
 ﻿using DataTransferModel;
+
 using Main.Common.Enums;
-using WebAppCore.ViewModel;
 
 namespace WebAppCore.ViewModel.Extensions;
 
@@ -15,33 +15,32 @@ public static class AdminPostMapping
 
         AdminPostDataModel adminPostDataModel = new AdminPostDataModel()
         {
-            AdminPostID = adminPostViewModel.AdminPostID,
+            AdminPostID = adminPostViewModel.AdminPostID ?? 0,
             PosterName = adminPostViewModel.PosterName,
             PostTitle = adminPostViewModel.PostTitle,
             PosterContactNumber = adminPostViewModel.PosterContactNumber,
             WebsiteUrl = adminPostViewModel.WebsiteUrl,
             ShortNote = adminPostViewModel.ShortNote,
             SearchTag = adminPostViewModel.SearchTag,
-            UserID = adminPostViewModel.UserID,
-            PostTypeID = (int)adminPostViewModel.PostTypeID
+            PostTypeID = adminPostViewModel.PostTypeID
         };
 
         return adminPostDataModel;
     }
 
-    public static List<AdminImageFileDataModel> MapAdminFileDataModel(AdminPostViewModel adminFileViewModel)
+    public static List<AdminImageFileDataModel> MapAdminFileDataModel ( AdminPostViewModel adminFileViewModel )
     {
         List<AdminImageFileDataModel> listAdminImageFileDataModel = new List<AdminImageFileDataModel>();
 
-        adminFileViewModel.ListAdminPostFileImages.ForEach(fileViewModel =>
+        adminFileViewModel.ListAdminPostFileImages.ForEach ( fileViewModel =>
         {
-            listAdminImageFileDataModel.Add(new AdminImageFileDataModel ( fileViewModel.ImageFileContent));
-        });
+            listAdminImageFileDataModel.Add ( new AdminImageFileDataModel ( fileViewModel.ImageFileContent ) );
+        } );
 
         return listAdminImageFileDataModel;
     }
 
-    public static void MapAdminPostViewModel(AdminPostDataModel adminPostDatatModel, AdminPostViewModel adminPostViewModel)
+    public static void MapAdminPostViewModel ( AdminPostDataModel adminPostDatatModel,AdminPostViewModel adminPostViewModel )
     {
         adminPostViewModel.AdminPostID = adminPostDatatModel.AdminPostID;
         adminPostViewModel.PostTitle = adminPostDatatModel.PostTitle;
@@ -51,26 +50,26 @@ public static class AdminPostMapping
         adminPostViewModel.PostTypeID = adminPostDatatModel.PostTypeID;
         adminPostViewModel.SearchTag = adminPostDatatModel.SearchTag;
         adminPostViewModel.ShortNote = adminPostDatatModel.ShortNote;
-        adminPostViewModel.DisplayEnumAdminPostType = EnumDescription.GetDescription((EnumPostType) adminPostDatatModel.PostTypeID);
+        adminPostViewModel.DisplayEnumAdminPostType = EnumDescription.GetDescription ( ( EnumPostType ) adminPostDatatModel.PostTypeID );
     }
 
     public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList ( List<AdminPostDisplayModel> adminPostDisplayModelList )
     {
         var displayViewModels = new List<AdminPostDisplayViewModel>();
 
-        foreach (var model in adminPostDisplayModelList)
+        foreach ( var model in adminPostDisplayModelList )
         {
-            displayViewModels.Add(new AdminPostDisplayViewModel
+            displayViewModels.Add ( new AdminPostDisplayViewModel
             {
                 AdminPostID = model.AdminPostID,
                 PosterName = model.PosterName,
                 PostTitle = model.PostTitle,
                 UserID = model.UserID,
                 PostTypeID = model.PostTypeID,
-                DiispayPostType = EnumDescription.GetDescription((EnumPostType) model.PostTypeID),
+                DiispayPostType = EnumDescription.GetDescription ( ( EnumPostType ) model.PostTypeID ),
                 HostCompanyName = model.HostCompanyName,
-                DiispayCompanyName = EnumDescription.GetDescription(model.HostCompanyName)
-            });
+                DiispayCompanyName = EnumDescription.GetDescription ( model.HostCompanyName )
+            } );
         }
 
         return displayViewModels;
@@ -80,14 +79,14 @@ public static class AdminPostMapping
     {
         var imageFileViewModels = new List<AdminImageFileViewModel>();
 
-        foreach (var model in adminImageFileList)
+        foreach ( var model in adminImageFileList )
         {
-            imageFileViewModels.Add(new AdminImageFileViewModel
+            imageFileViewModels.Add ( new AdminImageFileViewModel
             {
                 ImageFileContent = model.ImageFileContent,
                 AdminImageFileID = model.AdminImageFileID,
                 AdminPostID = model.AdminPostID
-            });
+            } );
         }
 
         return imageFileViewModels;

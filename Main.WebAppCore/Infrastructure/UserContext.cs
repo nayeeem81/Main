@@ -32,7 +32,7 @@ public class UserContext: IUserContext
 
     public int SeedUserId => ( int ) AppSettings.Current.SeedUserId;
 
-    public int MaxImageFileSize => ( int ) AppSettings.Current.MaxImageFileSize;
+    public int PostImageSize => ( int ) AppSettings.Current.PostImageSize;
 
     ClaimsPrincipal? IUserContext.User
     {

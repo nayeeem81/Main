@@ -1,5 +1,8 @@
 ﻿using DataTransferModel;
 using FineArtsWebApp;
+
+using Microsoft.EntityFrameworkCore.Design;
+
 using System.Text.Json;
 using WebAppCore.ViewModel;
 
@@ -154,6 +157,7 @@ public partial class BaseController
         if ( listImageFile == null )
         {
             imageFile.FileID = 1;
+            imageFile.IsNew = true;
             List<ImageFile> objListFiles = new List<ImageFile>();
             objListFiles.Add ( imageFile );
 
@@ -163,7 +167,8 @@ public partial class BaseController
 
 
         int listLength = listImageFile!.Count;
-        imageFile.FileID = listLength + 1;
+        imageFile.FileID = listLength += 1;
+        imageFile.IsNew = true;
         listImageFile.Add(imageFile);
 
         SessionExtensions.SetObject<List<ImageFile>>

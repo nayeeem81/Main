@@ -12,7 +12,7 @@ public class MyConfigSettings
 
     public int SeedUserId { get; set; }
 
-    public int MaxImageFileSize { get; set; }
+    public int PostImageSize { get; set; }
 
     public EnumCategoryFor EnumCategoryFor
     {

@@ -110,7 +110,7 @@ public class ManageAdminPostController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> SaveNewAdminContent(AdminPostViewModel collection)
     {
-        if (!ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
@@ -118,7 +118,9 @@ public class ManageAdminPostController : BaseController
         try
         {
             AdminPostDataModel adminPostDataModel = MapNewDataModel ( collection );
+            
             SetImageInDataModel ( adminPostDataModel );
+
             var result = await _adminPostService.SaveNewAdminPost(adminPostDataModel);
 
             string? redirectUrl = Url.Action("Index", "ManageAdminPost", new { Area = "AdminContent" });
@@ -136,7 +138,7 @@ public class ManageAdminPostController : BaseController
     {
         AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
 
-        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID;
+        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID ?? 0;
         adminPostDataModel.PostTitle = adminPostViewModel.PostTitle;
         adminPostDataModel.PosterName = adminPostViewModel.PosterName;
         adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
@@ -241,7 +243,7 @@ public class ManageAdminPostController : BaseController
             if (file != null && file.Length > 0)
             {
 
-                if (file.Length > AppSettings.Current.MaxImageFileSize)
+                if (file.Length > AppSettings.Current.PostImageSize )
                 {
                     return Json(new { success = false });
                 }
@@ -286,13 +288,18 @@ public class ManageAdminPostController : BaseController
         {
             List<ImageFile> imageFileList = GetAllSessionImages();
 
+            if( imageFileList == null || imageFileList.Count == 0 )
+            {
+                return PartialView ( "~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ( ) );
+            }
+
             ImageFile imageFile = imageFileList.Last();
 
             return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", imageFile);
         }
         catch
         {
-            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", new AdminImageFileViewModel());
+            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", new ImageFile());
         }
     }
 
@@ -338,7 +345,7 @@ public class ManageAdminPostController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteAdminPost(int id, int fakeId)
     {
-        AdminPostDataModel objAdminPostDataModel;
+        AdminPostDataModel adminPostDataModel;
 
         try
         {
@@ -350,14 +357,14 @@ public class ManageAdminPostController : BaseController
             }  
             else
             {
-                AdminPostDataModel adminPostDataModel =
-                await _adminPostService.GetAdminPostForEditPostID(id);
-
+                adminPostDataModel = await _adminPostService.GetAdminPostForEditPostID(id);
 
                 var adminPostViewModel = new AdminPostViewModel();
+                
                 AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel,adminPostViewModel );
 
-                adminPostViewModel.ListAdminPostFileImages = AdminPostMapping.MapAdminImageFileViewModelList ( adminPostDataModel.ListAdminPostFileImages );
+                adminPostViewModel.ListAdminPostFileImages = 
+                    AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages );
 
                 return View( adminPostViewModel );
             }
