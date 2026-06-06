@@ -2,7 +2,7 @@ name: CI/CD Master Release Pipeline
 
 on:
   push:
-    branches: [ "master", "main" ] # Triggers when code is pushed or merged to master
+    branches: [ "master" ] # Triggers when code is pushed or merged to master
 
 env:
   REGISTRY: ghcr.io
