@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Data.Migrations.Identity
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260529191911_InitialIdentityMigration3")]
-    partial class InitialIdentityMigration3
+    [Migration("20260606231601_InitialIdentityMigration111")]
+    partial class InitialIdentityMigration111
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -178,15 +178,15 @@ namespace Main.Infrastructure.Data.Migrations.Identity
                         {
                             Id = "e03fd0d4-00fd-090a-ca10-0d00a1118ba4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dc1547cd-0e64-461b-91b0-bb20c8552eea",
+                            ConcurrencyStamp = "1e62b938-91fb-49cb-b0c5-dc00da1f5426",
                             Email = "naimul.prodhan@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "NAIMUL.PRODHAN@GMAIL.COM",
                             NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFCFG2mOl5O32RqA8GhJ6WHKDx4nWmR+0OAz3Q9PNgMxOxLVkyITb29LvcHaNEH2kA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMYOZdfA9pUgi88Gia5WdTcGkTwM8zk+ZxhneFLmVpuBImhM3F5ytjRYPy9RsceQyg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "91e42490-ffa0-49b3-969f-b53b380f43eb",
+                            SecurityStamp = "5445b84b-97df-4564-8934-b31ee973a074",
                             TwoFactorEnabled = false,
                             UserName = "SuperAdmin"
                         },
@@ -194,15 +194,15 @@ namespace Main.Infrastructure.Data.Migrations.Identity
                         {
                             Id = "e03fd0e4-00fd-090a-ca10-0d00a0018ba4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1824ab7c-2a54-4e9f-8d63-3074c84e075b",
+                            ConcurrencyStamp = "63624cc1-7b53-4149-a7f5-1ca32896d43c",
                             Email = "syedron@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "SYEDRON@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDNkJREbh/Ct0a2VEafhzz07uhodpAHMHZ7Y+SMWWxOrnF0nmEuiD8bPUXr/jQ1XzA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMM8YZ8amJnTVfI5nb5a/6Gcr4Ufo7es45jj487mW0QA7zH7zEpDKaVCiX3hskXVFw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e9b71a05-2350-4f8c-882d-447a170d5a38",
+                            SecurityStamp = "188fbc1d-60fe-4836-8b6c-80e1041cbcfd",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -210,15 +210,15 @@ namespace Main.Infrastructure.Data.Migrations.Identity
                         {
                             Id = "e03fd0e4-00fd-090a-ca10-0d00a0018ba5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "146ffb71-b66f-4ce0-acec-13c64b16317f",
+                            ConcurrencyStamp = "68e02507-8c19-43c1-a909-3795840e7937",
                             Email = "finearts@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "FINEARTS@GMAIL.COM",
                             NormalizedUserName = "COMPANY",
-                            PasswordHash = "AQAAAAIAAYagAAAAENfVHPt3uIi5VOmviSGoMlMP7bTUULMFboiEx99Ltwtj102mB/CEEVMqw2ONl5+0qQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHQ4QbzENfG6vlNsRrJckNssANlQcLRyc2ALD0r2Xtc/7YSmeK5qV9qTN7genU49lw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a47fcc65-7b1f-4a82-b6ee-e54b4d513a3b",
+                            SecurityStamp = "793b2255-df1a-4ac8-ad3f-2cb8367454ec",
                             TwoFactorEnabled = false,
                             UserName = "Company"
                         });

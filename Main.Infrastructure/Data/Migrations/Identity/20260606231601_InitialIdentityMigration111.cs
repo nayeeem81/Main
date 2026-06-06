@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Main.Infrastructure.Data.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class InitialIdentityMigration1 : Migration
+    public partial class InitialIdentityMigration111 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -175,9 +175,9 @@ namespace Main.Infrastructure.Data.Migrations.Identity
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "e03fd0d4-00fd-090a-ca10-0d00a1118ba4", 0, "ab53ba5f-9a44-4e50-a1d3-039b9e31d2a3", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN", "AQAAAAIAAYagAAAAEEU0+ntqyUVCZxjF/SKEB9NzFIKEeu3CwuOVs9I2IZ0kTDEAftGnnIwELqBAb3AVwA==", null, false, "f9ef67c3-14ea-4f70-bea5-4cd07c26a779", false, "SuperAdmin" },
-                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba4", 0, "8546df1e-899b-49e3-8a6f-7645561c0cfe", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEErrrmIVTnPMa+99BuGmKaKEcY+XpIo6VtvM/hiOM20t9a81PKisRJfc11UaiNfC9Q==", null, false, "df51dbf4-101f-4711-ad5f-ea446b1eddf9", false, "Admin" },
-                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba5", 0, "6f3f493f-20d2-43dc-9642-8603a4d18778", "finearts@gmail.com", true, false, null, "FINEARTS@GMAIL.COM", "COMPANY", "AQAAAAIAAYagAAAAEFSxqesQlLkahnpLN67OaCoRx+MEC9oKCNpR1YyNwkJierngE3CsJzu/g+LCCGxZ+A==", null, false, "6ac2a94e-23fa-4e79-bd3a-634311502c1c", false, "Company" }
+                    { "e03fd0d4-00fd-090a-ca10-0d00a1118ba4", 0, "1e62b938-91fb-49cb-b0c5-dc00da1f5426", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN", "AQAAAAIAAYagAAAAEMYOZdfA9pUgi88Gia5WdTcGkTwM8zk+ZxhneFLmVpuBImhM3F5ytjRYPy9RsceQyg==", null, false, "5445b84b-97df-4564-8934-b31ee973a074", false, "SuperAdmin" },
+                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba4", 0, "63624cc1-7b53-4149-a7f5-1ca32896d43c", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEMM8YZ8amJnTVfI5nb5a/6Gcr4Ufo7es45jj487mW0QA7zH7zEpDKaVCiX3hskXVFw==", null, false, "188fbc1d-60fe-4836-8b6c-80e1041cbcfd", false, "Admin" },
+                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba5", 0, "68e02507-8c19-43c1-a909-3795840e7937", "finearts@gmail.com", true, false, null, "FINEARTS@GMAIL.COM", "COMPANY", "AQAAAAIAAYagAAAAEHQ4QbzENfG6vlNsRrJckNssANlQcLRyc2ALD0r2Xtc/7YSmeK5qV9qTN7genU49lw==", null, false, "793b2255-df1a-4ac8-ad3f-2cb8367454ec", false, "Company" }
                 });
 
             migrationBuilder.InsertData(

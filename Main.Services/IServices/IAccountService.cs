@@ -1,20 +1,13 @@
 ﻿using DataTransferModel;
-
 using Main.Common.Model;
-
 using Microsoft.AspNetCore.Identity;
-
 using System.Security.Claims;
 
 namespace Main.Services;
 
 public interface IAccountService
 {
-    Task<int> GetBusinessUserId ( string identityId );
-
     Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
-
-    Task<int> GetSingleUser ( string email );
 
     Task<IdentityUser?> GetIdentityUser ( string email );
 
@@ -32,5 +25,4 @@ public interface IAccountService
 
     Task<ClaimsIdentity?> GetUserRole ( string email );
 
-    Task<string> GetBussUserEmail ( int userId );
 }
