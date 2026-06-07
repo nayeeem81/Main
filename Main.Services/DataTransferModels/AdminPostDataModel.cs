@@ -6,6 +6,7 @@ public class AdminPostDataModel : DataModel
 {
     public AdminPostDataModel()
     {
+        BaseDataModel = new BaseDataModel();
     }
 
     public int AdminPostID { get; set; }
@@ -26,8 +27,6 @@ public class AdminPostDataModel : DataModel
 
     public List<AdminPostCommentDataModel> ListAdminPostComments { get; set; } = new List<AdminPostCommentDataModel>();
 
-    public int UserID { get; set; }
-   
     public int PostTypeID { get; set; }
 
     public string? EnumAdminPostTypeDescription { get; set; } 

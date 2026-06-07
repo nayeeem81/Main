@@ -52,6 +52,8 @@ public class ManageAdminPostController : BaseController
             listAdminImageFileDataModels.Add ( adminImageFileDataModel );
         } );
 
+        adminPostDataModel.ListAdminPostFileImages = listAdminImageFileDataModels;
+
         ClearImageFileListSession ( );
     }
 
@@ -135,6 +137,8 @@ public class ManageAdminPostController : BaseController
         adminPostDataModel.PosterName = adminPostViewModel.PosterName;
         adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
         adminPostDataModel.WebsiteUrl = adminPostViewModel.WebsiteUrl;
+        adminPostDataModel.ShortNote = adminPostViewModel.ShortNote;
+        adminPostDataModel.SearchTag = adminPostViewModel.SearchTag;
         adminPostDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
 
         return adminPostDataModel;
@@ -183,11 +187,9 @@ public class ManageAdminPostController : BaseController
 
         try
         {
-            AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
+            AdminPostDataModel adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
 
             SetImageInDataModel ( adminPostDataModel );
-
-            adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
 
             adminPostDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ( );
 

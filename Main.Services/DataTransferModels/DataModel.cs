@@ -5,7 +5,6 @@ public class DataModel
 {
     public DataModel ( )
     {
-        BaseDataModel = new BaseDataModel ( );
     }
 
     public BaseDataModel BaseDataModel
