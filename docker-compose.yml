@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # ----------------------------------------------------
+  # Database Service (SQL Server 2022)
+  # ----------------------------------------------------
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_database
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=YourStrong@Pass123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - app_network
+    restart: always
+
+  # ----------------------------------------------------
+  # Web Application Service
+  # ----------------------------------------------------
+  web_app:
+    image: main-webapp:latest
+    container_name: main_webapp_core
+    build:
+      context: .
+      dockerfile: Main.WebAppCore/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # Use the database service name 'database' instead of 'localhost'
+      - ConnectionStrings__DefaultConnection=Server=database;Database=MainDb;User Id=sa;Password=YourStrong@Pass123!;Encrypt=False;
+    networks:
+      - app_network
+    depends_on:
+      - database
+    restart: always
+
+# ----------------------------------------------------
+# Shared Resources Configuration
+# ----------------------------------------------------
+volumes:
+  mssql_data: # Keeps your database data safe when containers restart
+
+networks:
+  app_network: # Creates a secure, private network between containers
+    driver: bridge

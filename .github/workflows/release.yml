@@ -1,4 +1,4 @@
-name: Build and Create Release Package
+name: Build, Release, and Deploy to Linux VPS
 
 on:
   push:
@@ -11,8 +11,6 @@ jobs:
     permissions:
       contents: write   # Required to create GitHub Releases
       packages: write   # Required to push to GitHub Container Registry
-
-    
 
     steps:
     # 1. Checkout the source code
@@ -34,6 +32,9 @@ jobs:
     - name: Build Solution
       run: dotnet build --no-restore -c Release
 
+    - name: Run Tests
+      run: dotnet test --no-build --verbosity normal
+
     # 4. Set up Docker Buildx (advanced builder engine)
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -46,17 +47,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    # NEW STEP: Convert repository name to lowercase to satisfy Docker requirements
+    # 6. Convert repository name to lowercase (Docker registry requirement)
     - name: Downcase Repository Name
       run: |
         echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-    # 6. Generate a unique version tag based on build number
+    # 7. Generate a unique version tag based on build number
     - name: Generate Version Tag
       id: vars
       run: echo "VERSION=v1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
-    # 7. Build the single container and push it to GHCR (Using the lowercase variable)
+    # 8. Build and push Docker image to GHCR
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
@@ -67,14 +68,14 @@ jobs:
           ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:latest
           ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
 
-    # 8. Compile a zip package of raw binaries as a fallback release artifact
+    # 9. Compile a zip package of raw binaries as a fallback release artifact
     - name: Publish Raw Binaries
       run: dotnet publish Main.WebAppCore/Main.WebAppCore.csproj -c Release -o ./publish_output /p:UseAppHost=false
 
     - name: Zip Release Package
       run: zip -r release-package.zip ./publish_output
 
-   # 9. Automatically create a formalized Release Package on GitHub
+    # 10. Create GitHub Release with Docker image and binaries
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
@@ -83,9 +84,52 @@ jobs:
         body: |
           Automated release compiled from merge to master branch.
           
-          **Docker Image URI:** `ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}`  # <-- Fixed to use REPO_LOWER
+          **Docker Image URI:** `ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}`
+          
+          **How to Deploy to Linux VPS:**
+          ```bash
+          # SSH into your VPS
+          ssh user@your-vps-ip
+          
+          # Log in to GitHub Container Registry
+          docker login ghcr.io -u $USERNAME -p $GITHUB_TOKEN
+          
+          # Pull and run the container
+          docker pull ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
+          docker run -d -p 8080:8080 -p 8081:8081 ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
+          ```
         draft: false
         prerelease: false
         files: release-package.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # 11. Deploy to Linux VPS via SSH (Optional - Enable when you have VPS)
+    - name: Deploy to Linux VPS
+      if: success() && vars.VPS_DEPLOY_ENABLED == 'true'
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_SSH_PORT || 22 }}
+        script: |
+          # Log in to GitHub Container Registry
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          
+          # Pull the latest Docker image
+          docker pull ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
+          
+          # Stop and remove old container if running
+          docker stop main_webapp_core || true
+          docker rm main_webapp_core || true
+          
+          # Run the new container
+          docker run -d \
+            --name main_webapp_core \
+            -p 8080:8080 \
+            -p 8081:8081 \
+            -e ASPNETCORE_ENVIRONMENT=Production \
+            ghcr.io/${{ env.REPO_LOWER }}/main-webappcore:${{ env.VERSION }}
+          
+          echo "Deployment complete! Container running on VPS."
