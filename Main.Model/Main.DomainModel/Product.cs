@@ -1,5 +1,4 @@
 ﻿using Main.Common.Enums;
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,12 +14,6 @@ public class Product : BaseEntity
 
     [Required]
     public EnumPostType PostType { get; set; }
-
-    [Required]
-    public int UserID { get; set; }
-
-    [ForeignKey("UserID")]
-    public virtual User? User { get; set; }
 
     [Required]
     public string ProductName { get; set; }

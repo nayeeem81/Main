@@ -40,9 +40,6 @@ public static class ProductServiceMapping
     {
         Product productEntity = CreateProductEntity(productDataModel);
 
-        productEntity.UserID = productDataModel.UserID;
-        productEntity.User = null;
-
         productEntity.CreateBaseData ( productDataModel.BaseDataModel );
 
         List <ProductImageFile> objListFileEntity
@@ -159,7 +156,6 @@ public static class ProductServiceMapping
             CategoryID = productEntity.CategoryID,
             SubCategoryID = productEntity.SubCategoryID,
             UnitPrice = productEntity.Price,
-            UserID = productEntity.UserID,
             ListComments = listCommentsDataModel,
             ImageFiles = listProductFilesDataModel
         };
@@ -200,9 +196,6 @@ public static class ProductServiceMapping
 
             listProductCommentsEntity.Add ( commentEntity );
         } );
-
-        productEntity.UserID = productDataModel.UserID;
-        productEntity.User = null;
 
         productEntity.ProductName = productDataModel.ProductName;
         productEntity.Discount = productDataModel.Discount;

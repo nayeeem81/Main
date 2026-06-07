@@ -1,17 +1,16 @@
 ﻿using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Infrastructure;
+using WebAppCore.Helper;
 
-namespace Main.WebAppCore
+namespace Main.WebAppCore.ViewCompont;
+
+public class ProductCategoryMenuViewComponent : ViewComponent
 {
-    public class ProductCategoryMenuViewComponent : ViewComponent
+    public async Task<IViewComponentResult> InvokeAsync()
     {
-        public async Task<IViewComponentResult> InvokeAsync()
-        {
-            MenuObjectModel menuObjectModel
-                = new MenuObjectModel((EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
+        MenuObjectModel menuObjectModel
+            = new MenuObjectModel((EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
 
-            return View(menuObjectModel);
-        }
+        return View(menuObjectModel);
     }
 }

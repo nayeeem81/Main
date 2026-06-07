@@ -91,7 +91,6 @@ public static class AdminPostServiceMappings
             WebsiteUrl = postEntity.WebsiteUrl,
             ShortNote = postEntity.ShortNote,
             SearchTag = postEntity.SearchTag,
-            UserID = postEntity.UserID,
             PostTypeID = (int)postEntity.PostType,
             ListAdminPostFileImages = objDMListFiles,
             ListAdminPostComments = objDMListComments
@@ -109,9 +108,6 @@ public static class AdminPostServiceMappings
         AdminPost adminPostEntity = CreareAdminPostEntity ( from );
 
         adminPostEntity.CreateBaseData ( from.BaseDataModel );
-
-        adminPostEntity.UserID = from.UserID;
-        adminPostEntity.User = null;
 
         List<AdminImageFile> objListFileEntity = MapAdminFileEntity(from);
 
@@ -158,9 +154,6 @@ public static class AdminPostServiceMappings
     public static AdminPost UpdateAdminPostEntityMapping ( AdminPost adminPostEntity,AdminPostDataModel adminPostDataModel )
     {
         adminPostEntity.ModifyBaseData ( adminPostDataModel.BaseDataModel );
-
-        adminPostEntity.UserID = adminPostDataModel.UserID;
-        adminPostEntity.User = null;
 
         List<AdminImageFile> imageFieEntityList = new List<AdminImageFile>();
 

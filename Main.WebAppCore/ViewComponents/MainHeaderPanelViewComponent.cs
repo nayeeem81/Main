@@ -1,8 +1,8 @@
 ﻿using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Infrastructure;
+using WebAppCore.Helper;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewCompont;
 
 public class MainHeaderPanelViewComponent : ViewComponent
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Main.Services;
 using ResourceLibrary.Resources;
-using WebApp.ViewModel;
+using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore;
 

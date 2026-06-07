@@ -1,5 +1,4 @@
 ﻿@model AdminPostViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 @{
     ViewBag.Title = SharedLocalizer["ViewBagTitleNewPost"];
@@ -45,7 +44,7 @@
                     },
                     delay: { show: 10, hide: 10 },
                     template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                        '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                        '<button type="button" inert class="close" data-notify="dismiss">×</button>' +
                         '<span data-notify="icon"></span>' +
                         '<span data-notify="title">{1}</span>' +
                         '<span data-notify="message">{2}</span>' +
@@ -60,6 +59,9 @@
 
 
     $(document).ready(function () {
+
+        $("#myMainForm").valid();
+
 
         $('#btnUpload').click(function () {
 
@@ -91,20 +93,21 @@
         });
 
 
-        document.getElementById("myMainForm").addEventListener("submit", function (e) {
-           
+        document.getElementById("myMainForm").addEventListener("submit", function (e) 
+        {
             e.preventDefault(); 
-                
-            const formData = new FormData(this);
-                    
-            var that = $(this);
-    
-            fetch(this.action, {
+
+            const form = e.target;
+            //const token = form.querySelector('input[name="__RequestVerificationToken"]').value;
+            const formData = new FormData(form);
+             
+            fetch(form.action, 
+            {
                 method: 'POST',
-                body: formData,
-                headers: {
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                }
+                // headers: {
+                //     'RequestVerificationToken': token 
+                // },
+                body: formData
             })
             .then(response => {
             

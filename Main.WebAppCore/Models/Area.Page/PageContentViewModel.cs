@@ -2,8 +2,9 @@
 using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using WebAppCore.Helper;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class PageContentViewModel: BaseViewModel
 {
@@ -36,11 +37,7 @@ public class PageContentViewModel: BaseViewModel
 
     public int PageContentID { get; set; }
 
-
-
     public int PageID { get; set; }
-
-
 
     public PageViewModel? Page { get; set; }
 
@@ -48,22 +45,17 @@ public class PageContentViewModel: BaseViewModel
     [Display(Name = "Panel Title")]
     public string PanelTitle { get; set; }
 
+
     [Display(Name = "Panel Template")]
     public EnumPanelTemplate EnumPanelTemplate { get; set; }
 
-
     public IEnumerable<SelectListItem> AV_PanelTemplate { get; set; }
-
 
     public List<PanelPostViewModel> ListSelectProducts { get; set; }
 
-
     public List<PanelPostViewModel> ListSelectAds { get; set; }
-
-
   
     public List<PagePanelViewModel> ListPagePanels { get; set; }
-
 
     public void CreatePagePanel(PagePanelViewModel pagePanel)
     {

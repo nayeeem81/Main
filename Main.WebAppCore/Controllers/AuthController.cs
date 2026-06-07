@@ -3,17 +3,14 @@ using Main.Common.Model;
 using Main.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
-using ResourceLibrary.Resources;
 using System.Security.Claims;
-using WebApp.ViewModel;
-using WebApp.ViewModel.Extensions;
+using WebAppCore.ViewModel;
+using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore;
 
 public class AuthController: BaseController
 {
-    private readonly IStringLocalizer<SharedResource> _localizer;
     private readonly IUserContext _userContext;
     private readonly IAccountService _userAccountService;
     private readonly UserManager<IdentityUser> _userManager;
@@ -21,7 +18,6 @@ public class AuthController: BaseController
     private readonly IEmailSenderService _emailService;
 
     public AuthController (
-        IStringLocalizer<SharedResource> localizer,
         IAccountService userAccountService,
         IUserContext userContext,
         SignInManager<IdentityUser> signInManager,
@@ -30,7 +26,6 @@ public class AuthController: BaseController
        )
     {
         _userAccountService = userAccountService;
-        _localizer = localizer;
         _userContext = userContext;
         _emailService = emailService;
         _userManager = userManager;
@@ -186,18 +181,7 @@ public class AuthController: BaseController
 
         if ( result.Succeeded )
         {
-            int userID = await _userAccountService.GetSingleUser(loginDisplayViewModel.Email);
-
-            if ( userID == 0 )
-            {
-                loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
-
-                await SendVerifyEmail ( loginDisplayViewModel.Email );
-
-                return RedirectToAction ( "Login" );
-            }
-
-            await SetUserClaimsForCurrentSession ( userIdentity, loginDisplayViewModel.Email, userID );
+            await SetUserClaimsForCurrentSession ( userIdentity, loginDisplayViewModel.Email );
 
 
             // Successful login, redirect to home page or dashboard
@@ -211,7 +195,7 @@ public class AuthController: BaseController
 
 
     // Helper method to set user claims for the current session after successful login (OWASP Mitigation)
-    private async Task SetUserClaimsForCurrentSession ( IdentityUser userIdentity,string email,int userID )
+    private async Task SetUserClaimsForCurrentSession ( IdentityUser userIdentity,string email )
     {
         // OWASP Mitigation: Add claims to the user identity for role-based authorization and do not reveal if the user has a specific role
         var userRole = await _userAccountService.GetUserRole(email);
@@ -231,7 +215,7 @@ public class AuthController: BaseController
 
        
         await _userManager.AddClaimAsync ( userIdentity,new ( ClaimTypes.NameIdentifier,
-            userID.ToString ( ) ) );
+            userIdentity.Id.ToString ( ) ) );
     }
 
 

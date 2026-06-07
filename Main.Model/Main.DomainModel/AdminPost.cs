@@ -1,6 +1,5 @@
 ﻿using Main.Common.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
@@ -33,12 +32,6 @@ public class AdminPost : BaseEntity
     public string? ShortNote { get; set; }
 
     public string? SearchTag { get; set; }
-
-    // References
-    public int UserID { get; set; } 
-
-    [ForeignKey("UserID")]
-    public virtual User? User { get; set; }
 
     public virtual ICollection<AdminImageFile> ListAdminImageFiles { get; set; } = new HashSet<AdminImageFile>();
 

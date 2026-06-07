@@ -5,7 +5,7 @@ services:
   # Database Service (SQL Server 2022)
   # ----------------------------------------------------
   database:
-    image: ://microsoft.com
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sql_database
     environment:
       - ACCEPT_EULA=Y

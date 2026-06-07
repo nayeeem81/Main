@@ -1,9 +1,8 @@
 ﻿using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebAppCore.Helper;
 
-using WebApp.Infrastructure;
-
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class PanelPostViewModel : BaseViewModel
 {

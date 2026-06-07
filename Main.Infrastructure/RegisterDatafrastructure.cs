@@ -17,7 +17,6 @@ public static class RegisterDatafrastructure
 
 
         //Register Repository
-        services.AddScoped<IUserRepository,UserRepository> ( );
 
         services.AddScoped<IAdminPostImageRepository,AdminPostImageRepository> ( );
 

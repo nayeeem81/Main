@@ -1,10 +1,9 @@
 ﻿using Main.Common.Enums;
 using Main.Common.Model;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebAppCore.Helper;
 
-using WebApp.ViewModel;
-
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewCompont;
 
 public class MenuObjectModel
 {
@@ -23,7 +22,6 @@ public class MenuObjectModel
     public bool IsAdminUser { get; set; }
 
     public bool IsVerifiedUser { get; set; }
-
 
     public bool IsAdvertiserUser { get; set; }
 
@@ -86,7 +84,6 @@ public class MenuObjectModel
         get; set; 
     }
 
-    public List<ParentChildVriableModel> 
-        ListCatSubCategory { get; set; } 
-            = new List<ParentChildVriableModel> ();
+    public List<ParentChildVriableModel>  ListCatSubCategory { get; set; } 
+                                        = new List<ParentChildVriableModel> ();
 }

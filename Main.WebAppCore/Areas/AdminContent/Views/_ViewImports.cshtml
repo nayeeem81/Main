@@ -1,4 +1,10 @@
-@using Microsoft.Extensions.Localization;
+@using Main.WebAppCore;
+@using WebAppCore.ViewModel;
+@using WebAppCore.Helper;
+@using WebAppCore.Runtime.Helper;
+@using DataTransferModel;
+@using ResourceLibrary.Resources;
 @using Microsoft.AspNetCore.Mvc.Localization;
-@using FineArtsWebApp;
-@using ResourceLibrary;
+@using Microsoft.Extensions.Localization;
+@inject IHtmlLocalizer<ResourceLibrary.Resources.SharedResource> SharedLocalizer
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

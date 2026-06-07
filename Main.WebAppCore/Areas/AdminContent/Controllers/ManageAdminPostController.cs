@@ -1,50 +1,72 @@
-﻿using Application.Service;
+﻿using Main.Services;
 using DataTransferModel;
-using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using WebApp.Infrastructure;
-using WebApp.ViewModel;
+using WebAppCore.ViewModel;
+using WebAppCore.ViewModel.Extensions;
+using WebAppCore.Helper;
 
-namespace FineArtsWebApp;
+namespace Main.WebAppCore;
 
 [Area("AdminContent")]
 [Authorize(Roles = "Admin")]
 public class ManageAdminPostController : BaseController
 {
-    private readonly ICommandAdminPostService _adminPostDataService;
-
+    private readonly IAdminPostService _adminPostService;
     private readonly IMemoryCache _cache;
-
     private readonly IUserContext _userContext;
-
     private readonly ILogger<ManageAdminPostController> _logger;
 
-    public ManageAdminPostController( ICommandAdminPostService adminPostDataService,
+    public ManageAdminPostController( 
+        IAdminPostService adminPostService,
         IMemoryCache cache, 
         ILogger<ManageAdminPostController> logger,
-        IUserContext userContext)
+        IUserContext userContext )
     {
-        _adminPostDataService = adminPostDataService;
-
+        _adminPostService = adminPostService;
         _cache = cache;
-
         _logger = logger;
-
         _userContext = userContext;
     }
 
-    private void SetImageInDataModel(AdminPostDataModel postDataModel)
+    private void SetImageInDataModel( AdminPostDataModel postDataModel )
     {
-        List<AdminImageFileDataModel> objFileList 
+        List<AdminImageFileDataModel> listAdminImageFileDataModel
             = new List<AdminImageFileDataModel>();
 
-        objFileList = GetSessionNewAdminPostImage();
+        AdminImageFileDataModel  adminImageFileDataModel;
 
-        postDataModel.ListAdminPostFileImages = objFileList;
+        List<ImageFile> listImageFiles = GetAllSessionImages();
 
-        ClearNewAdminPostImageSessions();
+        listImageFiles.ForEach ( imgFile =>
+        {
+            adminImageFileDataModel = new AdminImageFileDataModel
+            {
+                ImageFileContent = imgFile.FileContent
+            };
+
+            adminImageFileDataModel.AdminPostID = imgFile.PostID ?? 0;
+
+            if ( imgFile.IsNew == true )
+            {
+                adminImageFileDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
+
+                _logger.LogWarning ( "Set New Image id: " + imgFile.FileID );
+            }
+            else
+            {
+                adminImageFileDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ( );
+
+                adminImageFileDataModel.AdminImageFileID = imgFile.FileID;
+
+                _logger.LogWarning ( "Set Base Data file id: " + adminImageFileDataModel.AdminImageFileID );
+            }
+        } );
+
+        postDataModel.ListAdminPostFileImages = listAdminImageFileDataModel;
+
+        ClearImageFileListSession ( );
     }
 
 
@@ -53,27 +75,27 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            var listAdminPosts = await _adminPostDataService.GetAllAdminPosts();
+            var listAdminPosts = await _adminPostService.GetAllAdminPosts();
 
-            var objManageAdminPostViewModel = new ManageAdminPostViewModel();
-
-            objManageAdminPostViewModel.ListAdminPost = listAdminPosts;
-
-            return View(objManageAdminPostViewModel);
+            List<AdminPostDisplayViewModel> listAdminPostDisplayViewModels 
+                        = AdminPostMapping.MapAdminPostDisplayViewModelList
+                                                        ( listAdminPosts );
+            
+            return View( listAdminPostDisplayViewModels );
         }
         catch
         {
-            return View(new ManageAdminPostViewModel());
+            return View(new List<AdminPostDisplayViewModel>());
         }
     }
 
-
+    [HttpGet]
     [Authorize(Roles = "Admin")]
     public ViewResult NewAdminContent()
     {
         try
         {
-            ClearNewAdminPostImageSessions();
+            ClearImageFileListSession ( );
 
             var objPostViewModel = new AdminPostViewModel();
             
@@ -93,57 +115,45 @@ public class ManageAdminPostController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> SaveNewAdminContent(AdminPostViewModel collection)
     {
-        if (!ModelState.IsValid)
+        if ( !ModelState.IsValid )
         {
-            return BadRequest(ModelState);
+            return BadRequest ( error: "Invalid model state" );
         }
 
         try
         {
-            AdminPostDataModel postDataModel = new AdminPostDataModel();
+            AdminPostDataModel adminPostDataModel = MapNewDataModel ( collection );
 
-            postDataModel = MapNewDataModel ( collection );
+            SetImageInDataModel ( adminPostDataModel );
 
-            SetImageInDataModel ( postDataModel );
+            var result = await _adminPostService.SaveNewAdminPost(adminPostDataModel);
 
-            var result = await _adminPostDataService.SaveNewAdminPost(postDataModel);
+            string? redirectUrl = Url.Action("Index", "ManageAdminPost", new { Area = "AdminContent" });
 
-            string? urlGo = Url.Action("Index", "ManageAdminPost", new { Area = "AdminContent" });
-
-            return Ok(new { success = result, urlGo = urlGo });
+            return Ok( new { success = result, urlGo = redirectUrl } );
         } 
         catch (Exception ex)
         {
-            throw ex;
-            //return BadRequest(new { success = false, message = ex.InnerException.Source });
+            _logger.LogWarning ( "Error saving new admin post" + ex.Message );
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 
-    private AdminPostDataModel MapNewDataModel ( AdminPostViewModel collection )
+
+    private AdminPostDataModel MapNewDataModel ( AdminPostViewModel adminPostViewModel )
     {
-        AdminPostDataModel postDataModel = new AdminPostDataModel();
+        AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
 
-        postDataModel.AdminPostID 
-            = collection.AdminPostID;
+        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID ?? 0;
+        adminPostDataModel.PostTitle = adminPostViewModel.PostTitle;
+        adminPostDataModel.PosterName = adminPostViewModel.PosterName;
+        adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
+        adminPostDataModel.WebsiteUrl = adminPostViewModel.WebsiteUrl;
+        adminPostDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
 
-        postDataModel.UserID 
-            = Convert.ToInt32 ( _userContext.UserId );
-
-        postDataModel.PostTitle = collection.PostTitle;
-        postDataModel.PosterName = collection.PosterName;
-
-        postDataModel.PosterContactNumber 
-            = collection.PosterContactNumber;
-
-        postDataModel.Currency = _userContext.EnumCurrency;
-
-        postDataModel.HostCountry = _userContext.EnumCountry;
-        
-        postDataModel.HostCompanyName 
-            = _userContext.EnumCompanyName;
-
-        return postDataModel;
+        return adminPostDataModel;
     }
+
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -151,19 +161,21 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            ClearNewAdminPostImageSessions();
+            ClearImageFileListSession ( );
 
-            var objAdminPostViewModel = new AdminPostViewModel();
+            AdminPostDataModel adminPostDataModel = 
+                await _adminPostService.GetAdminPostForEditPostID(id);
 
-            objAdminPostViewModel = 
-               await _adminPostDataService
-                     .GetAdminPostForEditPostID(id);
             
-            objAdminPostViewModel.PageName 
-                = "Edit Admin Post";
+            var adminPostViewModel = new AdminPostViewModel();
+            AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel, adminPostViewModel);
+
+            adminPostViewModel.ListAdminPostFileImages =            AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages ); 
+
+            adminPostViewModel.PageName = "Edit Admin Post";
             
             
-            return View(objAdminPostViewModel);
+            return View(adminPostViewModel);
         }
         catch
         {
@@ -184,13 +196,15 @@ public class ManageAdminPostController : BaseController
 
         try
         {
-            SetImageInDataModel(collection);
+            AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
 
-            collection.SetModelBase(GetModelBaseSession(EnumModelBase.Update));
+            SetImageInDataModel ( adminPostDataModel );
 
-            collection.UserID = GetSessionUserId();
+            adminPostDataModel = AdminPostMapping.MapAdminPostDataModel ( collection );
 
-            bool result = await _adminPostDataService.UpdateAdminPost(collection);
+            adminPostDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ( );
+
+            bool result = await _adminPostService.UpdateAdminPost(adminPostDataModel);
 
             string? urlGo = Url.Action("Index", "ManageAdminPost", new { Area = "AdminContent" });
 
@@ -208,13 +222,17 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            var objAdminPostViewModel = await _adminPostDataService.GetAdminPostForEditPostID(id);
+            var adminPostDataModel = await _adminPostService.GetAdminPostForEditPostID(id); 
 
-            objAdminPostViewModel.EnumAdminPostTypeDescription = DropDownSelectListItem.GetPostTypeList().Where(pt => pt.Value == objAdminPostViewModel.PostTypeID.ToString()).Select(pt => pt.Text).FirstOrDefault();
+            AdminPostViewModel adminPostViewModel = new AdminPostViewModel();
 
-            objAdminPostViewModel.PageName = "Admin Post Details";
+            AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel, adminPostViewModel );
 
-            return View(objAdminPostViewModel);
+            adminPostViewModel.ListAdminPostFileImages = AdminPostMapping.GetAdminPostViewModelImages ( adminPostDataModel.ListAdminPostFileImages );
+
+            adminPostViewModel.PageName = "Admin Post Details";
+
+            return View(adminPostViewModel);
         }
         catch
         {
@@ -232,7 +250,7 @@ public class ManageAdminPostController : BaseController
             if (file != null && file.Length > 0)
             {
 
-                if (file.Length > StaticAppSettings.POST_IMAGE_SIZE)
+                if (file.Length > AppSettings.Current.PostImageSize )
                 {
                     return Json(new { success = false });
                 }
@@ -252,9 +270,9 @@ public class ManageAdminPostController : BaseController
 
                             var resut = stream.ReadAsync(imgByte);
 
-                            AdminImageFileViewModel objFile = new AdminImageFileViewModel { ImageFileContent = imgByte };
+                            ImageFile objFile = new ImageFile { FileContent = imgByte };
                             
-                            SetSessionNewAdminPostImage(objFile);
+                            SetSessionImageFile(objFile);
                         }
                     }
                 }
@@ -275,15 +293,20 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            var objImageList = GetSessionNewAdminPostImage();
+            List<ImageFile> imageFileList = GetAllSessionImages();
 
-            var objImage = objImageList.Last();
+            if( imageFileList == null || imageFileList.Count == 0 )
+            {
+                return PartialView ( "~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml",new ImageFile ( ) );
+            }
 
-            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", objImage);
+            ImageFile imageFile = imageFileList.Last();
+
+            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", imageFile);
         }
         catch
         {
-            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", new AdminImageFileViewModel());
+            return PartialView("~/Areas/AdminContent/Views/ManageAdminPost/_Image.cshtml", new ImageFile());
         }
     }
 
@@ -294,11 +317,11 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            bool result = await _adminPostDataService.DeleteAdminPostImage(id, postId);
+            bool result = await _adminPostService.DeleteAdminPostImage(id, postId);
 
             if (!result)
             {
-                RemoveSessionNewAdminPostImage(id);
+                RemoveSessionImageFile(id);
             }
 
             return Json(new { success = true });
@@ -315,7 +338,7 @@ public class ManageAdminPostController : BaseController
     {
         try
         {
-            var objAdminPostViewModel = await _adminPostDataService.GetAdminPostForEditPostID(id);
+            var objAdminPostViewModel = await _adminPostService.GetAdminPostForEditPostID(id);
 
             return View(objAdminPostViewModel);
         }
@@ -329,11 +352,11 @@ public class ManageAdminPostController : BaseController
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> DeleteAdminPost(int id, int fakeId)
     {
-        AdminPostViewModel objAdminPostViewModel;
+        AdminPostDataModel adminPostDataModel;
 
         try
         {
-            var result = await _adminPostDataService.DeleteAdminPost(id);
+            var result = await _adminPostService.DeleteAdminPost(id);
 
             if (result)
             {
@@ -341,9 +364,16 @@ public class ManageAdminPostController : BaseController
             }  
             else
             {
-                objAdminPostViewModel = await _adminPostDataService.GetAdminPostForEditPostID(id);
+                adminPostDataModel = await _adminPostService.GetAdminPostForEditPostID(id);
 
-                return View(objAdminPostViewModel);
+                var adminPostViewModel = new AdminPostViewModel();
+                
+                AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel,adminPostViewModel );
+
+                adminPostViewModel.ListAdminPostFileImages = 
+                    AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages );
+
+                return View( adminPostViewModel );
             }
         }
         catch

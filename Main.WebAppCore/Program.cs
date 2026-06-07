@@ -1,6 +1,7 @@
 using ResourceLibrary.Resources;
 using Main.Services;
-using WebApp.Infrastructure;
+using WebAppCore.Helper;
+using WebAppCore.Runtime.Helper;
 
 internal class Program
 {

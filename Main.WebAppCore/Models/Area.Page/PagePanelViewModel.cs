@@ -1,8 +1,9 @@
 ﻿using Main.Common.Enums;  
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using WebAppCore.Helper;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class PagePanelViewModel: BaseViewModel
 {
@@ -10,9 +11,7 @@ public class PagePanelViewModel: BaseViewModel
     {
         ListPanelPosts = new List<PanelPostViewModel>();
         AV_PanelTemplate = SelectListItemDropDown.GetPanelTempletList();
-        
     }
-
 
     public PagePanelViewModel(EnumPanelTemplate enumPanelTemplate)
     {
@@ -21,12 +20,9 @@ public class PagePanelViewModel: BaseViewModel
         PanelTemplate = enumPanelTemplate;
     }
 
-
     public int PanelID { get; set; }
 
-
     public int PageID { get; set; }
-
 
     public int PanelOrderID { get; set; }
 
@@ -40,12 +36,9 @@ public class PagePanelViewModel: BaseViewModel
     [Required(ErrorMessage = "Select a Tamplate!")]
     public EnumPanelTemplate PanelTemplate { get; set; }
 
-
     public IEnumerable<SelectListItem> AV_PanelTemplate { get; set; }
 
-
     public List<PanelPostViewModel> ListSelectProducts { get; set; }
-
 
     public List<PanelPostViewModel> ListPanelPosts { get; set; }
 

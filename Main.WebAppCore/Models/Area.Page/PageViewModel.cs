@@ -1,7 +1,7 @@
 ﻿using Main.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.ViewModel;
+namespace WebAppCore.ViewModel;
 
 public class PageViewModel : BaseViewModel
 {

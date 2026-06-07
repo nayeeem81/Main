@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Main.Common.Enums;
-using WebApp.Infrastructure;
+using WebAppCore.Helper;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewCompont;
 
 public class AdvancedSearchDesktopViewComponent : ViewComponent
 {

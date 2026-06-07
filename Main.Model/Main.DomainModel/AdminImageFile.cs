@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class AdminImageFile
+public class AdminImageFile : BaseEntity
 {
     public AdminImageFile()
     {
@@ -30,4 +30,5 @@ public class AdminImageFile
 
     [ForeignKey("AdminPostID")]
     public virtual AdminPost AdminPost { get; set; }
+    
 }

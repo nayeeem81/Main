@@ -1,12 +1,12 @@
 ﻿using Main.Common.Enums;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.ViewCompont;
 
-public class AValueModel
+public class AllowedValueModel
 {        
-    public AValueModel() { }
+    public AllowedValueModel() { }
     
-    public AValueModel(string text, EnumAllowedVariable variable)
+    public AllowedValueModel(string text, EnumAllowedVariable variable)
     {
         if(string.IsNullOrEmpty(text))
             throw new ArgumentException("Text not provided.");
@@ -24,9 +24,9 @@ public class AValueModel
 
     public string IconLink { get; set; }
 
-    public List<AValueModel> ChildAValueList { get; set; }
+    public List<AllowedValueModel> ChildAValueList { get; set; }
 
-    public List<AValueModel> GetAValueListByParentId(List<AValueModel> subcategoryList, long parentId)
+    public List<AllowedValueModel> GetAValueListByParentId(List<AllowedValueModel> subcategoryList, long parentId)
     {
         return subcategoryList.Where(a => a.ParentValueID == parentId).ToList();
     }

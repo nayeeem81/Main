@@ -1,8 +1,4 @@
-﻿@using FineArtsWebApp;
-@model AdminPostViewModel
-@using Microsoft.AspNetCore.Mvc.Localization;
-@using Microsoft.Extensions.Localization;
-@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@model AdminPostViewModel
 
 <div id="detailsAdminPostContainerPartial" class="card-form row">
 
@@ -17,8 +13,8 @@
  
   
     <div class="input-field col-md-4 col-sm-4 col-lg-4 col-xs-12">
-        @Html.LabelFor(a => a.EnumAdminPostTypeDescription)
-        @Html.DisplayFor(a => a.EnumAdminPostTypeDescription, new { @class = "fff" })
+        @Html.LabelFor(a => a.DisplayEnumAdminPostType)
+        @Html.DisplayFor(a => a.DisplayEnumAdminPostType, new { @class = "fff" })
     </div>
 
         

@@ -1,6 +1,5 @@
 ﻿using Main.Common.Enums;
 using Main.Common.Model;
-
 using System.Security.Claims;
 
 namespace Main.Services;
@@ -8,11 +7,6 @@ namespace Main.Services;
 public interface IUserContext
 {
     public ClaimsPrincipal? User
-    {
-        get;
-    }
-
-    string UserId
     {
         get;
     }
@@ -42,17 +36,11 @@ public interface IUserContext
         get;
     }
 
-    int SeedUserId
-    {
-        get;
-    }
-
 
     DateTime GetLocalNow ( );
 
     BaseDataModel GetCreateBaseDataModel ( );
 
     BaseDataModel GetUpdateBaseDataModel ( );
-
 
 }

@@ -1,8 +1,5 @@
 ﻿using DataTransferModel;
-using Domain.Model;
-//using FluentEmail.Core;
-using IRepository;
-using Main.Common.HelperRelated;
+using IRepository; 
 using Main.Common.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,21 +8,15 @@ namespace Main.Services;
 
 public class AccountService : IAccountService
 {
-
-    private readonly IUserRepository _userRepository;
-
     private readonly UserManager<IdentityUser> _userManager;
 
     private readonly SignInManager<IdentityUser> _signInManager;
 
     public AccountService ( 
-        IUserRepository userRepository,
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager
         )
     {
-        _userRepository = userRepository;
-
         _userManager = userManager;
 
         _signInManager = signInManager;
@@ -48,16 +39,6 @@ public class AccountService : IAccountService
     }
 
 
-
-    public async Task<int> GetSingleUser ( string email )
-    {
-        User? userEntity  = await _userRepository.GetSingleUser ( email.Trim() );
-
-        return userEntity?.UserID ?? 0;
-    }
-
-
-
     public async Task<IdentityUser?> GetIdentityUser ( string email )
     {
         IdentityUser? identityUser  
@@ -65,7 +46,6 @@ public class AccountService : IAccountService
 
         return identityUser;
     }
-
 
 
     public async Task<SignInResult> AuthenticateUser ( string email, string password )
@@ -81,7 +61,6 @@ public class AccountService : IAccountService
         
         return result;
     }
-
 
 
     public async Task<bool> ChangePasswordAsync ( string email,string password,
@@ -100,16 +79,6 @@ public class AccountService : IAccountService
     }
 
 
-
-    public async Task<string> GetBussUserEmail ( int userId )
-    {
-        var user = await _userRepository.GetSingleUser ( userId );
-
-        return user?.Email ?? string.Empty;
-    }
-
-
-
     public async Task<string?> GetEmailVerifyToken ( string email )
     {
         IdentityUser? user = await _userManager.FindByEmailAsync ( email );
@@ -125,15 +94,11 @@ public class AccountService : IAccountService
     }
 
 
-
     public async Task<bool> CreateAppicationUser ( string email, string token, BaseDataModel baseDataModel )
     {
         var userIdentity = await _userManager.FindByEmailAsync (email);
 
-        var success = await CreateUser( userIdentity, baseDataModel );
-
-       
-        if ( success  && userIdentity != null)
+        if ( userIdentity != null)
         {
             await _userManager.ConfirmEmailAsync ( userIdentity, token );
 
@@ -153,12 +118,14 @@ public class AccountService : IAccountService
         }
 
         var roles = await _userManager.GetRolesAsync(user);
+
         if (!roles.Any())
         {
             return null;
         }
 
         var claims = roles.Select(role => new Claim(ClaimTypes.Role, role));
+
         return new ClaimsIdentity(claims);
     }
 
@@ -166,25 +133,7 @@ public class AccountService : IAccountService
 
     #region Priate Methods (CreateUser, CreateIdentityUser, CreateAppicationUser, RemoveIdentityUser)
 
-    private async Task<bool> CreateUser ( IdentityUser? userIdentity, BaseDataModel baseDataModel )
-    {
-        UserAccountDataModel userAccountDataModel = new UserAccountDataModel
-        {
-            Email = userIdentity != null && userIdentity.Email != null ? userIdentity.Email.Trim() : string.Empty,
-
-            PhoneNumber = userIdentity != null && userIdentity.PhoneNumber != null ? userIdentity.PhoneNumber.Trim() : string.Empty,
-
-            UserName = userIdentity != null && userIdentity.UserName != null ? userIdentity.UserName.Trim() : string.Empty
-        };  
-
-        userAccountDataModel.BaseDataModel = baseDataModel;
-
-        User userEntity = CreateUserEntity ( userIdentity != null ? userIdentity.Id : string.Empty, userAccountDataModel );
-
-        bool success = await _userRepository.AddUser ( userEntity );
-
-        return success;
-    }
+    
 
     private IdentityUser CreateIdentityUser ( UserAccountDataModel userAccountDataModel )
     {
@@ -200,43 +149,6 @@ public class AccountService : IAccountService
         };
 
         return userIdentity;
-    }
-
-    private User CreateUserEntity ( string idetytyId, 
-                                    UserAccountDataModel userAccountDataModel )
-    {
-        User objUserEntity = new User();
-
-        objUserEntity.IdentityUserID = idetytyId;
-
-        objUserEntity.Email = userAccountDataModel.Email != null ? userAccountDataModel.Email.Trim() : string.Empty;
-
-        objUserEntity.ClientName = 
-            StringRelated.GetUserNameFromEmail ( userAccountDataModel.Email != null ? userAccountDataModel.Email.Trim() : string.Empty );
-
-        objUserEntity.CreateBaseData ( userAccountDataModel.BaseDataModel );
-
-        return objUserEntity;
-    }
-
-    
-
-    private async Task RemoveIdentityUser
-            ( bool success,string email )
-    {
-        if ( success )
-        {
-            var user = await _userManager
-                       .FindByIdAsync (email);
-
-            if ( user != null )
-            {
-                var resultDelete 
-                    = await 
-                    _userManager
-                    .DeleteAsync(user);
-            }
-        }
     }
 
     public async Task<bool> UnlockUser ( string userId )

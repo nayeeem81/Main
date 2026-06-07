@@ -33,8 +33,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ValueID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -45,11 +46,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -80,9 +86,36 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("AdminPostID")
                         .HasColumnType("int");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HostCompanyName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HostCountry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("ImageFileContent")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("AdminImageFileID");
 
@@ -99,8 +132,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminPostID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -111,11 +145,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -142,15 +181,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.Property<string>("WebsiteUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AdminPostID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("AdminPosts");
                 });
@@ -170,6 +204,33 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HostCompanyName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HostCountry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("AdminPostCommentID");
 
                     b.HasIndex("AdminPostID");
@@ -185,8 +246,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -200,11 +262,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -217,121 +284,131 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         new
                         {
                             PageID = 1,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 1,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 2,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 3,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 3,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 12,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 4,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 11,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 5,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 2,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 6,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 7,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 8,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 6,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 9,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 9,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 11,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 10,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             PageID = 12,
-                            CreatedBy = 1,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 8,
                             HostCompanyName = 2,
                             HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
-                            ModifiedBy = 1,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -344,8 +421,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageContentID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -356,11 +434,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -383,8 +466,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PanelID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -395,11 +479,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -431,8 +520,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PanelPostID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -446,6 +536,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("ImageFileContent")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -453,8 +547,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -499,8 +594,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -518,11 +614,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -546,12 +647,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("SubCategoryID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.HasKey("ProductID");
-
-                    b.HasIndex("UserID");
 
                     b.ToTable("Products");
                 });
@@ -568,8 +664,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -580,11 +677,16 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -607,8 +709,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductImageFileID"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -619,6 +722,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("HostCountry")
                         .HasColumnType("int");
 
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("ImageFileContent")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
@@ -626,8 +733,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -642,114 +750,6 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.ToTable("ProductImageFiles");
                 });
 
-            modelBuilder.Entity("Domain.Model.User", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
-
-                    b.Property<double?>("AccountBalance")
-                        .HasColumnType("float");
-
-                    b.Property<string>("ClientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HostCompanyName")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HostCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdentityUserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Remarks")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserAccountType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Website")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            ClientName = "Developer",
-                            CreatedBy = 2147483647,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "naimul.prodhan@gmail.com",
-                            HostCompanyName = 2,
-                            HostCountry = 1,
-                            IdentityUserID = "e03fd0d4-00fd-090a-ca10-0d00a1118ba4",
-                            IsActive = true,
-                            ModifiedBy = 2147483647,
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserAccountType = 0
-                        },
-                        new
-                        {
-                            UserID = 2,
-                            ClientName = "FineArts",
-                            CreatedBy = 1,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "syedron@gmail.com",
-                            HostCompanyName = 2,
-                            HostCountry = 1,
-                            IdentityUserID = "e03fd0e4-00fd-090a-ca10-0d00a0018ba4",
-                            IsActive = true,
-                            ModifiedBy = 1,
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserAccountType = 0
-                        },
-                        new
-                        {
-                            UserID = 3,
-                            ClientName = "Fine Arts",
-                            CreatedBy = 1,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "finearts@gmail.com",
-                            HostCompanyName = 2,
-                            HostCountry = 1,
-                            IdentityUserID = "e03fd0e4-00fd-090a-ca10-0d00a0018ba5",
-                            IsActive = true,
-                            ModifiedBy = 1,
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserAccountType = 0
-                        });
-                });
-
             modelBuilder.Entity("Domain.Model.AdminImageFile", b =>
                 {
                     b.HasOne("Domain.Model.AdminPost", "AdminPost")
@@ -759,17 +759,6 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .IsRequired();
 
                     b.Navigation("AdminPost");
-                });
-
-            modelBuilder.Entity("Domain.Model.AdminPost", b =>
-                {
-                    b.HasOne("Domain.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Model.AdminPostComment", b =>
@@ -814,17 +803,6 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .IsRequired();
 
                     b.Navigation("PagePanel");
-                });
-
-            modelBuilder.Entity("Domain.Model.Product", b =>
-                {
-                    b.HasOne("Domain.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Model.ProductComment", b =>

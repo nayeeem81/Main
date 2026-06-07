@@ -1,9 +1,7 @@
-﻿
-@model ManageAdminPostViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@model List<AdminPostDisplayViewModel>
 
 @{
-    ViewData["Title"] = "Manage Admin Contents";
+    ViewData["Title"] = "Admin Contents";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
 }
@@ -12,32 +10,37 @@
 
     <div class="card-form">
 
-        <h4 class="card-title">MANAGE ADMIN POSTS</h4>
+        <h4 class="card-title">MANAGE YOUR ADMIN POSTS</h4>
 
         <div class="gap"></div>
+
         <div class="gap"></div>
 
         <table class="table">
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.ListAdminPost[0].PostTypeID)
+                        @Html.DisplayNameFor(model => model[0].DiispayPostType)
                     </th>
+
                     <th>
-                        @Html.DisplayNameFor(model => model.ListAdminPost[0].PosterName)
+                        @Html.DisplayNameFor(model => model[0].PosterName)
                     </th>
+
                     <th>
-                        @Html.DisplayNameFor(model => model.ListAdminPost[0].PostTitle)
+                        @Html.DisplayNameFor(model => model[0].PostTitle)
                     </th>
            
                     <th></th>
                 </tr>
             </thead>
+
             <tbody>
-                @foreach (var item in Model.ListAdminPost.ToList()) {
+
+                @foreach (var item in Model.ToList()) {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.EnumAdminPostTypeDescription)
+                            @Html.DisplayFor(modelItem => item.DiispayPostType)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.PosterName)
@@ -52,26 +55,31 @@
                                     href="@Url.Action("Details", "ManageAdminPost", new { Area = "AdminContent", id = item.AdminPostID })">
                                 <i class="fa fa-eye"></i>
                             </a>
+
                             <a title="Edit Admin Content"
                                     class="icon-button flex"
                                     href="@Url.Action("Edit", "ManageAdminPost", new { Area = "AdminContent", id = item.AdminPostID })">
                                 <i class="fa fa-edit"></i>
                             </a>
+
                             <a title="Remove Admin Content"
                                     class="icon-button flex"
                                     href="@Url.Action("Delete", "ManageAdminPost", new { Area = "AdminContent", id = item.AdminPostID })">
                                 <i class="fa fa-trash"></i>
                             </a>
+
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+
     </div>
 </div>
 
 @section scriptsapp {
+
     <script>
-        PAGE_NAME = '@Model.PageName';
+
     </script>
 }

@@ -1,111 +1,106 @@
 ﻿@model AdminPostViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
-<div id="newAdminPostContainerPartial" class="card-form row">
+<div id="newAdminPostContainerPartial" class="row card-form">
 
-    <h4 class="card-title">NEW ADMIN POST</h4>
-    
-    <div class="gap"></div>
-    <div class="gap"></div>
+    <div class="offset-2 col-8">
 
-    <form id="myMainForm" 
-        action="@Url.Action("SaveNewAdminContent", "ManageAdminPost")" 
-        method="post" 
-        novalidate>
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+
+                <h4 class="card-title all-caps">
+
+                    NEW ADMIN POST
+
+                </h4>
+
+            </div>
+
+            <div class="gap"></div>
+            <div class="gap"></div>
+
+            <form id="myMainForm" 
+                  action="@Url.Action( "SaveNewAdminContent","ManageAdminPost" )"
+                  method="POST">
        
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(a => a.PageName)
-        @Html.HiddenFor(a => a.ModelBase)
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(a => a.PageName)
 
-        <h4 class="card-subtitle">Post Information</h4>
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    <h4 class="card-subtitle all-caps">Post Information</h4>
+                </div>
 
-        <div class="gap"></div>
-       
-        <div class="input-field col-md-6 col-sm-6 col-lg-6 col-xs-12">
-            @Html.LabelFor(a => a.PostTypeID)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
+                <div class="gap"></div>
 
-            @Html.DropDownListFor(a => a.PostTypeID, Model.AV_PostType, new { @class = "fff" })
-            @Html.ValidationMessageFor(m => m.PostTypeID, "", new { @class = "text-danger  custom-inline-field-error" })
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.PostTypeID )
+                    @Html.DropDownListFor(a => a.PostTypeID, Model.AV_PostType, new { @class = "fff" })
+                    @Html.ValidationMessageFor(m => m.PostTypeID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.PosterName )
+                    @Html.EditorFor(a => a.PosterName, new { htmlAttributes = new { @class = "fff" } })
+                    @Html.ValidationMessageFor(m => m.PosterName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.PostTitle )
+                    @Html.EditorFor(a => a.PostTitle, new { htmlAttributes = new { @class = "fff" } })
+                    @Html.ValidationMessageFor(m => m.PostTitle, "", new { @class = "text-danger" })    
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.PosterContactNumber )
+                    @Html.EditorFor(a => a.PosterContactNumber, new { htmlAttributes = new { @class = "fff" } })
+                    @Html.ValidationMessageFor(m => m.PosterContactNumber, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.WebsiteUrl )
+                    @Html.EditorFor(a => a.WebsiteUrl, new { htmlAttributes = new { @class = "fff" } })
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.ShortNote )
+                    @Html.TextAreaFor(a => a.ShortNote, new { @class = "fff" })
+                    @Html.ValidationMessageFor(m => m.ShortNote, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                    @Html.LabelFor( a => a.SearchTag )
+                    @Html.TextAreaFor(a => a.SearchTag, new { @class = "fff" })
+                    @Html.ValidationMessageFor(m => m.ShortNote, "", new { @class = "text-danger" })
+                </div>
+            </form>
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                <h4 class="card-subtitle all-caps">Post Pictures</h4>
+            </div>
+
+            <div class="gap"></div>
+
+            <div class="upload-container image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                <input type="file" id="fileInput" class="light-button btn-sm" name="myFile" />
+                <button type="button" id="btnUpload" class="light-button btn-sm">Add New Picture</button>
+            </div>
+
+            <div id="imagePanelContainer" class="image-field col-sm-12 col-md-12 col-xs-12 col-lg-12">
+            </div>
+
+            <div class="gap"></div>
+
+            <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
+                <button id="btnSubmit"
+                        type="submit"
+                        class="primary-button max"
+                        form="myMainForm">
+                    @SharedLocalizer["NewPostButtonSUBMITAD"]
+                </button>
+            </div>
+
         </div>
-        
-        <div class="input-field col-md-6 col-sm-6 col-lg-6 col-xs-12">
-            @Html.LabelFor(a => a.PosterName)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
 
-            @Html.EditorFor(a => a.PosterName, new { htmlAttributes = new { @class = "fff" } })
-            @Html.ValidationMessageFor(m => m.PosterName, "", new { @class = "text-danger custom-inline-field-error" })
-        </div>
-
-        <div class="input-field col-md-12 col-sm-12 col-lg-12 col-xs-12">
-            @Html.LabelFor(a => a.PostTitle)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
-
-            @Html.EditorFor(a => a.PostTitle, new { htmlAttributes = new { @class = "fff" } })
-            @Html.ValidationMessageFor(m => m.PostTitle, "", new { @class = "text-danger custom-inline-field-error" })
-        </div>
-
-        <div class="input-field col-md-12 col-sm-12 col-lg-12 col-xs-12">
-            @Html.LabelFor(a => a.WebsiteUrl)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
-
-            @Html.EditorFor(a => a.WebsiteUrl, new { htmlAttributes = new { @class = "fff" } })
-        </div>
-
-        <div class="input-field col-md-12 col-sm-12 col-lg-12 col-xs-12">
-            @Html.LabelFor(a => a.ShortNote)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
-
-            @Html.TextAreaFor(a => a.ShortNote, new { @class = "fff" })
-            @Html.ValidationMessageFor(m => m.ShortNote, "", new { @class = "text-danger custom-inline-field-error" })
-        </div>
-
-        <div class="input-field col-md-12 col-sm-12 col-lg-12 col-xs-12">
-            @Html.LabelFor(a => a.SearchTag)
-            <a title="">
-                <img alt="Help" src="~/lib/Images/Icons/help.png" class="help-icon" />
-            </a>
-
-            @Html.TextAreaFor(a => a.SearchTag, new { @class = "fff" })
-        </div>
-    </form>
-    
-
-    <h4 class="card-subtitle">Post Pictures</h4>
-
-    <div class="gap"></div>
-
-    <div class="upload-container image-field col-md-4 col-sm-6 col-lg-4 col-xs-12">
-        
-        <!-- Standard file input -->
-        <input type="file" id="fileInput" class="light-button btn-sm" name="myFile" />
-        
-        <!-- Button to trigger the AJAX call -->
-        <button type="button" id="btnUpload" class="light-button btn-sm">Add New Picture</button>
-        
     </div>
-
-    <div class="image-field col-md-12 col-xs-12 col-sm-12 col-lg-12" id="imagePanelContainer">
-    
-    </div>     
-    
-    <div class="gap"></div>
-
-    <button id="btnSubmit" 
-        type="submit" 
-        class="primary-button max" 
-        form="myMainForm">
-            @SharedLocalizer["NewPostButtonSUBMITAD"]
-    </button>
 
 </div>
