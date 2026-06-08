@@ -245,9 +245,12 @@ public class ManageProductController : BaseController
 
                         SetSessionImageFile(objFile);
                     }
-                }
 
-                return Json( new { success = true });
+                    return Json ( new
+                    {
+                        success = true
+                    } );
+                }
             }
         }
 

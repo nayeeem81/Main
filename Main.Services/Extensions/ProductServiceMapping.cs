@@ -85,9 +85,13 @@ public static class ProductServiceMapping
         List<ProductImageFile> listProductFileEntity
             = new List<ProductImageFile>();
 
+        ProductImageFile productImageFile;
         productDataModel.ImageFiles.ForEach ( fileDataModel =>
         {
-            listProductFileEntity.Add ( new ProductImageFile ( fileDataModel.ImageFileContent ) );
+            productImageFile = new ProductImageFile ( fileDataModel.ImageFileContent );
+            productImageFile.ProductID = fileDataModel.ProductID;
+            productImageFile.CreateBaseData ( fileDataModel.BaseDataModel );
+            listProductFileEntity.Add ( productImageFile );
         } );
 
         return listProductFileEntity;
@@ -166,10 +170,13 @@ public static class ProductServiceMapping
 
         listProductImageFileEntity.AddRange ( productEntity.ListImageFiles );
 
+        ProductImageFile fileEntity;
+
         productDataModel.ImageFiles.ForEach ( fileDataModel =>
         {
-            var fileEntity
-                = new ProductImageFile(fileDataModel.ImageFileContent);
+            fileEntity = new ProductImageFile(fileDataModel.ImageFileContent);
+
+            fileEntity.ModifyBaseData ( fileDataModel.BaseDataModel );
 
             fileEntity.ProductID = productEntity.ProductID;
 
