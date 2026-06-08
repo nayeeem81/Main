@@ -26,7 +26,6 @@
    
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(a => a.PageName)
-                @Html.HiddenFor(a => a.ProductID)
 
 
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
@@ -99,13 +98,11 @@
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.Discount )
                     @Html.EditorFor(a => a.Discount,  new { @class = "fff" } )
-                    @Html.ValidationMessageFor(m => m.Discount, "", new { @class = "text-danger" })
                 </div>
 
                  <div class="col-sm-12 col-md-12 col-xs-12 col-lg-12">
                     @Html.LabelFor( a => a.SaleCommission )
                     @Html.EditorFor(a => a.SaleCommission, new { @class = "fff" })
-                    @Html.ValidationMessageFor(m => m.SaleCommission, "", new { @class = "text-danger" })
                 </div>
 
             </form>
