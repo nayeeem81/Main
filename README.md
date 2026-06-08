@@ -46,7 +46,7 @@ Here in this shop example, we are considering content (image, link, short note, 
 
 ***
 ### Use of these Contents
-When you will configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates only from show advertisement with or with a link to go navigate to the ad website or video.
+When you will configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates are only for showing advertisement with or without a link to navigate to the ad website or video.
 
 Remember that there are other templates for Products (shop owners) which includes the add to cart button.
 
