@@ -1,14 +1,34 @@
 <img width="901" height="487" alt="GithubSocialImag1" src="https://github.com/user-attachments/assets/96d62ec1-4457-4c2f-914c-10e41e301e66" />
 
 # Story
-The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products and services. He/she is the owner of th[...]
+## Shop Example: 
 
-The shop owner will have a company account to upload products. The shop will have one more account which is for shop admin. The purpose of the admin account is to organize the uploaded products in [...]
+The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products/services. He/she is the owner of the shop and the website. The shop owner will have his own domain and hosting.  
 
-Visitors of the products can browse through the products and add to cart and checkout for purchase. Visitors can see the details of the product with multiple photos and details. 
+The shop owner will have a company account to upload products. The shop will have one more account which is for shop admin. The purpose of the admin account is to organize the uploaded products in different templates on the home page and market page. The home page will display products based on selected templates and products. 
 
-Shop admin can display other companies or business advertisements on his website. He can be an affiliate of other websites. The website will provide a few pages: contact us, about us, and set a lo[...]
+Visitors of the products can browse through the products and add to cart and checkout for purchase. Visitors can see the details of the product with multiple photos and information. 
 
+Shop Admin User can configure & display other companies or business advertisements on the shop website. He can be an affiliate of other websites.  
+
+### The website will provide a few more pages:  
+
+1. contact us,  
+2. about us,  
+3. FAQ 
+4. Set a logo for the website.  
+
+In short, this is a very small size CMS for small businesses. 
+
+# Shop Example (Business Concept): 
+
+### 1. The business will give the shop two things. A domain and a hosting plan. 
+
+### 2. As a subscriber, the shop will give us a monthly subscription fee. The fee will cover the hosting of the website. The domain for the shop will have a one-time fee every three years. 
+
+### 3. For new enhancement for the shop’s ow requirements, a one-time fee can be introduced. 
+
+# Shop Example Modues
 
 ## User Registration  
   - Anyone can create an account to purchase products.  
