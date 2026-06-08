@@ -9,9 +9,7 @@ Visitors of the products can browse through the products and add to cart and che
 
 Shop admin can display other companies or business advertisements on his website. He can be an affiliate of other websites. The website will provide a few pages: contact us, about us, and set a lo[...]
 
-We as a vendor or provider; we will provide the domain and hosting for the shop owner. We give the shop the domain based on the name of the shop. As a subscriber, the shop will give us a monthly s[...]
 
-Based on the request of the shop, we will make enhancements or changes. For a new feature or change, the shop needs to pay for the change. In short, this is a very small size CMS for small busines[...]
 
 # Manage Content:
 Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give message to the visitors about a business or advertisements. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video.
