@@ -79,7 +79,7 @@ public class ManageAdminPostController : BaseController
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public ViewResult NewContent()
+    public IActionResult NewContent ( )
     {
         try
         {
@@ -88,12 +88,12 @@ public class ManageAdminPostController : BaseController
             var objPostViewModel = new AdminPostViewModel();
             
             objPostViewModel.PageName = "Add Admin Post";
-            
-            return View( "~/Areas/AdminContent/Views/ManageAdminPost/NewContent.cshtml", objPostViewModel);
+
+            return View( objPostViewModel );
         }
         catch
         {
-            return View( "~/Areas/AdminContent/Views/ManageAdminPost/NewContent.cshtml", new AdminPostViewModel());
+            return View(new AdminPostViewModel());
         }
     }
 
@@ -110,7 +110,9 @@ public class ManageAdminPostController : BaseController
 
         try
         {
-            AdminPostDataModel adminPostDataModel = MapNewDataModel ( collection );
+            AdminPostDataModel adminPostDataModel = AdminPostMapping.MapNewDataModel ( collection );
+
+            adminPostDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
 
             SetImageInDataModel ( adminPostDataModel );
 
@@ -122,27 +124,10 @@ public class ManageAdminPostController : BaseController
         } 
         catch (Exception ex)
         {
-            _logger.LogWarning ( "Error saving new admin post" + ex.Message );
             return BadRequest(new { success = false, message = ex.Message });
         }
     }
-
-
-    private AdminPostDataModel MapNewDataModel ( AdminPostViewModel adminPostViewModel )
-    {
-        AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
-
-        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID ?? 0;
-        adminPostDataModel.PostTitle = adminPostViewModel.PostTitle;
-        adminPostDataModel.PosterName = adminPostViewModel.PosterName;
-        adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
-        adminPostDataModel.WebsiteUrl = adminPostViewModel.WebsiteUrl;
-        adminPostDataModel.ShortNote = adminPostViewModel.ShortNote;
-        adminPostDataModel.SearchTag = adminPostViewModel.SearchTag;
-        adminPostDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
-
-        return adminPostDataModel;
-    }
+    
 
 
     [HttpGet]
@@ -161,7 +146,7 @@ public class ManageAdminPostController : BaseController
 
             AdminPostMapping.MapAdminPostViewModel ( adminPostDataModel, adminPostViewModel);
 
-            adminPostViewModel.ListAdminPostFileImages =            AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages ); 
+            adminPostViewModel.ListAdminPostFileImages = AdminPostMapping.MapAdminImageFileViewModelList( adminPostDataModel.ListAdminPostFileImages ); 
 
             adminPostViewModel.PageName = "Edit Post";
             

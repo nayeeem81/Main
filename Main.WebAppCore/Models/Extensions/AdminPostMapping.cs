@@ -5,6 +5,22 @@ namespace WebAppCore.ViewModel.Extensions;
 
 public static class AdminPostMapping
 {
+    public static AdminPostDataModel MapNewDataModel ( AdminPostViewModel adminPostViewModel )
+    {
+        AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
+
+        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID ?? 0;
+        adminPostDataModel.PostTitle = adminPostViewModel.PostTitle;
+        adminPostDataModel.PosterName = adminPostViewModel.PosterName;
+        adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
+        adminPostDataModel.WebsiteUrl = adminPostViewModel.WebsiteUrl;
+        adminPostDataModel.ShortNote = adminPostViewModel.ShortNote;
+        adminPostDataModel.SearchTag = adminPostViewModel.SearchTag;
+        adminPostDataModel.PostType = adminPostViewModel.PostType;
+
+        return adminPostDataModel;
+    }
+
     public static AdminPostDataModel MapAdminPostDataModel ( AdminPostViewModel adminPostViewModel )
     {
         if ( adminPostViewModel == null )

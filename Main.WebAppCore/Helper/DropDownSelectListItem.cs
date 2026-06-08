@@ -66,12 +66,6 @@ public class SelectListItemDropDown
             objOfferTypeListItems.Add ( objItem );
         }
 
-        objItem = new SelectListItem();
-        objItem.Text = "";
-        objItem.Value = "";
-
-        objOfferTypeListItems.Add ( objItem );
-
         return objOfferTypeListItems.AsEnumerable ( );
     }
 
