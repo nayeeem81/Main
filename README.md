@@ -9,12 +9,49 @@ Visitors of the products can browse through the products and add to cart and che
 
 Shop admin can display other companies or business advertisements on his website. He can be an affiliate of other websites. The website will provide a few pages: contact us, about us, and set a lo[...]
 
-We as a vendor or provider; we will provide the domain and hosting for the shop owner. We give the shop the domain based on the name of the shop. As a subscriber, the shop will give us a monthly s[...]
 
-Based on the request of the shop, we will make enhancements or changes. For a new feature or change, the shop needs to pay for the change. In short, this is a very small size CMS for small busines[...]
+## User Registration  
+  - Anyone can create an account to purchase products.  
+  - Registration requires email verification before login is allowed.
+    
+### **Email Verification Process**  
+  - A verification email is sent after registration.  
+  - The link is valid for **2 hours**; after that, it expires.  
+  - Without verification, users cannot log in.
+    
+### **Getting a New Verification Link**  
+  - Option 1: Try logging in with your registered email and password; a new verification email will be sent.  
+  - Option 2: Use the “Forgot Password” link, enter your email, and receive a fresh verification link.
+    
+### **Security Policy**  
+  - No user can log in until their email is confirmed.  
+  - Password reset and account recovery options are built in.  
+
+In short: the page outlines a **strict email verification policy** to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. 
+
+## Manage Contents
+Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give message to the visitors about a business or advertisements. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video.
+
+### Admin User: He/she can add, update and delete a content and see the list of contents for the shop; he is the Admin.
+
+### A Content has few fields:
+
+1. Poster Name
+1. Poster Contact Number
+1. Post Title
+1. Type of Post: (Ad Space, Short Note, YouTube Video)
+1. Website: The link of the advertainment (company) or YouTube link
+1. Search Tag 
+1. Images (any number)
+
+***
+### Use of these Contents
+When you will configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates only from show advertisement with or with a link to go navigate to the ad website or video.
+
+Remember that there are other templates for Products (shop owners) which includes the add to cart button.
 
 
-# Solution Design & Best Practices (.Net 8.0)
+# Solution Design & Architecture (.Net 8.0)
 
 I started my code to build and run for a client (small shop). 
 
@@ -62,9 +99,9 @@ For auntication, we are using te .Net 8.0 Identity with default configuratin. Th
 
 Currently the roles are: Admin, Company & User
 
-## Broken Access Control & Enumeration (OWASP A01:2021):
-#### The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing or[...]
-#### Mitigation: 
+### Broken Access Control & Enumeration (OWASP A01:2021):
+### The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing or[...]
+### Mitigation: 
 1. Anti-Enumeration Logic. 
 2. The controller uses an identity-blind diversion step. 
 
@@ -74,40 +111,40 @@ This means that we will check the link with the existence and verified requireme
 
 We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. From the security stand; Whether the ema[...]
  
-## Cryptographic Failures & Session Hijacking (OWASP A02:2021)
+### Cryptographic Failures & Session Hijacking (OWASP A02:2021)
 
-#### The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
+### The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
 
-#### Mitigation: 
+### Mitigation: 
 1. Cryptographic Token Lifecycles: 
 The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string sign[...]
 
 2. Security Stamp Invalidation: 
 Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates any active browse[...]
 
-## Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
-#### The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
-#### Mitigation: 
+### Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
+### The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
+### Mitigation: 
 1. Token Integrity Checks: The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into [...]
 2. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before sign; [...]
 
-## Identification and Authentication Failures (OWASP A07:2021)
-#### The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
-#### Mitigation: 
+### Identification and Authentication Failures (OWASP A07:2021)
+### The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
+### Mitigation: 
 1. State Enforcement Policies: 
 The system explicitly requires email verification before allowing a password reset flow (IsEmailConfirmedAsync). The application binds the target email address context directly inside the cryptogr[...]
 
 # Main.Infrastructure Project (Data Infrastructure):
-#### Nuget PMC:
+### Nuget PMC:
 Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8.0.0
 Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.0
 Install-Package Microsoft.AspNetCore.Identity.EntityFrameworkCore -Version 8.0.0
 
-##### Main.Migrator Project:
+### Main.Migrator Project:
 When we create the console project (Auto):
 Install-Package Microsoft.VisualStudio.Azure.Containers.Tools.Targets -Version 1.23.0
 
-#### Nuget PMC:
+### Nuget PMC:
 Install-Package Microsoft.Extensions.Hosting -Version 8.0.0
 Install-Package Microsoft.Extensions.Configuration.Json -Version 8.0.0
 Install-Package Microsoft.EntityFrameworkCore.Design -Version 8.0.0
