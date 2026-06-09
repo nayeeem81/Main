@@ -284,7 +284,7 @@ public class ManageAdminPostController : BaseController
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public PartialViewResult ImageLoad()
+    public PartialViewResult LoadImage ( )
     {
         try
         {

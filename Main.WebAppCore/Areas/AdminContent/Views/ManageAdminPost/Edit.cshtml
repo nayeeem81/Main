@@ -21,9 +21,8 @@
     var PAGE_NAME = '@Model.PageName';
     var SUCCESS = 'Success';
     var IMAGE_LOAD_SUCCESSFUL = 'Image load successful!';
-    
-    var imageLoadURL = '@Url.Action("ImageLoad", "ManageAdminPost")';
-    var imageUploadURL = '@Url.Action("ImageUpload", "ManageAdminPost")';
+    var imageLoadURL = '@Url.Action( "LoadImage","ManageAdminPost" )';
+    var imageUploadURL = '@Url.Action( "UploadImage","ManageAdminPost" )';
     var removeImageShortContentURL = '@Url.Action("ImageRemove", "ManageAdminPost")?id=';
 
     var notify = $.notify;

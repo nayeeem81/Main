@@ -22,7 +22,7 @@
 
         var getSubCategoryURL = '@Url.Action("GetSubCategories", "ManageProduct")?id=';
         var uploadImageURL = '@Url.Action("UploadImage", "ManageProduct")';
-        var loadImageURL = '@Url.Action("LoadImage", "ManageProduct")';
+        var loadImageURL = '@Url.Action( "LoadImage","ManageProduct" )';
         var removeImageShortContentURL = '@Url.Action("ImageRemove", "ManageProduct")?id=';
 
         var SUCCESS = "Success";
@@ -160,10 +160,7 @@
     
                 fetch(this.action, {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    }
+                    body: formData
                 })
                 .then(response => {
             

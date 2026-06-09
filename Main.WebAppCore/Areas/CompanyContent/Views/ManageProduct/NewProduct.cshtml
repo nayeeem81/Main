@@ -150,10 +150,7 @@ $(document).ready(function () {
     
         fetch(this.action, {
             method: 'POST',
-            body: formData,
-            headers: {
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-            }
+            body: formData
         })
         .then(response => {
             
