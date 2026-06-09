@@ -6,7 +6,7 @@
     ViewBag.ExcludeHeader = true;
 }
 
-<div id="manageAdminPostDesktop" class="container">
+<div id="manageAdminProduct" class="container">
 
     <div class="card-form">
 
@@ -62,19 +62,19 @@
            
                         <td data-label="Action">
 
-                            <a title="View Admin Content"
+                            <a title="View Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Details", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
                                 <i class="fa fa-eye"></i>
                             </a>
 
-                            <a title="Edit Admin Content"
+                            <a title="Edit Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Edit", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
                                 <i class="fa fa-edit"></i>
                             </a>
 
-                            <a title="Remove Admin Content"
+                            <a title="Remove Product"
                                     class="icon-button flex"
                                     href="@Url.Action("Delete", "ManageProduct", new { Area = "CompanyContent", id = item.ProductID })">
                                 <i class="fa fa-trash"></i>

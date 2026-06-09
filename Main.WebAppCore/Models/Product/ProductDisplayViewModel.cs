@@ -10,6 +10,7 @@ public class ProductDisplayViewModel
 
     public int ProductID { get; set; }
 
+
     [Display(Name = "Product Category")]
     public string DisplayCategory { get; set; }
 
@@ -23,7 +24,9 @@ public class ProductDisplayViewModel
     [Display(Name = "Product Name")]
     public string ProductName { get; set; }
 
-    [Display(Name = "Price")]
+
+    [Display(Name = "Price (Taka)")]
+    [DataType(DataType.Currency)]
     public decimal UnitPrice { get; set; }
 }
 

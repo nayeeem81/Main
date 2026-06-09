@@ -37,6 +37,8 @@ public static class ProductMapping
         productViewModel.Discount = productDataModel.Discount;
         productViewModel.SaleCommission = productDataModel.SaleCommission;
         productViewModel.Description = productDataModel.Description;
+        productViewModel.SearchTag = productDataModel.SearchTag;
+
 
         List <ImageFile> imageFiles = new List<ImageFile>();
         ImageFile imageFile;

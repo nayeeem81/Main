@@ -10,8 +10,6 @@ public class ImageFile
     {
         FileContent = fileContent;
         IsNew = true;
-        FileID += 1;
-        PostID = null;
     }
 
     public ImageFile ( byte[] fileContent, int? postId, int fileId )
@@ -22,7 +20,7 @@ public class ImageFile
         PostID = postId;
     }
 
-    public int FileID { get; set; } = 0;
+    public int FileID { get; set; } 
    
     public byte[] FileContent { get; set; }
    

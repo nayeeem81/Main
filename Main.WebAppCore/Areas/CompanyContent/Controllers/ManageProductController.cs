@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common.Enums;
 using Main.Common.Model;
 using Main.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -176,9 +175,10 @@ public class ManageProductController : BaseController
 
             var result = await _productService.UpdateProduct(productDataModel);
 
-            string? urlGo = Url.Action("Index", "ManageProduct", new { Area = "CompanyContent" });
-
-            return Ok(new { success = true, urlGo = urlGo });
+            return Ok ( new { 
+                        success = true, 
+                        urlGo = Url.Action ( "Index","ManageProduct", new { Area = "CompanyContent" }) 
+                    } );
         }
         catch (Exception ex)
         {
@@ -188,7 +188,7 @@ public class ManageProductController : BaseController
 
 
     [Authorize(Roles = "Company")]
-    public async Task<ActionResult> Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
         try
         {
@@ -196,9 +196,7 @@ public class ManageProductController : BaseController
 
             ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
 
-            productViewModel.CategoryText = SelectListItemDropDown.GetCategoryText ((EnumCategoryFor) _userContext.EnumCategoryFor, productViewModel.CategoryID );
-
-            productViewModel.SubCategoryText = SelectListItemDropDown.GetCategoryText ( ( EnumCategoryFor ) _userContext.EnumCategoryFor,productViewModel.SubCategoryID );
+            productViewModel.SetDisplaytext ( _userContext.EnumCategoryFor );
 
             productViewModel.PageName = "Product Details";
 
@@ -217,46 +215,56 @@ public class ManageProductController : BaseController
     {
         if (file != null && file.Length > 0)
         {
-            if (file.Length > AppSettings.Current.PostImageSize )
+            if ( file == null || file.Length > AppSettings.Current.PostImageSize )
             {
                 return Json(new { success = false });
             }
             else
             {
-                if (!string.IsNullOrEmpty(file.ContentType) && file.FileName != null)
+                ImageFile imageFile = ReadImage ( file );
+
+                if ( imageFile.IsNew )
                 {
-                    string extension = Path.GetExtension(file.FileName).ToLower();
-
-                    if (extension.Equals(".jpg") || extension.Equals(".jpeg")
-
-                        || extension.Equals(".png") || extension.Equals(".gif"))
-                    {
-                        var imgByte = new Byte[file.Length];
-
-                        var stream = file.OpenReadStream();
-
-                        var result = stream.Read(imgByte);
-
-                        ImageFile objFile = new ImageFile ()
-                        {
-                            FileContent = imgByte  ,
-                            IsNew = true
-                        };
-
-                        SetSessionImageFile(objFile);
-                    }
-
-                    return Json ( new
-                    {
-                        success = true
-                    } );
+                    SetSessionImageFile ( imageFile );
                 }
+
+                return Json ( new {  success = true } );
             }
         }
 
-        return Json( new { success = true });
+        return Json( new { success = false });
     }
-   
+
+
+    private ImageFile ReadImage ( IFormFile file )
+    {
+        if ( !string.IsNullOrEmpty ( file.ContentType ) && file.FileName != null )
+        {
+            string extension = Path.GetExtension(file.FileName).ToLower();
+
+            if ( extension.Equals ( ".jpg" ) || extension.Equals ( ".jpeg" )
+
+                || extension.Equals ( ".png" ) || extension.Equals ( ".gif" ) )
+            {
+                var imgByte = new Byte[file.Length];
+
+                var stream = file.OpenReadStream();
+
+                var result = stream.Read(imgByte);
+
+                ImageFile objFile = new ImageFile ()
+                {
+                    FileContent = imgByte ,
+                    IsNew = true ,
+                    PostID = 0
+                };
+
+                return objFile;
+            }
+        }
+
+        return new ImageFile ();
+    }
 
     [HttpGet]
     [Authorize(Roles = "Company")]
@@ -292,14 +300,11 @@ public class ManageProductController : BaseController
 
             result = RemoveSessionImageFile ( id );
 
-            return Json ( new
-            {
-                success = result
-            } );
+            return Json ( new { success = result } );
         }
         catch
         {
-            return Json(new { errors = false });
+            return Json ( new { errors = false } );
         }
     }
 
@@ -323,30 +328,25 @@ public class ManageProductController : BaseController
 
     [HttpGet]
     [Authorize(Roles = "Company")]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            var objProductViewModel = await _productService.GetProductForEditProductID(id);
-
             ProductViewModel productViewModel = new ProductViewModel ();
-            productViewModel.ProductID = productViewModel.ProductID;
+            productViewModel.ProductID = id;
 
             return View ( productViewModel );
         }                                                         
         catch 
         {
-            return BadRequest ( new
-            {
-                success = false
-            } );
+            return BadRequest ( new { success = false } );
         }
     }
 
 
     [HttpGet]
     [Authorize(Roles = "Company")]
-    public async Task<ActionResult> DeleteProduct(int id, int fakeId)
+    public async Task<IActionResult> DeleteProduct(int id, int fakeId)
     {
         try
         {
@@ -357,17 +357,11 @@ public class ManageProductController : BaseController
                 return RedirectToAction ( "Index" );
             }
 
-            return RedirectToAction ( "Delete", new
-            {
-                id = id
-            } );
+            return RedirectToAction ( "Delete", new { id = id } );
         }
         catch
         {
-            return BadRequest ( new
-            {
-                success = false
-            } );
+            return BadRequest ( new { success = false } );
         }
     }
 }

@@ -216,58 +216,75 @@ public class ManageAdminPostController : BaseController
 
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> ImageUpload(IFormFile file)
+    [Authorize ( Roles = "Admin" )]
+    public JsonResult UploadImage ( IFormFile file )
     {
-        try
+        if ( file != null && file.Length > 0 )
         {
-            if (file != null && file.Length > 0)
+            if ( file == null || file.Length > AppSettings.Current.PostImageSize )
             {
-
-                if (file.Length > AppSettings.Current.PostImageSize )
+                return Json ( new
                 {
-                    return Json(new { success = false });
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(file.ContentType) && file.FileName != null)
-                    {
-                        string extension = Path.GetExtension(file.FileName).ToLower();
-
-                        if (extension.Equals(".jpg") || extension.Equals(".jpeg")
-
-                            || extension.Equals(".png") || extension.Equals(".gif"))
-                        {
-                            var imgByte = new Byte[file.Length];
-
-                            var stream = file.OpenReadStream();
-
-                            var resut = stream.ReadAsync(imgByte);
-
-                            ImageFile objFile = new ImageFile ()
-                            { 
-                                FileContent = imgByte, 
-                                IsNew = true 
-                            };
-                            
-                            SetSessionImageFile(objFile);
-                        }
-                    }
-                }
+                    success = false
+                } );
             }
+            else
+            {
+                ImageFile imageFile = ReadImage ( file );
 
-            return Json(new { success = true });
+                if ( imageFile.IsNew )
+                {
+                    SetSessionImageFile ( imageFile );
+                }
+
+                return Json ( new
+                {
+                    success = true
+                } );
+            }
         }
-        catch (Exception ex)
+
+        return Json ( new
         {
-            return Json(new { message = ex.Message });
+            success = false
+        } );
+    }
+
+
+    private ImageFile ReadImage ( IFormFile file )
+    {
+        if ( !string.IsNullOrEmpty ( file.ContentType ) && file.FileName != null )
+        {
+            string extension = Path.GetExtension(file.FileName).ToLower();
+
+            if ( extension.Equals ( ".jpg" ) || extension.Equals ( ".jpeg" )
+
+                || extension.Equals ( ".png" ) || extension.Equals ( ".gif" ) )
+            {
+                var imgByte = new Byte[file.Length];
+
+                var stream = file.OpenReadStream();
+
+                var result = stream.Read(imgByte);
+
+                ImageFile objFile = new ImageFile ()
+                {
+                    FileContent = imgByte ,
+                    IsNew = true ,
+                    PostID = 0
+                };
+
+                return objFile;
+            }
         }
+
+        return new ImageFile ( );
     }
 
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public PartialViewResult ImageLoad()
+    public PartialViewResult LoadImage ( )
     {
         try
         {

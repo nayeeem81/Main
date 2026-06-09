@@ -176,7 +176,7 @@ public static class ProductServiceMapping
         {
             fileEntity = new ProductImageFile(fileDataModel.ImageFileContent);
 
-            fileEntity.ModifyBaseData ( fileDataModel.BaseDataModel );
+            fileEntity.CreateBaseData ( fileDataModel.BaseDataModel );
 
             fileEntity.ProductID = productEntity.ProductID;
 

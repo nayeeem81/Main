@@ -75,6 +75,13 @@ public class ProductViewModel : BaseViewModel
     [Display(Name = "Sub Category")]
     public string? SubCategoryText { get; set; }
 
+    public void SetDisplaytext ( EnumCategoryFor enumCategoryFor)
+    {
+        CategoryText = SelectListItemDropDown.GetCategoryText ( ( EnumCategoryFor )  enumCategoryFor, CategoryID );
+
+        SubCategoryText = SelectListItemDropDown.GetCategoryText ( ( EnumCategoryFor ) enumCategoryFor, SubCategoryID );
+    }
+
     public IEnumerable<SelectListItem> AV_Category { get; set; }
 
     public IEnumerable<SelectListItem> AV_SubCategory { get; set; }

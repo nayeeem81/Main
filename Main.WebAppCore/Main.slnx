@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="Main.Common/Main.Common.csproj" Id="9ec1bd43-fe89-42bc-b5eb-2cc7212b86ce" />
+  <Project Path="Main.Infrastructure/Main.Infrastructure.csproj" Id="58cc4f58-1b5c-48a1-a7fc-c07e576d1ebf" />
+  <Project Path="Main.Migrator/Main.Migrator.csproj" Id="ce01ed80-30ff-48d5-946f-ec42382468fb" />
+  <Project Path="Main.Model/Main.Model.csproj" Id="c366b620-f6f5-44ea-8d8d-6c2b55a106ec" />
+  <Project Path="Main.Services/Main.Services.csproj" Id="b83813b5-592d-4e09-914b-5b7dcd750f51" />
+  <Project Path="Main.WebAppCore/Main.WebAppCore.csproj">
+    <BuildDependency Project="Main.Common/Main.Common.csproj" />
+    <BuildDependency Project="Main.Model/Main.Model.csproj" />
+  </Project>
+  <Project Path="ResourceLibrary/ResourceLibrary.csproj" Id="4c814463-ebb6-41cf-b094-8467255e7a55" />
+</Solution>
