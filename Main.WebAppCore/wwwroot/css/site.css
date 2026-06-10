@@ -46,11 +46,12 @@ header {
       height: inherit;
       flex-wrap: wrap; }
     header .main-header .logo {
-      font-weight: bold;
-      font-size: 15px;
-      order: 1;
-      flex: 1; }
-      header .main-header .logo img {
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 20px;
+        order: 1;
+        flex: 1; }
+    header .main-header .logo img {
         width: 100%;
         max-width: 325px; }
       @media (min-width: 358px) {

@@ -2,9 +2,12 @@
 
 public class BaseViewModel
 {
-        public BaseViewModel()
-        {
-        }
+    public BaseViewModel ( )
+    {
+    }
 
-        public string PageName { get; set; }
+    public string PageName
+    {
+        get; set;
+    }
 }

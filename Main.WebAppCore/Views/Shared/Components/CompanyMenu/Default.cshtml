@@ -19,28 +19,60 @@
             <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
 
                 <li class="company-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Company" asp-controller="CompanySettings" asp-action="ManageAccount">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
+
+                    <a class="dropdown-item dropdown-item-text icon-button"
+                        asp-area="Company" 
+                        asp-controller="CompanySettings" 
+                        asp-action="ManageAccount">
+                        
+                        <i class="fa fa-fw fa-user"></i>
+
                         <span>
-                            User Account
+                            @SharedLocalizer["ProfileLinkText"]
                         </span>
                     </a>
+
                 </li>
-                <li class="company-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            Manage Products
-                        </span>
-                    </a>
+
+                <li>
+                    <hr class="dropdown-divider">
                 </li>
+
+
                 <li class="company-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="CompanyContent" asp-controller="ManageProduct" asp-action="NewProduct">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
+
+                    <a class="dropdown-item dropdown-item-text icon-button"
+                       asp-area="CompanyContent"
+                       asp-controller="ManageProduct"
+                       asp-action="NewProduct">
+
+                        <i class="fa fa-fw fa-plus"></i>
+
                         <span>
-                            Add New Product
+                            @SharedLocalizer["NewProductLinkText"]
                         </span>
+
                     </a>
+
+                </li>
+
+                <li class="company-menu">
+
+                    <a class="dropdown-item dropdown-item-text icon-button" 
+                        asp-area="CompanyContent" 
+                        asp-controller="ManageProduct" 
+                        asp-action="Index">
+
+                        <i class="fa fa-fw fa-list"></i>
+
+                        <span>
+
+                            @SharedLocalizer["ManageProductsLinkText"]
+
+                        </span>
+
+                    </a>
+
                 </li>
  
                 @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )

@@ -3544,7 +3544,7 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Admin Contents.
+        ///   Looks up a localized string similar to ManageAdminContents.
         /// </summary>
         public static string LinkManageAdminContents {
             get {
@@ -3807,9 +3807,9 @@ namespace ResourceLibrary.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Manage Products.
         /// </summary>
-        public static string ManageProducts {
+        public static string ManageProductsLinkText {
             get {
-                return ResourceManager.GetString("ManageProducts", resourceCulture);
+                return ResourceManager.GetString("ManageProductsLinkText", resourceCulture);
             }
         }
         
@@ -5466,6 +5466,15 @@ namespace ResourceLibrary.Resources {
         public static string NewPostViewBagTitlePostFreeAds {
             get {
                 return ResourceManager.GetString("NewPostViewBagTitlePostFreeAds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NewProductLinkText.
+        /// </summary>
+        public static string NewProductLinkText {
+            get {
+                return ResourceManager.GetString("NewProductLinkText", resourceCulture);
             }
         }
         

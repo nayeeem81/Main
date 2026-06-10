@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Main.Services;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using Main.Services;
+
 using ResourceLibrary.Resources;
+
 using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore;
 
-public class HomeController : BaseController
+public class HomeController: BaseController
 {
 
     private readonly IStringLocalizer<SharedResource> _localizer;
@@ -27,13 +30,13 @@ public class HomeController : BaseController
 
     //[ResponseCache(CacheProfileName = "Cache1dayServerNBrowser")]
     [AllowAnonymous]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index ( )
     {
         //var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
 
         HomeViewModel homeViewModel = new HomeViewModel("Home Page");
 
-        return View(homeViewModel);
+        return View ( homeViewModel );
     }
 
     //public async Task<ActionResult> Notice()
@@ -46,7 +49,7 @@ public class HomeController : BaseController
     //    //}
 
     //    //var res = await _LoggingService.LogEntirePageVisit(EnumLogType.NoticePage, StaticAppSettings.Country, HttpContext.Session.Id);
-        
+
     //    //var resultConfigList = await _GroupPanelConfigService
     //    //                                            .GetAllPageGroupPanelConfigurations(
     //    //                                            EnumPublicPage.NoticeAndNews,

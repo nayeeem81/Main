@@ -760,7 +760,7 @@
     <value />
   </data>
   <data name="LinkAddShortContent" xml:space="preserve">
-    <value>অ্যাডমিন কন্টেন্ট যোগ করুন</value>
+    <value>নতুন বিজ্ঞাপন পোস্ট করুন</value>
   </data>
   <data name="LinkBusinessIntelligence" xml:space="preserve">
     <value>রিপোর্ট দেখুন</value>
@@ -769,7 +769,7 @@
     <value>প্যাকেজ কনফিগার করুন</value>
   </data>
   <data name="LinkConfigurePanels" xml:space="preserve">
-    <value>কনটেন্ট কনফিগার করুন</value>
+    <value>ওয়েবপেজ কনফিগার করুন</value>
   </data>
   <data name="LinkConfigurePrice" xml:space="preserve">
     <value>প্যাকেজের মূল্য কনফিগার করুন</value>
@@ -790,7 +790,7 @@
     <value>অ্যাকাউন্ট পরিচালনা করুন</value>
   </data>
   <data name="LinkManageAdminContents" xml:space="preserve">
-    <value>অ্যাডমিন বিষয়বস্তু পরিচালনা করুন</value>
+    <value>সমস্ত বিজ্ঞাপন সেটিংস</value>
   </data>
   <data name="LinkManageBikashBills" xml:space="preserve">
     <value>বিল পরিচালনা করুন</value>
@@ -2972,6 +2972,9 @@
   <data name="UploadFile" xml:space="preserve">
     <value>ফাইল আপলোড করুন</value>
   </data>
+  <data name="ManageProductsLinkText" xml:space="preserve">
+    <value>সমস্ত পণ্য পরিচালনা</value>
+  </data>
   <data name="EditPostButtonSUBMITAD" xml:space="preserve">
     <value>আপডেট করুন</value>
   </data>
@@ -3137,6 +3140,9 @@
   <data name="InvalidEmailFormat" xml:space="preserve">
     <value>ইমেল ঠিকানার ফরম্যাট ঠিক নেই!</value>
   </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>রিসেট</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3188,7 +3194,7 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
-  <data name="PageNameResetEmail" xml:space="preserve">
-    <value>রিসেট</value>
+  <data name="NewProductLinkText" xml:space="preserve">
+    <value>পণ্য যোগ করুন</value>
   </data>
 </root>

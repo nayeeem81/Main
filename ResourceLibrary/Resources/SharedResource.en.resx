@@ -763,7 +763,7 @@
     <value>Business / Online Seller Account: Business users post their product or service details in this portal and online visitors buy those products using online payment gateway. A business user represents a company which must be registered to operate business in Bangladesh.</value>
   </data>
   <data name="LinkAddShortContent" xml:space="preserve">
-    <value>Add Admin Content</value>
+    <value>Add Advertisement</value>
   </data>
   <data name="LinkBusinessIntelligence" xml:space="preserve">
     <value>View Reports</value>
@@ -772,7 +772,7 @@
     <value>Configure Package</value>
   </data>
   <data name="LinkConfigurePanels" xml:space="preserve">
-    <value>Configure Pages</value>
+    <value>Configure Webpages</value>
   </data>
   <data name="LinkConfigurePrice" xml:space="preserve">
     <value>Configure Package Prices</value>
@@ -793,7 +793,7 @@
     <value>Manage Account</value>
   </data>
   <data name="LinkManageAdminContents" xml:space="preserve">
-    <value>Manage Admin Contents</value>
+    <value>All Ads Settings</value>
   </data>
   <data name="LinkManageBikashBills" xml:space="preserve">
     <value>Manage Bills</value>
@@ -3018,8 +3018,8 @@
   <data name="UploadFile" xml:space="preserve">
     <value>Upload File</value>
   </data>
-  <data name="ManageProducts" xml:space="preserve">
-    <value>Manage Products</value>
+  <data name="ManageProductsLinkText" xml:space="preserve">
+    <value>Manage All Products</value>
   </data>
   <data name="EditPostButtonSUBMITAD" xml:space="preserve">
     <value>UPDATE</value>
@@ -3186,13 +3186,16 @@
   <data name="InvalidEmailFormat" xml:space="preserve">
     <value>Email address format is not valid!</value>
   </data>
+  <data name="PageNameResetEmail" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
   </data>
-  <data name="PageNameResetEmail" xml:space="preserve">
-    <value>Reset Password</value>
+  <data name="NewProductLinkText" xml:space="preserve">
+    <value>Add Product</value>
   </data>
 </root>

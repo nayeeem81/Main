@@ -70,17 +70,19 @@
                         </td>
 
                         <td data-label="Action">
-                            <a title="View Page"
-                                    class="icon-button flex"
-                                    href="@Url.Action("PreviewPageContent", "Pages", new { Area = "PageContent", id = item.PageID })">
-                                <i class="fa fa-eye"></i>
-                            </a>
 
                             <a title="Edit Page"
                                     class="icon-button flex"
                                     href="@Url.Action("EditPageContent", "Pages", new { Area = "PageContent", id = item.PageID })">
-                                <i class="fa fa-edit"></i>
+                                <i class="fa fa-edit"></i> Edit
                             </a>
+
+                            <a title="View Page"
+                                    class="icon-button flex"
+                                    href="@Url.Action("PreviewPageContent", "Pages", new { Area = "PageContent", id = item.PageID })">
+                                <i class="fa fa-eye"></i> View 
+                            </a>
+                            
                         </td>
 
                     </tr>

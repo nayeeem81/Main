@@ -18,13 +18,13 @@ public enum EnumCategoryFor
 
 public enum EnumCompanyName
 {
-    [Description("Deshi Hut Bazar (Comapny Vendor)")]
+    [Description("Deshi Hut Bazar (Vendor)")]
     DeshiHutBazar = 1,
 
-    [Description("Fine Arts Store (Company)")]
+    [Description("Fine Arts Store")]
     FineArts = 2,
 
-    [Description("Life Styles Store (Company)")]
+    [Description("Life Styles Store")]
     LifeStyles = 3,
 }
 
@@ -148,7 +148,7 @@ public enum EnumMarket
     [Description("Fashion for Women")]
     WomanFashion = 1006,
     [Description("Fashion for Men")]
-    MenFashion = 1007,        
+    MenFashion = 1007,
     [Description("Kids & Babies")]
     ToysKidsAndBabies = 1008,
     [Description("Fitness & Lifestyles")]
@@ -202,8 +202,8 @@ public enum EnumSpecialMarket
     WomenWatches = 1006006,
     [Description("Accessories")]
     WomenFashionAccessories = 1006007,
-    
-     
+
+
     /// <summary>
     /// Men Fashion
     /// </summary>
@@ -284,11 +284,11 @@ public enum EnumPublicPage
     AdsDetail = 3,
 
     [Description("Category Button Page")]
-    CategoryButtonMarket = 6,    
-    
+    CategoryButtonMarket = 6,
+
     [Description("Category Dropdown Page")]
-    SubCategoryDropdownMarket = 7,      
-    
+    SubCategoryDropdownMarket = 7,
+
     [Description("Special Button Page")]
     SpecialMarketButton = 8,
 
@@ -398,7 +398,7 @@ public enum EnumState
 public enum EnumTransactionStatus
 {
     AdminCheckPending = 0,
-    AdminApproved = 1,        
+    AdminApproved = 1,
     SystemApproved = 2
 }
 
