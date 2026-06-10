@@ -3,48 +3,62 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class PageContent : BaseEntity
+public class PageContent: BaseEntity
 {
-    public PageContent()
+    public PageContent ( )
     {
-        ListPagePanels = new List<PagePanel>();
+        ListPagePanels = new List<PagePanel> ( );
     }
 
 
-    public PageContent(int pageId)
-    {       
-        ListPagePanels = new List<PagePanel>();
+    public PageContent ( int pageId )
+    {
+        ListPagePanels = new List<PagePanel> ( );
 
         PageID = pageId;
     }
 
 
     [Key]
-    public int PageContentID { get; set; }
+    public int PageContentID
+    {
+        get; set;
+    }
 
 
     [Required]
-    public int PageID { get; set; }
-
-
-    [ForeignKey("PageID")]
-    public virtual Page? Page { get; set; } 
-
-
-    public virtual ICollection<PagePanel> ListPagePanels { get; set; }
-
-
-    public void CreatePagePanel(PagePanel pagePanel)
+    public int PageID
     {
-        if (ListPagePanels == null)
+        get; set;
+    }
+
+
+    [ForeignKey ( "PageID" )]
+    public virtual Page? Page
+    {
+        get; set;
+    }
+
+
+    public virtual ICollection<PagePanel> ListPagePanels
+    {
+        get; set;
+    }
+
+
+    public void CreatePagePanel ( PagePanel pagePanel )
+    {
+        if ( ListPagePanels == null )
         {
-            ListPagePanels = new List<PagePanel>();
+            ListPagePanels = new List<PagePanel> ( );
         }
 
-        if(pagePanel != null)
+        if ( pagePanel != null )
         {
-            var count = 0;
+            int count = 0;
+
             count = ListPagePanels.Count;
+
             if ( count > 0 )
             {
                 pagePanel.PanelPosition = count + 1;
@@ -59,15 +73,16 @@ public class PageContent : BaseEntity
     }
 
 
-    public void RemovePagePanel(PagePanel pagePanel)
+    public void RemovePagePanel ( PagePanel pagePanel )
     {
-        if (ListPagePanels == null) {
+        if ( ListPagePanels == null )
+        {
             return;
         }
 
-        if(ListPagePanels.Contains<PagePanel>(pagePanel))
+        if ( ListPagePanels.Contains<PagePanel> ( pagePanel ) )
         {
-            ListPagePanels.Remove(pagePanel);
+            ListPagePanels.Remove ( pagePanel );
         }
     }
 

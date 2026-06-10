@@ -1,15 +1,16 @@
 ﻿using Domain.Model;
+
 using Main.Common.Enums;
 
 namespace IRepository;
 
-public interface IPageRepository            
+public interface IPageRepository
 {
-    Task<List<Page>> GetAllPages(EnumCompanyName company);
+    Task<List<Page>> GetAllPages ( EnumCompanyName company );
 
-    Task<Page> GetSinglePage(int id);
+    Task<Page> GetSinglePage ( int id );
 
-    Task<bool> PageExists(int id);
+    Task<bool> PageExists ( int id );
 
-    Task<bool> UpdatePage ( Page? page );
+    Task<bool> UpdatePage ( Page page );
 }

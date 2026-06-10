@@ -1,33 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Main.Common.Enums;
+﻿using Main.Common.Enums;
 using Main.Common.Model;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;
 
-public class Page : BaseEntity
+public class Page: BaseEntity
 {
-    public Page()
+    public Page ( )
     {
-        ListPageContents = new List<PageContent>();
+        ListPageContents = new List<PageContent> ( );
     }
 
 
-    public Page(EnumPublicPage enumPublicPage)
+    public Page ( EnumPublicPage enumPublicPage )
     {
         EnumPublicPage = enumPublicPage;
 
-        ListPageContents = new List<PageContent>();
+        ListPageContents = new List<PageContent> ( );
     }
 
 
     //Ony used for seeding
     //Seed constructr hard coded
-    public Page(EnumPublicPage enumPublicPage, int pageId)
+    public Page ( EnumPublicPage enumPublicPage,int pageId )
     {
         PageID = pageId;
         EnumPublicPage = enumPublicPage;
-        ListPageContents = new List<PageContent>();
-        
+        ListPageContents = new List<PageContent> ( );
+
         ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedDate = DateTime.MinValue;
@@ -43,28 +44,34 @@ public class Page : BaseEntity
 
 
     [Key]
-    public int PageID { get; set; }
+    public int PageID
+    {
+        get; set;
+    }
 
 
     [Required]
-    public EnumPublicPage EnumPublicPage { get; set; }
+    public EnumPublicPage EnumPublicPage
+    {
+        get; set;
+    }
 
 
-    public virtual ICollection<PageContent> ListPageContents { get; set; } = new HashSet<PageContent>();
+    public virtual ICollection<PageContent> ListPageContents { get; set; } = new HashSet<PageContent> ( );
 
 
-    public void SavePageContent(PageContent pageContent)
+    public void SavePageContent ( PageContent pageContent )
     {
         ListPageContents ??= [];
 
-        if (pageContent != null && ListPageContents.Count (a => a.PageID == pageContent.PageID) == 0 )
+        if ( pageContent != null )
         {
-            ListPageContents.Add(pageContent);
+            ListPageContents.Add ( pageContent );
         }
     }
 
 
-    public PageContent GetNewOrExistingPageContent ( int pageId, BaseDataModel modelBase)
+    public PageContent GetNewOrExistingPageContent ( int pageId,BaseDataModel modelBase )
     {
         ListPageContents ??= [];
 
@@ -72,7 +79,7 @@ public class Page : BaseEntity
 
         if ( count > 0 )
         {
-            PageContent objOldPageContent = ListPageContents.Single<PageContent> ( a => a.PageID == pageId);
+            PageContent? objOldPageContent = ListPageContents.FirstOrDefault<PageContent> ( a => a.PageID == pageId);
 
             if ( objOldPageContent != null )
             {

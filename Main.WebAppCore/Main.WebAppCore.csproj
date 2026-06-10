@@ -20,7 +20,6 @@
   <ItemGroup>
     <Compile Remove="Area.Data\**" />
     <Compile Remove="Areas\Identity\**" />
-    <Compile Remove="Areas\PageContent\Data\**" />
     <Compile Remove="Service\**" />
     <Compile Remove="Views\Shared\DesktopPostType\**" />
     <Compile Remove="Views\Shared\DisplayTemplates\**" />
@@ -30,7 +29,6 @@
     <Compile Remove="Views\Shared\ProductTemplates\**" />
     <Content Remove="Area.Data\**" />
     <Content Remove="Areas\Identity\**" />
-    <Content Remove="Areas\PageContent\Data\**" />
     <Content Remove="Service\**" />
     <Content Remove="Views\Shared\DesktopPostType\**" />
     <Content Remove="Views\Shared\DisplayTemplates\**" />
@@ -40,7 +38,6 @@
     <Content Remove="Views\Shared\ProductTemplates\**" />
     <EmbeddedResource Remove="Area.Data\**" />
     <EmbeddedResource Remove="Areas\Identity\**" />
-    <EmbeddedResource Remove="Areas\PageContent\Data\**" />
     <EmbeddedResource Remove="Service\**" />
     <EmbeddedResource Remove="Views\Shared\DesktopPostType\**" />
     <EmbeddedResource Remove="Views\Shared\DisplayTemplates\**" />
@@ -50,7 +47,6 @@
     <EmbeddedResource Remove="Views\Shared\ProductTemplates\**" />
     <None Remove="Area.Data\**" />
     <None Remove="Areas\Identity\**" />
-    <None Remove="Areas\PageContent\Data\**" />
     <None Remove="Service\**" />
     <None Remove="Views\Shared\DesktopPostType\**" />
     <None Remove="Views\Shared\DisplayTemplates\**" />
@@ -67,10 +63,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Areas\PageContent\Views\Pages\Create.cshtml" />
-    <Content Remove="Areas\PageContent\Views\Pages\Delete.cshtml" />
-    <Content Remove="Areas\PageContent\Views\Pages\Details.cshtml" />
-    <Content Remove="Areas\PageContent\Views\Pages\Edit.cshtml" />
     <Content Remove="Views\Home\About.cshtml" />
     <Content Remove="Views\Home\Contact.cshtml" />
     <Content Remove="Views\Home\Contact.Mobile.cshtml" />
