@@ -1,6 +1,9 @@
 ﻿using DataTransferModel;
+
 using Domain.Model;
+
 using IRepository;
+
 using Main.Common.Enums;
 using Main.Services.Extensions;
 
@@ -17,7 +20,7 @@ public class PageService: IPageService
 
     public readonly IPageRepository _pageRepository;
 
-    public PageService ( 
+    public PageService (
         IProductImageRepository productImageRepository,
         IAdminPostImageRepository adminPostsImageRepository,
         IPageRepository pageRepository,
@@ -29,32 +32,26 @@ public class PageService: IPageService
         _adminPostImageRepository = adminPostImageRepository;
     }
 
-    public async Task<bool> CreateNewPanel 
-    (
-          PagePanelDataModel pagePanelDataModel, 
-          List<PanelPostDataModel> listPanelPostDataModel
-    )
+    public async Task<bool> CreateNewPanel ( PagePanelDataModel pagePanelDataModel )
     {
-        PagePanel panelEntity = PageServiceMapping.CreatePanelEntity(pagePanelDataModel, listPanelPostDataModel);
-        
+        Page pageEntity = await _pageRepository.GetSinglePage (pagePanelDataModel.PageID);
 
-        Page pageEntity = await _pageRepository.GetSinglePage       
-            (pagePanelDataModel.PageID);
+        PagePanel panelEntity = PageServiceMapping.CreatePanelEntity(pagePanelDataModel);
 
-        pageEntity = PageServiceMapping.CreatePageContent ( pageEntity, pagePanelDataModel, panelEntity);
+        pageEntity = PageServiceMapping.CreatePageContent ( pagePanelDataModel,pageEntity,panelEntity );
 
         var result = await _pageRepository.UpdatePage ( pageEntity );
 
         return result;
     }
 
-    public async Task<List<PanelPostDataModel>> 
+    public async Task<List<PanelPostDataModel>>
         GetSelectProducts ( EnumCompanyName company )
     {
-        List<Product> listProducts 
+        List<Product> listProducts
             = await _productImageRepository.GetSelectProducts ( company );
 
-        List<PanelPostDataModel> listPanelPostDataModel 
+        List<PanelPostDataModel> listPanelPostDataModel
             = PageServiceMapping.GetPanelPostDataModels( listProducts );
 
         return listPanelPostDataModel;
@@ -100,4 +97,4 @@ public class PageService: IPageService
         return listPageDisplayDataModel.ToList ( );
     }
 }
-                                                             
+

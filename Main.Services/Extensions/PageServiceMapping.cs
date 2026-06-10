@@ -6,19 +6,15 @@ namespace Main.Services.Extensions;
 
 public static class PageServiceMapping
 {
-    public static Page CreatePageContent ( Page pageEntity,PagePanelDataModel pagePanelDataModel,PagePanel panelEntity )
+    public static Page CreatePageContent (
+        PagePanelDataModel pagePanelDataModel,
+        Page pageEntity,PagePanel panelEntity )
     {
-        PageContent pageCotentEntity = pageEntity != null
 
-                ? pageEntity.GetNewOrExistingPageContent
-                                (pagePanelDataModel.PageID, pagePanelDataModel.BaseDataModel)
-                : new PageContent();
-
-
-        pageCotentEntity.Page = null;
+        PageContent pageCotentEntity = pageEntity.GetNewOrExistingPageContent (
+            pagePanelDataModel.PageID, pagePanelDataModel.BaseDataModel ) ;
 
         pageCotentEntity.CreatePagePanel ( panelEntity );
-
 
         if ( pageEntity != null )
         {
@@ -29,7 +25,7 @@ public static class PageServiceMapping
         return new Page ( );
     }
 
-    public static PagePanel CreatePanelEntity ( PagePanelDataModel pagePanelDataModel,List<PanelPostDataModel> listPanelPostDataModel )
+    public static PagePanel CreatePanelEntity ( PagePanelDataModel pagePanelDataModel )
     {
         PagePanel panelEntity = new PagePanel();
 
@@ -39,11 +35,12 @@ public static class PageServiceMapping
 
         panelEntity.CreateBaseData ( pagePanelDataModel.BaseDataModel );
 
+        PanelPost panelPost;
 
-        listPanelPostDataModel.ForEach ( objPost =>
+        pagePanelDataModel.ListPanelPosts.ForEach ( objPost =>
         {
 
-            PanelPost panelPost = new PanelPost ( )
+            panelPost = new PanelPost ( )
             {
                 ImageFileContent = objPost.ImageFileContent,
                 Price = objPost.Price,
@@ -107,7 +104,7 @@ public static class PageServiceMapping
     {
         if ( pageEntity != null )
         {
-            var pageContent = pageEntity.ListPageContents.First<PageContent>();
+            var pageContent = pageEntity.ListPageContents.Last<PageContent>();
 
             var listPanels = pageContent.ListPagePanels.ToList();
 
@@ -128,10 +125,7 @@ public static class PageServiceMapping
                 panelDataModel.PanelTemplate = panel.PanelTemplate;
                 panelDataModel.PanelTitle = panel.PanelTitle;
 
-                panel
-                .ListPanelPosts
-                .ToList ( )
-                .ForEach ( panelPost =>
+                panel.ListPanelPosts.ToList ( ).ForEach ( panelPost =>
                 {
                     panelPostDataModel = new PanelPostDataModel ( );
 
@@ -146,6 +140,7 @@ public static class PageServiceMapping
                 } );
 
                 pageDataModel.CreatePageContent ( panelDataModel );
+
             } );
 
             return pageDataModel;

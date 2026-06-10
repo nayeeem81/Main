@@ -1,4 +1,5 @@
 ﻿using Main.Common.Enums;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,9 +12,12 @@ public class PagePanel: BaseEntity
         PanelTitle = string.Empty;
     }
 
-    
+
     [Key]
-    public int PanelID { get; set; }
+    public int PanelID
+    {
+        get; set;
+    }
 
     public int PanelPosition
     {
@@ -26,44 +30,53 @@ public class PagePanel: BaseEntity
     }
 
     [Required]
-    public EnumPanelTemplate PanelTemplate { get; set; }
+    public EnumPanelTemplate PanelTemplate
+    {
+        get; set;
+    }
 
 
     [Required]
-    public int PageContentID { get; set; }
+    public int PageContentID
+    {
+        get; set;
+    }
 
 
-    [ForeignKey("PageContentID")]
-    public virtual PageContent? PageContent { get; set; }
+    [ForeignKey ( "PageContentID" )]
+    public virtual PageContent? PageContent
+    {
+        get; set;
+    }
 
 
-    public virtual ICollection<PanelPost> ListPanelPosts { get; set; } = new HashSet<PanelPost>();
+    public virtual ICollection<PanelPost> ListPanelPosts { get; set; } = new HashSet<PanelPost> ( );
 
     public void CreatePanelPost ( PanelPost panelPost )
     {
+        if ( panelPost == null )
+        {
+            return;
+        }
+
         if ( ListPanelPosts == null )
         {
             ListPanelPosts = new List<PanelPost> ( );
         }
 
+        int count = 0;
 
-        if ( panelPost != null )
+        count = ListPanelPosts.Count;
+
+        if ( count > 0 )
         {
-            var count = 0;
-
-            count = ListPanelPosts.Count;
-
-            if ( count > 0 )
-            {
-                panelPost.PostOrder = count + 1;
-            }
-            else
-            {
-                panelPost.PostOrder = 1;
-            }
-
-            ListPanelPosts.Add ( panelPost );
+            panelPost.PostOrder = count + 1;
         }
-    }
+        else
+        {
+            panelPost.PostOrder = 1;
+        }
 
+        ListPanelPosts.Add ( panelPost );
+    }
 }

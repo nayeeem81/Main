@@ -1,9 +1,12 @@
 ﻿
-using IRepository;
-using Main.Common.Enums;
-using Microsoft.EntityFrameworkCore;
 using Domain.Model;
+
+using IRepository;
+
+using Main.Common.Enums;
 using Main.Infrastructure;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
@@ -20,10 +23,10 @@ public class PageRepository: IPageRepository
     {
         List<Page> listPages = await _context.Pages.ToListAsync();
 
-        return listPages.Where(a => (int) a.HostCompanyName == (int) company ).ToList();
+        return listPages.Where ( a => ( int ) a.HostCompanyName == ( int ) company ).ToList ( );
     }
 
-    public async Task<Page> GetSinglePage ( int id ) 
+    public async Task<Page> GetSinglePage ( int id )
     {
         var page = await _context.Pages.FirstOrDefaultAsync<Page> (m => m.PageID == id);
 
@@ -35,13 +38,8 @@ public class PageRepository: IPageRepository
         return page;
     }
 
-    public async Task<bool> UpdatePage ( Page? page )
+    public async Task<bool> UpdatePage ( Page page )
     {
-        if ( page == null )
-        {
-            return false;
-        }
-
         _context.Update ( page );
 
         int result = await _context.SaveChangesAsync();

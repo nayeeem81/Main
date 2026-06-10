@@ -61,4 +61,45 @@ public static class PageMapping
 
         return listPanelPostSelectViewModels;
     }
+
+    public static PageViewModel MapPageViewModel ( PageDataModel pageDataModel )
+    {
+        List<PagePanelViewModel>  listPanelViewModel = new List<PagePanelViewModel> ();
+
+        PagePanelViewModel panelViewModel;
+
+        pageDataModel.ListPagePanels.ForEach ( pagePanelDataModel =>
+        {
+            panelViewModel = new PagePanelViewModel ( );
+            panelViewModel.PanelID = pagePanelDataModel.PanelID;
+            panelViewModel.PanelTitle = pagePanelDataModel.PanelTitle ?? "";
+            panelViewModel.PanelTemplate = pagePanelDataModel.PanelTemplate;
+            panelViewModel.PageName = ListEnum.GetPageDescription ( pageDataModel.EnumPublicPage );
+
+            PanelPostViewModel postViewModel;
+
+            pagePanelDataModel.ListPanelPosts.ForEach ( panelPostDataModel =>
+            {
+                postViewModel = new PanelPostViewModel ( );
+                postViewModel.PanelPostID = panelPostDataModel.PanelPostID;
+                postViewModel.ImageFileContent = panelPostDataModel.ImageFileContent;
+                postViewModel.ImageFileID = panelPostDataModel.ImageFileID;
+                postViewModel.Price = panelPostDataModel.Price;
+                postViewModel.PageID = panelPostDataModel.PageID;
+                postViewModel.CategoryID = panelPostDataModel.CategoryID;
+
+                panelViewModel.CreatePanelPost ( postViewModel );
+
+            } );
+
+            listPanelViewModel.Add ( panelViewModel );
+
+        } );
+
+        PageViewModel pageViewModel = new PageViewModel ( );
+
+        pageViewModel.ListPagePanels = listPanelViewModel;
+
+        return pageViewModel;
+    }
 }
