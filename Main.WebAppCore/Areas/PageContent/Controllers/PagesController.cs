@@ -99,6 +99,7 @@ public class PagesController: BaseController
 
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize ( Roles = "Admin" )]
     public async Task<IActionResult> SaveNewProductPanel ( [FromBody] LocalModel model )
     {

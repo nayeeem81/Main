@@ -14,6 +14,8 @@
 
     <form id ="frmMain">
         <div class="gap"></div>
+
+        @Html.AntiForgeryToken()
   
         @Html.HiddenFor( a => a.PageID )
 
@@ -177,9 +179,6 @@
                 await fetch('@Url.Action("SaveNewProductPanel", "Pages", new { Area = "PageContent" })', 
                 {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' 
-                    },
                     body: JSON.stringify(data) 
                 });
 
