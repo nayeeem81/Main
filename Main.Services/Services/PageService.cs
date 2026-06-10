@@ -81,24 +81,23 @@ public class PageService: IPageService
         return pageDataModel;
     }
 
-    public async Task<List<PageDataModel>> GetAllPages ( EnumCompanyName company )
+    public async Task<List<PageDisplayDataModel>> GetAllPages ( EnumCompanyName company )
     {
 
         List<Page> listPageEntity = await _pageRepository.GetAllPages ( company );
 
-        List<PageDataModel> listPageDataModel = new List <PageDataModel> ();
+        List<PageDisplayDataModel> listPageDisplayDataModel = new List <PageDisplayDataModel> ();
 
         listPageEntity.ForEach ( pageEntity =>
-                                    listPageDataModel
-                                    .Add ( new PageDataModel (
-                                            pageEntity.PageID,
-                                            pageEntity.EnumPublicPage,
-                                            company )
-                                    )
-                                );
+        {
+            listPageDisplayDataModel.Add ( new PageDisplayDataModel
+                                               ( pageEntity.PageID,
+                                                 pageEntity.EnumPublicPage,
+                                                 pageEntity.HostCompanyName ) );
 
-        return listPageDataModel.ToList ( );
+        } );
+
+        return listPageDisplayDataModel.ToList ( );
     }
-
 }
                                                              

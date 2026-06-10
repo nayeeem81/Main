@@ -1,4 +1,5 @@
-﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@using Main.Common.Enums
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 <!doctype html>
 <html lang="en">
@@ -6,11 +7,12 @@
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="application-name"
-          content="@SharedLocalizer["LinkPortalURL"]" />
+    <meta name="application-name"  
+          content="@ListEnum.GetCompanyDescription(AppSettings.Current.EnumCompanyName)" />
 
+          
     <title>
-        @ViewBag.Title | @SharedLocalizer["LinkPortalURL"]
+        @ViewBag.Title | @ListEnum.GetCompanyDescription( AppSettings.Current.EnumCompanyName )
     </title>
 
     <link rel="shortcut icon"

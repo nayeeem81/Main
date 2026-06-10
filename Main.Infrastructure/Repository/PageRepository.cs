@@ -18,9 +18,9 @@ public class PageRepository: IPageRepository
 
     public async Task<List<Page>> GetAllPages ( EnumCompanyName company )
     {
-        return await _context.Pages
-            .Where ( a => a.HostCompanyName == company )
-            .ToListAsync<Page> ( );
+        List<Page> listPages = await _context.Pages.ToListAsync();
+
+        return listPages.Where(a => (int) a.HostCompanyName == (int) company ).ToList();
     }
 
     public async Task<Page> GetSinglePage ( int id ) 

@@ -1,62 +1,106 @@
-﻿@model InformationViewModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@model List<PageDisplayViewModel>
 
 @{
-    ViewData["Title"] = "Manage Page Contents";
+    ViewData["Title"] = "Page Settings";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
 }
 
 <div id="pageListContainer" class="container">
-    
-    <div class="gap"></div>
 
-    <h4 class="card-title">MANAGE PAGE CONTENTS</h4>
+    <div class="card-form">
 
-    <div class="gap"></div>
-    <div class="gap"></div>
+        <div class="gap"></div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.CompanyLabel)
-                </th>
+        <h4 class="card-title">MANAGE PAGE CONTENTS</h4>
 
-                <th>
-                    @Html.DisplayNameFor(model => model.PageLabel)
-                </th>
-                 <th></th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AddPanelButtons)
-                </th>
+        <div class="gap"></div>
 
-                <th>
-                    @Html.DisplayNameFor(model => model.ViewEditButtons)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.ListPages.ToList()) {
+        <div class="gap"></div>
+
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PageName)
-                    </td>
-                    <td></td>
-                    <td>
-                        <a href="@Url.Action("NewProductPanel", "Pages", new { Area = "PageContent", id = item.PageID })" role="link" class="btn action-button">Add Product</a> |
-                        <a role="button" class="action-button" asp-action="Edit" asp-route-id="@item.PageID">Advertisement</a>
-                    </td>
-                    <td>
-                        <a role="button" class="action-button" asp-action="Edit" asp-route-id="@item.PageID">Edit</a> |
-                        <a href="@Url.Action("PreviewPageContent", "Pages", new { Area = "PageContent", id = item.PageID })" role="link" class="btn action-button">View Page</a>
-                    </td>
+                    <th>
+                        @Html.DisplayNameFor( model => model[0].CompanyName)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor( model => model[0].PageName )
+                    </th>
+
+                    <th></th>
+
+                    <th>
+                        @Html.DisplayNameFor( model => model[0].AddPanelButtons )
+                    </th>
+                   
+                    <th>
+                        @Html.DisplayNameFor( model => model[0].ViewEditButtons )
+                    </th>
+           
+                    
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+
+            <tbody>
+               @foreach (var item in Model.ToList()) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyName)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PageName)
+                        </td>
+
+                        <td></td>
+
+                        <td data-label="Action">
+                            <a title="Add Product Panel"
+                                    class="icon-button flex"
+                                    href="@Url.Action("NewProductPanel", "Pages", new { Area = "PageContent", id = item.PageID })">
+                                <i class="fa fa-plus"></i> Product
+                            </a>
+                            <a title="Add Advertisement Panel"
+                                    class="icon-button flex"
+                                    href="@Url.Action("NewAdPanel", "Pages", new { Area = "PageContent", id = item.PageID })">
+                                <i class="fa fa-plus"></i> Advertisement
+                            </a>
+                        </td>
+
+                        <td data-label="Action">
+
+                            <a title="Edit Page"
+                                    class="icon-button flex"
+                                    href="@Url.Action("EditPageContent", "Pages", new { Area = "PageContent", id = item.PageID })">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+
+                            <a title="View Page"
+                                    class="icon-button flex"
+                                    href="@Url.Action("PreviewPageContent", "Pages", new { Area = "PageContent", id = item.PageID })">
+                                <i class="fa fa-eye"></i> View 
+                            </a>
+                            
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
+
+@section scriptsapp {
+
+}
+
+
+                            
+
+
+

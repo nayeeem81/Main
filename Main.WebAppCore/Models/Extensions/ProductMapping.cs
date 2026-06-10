@@ -1,7 +1,5 @@
-﻿using DataTransferModel;                    
-using Domain.Model;
+﻿using DataTransferModel;  
 using Main.Common.Enums;
-
 using WebAppCore.Helper;
 
 namespace WebAppCore.ViewModel.Extensions;

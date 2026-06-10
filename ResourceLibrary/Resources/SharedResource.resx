@@ -764,6 +764,7 @@
   </data>
   <data name="LinkAddShortContent" xml:space="preserve">
     <value>Add Admin Content</value>
+    <comment>Add Admin Post</comment>
   </data>
   <data name="LinkBusinessIntelligence" xml:space="preserve">
     <value>View Reports</value>
@@ -773,6 +774,7 @@
   </data>
   <data name="LinkConfigurePanels" xml:space="preserve">
     <value>Configure Content</value>
+    <comment>Pages (Area) : configuration of Pages</comment>
   </data>
   <data name="LinkConfigurePrice" xml:space="preserve">
     <value>Configure Package Prices</value>
@@ -793,7 +795,8 @@
     <value>Manage Account</value>
   </data>
   <data name="LinkManageAdminContents" xml:space="preserve">
-    <value>Manage Admin Contents</value>
+    <value>ManageAdminContents</value>
+    <comment>All Ads Settings (Admin posts)</comment>
   </data>
   <data name="LinkManageBikashBills" xml:space="preserve">
     <value>Manage Bills</value>
@@ -3020,8 +3023,9 @@
   <data name="UploadFile" xml:space="preserve">
     <value>Upload File</value>
   </data>
-  <data name="ManageProducts" xml:space="preserve">
+  <data name="ManageProductsLinkText" xml:space="preserve">
     <value>Manage Products</value>
+    <comment>Company Menu (All Prodcts</comment>
   </data>
   <data name="EditPostButtonSUBMITAD" xml:space="preserve">
     <value>UPDATE</value>
@@ -3241,5 +3245,9 @@
   <data name="PageNameResetEmail" xml:space="preserve">
     <value>PageNameResetEmail</value>
     <comment>Page Name Reset Email</comment>
+  </data>
+  <data name="NewProductLinkText" xml:space="preserve">
+    <value>NewProductLinkText</value>
+    <comment>NewProductLinkText for Company Menu</comment>
   </data>
 </root>

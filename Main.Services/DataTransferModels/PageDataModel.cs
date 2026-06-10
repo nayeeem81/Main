@@ -16,6 +16,7 @@ namespace DataTransferModel
             ListPagePanels = new List<PagePanelDataModel>();
             PageID = id;
             EnumPublicPage = enumPublicPage;
+            CompanyName = enumCompany;
         }
 
         public int PageID { get; set; }
@@ -24,7 +25,7 @@ namespace DataTransferModel
 
         public string PageName { get; set; }
 
-        public string? CompanyName { get; set; }
+        public EnumCompanyName CompanyName { get; set; }
 
         public List<PagePanelDataModel> ListPagePanels { get; set; }
 

@@ -588,7 +588,7 @@ public class ListEnum
         return " ";
     }
 
-    public static string? GetCompanyDescription(EnumCompanyName company)
+    public static string GetCompanyDescription(EnumCompanyName company)
     {
         Type enumType = typeof(EnumCompanyName);
 

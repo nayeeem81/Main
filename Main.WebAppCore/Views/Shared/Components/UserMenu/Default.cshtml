@@ -19,14 +19,20 @@
             <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
 
                 <li class="user-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-controller="Account" asp-action="Profile">
-                        <i class="fa fa-cog fa-fw"></i>
-                        <span>
 
+                    <a class="dropdown-item dropdown-item-text icon-button" 
+                        asp-controller="Account" 
+                        asp-action="Profile"
+                        asp-area="">
+                        
+                        <i class="fa fa-user fa-fw"></i>
+                        
+                        <span>
                             @SharedLocalizer["ProfileLinkText"]
-                            
                         </span>
+
                     </a>
+
                 </li>
 
                 @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )

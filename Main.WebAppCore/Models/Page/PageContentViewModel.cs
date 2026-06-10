@@ -1,5 +1,4 @@
-﻿using Main.Common;
-using Main.Common.Enums;
+﻿using Main.Common.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using WebAppCore.Helper;
