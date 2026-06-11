@@ -13,11 +13,8 @@ public class PageService: IPageService
 {
 
     public readonly IProductImageRepository _productImageRepository;
-
     public readonly IAdminPostImageRepository _adminPostImageRepository;
-
     public readonly IAdminPostImageRepository _adminPostsImageRepository;
-
     public readonly IPageRepository _pageRepository;
 
     public PageService (
@@ -32,39 +29,32 @@ public class PageService: IPageService
         _adminPostImageRepository = adminPostImageRepository;
     }
 
-    public async Task<bool> CreateNewPanel ( PagePanelDataModel pagePanelDataModel )
+    public async Task<bool> CreateNewPanel ( PanelDataModel pagePanelDataModel )
     {
         Page pageEntity = await _pageRepository.GetSinglePage (pagePanelDataModel.PageID);
+        Panel panelEntity = PageServiceMapping.CreatePanelEntity(pagePanelDataModel);
 
-        PagePanel panelEntity = PageServiceMapping.CreatePanelEntity(pagePanelDataModel);
-
-        pageEntity = PageServiceMapping.CreatePageContent ( pagePanelDataModel,pageEntity,panelEntity );
+        pageEntity.CreatePanel ( panelEntity );
 
         var result = await _pageRepository.UpdatePage ( pageEntity );
 
         return result;
     }
 
-    public async Task<List<PanelPostDataModel>>
-        GetSelectProducts ( EnumCompanyName company )
+    public async Task<List<PostDataModel>> GetSelectProducts ( EnumCompanyName company )
     {
-        List<Product> listProducts
-            = await _productImageRepository.GetSelectProducts ( company );
-
-        List<PanelPostDataModel> listPanelPostDataModel
-            = PageServiceMapping.GetPanelPostDataModels( listProducts );
+        List<Product> listProducts = await _productImageRepository.GetSelectProducts ( company );
+        List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
 
         return listPanelPostDataModel;
     }
 
-    public async Task<List<PanelPostDataModel>>
-        GetSelectPosts ( EnumCompanyName company )
+    public async Task<List<PostDataModel>> GetSelectPosts ( EnumCompanyName company )
     {
-        List<AdminPost> listPAdminPosts
-            = await _adminPostImageRepository.GetSelectAdminPosts( company );
+        List<AdminPost> listAdminPosts = await _adminPostImageRepository.GetSelectAdminPosts( company );
 
-        List<PanelPostDataModel> listPanelPostDataModel
-            = PageServiceMapping.GetPanelPostDataModels( listPAdminPosts );
+        List<PostDataModel> listPanelPostDataModel
+                                            = PageServiceMapping.GetPostDataModels   ( listAdminPosts );
 
         return listPanelPostDataModel;
     }
@@ -80,7 +70,6 @@ public class PageService: IPageService
 
     public async Task<List<PageDisplayDataModel>> GetAllPages ( EnumCompanyName company )
     {
-
         List<Page> listPageEntity = await _pageRepository.GetAllPages ( company );
 
         List<PageDisplayDataModel> listPageDisplayDataModel = new List <PageDisplayDataModel> ();

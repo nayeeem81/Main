@@ -6,7 +6,6 @@ using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using WebAppCore.Helper;
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
@@ -16,9 +15,10 @@ public class LocalModel
 {
     public LocalModel ( )
     {
+        Numbers = new List<int> ( );
     }
 
-    public string? PanelTitle
+    public string PanelTitle
     {
         get; set;
     }
@@ -85,13 +85,13 @@ public class PagesController: BaseController
 
         pagePanelViewModel.PageID = id;
 
-        List<PanelPostDataModel> listSelectProductsDataModel =
-            await _pageService.GetSelectProducts(AppSettings.Current.EnumCompanyName);
+        List<PostDataModel> listSelectProductsDataModel =
+            await _pageService.GetSelectProducts(_userContext.EnumCompanyName);
 
         pagePanelViewModel.ListSelectProducts =
             PageMapping.MapSelectPostViewModel ( listSelectProductsDataModel
-            ,AppSettings.Current.EnumCategoryFor
-            ,AppSettings.Current.EnumCurrency );
+                                                ,_userContext.EnumCategoryFor
+                                                ,_userContext.EnumCurrency );
 
 
         return View ( pagePanelViewModel );
@@ -99,55 +99,67 @@ public class PagesController: BaseController
 
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize ( Roles = "Admin" )]
-    public async Task<IActionResult> SaveNewProductPanel ( [FromBody] LocalModel model )
+    public async Task<IActionResult> SaveNewProductPanel ( LocalModel model )
     {
         if ( model == null )
-            return BadRequest ( "Invalid data." );
-
-        try
         {
-            PagePanelDataModel pagePanelDataModel = new PagePanelDataModel();
-            pagePanelDataModel.PanelTitle = model.PanelTitle;
-            pagePanelDataModel.PageID = model.PageID;
-            pagePanelDataModel.PanelTemplate
-                = ( EnumPanelTemplate ) model.TemplateTypeID;
-
-            pagePanelDataModel.BaseDataModel
-                = _userContext.GetCreateBaseDataModel ( );
-
-
-
-            List<PanelPostDataModel> listReferencePosts
-                = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
-
-            List<PanelPostDataModel> listUserSelectedPosts = listReferencePosts.Where(obj => model.Numbers.Contains(obj.PanelPostID)).ToList();
-
-            listUserSelectedPosts.ForEach ( selectedPost =>
-            {
-                selectedPost.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
-            } );
-
-
-            pagePanelDataModel.ListPanelPosts = listUserSelectedPosts;
-
-            bool result  = await _pageService.CreateNewPanel ( pagePanelDataModel );
-
-
             return Json ( new
             {
-                success = result,
-                receivedUrl = Url.Action ( "Index","Pages",new
-                {
-                    Area = "PageContent"
-                } )
+                success = false,
+                message = "model is null"
             } );
+        }
 
-        }
-        catch ( Exception ex )
+        //try
+        //{
+        PanelDataModel pagePanelDataModel = new PanelDataModel();
+        pagePanelDataModel.PanelTitle = model.PanelTitle;
+        pagePanelDataModel.PageID = model.PageID;
+        pagePanelDataModel.PanelTemplate
+            = ( EnumPanelTemplate ) model.TemplateTypeID;
+
+        pagePanelDataModel.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
+
+        List<PostDataModel> listReferencePosts
+                = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
+
+        List<PostDataModel> listUserSelectedPosts = listReferencePosts.Where(obj =>
         {
-            return BadRequest ( ex.Message );
-        }
+            return model.Numbers.Contains(obj.PanelPostID);
+        } ).ToList();
+
+        listUserSelectedPosts.ForEach ( selectedPost =>
+        {
+            selectedPost.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
+        } );
+
+
+        pagePanelDataModel.ListPosts = listUserSelectedPosts;
+
+        bool result  = await _pageService.CreateNewPanel ( pagePanelDataModel );
+
+
+        return Json ( new
+        {
+            success = result,
+            receivedUrl = Url.Action ( "Index","Pages",new
+            {
+                Area = "PageContent"
+            } )
+        } );
+
+        //}
+        //catch ( Exception ex )
+        //{
+        //    throw ex;
+        //    //return Json ( new
+        //    //{
+        //    //    success = false,
+        //    //    message = ex.Message
+        //    //} );
+        //}
     }
 
 

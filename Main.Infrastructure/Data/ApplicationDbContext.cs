@@ -20,7 +20,6 @@ public class ApplicationDbContext ( DbContextOptions<ApplicationDbContext> optio
         } );
 
         FineArtsSeedIdentity ( builder );
-
     }
 
     private void FineArtsSeedIdentity ( ModelBuilder builder )
@@ -28,12 +27,43 @@ public class ApplicationDbContext ( DbContextOptions<ApplicationDbContext> optio
 
         #region Role Seeding
         builder.Entity<IdentityRole> ( ).HasData (
-              new IdentityRole { Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba0",Name = "Admin",NormalizedName = "ADMIN" },
-              new IdentityRole { Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba1",Name = "Company",NormalizedName = "COMPANY" },
-              new IdentityRole { Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba2",Name = "Advertiser",NormalizedName = "ADVERTISER" },
-              new IdentityRole { Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba4",Name = "User",NormalizedName = "USER" },
-              new IdentityRole { Id = "e02fd0e4-00fd-090a-ca30-0F00a0898ba4",Name = "SuperAdmin",NormalizedName = "SUPERADMIN" }
+
+              new IdentityRole
+              {
+                  Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba0",
+                  Name = "Admin",
+                  NormalizedName = "ADMIN"
+              },
+
+              new IdentityRole
+              {
+                  Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba1",
+                  Name = "Company",
+                  NormalizedName = "COMPANY"
+              },
+
+              new IdentityRole
+              {
+                  Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba2",
+                  Name = "Advertiser",
+                  NormalizedName = "ADVERTISER"
+              },
+
+              new IdentityRole
+              {
+                  Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba4",
+                  Name = "User",
+                  NormalizedName = "USER"
+              },
+
+              new IdentityRole
+              {
+                  Id = "e02fd0e4-00fd-090a-ca30-0F00a0898ba4",
+                  Name = "SuperAdmin",
+                  NormalizedName = "SUPERADMIN"
+              }
         );
+
         #endregion
 
         // 1. Create a hasher
@@ -69,7 +99,6 @@ public class ApplicationDbContext ( DbContextOptions<ApplicationDbContext> optio
         #endregion
 
         #region Admin User Seeding
-
 
         // 2. Define the user
         var adminUserFineArts = new IdentityUser

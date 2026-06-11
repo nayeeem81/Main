@@ -6,11 +6,11 @@ namespace Main.Services;
 
 public interface IPageService
 {
-    Task<bool> CreateNewPanel ( PagePanelDataModel pagePanelDataModel );
+    Task<bool> CreateNewPanel ( PanelDataModel pagePanelDataModel );
 
-    Task<List<PanelPostDataModel>> GetSelectProducts ( EnumCompanyName company );
+    Task<List<PostDataModel>> GetSelectProducts ( EnumCompanyName company );
 
-    Task<List<PanelPostDataModel>> GetSelectPosts ( EnumCompanyName company );
+    Task<List<PostDataModel>> GetSelectPosts ( EnumCompanyName company );
 
     Task<PageDataModel> GetPageDataModel ( int pageID );
 

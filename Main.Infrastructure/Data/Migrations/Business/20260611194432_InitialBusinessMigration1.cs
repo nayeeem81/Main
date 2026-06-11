@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Main.Infrastructure.Data.Migrations.Business
 {
     /// <inheritdoc />
-    public partial class InitialBusinessMigration111 : Migration
+    public partial class InitialBusinessMigration1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AdminPosts",
+                name: "AdPosts",
                 columns: table => new
                 {
                     AdminPostID = table.Column<int>(type: "int", nullable: false)
@@ -24,7 +24,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PosterContactNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: true),
                     WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShortNote = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ShortNote = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     SearchTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -37,30 +37,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdminPosts", x => x.AdminPostID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AValues",
-                columns: table => new
-                {
-                    ValueID = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Variable = table.Column<int>(type: "int", nullable: false),
-                    ParentValueId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HostCompanyName = table.Column<int>(type: "int", nullable: false),
-                    HostCountry = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IdentityUserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AValues", x => x.ValueID);
+                    table.PrimaryKey("PK_AdPosts", x => x.AdminPostID);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,7 +91,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminImageFiles",
+                name: "AdImageFiles",
                 columns: table => new
                 {
                     AdminImageFileID = table.Column<int>(type: "int", nullable: false)
@@ -132,17 +109,17 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdminImageFiles", x => x.AdminImageFileID);
+                    table.PrimaryKey("PK_AdImageFiles", x => x.AdminImageFileID);
                     table.ForeignKey(
-                        name: "FK_AdminImageFiles_AdminPosts_AdminPostID",
+                        name: "FK_AdImageFiles_AdPosts_AdminPostID",
                         column: x => x.AdminPostID,
-                        principalTable: "AdminPosts",
+                        principalTable: "AdPosts",
                         principalColumn: "AdminPostID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdminPostComments",
+                name: "AdPostComments",
                 columns: table => new
                 {
                     AdminPostCommentID = table.Column<int>(type: "int", nullable: false)
@@ -160,21 +137,24 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdminPostComments", x => x.AdminPostCommentID);
+                    table.PrimaryKey("PK_AdPostComments", x => x.AdminPostCommentID);
                     table.ForeignKey(
-                        name: "FK_AdminPostComments_AdminPosts_AdminPostID",
+                        name: "FK_AdPostComments_AdPosts_AdminPostID",
                         column: x => x.AdminPostID,
-                        principalTable: "AdminPosts",
+                        principalTable: "AdPosts",
                         principalColumn: "AdminPostID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PageContents",
+                name: "Panels",
                 columns: table => new
                 {
-                    PageContentID = table.Column<int>(type: "int", nullable: false)
+                    PanelID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PanelPosition = table.Column<int>(type: "int", nullable: false),
+                    PanelTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PanelTemplate = table.Column<int>(type: "int", nullable: false),
                     PageID = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -187,9 +167,9 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PageContents", x => x.PageContentID);
+                    table.PrimaryKey("PK_Panels", x => x.PanelID);
                     table.ForeignKey(
-                        name: "FK_PageContents_Pages_PageID",
+                        name: "FK_Panels_Pages_PageID",
                         column: x => x.PageID,
                         principalTable: "Pages",
                         principalColumn: "PageID",
@@ -253,49 +233,18 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 });
 
             migrationBuilder.CreateTable(
-                name: "PagePanels",
+                name: "Posts",
                 columns: table => new
                 {
-                    PanelID = table.Column<int>(type: "int", nullable: false)
+                    PostID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PanelPosition = table.Column<int>(type: "int", nullable: false),
-                    PanelTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PanelTemplate = table.Column<int>(type: "int", nullable: false),
-                    PageContentID = table.Column<int>(type: "int", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    HostCompanyName = table.Column<int>(type: "int", nullable: false),
-                    HostCountry = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    IdentityUserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PagePanels", x => x.PanelID);
-                    table.ForeignKey(
-                        name: "FK_PagePanels_PageContents_PageContentID",
-                        column: x => x.PageContentID,
-                        principalTable: "PageContents",
-                        principalColumn: "PageContentID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PanelPosts",
-                columns: table => new
-                {
-                    PanelPostID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PostOrder = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     EnumPostType = table.Column<int>(type: "int", nullable: false),
                     RootID = table.Column<int>(type: "int", nullable: false),
-                    ImageFileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    PostTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    WebsiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PanelID = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -308,11 +257,11 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PanelPosts", x => x.PanelPostID);
+                    table.PrimaryKey("PK_Posts", x => x.PostID);
                     table.ForeignKey(
-                        name: "FK_PanelPosts_PagePanels_PanelID",
+                        name: "FK_Posts_Panels_PanelID",
                         column: x => x.PanelID,
-                        principalTable: "PagePanels",
+                        principalTable: "Panels",
                         principalColumn: "PanelID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -335,28 +284,23 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdminImageFiles_AdminPostID",
-                table: "AdminImageFiles",
+                name: "IX_AdImageFiles_AdminPostID",
+                table: "AdImageFiles",
                 column: "AdminPostID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdminPostComments_AdminPostID",
-                table: "AdminPostComments",
+                name: "IX_AdPostComments_AdminPostID",
+                table: "AdPostComments",
                 column: "AdminPostID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PageContents_PageID",
-                table: "PageContents",
+                name: "IX_Panels_PageID",
+                table: "Panels",
                 column: "PageID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PagePanels_PageContentID",
-                table: "PagePanels",
-                column: "PageContentID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PanelPosts_PanelID",
-                table: "PanelPosts",
+                name: "IX_Posts_PanelID",
+                table: "Posts",
                 column: "PanelID");
 
             migrationBuilder.CreateIndex(
@@ -374,16 +318,13 @@ namespace Main.Infrastructure.Data.Migrations.Business
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdminImageFiles");
+                name: "AdImageFiles");
 
             migrationBuilder.DropTable(
-                name: "AdminPostComments");
+                name: "AdPostComments");
 
             migrationBuilder.DropTable(
-                name: "AValues");
-
-            migrationBuilder.DropTable(
-                name: "PanelPosts");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "ProductComments");
@@ -392,16 +333,13 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 name: "ProductImageFiles");
 
             migrationBuilder.DropTable(
-                name: "AdminPosts");
+                name: "AdPosts");
 
             migrationBuilder.DropTable(
-                name: "PagePanels");
+                name: "Panels");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "PageContents");
 
             migrationBuilder.DropTable(
                 name: "Pages");

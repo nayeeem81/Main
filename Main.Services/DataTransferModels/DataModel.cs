@@ -12,4 +12,11 @@ public class DataModel
         get;
         set;
     }
+
+    public void SetBaseDataModel ( BaseDataModel baseDataModel )
+    {
+        BaseDataModel = new BaseDataModel ( );
+
+        BaseDataModel = baseDataModel;
+    }
 }

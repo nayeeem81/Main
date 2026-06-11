@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Data.Migrations.Business
 {
     [DbContext(typeof(BussinessAppDbContext))]
-    [Migration("20260606231650_InitialBusinessMigration111")]
-    partial class InitialBusinessMigration111
+    [Migration("20260611194432_InitialBusinessMigration1")]
+    partial class InitialBusinessMigration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,56 +27,6 @@ namespace Main.Infrastructure.Data.Migrations.Business
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Model.AValue", b =>
-                {
-                    b.Property<long>("ValueID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ValueID"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("HostCompanyName")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HostCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdentityUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("ParentValueId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Variable")
-                        .HasColumnType("int");
-
-                    b.HasKey("ValueID");
-
-                    b.ToTable("AValues");
-                });
 
             modelBuilder.Entity("Domain.Model.AdminImageFile", b =>
                 {
@@ -124,7 +74,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.HasIndex("AdminPostID");
 
-                    b.ToTable("AdminImageFiles");
+                    b.ToTable("AdImageFiles");
                 });
 
             modelBuilder.Entity("Domain.Model.AdminPost", b =>
@@ -177,8 +127,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortNote")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -189,7 +139,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.HasKey("AdminPostID");
 
-                    b.ToTable("AdminPosts");
+                    b.ToTable("AdPosts");
                 });
 
             modelBuilder.Entity("Domain.Model.AdminPostComment", b =>
@@ -238,7 +188,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.HasIndex("AdminPostID");
 
-                    b.ToTable("AdminPostComments");
+                    b.ToTable("AdPostComments");
                 });
 
             modelBuilder.Entity("Domain.Model.Page", b =>
@@ -416,52 +366,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         });
                 });
 
-            modelBuilder.Entity("Domain.Model.PageContent", b =>
-                {
-                    b.Property<int>("PageContentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PageContentID"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("HostCompanyName")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HostCountry")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdentityUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PageID")
-                        .HasColumnType("int");
-
-                    b.HasKey("PageContentID");
-
-                    b.HasIndex("PageID");
-
-                    b.ToTable("PageContents");
-                });
-
-            modelBuilder.Entity("Domain.Model.PagePanel", b =>
+            modelBuilder.Entity("Domain.Model.Panel", b =>
                 {
                     b.Property<int>("PanelID")
                         .ValueGeneratedOnAdd()
@@ -496,7 +401,7 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PageContentID")
+                    b.Property<int>("PageID")
                         .HasColumnType("int");
 
                     b.Property<int>("PanelPosition")
@@ -506,22 +411,23 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .HasColumnType("int");
 
                     b.Property<string>("PanelTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PanelID");
 
-                    b.HasIndex("PageContentID");
+                    b.HasIndex("PageID");
 
-                    b.ToTable("PagePanels");
+                    b.ToTable("Panels");
                 });
 
-            modelBuilder.Entity("Domain.Model.PanelPost", b =>
+            modelBuilder.Entity("Domain.Model.Post", b =>
                 {
-                    b.Property<int>("PanelPostID")
+                    b.Property<int>("PostID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PanelPostID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PostID"));
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -533,6 +439,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("EnumPostType")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("FileContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<int>("HostCompanyName")
                         .HasColumnType("int");
 
@@ -542,10 +452,6 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<string>("IdentityUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ImageFileContent")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -557,33 +463,31 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
                     b.Property<int>("PanelID")
                         .HasColumnType("int");
 
-                    b.Property<string>("PostDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PostOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PostTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Price")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("RootID")
                         .HasColumnType("int");
 
-                    b.Property<string>("WebsiteUrl")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PanelPostID");
+                    b.Property<string>("WebsiteUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PostID");
 
                     b.HasIndex("PanelID");
 
-                    b.ToTable("PanelPosts");
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Domain.Model.Product", b =>
@@ -775,10 +679,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Navigation("AdminPost");
                 });
 
-            modelBuilder.Entity("Domain.Model.PageContent", b =>
+            modelBuilder.Entity("Domain.Model.Panel", b =>
                 {
                     b.HasOne("Domain.Model.Page", "Page")
-                        .WithMany("ListPageContents")
+                        .WithMany("ListPanels")
                         .HasForeignKey("PageID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -786,21 +690,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Navigation("Page");
                 });
 
-            modelBuilder.Entity("Domain.Model.PagePanel", b =>
+            modelBuilder.Entity("Domain.Model.Post", b =>
                 {
-                    b.HasOne("Domain.Model.PageContent", "PageContent")
-                        .WithMany("ListPagePanels")
-                        .HasForeignKey("PageContentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PageContent");
-                });
-
-            modelBuilder.Entity("Domain.Model.PanelPost", b =>
-                {
-                    b.HasOne("Domain.Model.PagePanel", "PagePanel")
-                        .WithMany("ListPanelPosts")
+                    b.HasOne("Domain.Model.Panel", "PagePanel")
+                        .WithMany("ListPosts")
                         .HasForeignKey("PanelID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -839,17 +732,12 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
             modelBuilder.Entity("Domain.Model.Page", b =>
                 {
-                    b.Navigation("ListPageContents");
+                    b.Navigation("ListPanels");
                 });
 
-            modelBuilder.Entity("Domain.Model.PageContent", b =>
+            modelBuilder.Entity("Domain.Model.Panel", b =>
                 {
-                    b.Navigation("ListPagePanels");
-                });
-
-            modelBuilder.Entity("Domain.Model.PagePanel", b =>
-                {
-                    b.Navigation("ListPanelPosts");
+                    b.Navigation("ListPosts");
                 });
 
             modelBuilder.Entity("Domain.Model.Product", b =>

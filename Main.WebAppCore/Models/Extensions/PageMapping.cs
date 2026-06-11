@@ -18,6 +18,8 @@ public static class PageMapping
         {
             pageDisplayViewModel = new PageDisplayViewModel ( );
 
+            pageDisplayViewModel.PageID = dataModel.PageID;
+
             pageDisplayViewModel.PageName = ListEnum.GetPageDescription ( dataModel.EnumPublicPage );
 
             pageDisplayViewModel.CompanyName =
@@ -29,7 +31,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PanelPostSelectViewModel> MapSelectPostViewModel ( List<PanelPostDataModel> listSelectProductsDataModels,EnumCategoryFor categoryFor,EnumCurrency currency )
+    public static List<PanelPostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,EnumCategoryFor categoryFor,EnumCurrency currency )
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -68,7 +70,7 @@ public static class PageMapping
 
         PagePanelViewModel panelViewModel;
 
-        pageDataModel.ListPagePanels.ForEach ( pagePanelDataModel =>
+        pageDataModel.ListPanels.ForEach ( pagePanelDataModel =>
         {
             panelViewModel = new PagePanelViewModel ( );
             panelViewModel.PanelID = pagePanelDataModel.PanelID;
@@ -78,7 +80,7 @@ public static class PageMapping
 
             PanelPostViewModel postViewModel;
 
-            pagePanelDataModel.ListPanelPosts.ForEach ( panelPostDataModel =>
+            pagePanelDataModel.ListPosts.ForEach ( panelPostDataModel =>
             {
                 postViewModel = new PanelPostViewModel ( );
                 postViewModel.PanelPostID = panelPostDataModel.PanelPostID;

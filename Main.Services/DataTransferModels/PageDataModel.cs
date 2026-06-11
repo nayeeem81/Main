@@ -1,44 +1,44 @@
-﻿using Main.Common;
-using Main.Common.Enums;
-using Main.Common.Model;
+﻿using Main.Common.Enums;
 
 namespace DataTransferModel
 {
-    public class PageDataModel : DataModel
+    public class PageDataModel
     {
-        public PageDataModel() {
-           
-            ListPagePanels = new List<PagePanelDataModel>();
+        public PageDataModel ( )
+        {
+            ListPanels = new List<PanelDataModel> ( );
         }
 
-        public PageDataModel(int id, EnumPublicPage enumPublicPage, EnumCompanyName enumCompany)
+        public int PageID
         {
-            ListPagePanels = new List<PagePanelDataModel>();
-            PageID = id;
-            EnumPublicPage = enumPublicPage;
-            CompanyName = enumCompany;
+            get; set;
         }
 
-        public int PageID { get; set; }
-
-        public EnumPublicPage EnumPublicPage { get; set; }
-
-        public string PageName { get; set; }
-
-        public EnumCompanyName CompanyName { get; set; }
-
-        public List<PagePanelDataModel> ListPagePanels { get; set; }
-
-        public void CreatePageContent(PagePanelDataModel pageContentDM)
+        public EnumPublicPage EnumPublicPage
         {
-            if (ListPagePanels == null)
+            get; set;
+        }
+
+        public EnumCompanyName CompanyName
+        {
+            get; set;
+        }
+
+        public List<PanelDataModel> ListPanels
+        {
+            get; set;
+        }
+
+        public void CreatePanel ( PanelDataModel pageDataModel )
+        {
+            if ( ListPanels == null )
             {
-                ListPagePanels = new List<PagePanelDataModel>();
+                ListPanels = new List<PanelDataModel> ( );
             }
 
-            if (pageContentDM != null)
+            if ( pageDataModel != null )
             {
-                ListPagePanels.Add(pageContentDM);
+                ListPanels.Add ( pageDataModel );
             }
         }
     }
