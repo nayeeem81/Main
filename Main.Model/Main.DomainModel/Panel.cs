@@ -9,13 +9,13 @@ public class Panel: BaseEntity
 {
     public Panel ( )
     {
-        PanelTitle = string.Empty;
     }
 
-    public Panel ( int pageId )
+    public Panel ( int pageId,EnumPanelTemplate panelTemplate,string panelTitle )
     {
-        PanelTitle = string.Empty;
         PageID = pageId;
+        PanelTemplate = panelTemplate;
+        PanelTitle = panelTitle;
     }
 
 
@@ -75,12 +75,12 @@ public class Panel: BaseEntity
         {
             int order = ListPosts.ToList<Post>().OrderBy (a=> a.Order).Last<Post>().Order;
             post.Order = order + 1;
-            post.PanelID = 0;
+            post.PanelID = PanelID;
         }
         else
         {
             post.Order = 1;
-            post.PanelID = 0;
+            post.PanelID = PanelID;
         }
 
         ListPosts.Add ( post );

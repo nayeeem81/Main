@@ -83,7 +83,7 @@ public class PagesController: BaseController
     {
         PagePanelViewModel pagePanelViewModel = new PagePanelViewModel();
 
-        pagePanelViewModel.PageID = id;
+
 
         List<PostDataModel> listSelectProductsDataModel =
             await _pageService.GetSelectProducts(_userContext.EnumCompanyName);
@@ -92,6 +92,9 @@ public class PagesController: BaseController
             PageMapping.MapSelectPostViewModel ( listSelectProductsDataModel
                                                 ,_userContext.EnumCategoryFor
                                                 ,_userContext.EnumCurrency );
+        pagePanelViewModel.PageID = id;
+        pagePanelViewModel.PanelTitle = "";
+        pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
 
 
         return View ( pagePanelViewModel );
@@ -114,29 +117,30 @@ public class PagesController: BaseController
 
         //try
         //{
-        PanelDataModel pagePanelDataModel = new PanelDataModel();
-        pagePanelDataModel.PanelTitle = model.PanelTitle;
-        pagePanelDataModel.PageID = model.PageID;
-        pagePanelDataModel.PanelTemplate
-            = ( EnumPanelTemplate ) model.TemplateTypeID;
+        PanelDataModel pagePanelDataModel
+            = new PanelDataModel( ( EnumPanelTemplate ) model.TemplateTypeID,
+                                    model.PageID, model.PanelTitle  );
+
 
         pagePanelDataModel.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
 
         List<PostDataModel> listReferencePosts
                 = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
 
-        List<PostDataModel> listUserSelectedPosts = listReferencePosts.Where(obj =>
+
+
+        List<PostDataModel> listUserSelectedPosts = new List<PostDataModel>();
+
+        listUserSelectedPosts = listReferencePosts.Where ( obj =>
         {
-            return model.Numbers.Contains(obj.PanelPostID);
-        } ).ToList();
+            return model.Numbers.Contains ( obj.PanelPostID );
+        } ).ToList ( );
 
         listUserSelectedPosts.ForEach ( selectedPost =>
         {
             selectedPost.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
+            pagePanelDataModel.CreatePost ( selectedPost );
         } );
-
-
-        pagePanelDataModel.ListPosts = listUserSelectedPosts;
 
         bool result  = await _pageService.CreateNewPanel ( pagePanelDataModel );
 

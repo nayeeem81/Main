@@ -34,7 +34,7 @@ public class PagePanelViewModel: BaseViewModel
         get; set;
     }
 
-    public int PanelOrderID
+    public int PanelPosition
     {
         get; set;
     }

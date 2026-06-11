@@ -8,26 +8,24 @@ public static class PageServiceMapping
 {
     public static Panel CreatePanelEntity ( PanelDataModel panelDataModel )
     {
-        Panel panelEntity = new Panel(panelDataModel.PageID);
+        Panel panelEntity = new Panel(panelDataModel.PageID, panelDataModel.PanelTemplate,
+            panelDataModel.PanelTitle );
 
-        panelEntity.PanelTemplate = panelDataModel.PanelTemplate;
-        panelEntity.PanelTitle = panelDataModel.PanelTitle;
         panelEntity.CreateBaseData ( panelDataModel.BaseDataModel );
 
-        Post panelPost;
+        Post post;
 
-        panelDataModel.ListPosts.ForEach ( objPost =>
+        panelDataModel.ListPosts.ForEach ( postDataModel =>
         {
-            panelPost = new Post ( objPost.EnumPostType,objPost.RootID,objPost.PanelPostID )
+            post =
+            new Post ( postDataModel.EnumPostType,postDataModel.Price,postDataModel.RootID )
             {
-                FileContent = objPost.ImageFileContent,
-                Price = objPost.Price,
-                Title = objPost.PostTitle
+                FileContent = postDataModel.ImageFileContent
             };
 
-            panelPost.CreateBaseData ( panelDataModel.BaseDataModel );
+            post.CreateBaseData ( panelDataModel.BaseDataModel );
 
-            panelEntity.CreatePost ( panelPost );
+            panelEntity.CreatePost ( post );
 
         } );
 
@@ -73,8 +71,7 @@ public static class PageServiceMapping
             } );
         } );
 
-        return listPanelPostDataModel
-            .ToList ( );
+        return listPanelPostDataModel.ToList ( );
     }
 
     public static PageDataModel MapPageDataModel ( Page pageEntity )

@@ -1,5 +1,4 @@
 ﻿using Main.Common.Enums;
-using Main.Common.Model;
 
 namespace DataTransferModel;
 
@@ -8,15 +7,17 @@ public class PanelDataModel: DataModel
     public PanelDataModel ( )
     {
         ListPosts = new List<PostDataModel> ( );
-
-        BaseDataModel = new BaseDataModel ( );
     }
 
-    public PanelDataModel ( EnumPanelTemplate enumPanelTemplate )
+    public PanelDataModel ( EnumPanelTemplate enumPanelTemplate,int pageId,string panelTitle )
     {
         ListPosts = new List<PostDataModel> ( );
 
         PanelTemplate = enumPanelTemplate;
+
+        PageID = pageId;
+
+        PanelTitle = panelTitle;
     }
 
 

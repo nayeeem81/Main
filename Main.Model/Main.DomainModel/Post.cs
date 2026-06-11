@@ -14,14 +14,14 @@ public class Post: BaseEntity
     }
 
     public Post (
-        EnumPostType enumPostType,
-        int rootId,
-        int panelId )
+        EnumPostType postType,
+        decimal price,
+        int rootId
+        )
     {
-        EnumPostType = enumPostType;
+        EnumPostType = postType;
+        Price = price;
         RootID = rootId;
-        PanelID = panelId;
-        Price = 0;
         WebsiteUrl = "www.dummy.com";
     }
 
@@ -83,7 +83,7 @@ public class Post: BaseEntity
 
 
     [ForeignKey ( "PanelID" )]
-    public virtual Panel PagePanel
+    public virtual Panel Panel
     {
         get; set;
     }

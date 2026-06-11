@@ -67,15 +67,15 @@ public class Page: BaseEntity
             {
                 int position = ListPanels.OrderBy ( a => a.PanelPosition ).Last().PanelPosition;
                 panel.PanelPosition = position + 1;
+                panel.PageID = PageID;
             }
             else
             {
                 panel.PanelPosition = 1;
+                panel.PageID = PageID;
             }
 
             ListPanels.Add ( panel );
         }
-
-        return;
     }
 }
