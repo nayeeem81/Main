@@ -64,15 +64,50 @@ Here in this shop example, we are considering content (image, link, short note, 
 1. Search Tag 
 1. Images (any number)
 
-***
 ### Use of these Contents
 When you will configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates are only for showing advertisement with or without a link to navigate to the ad website or video.
 
 Remember that there are other templates for Products (shop owners) which includes the add to cart button.
 
+## Manage Products 
+
+Here in this shop example, we are considering Product (Name, Price, Description, Images) which are the shop owner's items to sell. These are to be sold to online users. Users can add the products to the shopping cart and order them from the shop.  
+
+### Company User: He/she can add, update and delete a product and see the list of products for the shop. 
+
+### The purpose of this module is: 
+
+1. Add a Product 
+2. Update an existing Product 
+3. Delete a product 
+4. See the list of all products 
+
+### Each Products can have as many images as he/she (shop owners) wants. Until now, no validation has been provided to restrict users from entering a limited number of product images. 
+
+### A Product has few fields: 
+
+1. Product Name 
+2. Description 
+3. Category 
+4. Subcategory 
+5. Price  
+6. Discount 
+7. Sale Commission (If the shop wants to sell by any third-party shop) 
+8. Search Tag 
+9. Images (any number) 
+
+### Note: It is recommended to enter product images in the golden ratio for a nice display on the web page. 
+
+### Formula:
+Height =     
+Width = Height × 1.618 
+
+### Use of these Contents 
+1. When Shop Admin will configure the Pages of the website, he/she can select template for the panel (a row in a page) to select from the Products. This module will setup the products to display on the pages.  
+2. Templates are designed for these products. These templates only show products with links to view details of the product or to add to cart. Remember that there are other templates for Products (shop admin configure) which include the add to the cart button only without viewing details of the product. 
 
 # Solution Design & Architecture (.Net 8.0)
-## Background: 
+### Background: 
 
 I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
 
@@ -80,15 +115,13 @@ I decided to do a migration of my code in .NET 8.0 because it has long term supp
 
  
 
-## The Best Practices, used in (Main Project): 
-
+### The Best Practices in Mind & by Research: 
 1. I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
 2. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution. Another objective was to make sure; it is Linux deployable using containers and keeping the services completely separated from the presentation code (Web Project).  
 3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab). 
 4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
-## Solution Design 
-
+### Solution Design 
 1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.  
 2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.  
 3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.  
@@ -99,41 +132,45 @@ I decided to do a migration of my code in .NET 8.0 because it has long term supp
 8. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API. 
 9. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters are provided from the appsettigs.json from the web project. 
 
-### Note: More information on the best practices, and my research; please check the Help Documents folder in the Main Code Repository. 
+Note: More information on the best practices, and my research; please check the Docs folder in the Main Code Repository. 
 
-## Security Feature (Web Project): Identity 
+### The Best Practices (Web Project): 
+1. I used View Components to make the code modular and readble in the layout page.
+2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
+3. Zero use of EF core packages and references in the web project.
 
+### Security Feature (Web Project) using Identity 
 These: Signin, Signout, Email veirficaton, Acoount lock, Roles based authorizaton are the pages where these security features are applied. For auntication, we are using te .Net 8.0 Identity with default configuratin. The tables are IdentityUser and IdentityRole. Authorization is Role based. 
 
 ### Currently the roles are: Admin, Company & User
 
-### Following Security Features are integrated in this solution:
+Following Security Features are integrated in this solution:
 
-### 1. Broken Access Control & Enumeration (OWASP A01:2021):
-### The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing.
-### Mitigation: (Anti-Enumeration Logic, The controller uses an identity-blind diversion step)
+### Broken Access Control & Enumeration (OWASP A01:2021):
+The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing.
+Mitigation: (Anti-Enumeration Logic, The controller uses an identity-blind diversion step)
 
 1. we will check if user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat don't know if the user or email already in exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
  
-### 2. Cryptographic Failures & Session Hijacking (OWASP A02:2021)
-### The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
-### Mitigation: 
+### Cryptographic Failures & Session Hijacking (OWASP A02:2021)
+The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
+Mitigation: 
 1. Cryptographic Token Lifecycles & Security Stamp Invalidation
 The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timesttamp. The mail link is no more usable.
 
-### 3. Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
-### The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
-### Mitigation: 
+### Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
+The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
+Mitigation: 
 1. Token Integrity Checks: The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built intothe views.
 2. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signin a user reduced therisk of password injection.
 
-### 4. Identification and Authentication Failures (OWASP A07:2021)
-### The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
-### Mitigation: 
+### Identification and Authentication Failures (OWASP A07:2021)
+The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
+Mitigation: 
 1. State Enforcement Policies: 
 The system explicitly requires email verification before allowing a password reset flow (IsEmailConfirmedAsync) and login. 
 
-# Nuget Packages
+### Nuget Packages
 ### Main.Infrastructure Project (Data Infrastructure):
 Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8.0.0
 Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.0
@@ -146,15 +183,8 @@ Install-Package Microsoft.Extensions.Hosting -Version 8.0.0
 Install-Package Microsoft.Extensions.Configuration.Json -Version 8.0.0
 Install-Package Microsoft.EntityFrameworkCore.Design -Version 8.0.0
 
-# The Best Practices used in the Web Project: 
-
-1. I used View Components to make the code modular and readble in the layout page.
-2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
-3. Zero use of EF core packages and references in the web project.
-
 # Github Action (Release.yml) & Docker file (Continuous Integration)
-
-## Workflow Test - Automated Build & Release
+### Workflow Test - Automated Build & Release
 
 ✅ This repository is now configured with automated CI/CD workflows:
 - **dotnet.yml**: Tests on every push/PR to master
