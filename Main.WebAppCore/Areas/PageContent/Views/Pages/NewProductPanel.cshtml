@@ -4,6 +4,7 @@
     ViewData["Title"] = "Add Product Template";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = true;
+    
 }
 
 <div class="container">
@@ -14,6 +15,8 @@
 
     <form id ="frmMain">
         <div class="gap"></div>
+
+        @Html.AntiForgeryToken()
   
         @Html.HiddenFor( a => a.PageID )
 
@@ -70,7 +73,7 @@
             DROP YOUR PRODUCTS HERE:
         </span>
 
-        <div id="dropHereCotainer" class="col-md-2 card-form">
+        <div id="dropHereContainer" class="col-md-2 card-form">
            
         </div>
 
@@ -78,6 +81,7 @@
         <!-- Right Column -->
         <div id="dropFromContainer" class="col-md-10 card-form">
     @{
+
         foreach (var product in Model.ListSelectProducts)
         {
             <div id="@product.PanelPostID" 
@@ -86,7 +90,7 @@
                         padding:2px;    
                         margin-bottom:15px;">
 
-@await Html.PartialAsync("~/Areas/PageContent/Views/Pages/PanelPartials/_SelectImage.cshtml", product)
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/_SelectImage.cshtml", product)
                             
                 <div class="text-bg-info" draggable="false"> 
                     @product.CategoryName
@@ -125,14 +129,212 @@
     @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
 
     <script>
+    (function () {
+        'use strict';
+
+        const notify = $.notify;
+        const savePanelsurl = '@Url.Action("SaveNewProductPanel", "Pages", new { Area = "PageContent" })';
+        const $form = $("#frmMain");
+        const numbers = [];
+        const copyZone = document.getElementById('dropHereContainer');
+        const btnSave = document.getElementById('btnSave');
+
+        function getAntiForgeryToken() {
+            return $('input[name="__RequestVerificationToken"]').val() || '';
+        }
+
+        function getData() {
+            const panelTitle = document.getElementById("PanelTitle")?.value || '';
+            const pageId = parseInt (document.getElementById("PageID")?.value, 0) || 0;
+            const panelTemplateId = parseInt (document.getElementById("PanelTemplate")?.value, 0) || 0;
+
+            return {
+                PanelTitle: panelTitle,
+                TemplateTypeID: panelTemplateId,
+                PageID: pageId,
+                Numbers: numbers
+            };
+        }
+
+        function savePanels(e) {
+            e.preventDefault();
+
+            if (!$form.valid()) {
+                return;
+            }
+
+            var data = getData();
+            const token = getAntiForgeryToken();
+
+            try {
+                $.ajax({
+                    url: savePanelsurl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        console.log('Success:', response);
+                        if (response && response.receivedUrl) {
+                            window.location.href = response.receivedUrl;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error Status:', status, error);
+                    }
+                });
+            } catch (err) {
+                console.error("Network or parsing error:", err);
+            }
+        }
+
+        
+        function onDragOver(e) {
+            e.preventDefault();
+
+            if (!$form.valid()) {
+                
+                e.dataTransfer.dropEffect = 'none';
+                return;
+            }
+           
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        
+        function appendCloneToTarget(target, sourceElement, originalId) {
+            const clone = sourceElement.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.setAttribute('data-original-id', originalId);
+            target.appendChild(clone);
+            numbers.push(originalId);
+        }
+
+        function arrayPush(event, element, id) {
+            const moved = element;
+            moved.removeAttribute('id');
+            event.target.appendChild(moved);
+            numbers.push(id);
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+
+            if (!$form.valid()) {
+                return;
+            }
+
+            const id = event.dataTransfer.getData('text/plain');
+
+            if (!id) return;
+
+            const element = document.getElementById(id);
+
+            if (!element) return;
+
+            const isCopy = (event.dataTransfer.dropEffect === 'copy') || event.ctrlKey;
+
+            if (isCopy) {
+                appendCloneToTarget(event.currentTarget, element, id);
+                return;
+            }
+
+            
+            const elementDdl = document.getElementById("PanelTemplate");
+            const templateVal = parseInt(elementDdl?.value, 10) || 10;
+
+            switch (templateVal) {
+                case 9: // Double -> allow up to 2
+                    if (numbers.length < 2) {
+                        arrayPush(event, element, id);
+                    }
+                    break;
+                case 2: // Triangle -> up to 3
+                    if (numbers.length < 3) {
+                        arrayPush(event, element, id);
+                    }
+                    break;
+                case 1: // Quad -> up to 4
+                    if (numbers.length < 4) {
+                        arrayPush(event, element, id);
+                    }
+                    break;
+                case 3: // Sixer -> up to 6
+                    if (numbers.length < 6) {
+                        arrayPush(event, element, id);
+                    }
+                    break;
+                default:
+                    // show client-side notification that template must be selected
+                    notify({
+                        type: 'error',
+                        message: '<strong><i class="fa fa-thumbs-down"></i>&nbsp;ERROR:</strong> Template must be selected first!',
+                        allow_dismiss: true,
+                        placement: { from: "top", align: "right" },
+                        delay: { show: 10, hide: 10 }
+                    });
+            }
+        }
+
+        
+        $(function () {
+
+            if (btnSave) {
+                btnSave.removeEventListener('click', savePanels);
+                btnSave.addEventListener('click', savePanels);
+            }
+
+            if (copyZone) {
+                copyZone.removeEventListener('dragover', onDragOver);
+                copyZone.addEventListener('dragover', onDragOver);
+
+                copyZone.removeEventListener('drop', handleDrop);
+                copyZone.addEventListener('drop', handleDrop);
+            }
+        });
+    })();
+    </script>
+}
+@* 
+@section scriptsapp {
+
+    @await Html.PartialAsync( "~/Views/Shared/_ValidationScriptsPartial.cshtml" )
+
+    <script>
+        var savePanelsurl = 
+                '@Url.Action("SaveNewProductPanel", "Pages", new { Area = "PageContent" })';
+
         var notify = $.notify;
         var panelTitle = '';
         var pageId = '@Model.PageID';
         var panelTemplateId =  document.getElementById("PanelTemplate").value;
         let numbers = [];
+
+        function errorNotify()
+        {
+            notify({
+                type: 'error',
+                message: '<strong><i class="fa fa-thumbs-up"></i>&nbsp;' + 'ERROR:' + '</strong> ' + 'Template must select first!',
+                allow_dismiss: true,
+                placement: {
+                    from: "top",
+                    align: "right"
+                },
+                delay: { show: 10, hide: 10 },
+                template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                    '<button type="button" aria-hidden="true" class="close" data-notify="dismiss"><span class="close-icon">&times;</span></button>' +
+                    '<span data-notify="icon"></span>' +
+                    '<span data-notify="title">{1}</span>' +
+                    '<span data-notify="message">{2}</span>' +
+                    '</div>'
+                });
+        }
         
         
-        $(function() {
+        $ ( function() {
 
             numbers = [];
 
@@ -141,10 +343,8 @@
             const copyZone = document.getElementById('dropHereCotainer');
 
 
-            const sendData = async (e) => {
-
-                e.preventDefault();
-
+            function getData()
+            {
                 var elementTemplate = document.getElementById("PanelTemplate");
                 if (elementTemplate)
                 {
@@ -164,46 +364,57 @@
                 }
 
 
-                const data = {
+                var data = {
                     PanelTitle: panelTitle,
                     TemplateTypeID: panelTemplateId,
                     PageID: pageId,
                     Numbers: numbers
                 };
 
+                return data;
+            }
 
-                const response = 
-                
-                await fetch('@Url.Action("SaveNewProductPanel", "Pages", new { Area = "PageContent" })', 
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json' 
-                    },
-                    body: JSON.stringify(data) 
-                });
 
-                if (response.ok) 
+            function savePanels (e) {
+
+                e.preventDefault();
+
+                var data = getData();
+
+                try 
                 {
-                    const result = await response.json();
-                    console.log("Success:", result); 
-                    window.location.href = result.receivedUrl;
-                } 
-                else 
+                    $.ajax({
+                        url: savePanelsurl,
+                        type: 'POST',                       
+                        contentType: 'application/json',     
+                        dataType: 'json',   
+                        data: JSON.stringify(data),
+                        async: true,
+                        success: function (response) {
+                            console.log('Success:', response);
+                            window.location.href = response.receivedUrl;
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error Status:', status);
+                            console.error('Error Details:', error);
+                        }
+                    });
+                }
+                catch (error) 
                 {
-                    console.log("Error:", response.statusText);
+                    console.error("Network or parsing error:", error);
                 }
             }
             
             
-            btnSave.addEventListener('click', sendData);
+            btnSave.addEventListener('click', savePanels);
 
      
             copyZone.addEventListener('dragover', (e) => 
             {
                 e.preventDefault();
 
-                if($("frmMain").valid()){
+                if($("#frmMain").valid()) {
                     return;
                 }
 
@@ -211,111 +422,87 @@
             });
 
 
+            function arrayPush(event, element, id)
+            {
+                event.target.append(element);
+                numbers.push(id);
+            }
     
-            const handleDrop = (event) => {
-
+            const handleDrop = (event) => 
+            {
                 event.preventDefault();
 
-                if(!$("#frmMain").valid()){
+                if( !$("#frmMain" ).valid() )
+                {
                     return;
                 }
 
-                // 1. Get the drop target's position and size
                 const rect = event.currentTarget.getBoundingClientRect();
-
-                // 2. Subtract the target's position from the mouse position
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
-                
                 const id = event.dataTransfer.getData('text/plain');
-
-                const element = document.getElementById(id);
+                const element = document.getElementById( id );
     
-                if (event.dataTransfer.dropEffect === 'copy') {
-
+                if (event.dataTransfer.dropEffect === 'copy') 
+                {
                     const clone = element.cloneNode(true);
-
                     event.target.append(clone);
-
                     numbers.push(id);
-
                 }
                 else 
                 {
                     var elementDdl = document.getElementById("PanelTemplate");
 
-                    if (elementDdl) {
-                        panelTemplateId = elementDdl.value;
-                    }
+                    switch (elementDdl.value) 
+                    {
+                        case 9: //Doube (id 9)
+                            if(numbers.length < 2)
+                            {
+                                arrayPush(event, element, id);
+                            }
 
-                    if(panelTemplateId == "")
-                    {
-                        notify({
-                            type: 'error',
-                            message: '<strong><i class="fa fa-thumbs-up"></i>&nbsp;' + 'ERROR:' + '</strong> ' + 'Template  must select first!',
-                            allow_dismiss: true,
-                            placement: {
-                                from: "top",
-                                align: "right"
-                            },
-                            delay: { show: 10, hide: 10 },
-                            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss"><span class="close-icon">&times;</span></button>' +
-                                '<span data-notify="icon"></span>' +
-                                '<span data-notify="title">{1}</span>' +
-                                '<span data-notify="message">{2}</span>' +
-                                '</div>'
-                        });
+                            break;
 
-                        return;
-                    }
+                        case 2: //Triangle (id 2)
+                            if(numbers.length < 3) 
+                            {
+                                arrayPush(event, element, id);
+                            }
+            
+                            break;
 
-                    if(panelTemplateId == 9) //Doube (id 9)
-                    {
-                        if(numbers.length < 2)
-                        {
-                            event.target.append(element);
-                            numbers.push(id);
-                        }
-                       
-                    }
-                    else if(panelTemplateId == 2) //Triangle (id 2)
-                    {
-                        if(numbers.length < 3)
-                        {
-                            event.target.append(element);
-                            numbers.push(id);
-                        }
-                    }
-                    else if(panelTemplateId == 1) //Quad (id 1)
-                    {
-                         if(numbers.length < 4)
-                         {
+                        case 1: //Quad (id 1)
+                            if(numbers.length < 4) 
+                            {
+                                arrayPush(event, element, id);
+                            }   
 
-                            event.target.append(element);
-                            numbers.push(id);
-                         }
-                    }
-                    else if(panelTemplateId == 3) //Sixer (id 3)
-                    {
-                        if(numbers.length < 6)
-                        {
-                            event.target.append(element);
-                            numbers.push(id);
-                        }
+                            break;
+
+                        case 3: //Sixer (id 3)
+                            if(numbers.length < 6) 
+                            {
+                                arrayPush(event, element, id);
+                            }
+
+                            break;
+
+                        default:
+                            errorNotify();
                     }
                 }
-            };
+            }
 
             
             copyZone.addEventListener('drop', handleDrop);
 
 
-             if(!$("#frmMain").valid()){
-                    return;
-             }
+            if( ! $("#frmMain").valid() )
+            {
+                return;
+            }
              
         });
 
     </script>
-}
+} *@

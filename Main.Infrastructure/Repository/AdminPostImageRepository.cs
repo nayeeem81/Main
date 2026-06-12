@@ -21,7 +21,7 @@ public class AdminPostImageRepository: IAdminPostImageRepository
     public async Task<List<AdminPost>> 
         GetSelectAdminPosts(EnumCompanyName company)
     {
-        return await _context.AdminPosts
+        return await _context.AdPosts
             .Where(a => a.HostCompanyName == company)
             .ToListAsync<AdminPost>();
     }

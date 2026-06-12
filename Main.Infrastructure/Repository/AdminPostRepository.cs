@@ -23,7 +23,7 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<List<AdminPost>> GetAllAdminContentPosts()
     {
-        var listPostEntity = await _Context.AdminPosts
+        var listPostEntity = await _Context.AdPosts
                                            .ToListAsync();
 
         return listPostEntity;
@@ -31,12 +31,12 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> DeleteAdminPost(int postId)
     {
-        var adminPost = _Context.AdminPosts.ToList()
+        var adminPost = _Context.AdPosts.ToList()
             .Single(a => a.AdminPostID == postId);
 
         if (adminPost != null)
         {
-            _Context.AdminPosts.Remove(adminPost);
+            _Context.AdPosts.Remove(adminPost);
         }
                 
         var result = await _Context.SaveChangesAsync();
@@ -46,7 +46,7 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> DeleteAdminPostImage(int id, int postId)
     {
-        var adminImageFile = await _Context.AdminImageFiles
+        var adminImageFile = await _Context.AdImageFiles
                         .Where(
                            a => a.AdminImageFileID == id 
                            && a.AdminPostID == postId)
@@ -54,7 +54,7 @@ public class AdminPostRepository : IAdminPostRepository
 
         if (adminImageFile != null)
         {
-            _Context.AdminImageFiles.Remove(adminImageFile);
+            _Context.AdImageFiles.Remove(adminImageFile);
         }
 
         var result = await _Context.SaveChangesAsync();
@@ -64,7 +64,7 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<AdminPost> GetAdminPostByPostID(int postId)
     {
-        var postEntity = await _Context.AdminPosts
+        var postEntity = await _Context.AdPosts
                             .SingleAsync (a => a.AdminPostID == postId);
 
         return postEntity;
@@ -72,7 +72,7 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> SaveNewAdminPost ( AdminPost adminPostEntity )
     {
-        _Context.AdminPosts.Add( adminPostEntity );
+        _Context.AdPosts.Add( adminPostEntity );
 
         int result = await _Context.SaveChangesAsync();
 
@@ -81,7 +81,7 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> UpdateAdminPost ( AdminPost postEntity )
     {
-        _Context.AdminPosts.Update ( postEntity );
+        _Context.AdPosts.Update ( postEntity );
 
         var result = await _Context.SaveChangesAsync();
 

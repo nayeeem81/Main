@@ -4,15 +4,15 @@ using Main.Common.Model;
 namespace Domain.Model;
 
 public class BaseEntity
-{        
-    public BaseEntity() 
-    {            
+{
+    public BaseEntity ( )
+    {
         IsActive = true;
     }
 
     public void CreateBaseData ( BaseDataModel modelBase )
     {
-        IdentityUserId = modelBase.Id.Trim();
+        IdentityUserId = modelBase.Id.Trim ( );
 
         CreatedDate = modelBase.CreatedDate;
         CreatedBy = modelBase.CreatedBy;
@@ -37,20 +37,43 @@ public class BaseEntity
         IsActive = true;
     }
 
-    public string CreatedBy { get; set; }
-   
-    public DateTime CreatedDate { get; set; }
-   
-    public string ModifiedBy { get; set; }
-   
-    public DateTime ModifiedDate { get; set; }
-  
-    public EnumCompanyName HostCompanyName { get; set; }
-   
-    public EnumCountry HostCountry { get; set; }
+    public string CreatedBy
+    {
+        get; set;
+    }
 
-    public bool IsActive { get; set; }
+    public DateTime CreatedDate
+    {
+        get; set;
+    }
 
-    //User Identity from Identity Server, not the UserID from User table
-    public string IdentityUserId { get; set; }
+    public string ModifiedBy
+    {
+        get; set;
+    }
+
+    public DateTime ModifiedDate
+    {
+        get; set;
+    }
+
+    public EnumCompanyName HostCompanyName
+    {
+        get; set;
+    }
+
+    public EnumCountry HostCountry
+    {
+        get; set;
+    }
+
+    public bool IsActive
+    {
+        get; set;
+    }
+
+    public string IdentityUserId
+    {
+        get; set;
+    }
 }

@@ -6,7 +6,6 @@ using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using WebAppCore.Helper;
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
@@ -16,9 +15,10 @@ public class LocalModel
 {
     public LocalModel ( )
     {
+        Numbers = new List<int> ( );
     }
 
-    public string? PanelTitle
+    public string PanelTitle
     {
         get; set;
     }
@@ -46,12 +46,14 @@ public class PagesController: BaseController
 {
     private readonly IPageService _pageService;
     private readonly IUserContext _userContext;
+    private readonly ILogger<PagesController> _logger;
 
     public PagesController ( IPageService pageDataService,
-                           IUserContext userContext )
+                           IUserContext userContext,ILogger<PagesController> logger )
     {
         _pageService = pageDataService;
         _userContext = userContext;
+        _logger = logger;
     }
 
 
@@ -62,9 +64,9 @@ public class PagesController: BaseController
         {
             EnumCompanyName company = _userContext.EnumCompanyName;
 
-            List<PageDisplayDataModel> listPageDataodel = await _pageService.GetAllPages(company);
+            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(company);
 
-            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataodel);
+            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel);
 
             return View ( listPageViewModel );
 
@@ -83,209 +85,105 @@ public class PagesController: BaseController
     {
         PagePanelViewModel pagePanelViewModel = new PagePanelViewModel();
 
-        pagePanelViewModel.PageID = id;
 
-        List<PanelPostDataModel> listSelectProductsDataModel =
-            await _pageService.GetSelectProducts(AppSettings.Current.EnumCompanyName);
+
+        List<PostDataModel> listSelectProductsDataModel =
+            await _pageService.GetSelectProducts(_userContext.EnumCompanyName);
 
         pagePanelViewModel.ListSelectProducts =
             PageMapping.MapSelectPostViewModel ( listSelectProductsDataModel
-            ,AppSettings.Current.EnumCategoryFor
-            ,AppSettings.Current.EnumCurrency );
+                                                ,_userContext.EnumCategoryFor
+                                                ,_userContext.EnumCurrency );
+        pagePanelViewModel.PageID = id;
+        pagePanelViewModel.PanelTitle = "";
+        pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
 
 
         return View ( pagePanelViewModel );
     }
 
 
-    //[HttpPost]
-    //[Authorize ( Roles = "Admin" )]
-    //public async Task<IActionResult> SaveNewProductPanel ( [FromBody] LocalModel model )
-    //{
-    //    if ( model == null )
-    //        return BadRequest ( "Invalid data." );
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize ( Roles = "Admin" )]
+    public async Task<IActionResult> SaveNewProductPanel ( [FromBody] LocalModel model )
+    {
+        _logger.LogWarning ( model.PanelTitle );
+        _logger.LogWarning ( model.PageID.ToString ( ) );
+        _logger.LogWarning ( model.TemplateTypeID.ToString ( ) );
+        _logger.LogWarning ( model.Numbers[0].ToString ( ) );
 
-    //    try
-    //    {
-    //        PagePanelDataModel pagePanelDataModel = new PagePanelDataModel();
-    //        pagePanelDataModel.PanelTitle = model.PanelTitle;
-    //        pagePanelDataModel.PageID = model.PageID;
-    //        pagePanelDataModel.PanelTemplate
-    //            = ( EnumPanelTemplate ) model.TemplateTypeID;
+        if ( model == null )
+        {
+            return Json ( new
+            {
+                success = false,
+                message = "model is null"
+            } );
+        }
 
-    //        pagePanelDataModel.BaseDataModel
-    //            = _userContext.GetCreateBaseDataModel ( );
+        try
+        {
+            PanelDataModel pagePanelDataModel
+            = new PanelDataModel( ( EnumPanelTemplate ) model.TemplateTypeID,
+                                    model.PageID, model.PanelTitle  );
 
+            _logger.LogWarning ( pagePanelDataModel.PanelTitle );
+            _logger.LogWarning ( pagePanelDataModel.PageID.ToString ( ) );
+            _logger.LogWarning ( pagePanelDataModel.PanelTemplate.ToString ( ) );
 
-    //        List<PanelPostDataModel> listReferencePosts
-    //            = _pagePanelService
-    //            .GetSelectProducts( _userContext.EnumCompanyName );
+            pagePanelDataModel.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
 
-    //        List<PanelPostDataModel> listUserSelectedPosts = listReferencePosts.Where(obj => model.Numbers.Contains(obj.PanelPostID)).ToList();
+            List<PostDataModel> listReferencePosts
+                = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
 
+            _logger.LogWarning ( "listReferencePosts (count):" + listReferencePosts.Count.ToString ( ) );
 
-    //        int newPanelId  = await _pagePanelService.CreateNewPanel ( pagePanelDataModel, listUserSelectedPosts);
+            List<PostDataModel> listUserSelectedPosts = new List<PostDataModel>();
 
+            listUserSelectedPosts = listReferencePosts.Where ( obj =>
+            {
+                return model.Numbers.Contains ( obj.PanelPostID );
+            } ).ToList ( );
 
-    //        return Json ( new
-    //        {
-    //            success = newPanelId > 0 ? true : false,
+            _logger.LogWarning ( "listUserSelectedPosts (count):" + listUserSelectedPosts.Count.ToString ( ) );
 
-    //            receivedUrl = Url.Action ( "Index","Pages",new
-    //            {
-    //                Area = "PageContent"
-    //            } )
-    //        } );
+            listUserSelectedPosts.ForEach ( selectedPost =>
+            {
+                selectedPost.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
+                pagePanelDataModel.CreatePost ( selectedPost );
+            } );
 
-    //    }
-    //    catch ( Exception ex )
-    //    {
-    //        throw ex;
-    //    }
-    //}
-
-
-    //public async Task<IActionResult> PreviewPageContent ( int? id )
-    //{
-    //    if ( id == null )
-    //    {
-    //        return NotFound ( );
-    //    }
-
-    //    List<PagePanelViewModel> listPagePanelVM = await _pagePanelService.GetPanelList(id.Value);
-
-    //    return View ( listPagePanelVM );
-    //}
+            bool result  = await _pageService.CreateNewPanel ( pagePanelDataModel );
 
 
+            return Json ( new
+            {
+                success = result,
+                receivedUrl = Url.Action ( "Index","Pages",new
+                {
+                    Area = "PageContent"
+                } )
+            } );
 
-    // GET: PageContent/Pages/Details/5
-    //public async Task<IActionResult> Details(int? id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return NotFound();
-    //    }
+        }
+        catch ( Exception ex )
+        {
+            return Json ( new
+            {
+                success = false,
+                message = ex.Message
+            } );
+        }
+    }
 
-    //    var page = await _context.Pages
-    //        .FirstOrDefaultAsync(m => m.PageID == id);
-    //    if (page == null)
-    //    {
-    //        return NotFound();
-    //    }
 
-    //    return View(page);
-    //}
+    public async Task<IActionResult> PreviewPageContent ( int id )
+    {
+        PageDataModel pagePanelDataModel = await _pageService.GetPageDataModel(id);
 
-    //// GET: PageContent/Pages/Create
-    //public IActionResult Create()
-    //{
-    //    return View();
-    //}
+        PageViewModel pageViewModel = PageMapping.MapPageViewModel ( pagePanelDataModel );
 
-    //// POST: PageContent/Pages/Create
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create([Bind("PageID,EnumPublicPage,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,HostCompanyName,HostCountry,IsActive")] Page page)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        _context.Add(page);
-    //        await _context.SaveChangesAsync();
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(page);
-    //}
-
-    //// GET: PageContent/Pages/Edit/5
-    //public async Task<IActionResult> Edit(int? id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    var page = await _context.Pages.FindAsync(id);
-    //    if (page == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    return View(page);
-    //}
-
-    //// POST: PageContent/Pages/Edit/5
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Edit(int id, [Bind("PageID,EnumPublicPage,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,HostCompanyName,HostCountry,IsActive")] Page page)
-    //{
-    //    if (id != page.PageID)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    if (ModelState.IsValid)
-    //    {
-    //        try
-    //        {
-    //            _context.Update(page);
-    //            await _context.SaveChangesAsync();
-    //        }
-    //        catch (DbUpdateConcurrencyException)
-    //        {
-    //            if (!PageExists(page.PageID))
-    //            {
-    //                return NotFound();
-    //            }
-    //            else
-    //            {
-    //                throw;
-    //            }
-    //        }
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(page);
-    //}
-
-    //// GET: PageContent/Pages/Delete/5
-    //public async Task<IActionResult> Delete(int? id)
-    //{
-    //    if (id == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    var page = await _context.Pages
-    //        .FirstOrDefaultAsync(m => m.PageID == id);
-    //    if (page == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    return View(page);
-    //}
-
-    //// POST: PageContent/Pages/Delete/5
-    //[HttpPost, ActionName("Delete")]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> DeleteConfirmed(int id)
-    //{
-    //    var page = await _context.Pages.FindAsync(id);
-    //    if (page != null)
-    //    {
-    //        _context.Pages.Remove(page);
-    //    }
-
-    //    await _context.SaveChangesAsync();
-    //    return RedirectToAction(nameof(Index));
-    //}
-
-    //private bool PageExists(int id)
-    //{
-    //    return _context.Pages.Any(e => e.PageID == id);
-    //}
-
+        return View ( pageViewModel.ListPagePanels.ToList ( ) );
+    }
 }

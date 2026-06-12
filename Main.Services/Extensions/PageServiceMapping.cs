@@ -6,72 +6,52 @@ namespace Main.Services.Extensions;
 
 public static class PageServiceMapping
 {
-    public static Page CreatePageContent ( Page pageEntity,PagePanelDataModel pagePanelDataModel,PagePanel panelEntity )
+    public static Panel CreatePanelEntity ( PanelDataModel panelDataModel )
     {
-        PageContent pageCotentEntity = pageEntity != null
+        Panel panelEntity = new Panel( panelDataModel.PageID, panelDataModel.PanelTemplate,
+            panelDataModel.PanelTitle );
 
-                ? pageEntity.GetNewOrExistingPageContent
-                                (pagePanelDataModel.PageID, pagePanelDataModel.BaseDataModel)
-                : new PageContent();
-
-
-        pageCotentEntity.Page = null;
-
-        pageCotentEntity.CreatePagePanel ( panelEntity );
-
-
-        if ( pageEntity != null )
-        {
-            pageEntity.SavePageContent ( pageCotentEntity );
-            return pageEntity;
-        }
-
-        return new Page ( );
-    }
-
-    public static PagePanel CreatePanelEntity ( PagePanelDataModel pagePanelDataModel,List<PanelPostDataModel> listPanelPostDataModel )
-    {
-        PagePanel panelEntity = new PagePanel();
-
-        panelEntity.PanelTemplate = pagePanelDataModel.PanelTemplate;
-
-        panelEntity.PanelTitle = pagePanelDataModel.PanelTitle;
-
-        panelEntity.CreateBaseData ( pagePanelDataModel.BaseDataModel );
-
-
-        listPanelPostDataModel.ForEach ( objPost =>
-        {
-
-            PanelPost panelPost = new PanelPost ( )
-            {
-                ImageFileContent = objPost.ImageFileContent,
-                Price = objPost.Price,
-                PostTitle = objPost.PostTitle,
-                PostDescription = objPost.PostDescription
-            };
-
-            panelPost.CreateBaseData ( objPost.BaseDataModel );
-
-            panelEntity.CreatePanelPost ( panelPost );
-
-        } );
+        panelEntity.CreateBaseData ( panelDataModel.BaseDataModel );
 
         return panelEntity;
     }
 
+    public static List<Post> CreateListPostEntity ( PanelDataModel panelDataModel )
+    {
+        List<Post>  listPosts = new List<Post>();
+        Post post;
+        int order = 1;
+        panelDataModel.ListPosts.ForEach ( postDataModel =>
+        {
+            post =
+            new Post ( postDataModel.EnumPostType,postDataModel.Price,postDataModel.RootID )
+            {
+                FileContent = postDataModel.ImageFileContent,
+                Title = postDataModel.PostTitle,
+                Order = order
+            };
 
-    public static List<PanelPostDataModel> GetPanelPostDataModels ( List<Product> listProducts )
+            post.CreateBaseData ( panelDataModel.BaseDataModel );
+            listPosts.Add ( post );
+
+            order += 1;
+        } );
+
+        return listPosts;
+    }
+
+
+    public static List<PostDataModel> GetPostDataModels ( List<Product> listProducts )
     {
         if ( listProducts == null )
         {
-            return new List<PanelPostDataModel> ( );
+            return new List<PostDataModel> ( );
         }
 
-        List<PanelPostDataModel> listPanelPostDataModel
-        = new List<PanelPostDataModel>();
+        List<PostDataModel> listPanelPostDataModel
+        = new List<PostDataModel>();
 
-        PanelPostDataModel panelPostDataModel;
+        PostDataModel panelPostDataModel;
 
         int id = 1;
 
@@ -82,7 +62,7 @@ public static class PageServiceMapping
             .ToList ( )
             .ForEach ( file =>
             {
-                panelPostDataModel = new PanelPostDataModel ( );
+                panelPostDataModel = new PostDataModel ( );
 
                 panelPostDataModel.CategoryID = productEntity.CategoryID;
                 panelPostDataModel.PanelPostID = id;
@@ -99,53 +79,49 @@ public static class PageServiceMapping
             } );
         } );
 
-        return listPanelPostDataModel
-            .ToList ( );
+        return listPanelPostDataModel.ToList ( );
     }
 
     public static PageDataModel MapPageDataModel ( Page pageEntity )
     {
         if ( pageEntity != null )
         {
-            var pageContent = pageEntity.ListPageContents.First<PageContent>();
-
-            var listPanels = pageContent.ListPagePanels.ToList();
+            var listPanels = pageEntity.ListPanels.ToList();
 
             PageDataModel pageDataModel = new PageDataModel( );
 
-            List<PagePanelDataModel> listPanelDataModel
-                = new List<PagePanelDataModel>();
+            List<PanelDataModel> listPanelDataModel
+                = new List<PanelDataModel>();
 
-            PagePanelDataModel panelDataModel;
+            PanelDataModel panelDataModel;
 
-            PanelPostDataModel panelPostDataModel;
+            PostDataModel postDataModel;
 
             listPanels.ForEach ( panel =>
             {
-                panelDataModel = new PagePanelDataModel ( );
+                panelDataModel = new PanelDataModel ( );
 
                 panelDataModel.PanelID = panel.PanelID;
                 panelDataModel.PanelTemplate = panel.PanelTemplate;
                 panelDataModel.PanelTitle = panel.PanelTitle;
+                panelDataModel.PageID = panel.PageID;
+                panelDataModel.PanelPosition = panel.PanelPosition;
 
-                panel
-                .ListPanelPosts
-                .ToList ( )
-                .ForEach ( panelPost =>
+                panel.ListPosts.ToList ( ).ForEach ( panelPost =>
                 {
-                    panelPostDataModel = new PanelPostDataModel ( );
+                    postDataModel = new PostDataModel ( );
 
-                    panelPostDataModel.PanelPostID = panelPost.PanelPostID;
-                    panelPostDataModel.PostTitle = panelPost.PostTitle ?? "";
-                    panelPostDataModel.Price = panelPost.Price.HasValue ? panelPost.Price.Value : 0;
-                    panelPostDataModel.PostDescription = panelPost.PostDescription;
-                    panelPostDataModel.ImageFileContent = panelPost.ImageFileContent;
-                    panelPostDataModel.PostOrder = panelPost.PostOrder;
+                    postDataModel.PanelPostID = panelPost.PostID;
+                    postDataModel.PostTitle = panelPost.Title ?? "";
+                    postDataModel.Price = panelPost.Price;
+                    postDataModel.ImageFileContent = panelPost.FileContent;
+                    postDataModel.PostOrder = panelPost.Order;
 
-                    panelDataModel.CreatePanelPost ( panelPostDataModel );
+                    panelDataModel.CreatePost ( postDataModel );
                 } );
 
-                pageDataModel.CreatePageContent ( panelDataModel );
+                pageDataModel.CreatePanel ( panelDataModel );
+
             } );
 
             return pageDataModel;
@@ -154,35 +130,39 @@ public static class PageServiceMapping
         return new PageDataModel ( );
     }
 
-    public static List<PanelPostDataModel> GetPanelPostDataModels ( List<AdminPost> listAdminPosts )
+    public static List<PostDataModel> GetPostDataModels ( List<AdminPost> listAdminPosts )
     {
         if ( listAdminPosts == null )
         {
-            return new List<PanelPostDataModel> ( );
+            return new List<PostDataModel> ( );
         }
 
-        List<PanelPostDataModel> listAdminPostDataModels
-            = new List<PanelPostDataModel>();
+        List<PostDataModel> listPostDataModels = new List<PostDataModel>();
 
-        PanelPostDataModel panelPostDataModel;
+        PostDataModel postDataModel;
+
+        int id = 1;
 
         listAdminPosts.ForEach ( adminPostEntity =>
         {
             adminPostEntity.ListAdminImageFiles.ToList ( ).ForEach ( fileEntity =>
             {
-                panelPostDataModel = new PanelPostDataModel ( );
+                postDataModel = new PostDataModel ( );
 
-                panelPostDataModel.RootID = adminPostEntity.AdminPostID;
-                panelPostDataModel.EnumPostType = adminPostEntity.PostType;
-                panelPostDataModel.PostTitle = adminPostEntity.Title;
-                panelPostDataModel.ImageFileContent
-                                = fileEntity.ImageFileContent;
+                postDataModel.PanelPostID = id;
+                postDataModel.RootID = adminPostEntity.AdminPostID;
+                postDataModel.EnumPostType = adminPostEntity.PostType;
+                postDataModel.PostTitle = adminPostEntity.Title;
+                postDataModel.ImageFileContent = fileEntity.ImageFileContent;
+                postDataModel.WebsiteUrl = adminPostEntity.WebsiteUrl;
 
-                listAdminPostDataModels.Add ( panelPostDataModel );
+                listPostDataModels.Add ( postDataModel );
+
+                id += 1;
             } );
         } );
 
-        return listAdminPostDataModels
-            .ToList<PanelPostDataModel> ( );
+        return listPostDataModels
+            .ToList<PostDataModel> ( );
     }
 }

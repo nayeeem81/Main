@@ -18,6 +18,8 @@ public static class PageMapping
         {
             pageDisplayViewModel = new PageDisplayViewModel ( );
 
+            pageDisplayViewModel.PageID = dataModel.PageID;
+
             pageDisplayViewModel.PageName = ListEnum.GetPageDescription ( dataModel.EnumPublicPage );
 
             pageDisplayViewModel.CompanyName =
@@ -29,7 +31,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PanelPostSelectViewModel> MapSelectPostViewModel ( List<PanelPostDataModel> listSelectProductsDataModels,EnumCategoryFor categoryFor,EnumCurrency currency )
+    public static List<PanelPostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,EnumCategoryFor categoryFor,EnumCurrency currency )
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -60,5 +62,46 @@ public static class PageMapping
         } );
 
         return listPanelPostSelectViewModels;
+    }
+
+    public static PageViewModel MapPageViewModel ( PageDataModel pageDataModel )
+    {
+        List<PagePanelViewModel>  listPanelViewModel = new List<PagePanelViewModel> ();
+
+        PagePanelViewModel panelViewModel;
+
+        pageDataModel.ListPanels.ForEach ( pagePanelDataModel =>
+        {
+            panelViewModel = new PagePanelViewModel ( );
+            panelViewModel.PanelID = pagePanelDataModel.PanelID;
+            panelViewModel.PanelTitle = pagePanelDataModel.PanelTitle ?? "";
+            panelViewModel.PanelTemplate = pagePanelDataModel.PanelTemplate;
+            panelViewModel.PageName = ListEnum.GetPageDescription ( pageDataModel.EnumPublicPage );
+
+            PanelPostViewModel postViewModel;
+
+            pagePanelDataModel.ListPosts.ForEach ( panelPostDataModel =>
+            {
+                postViewModel = new PanelPostViewModel ( );
+                postViewModel.PanelPostID = panelPostDataModel.PanelPostID;
+                postViewModel.ImageFileContent = panelPostDataModel.ImageFileContent;
+                postViewModel.ImageFileID = panelPostDataModel.ImageFileID;
+                postViewModel.Price = panelPostDataModel.Price;
+                postViewModel.PageID = panelPostDataModel.PageID;
+                postViewModel.CategoryID = panelPostDataModel.CategoryID;
+
+                panelViewModel.CreatePanelPost ( postViewModel );
+
+            } );
+
+            listPanelViewModel.Add ( panelViewModel );
+
+        } );
+
+        PageViewModel pageViewModel = new PageViewModel ( );
+
+        pageViewModel.ListPagePanels = listPanelViewModel;
+
+        return pageViewModel;
     }
 }

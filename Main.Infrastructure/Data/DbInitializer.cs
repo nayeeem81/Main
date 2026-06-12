@@ -1,6 +1,4 @@
 ﻿using global::Data;
-// File: Data/DbInitializer.cs
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

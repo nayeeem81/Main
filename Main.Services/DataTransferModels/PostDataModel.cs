@@ -1,19 +1,13 @@
 ﻿using Main.Common.Enums;
+using Main.Common.Model;
 
 namespace DataTransferModel;
 
-public class PanelPostDataModel: DataModel
+public class PostDataModel: DataModel
 {
-    public PanelPostDataModel ( )
+    public PostDataModel ( )
     {
-    }
-
-    public PanelPostDataModel ( EnumPostType enumPostType,int rootId,int imageId,int order )
-    {
-        EnumPostType = enumPostType;
-        RootID = rootId;
-        ImageFileID = imageId;
-        ImageOrderID = order;
+        BaseDataModel = new BaseDataModel ( );
     }
 
     public int PanelPostID
@@ -51,7 +45,7 @@ public class PanelPostDataModel: DataModel
         get; set;
     }
 
-    public byte[]? ImageFileContent
+    public byte[] ImageFileContent
     {
         get; set;
     }
@@ -61,7 +55,7 @@ public class PanelPostDataModel: DataModel
         get; set;
     }
 
-    public string? PostDescription
+    public string PostDescription
     {
         get; set;
     }
@@ -76,22 +70,7 @@ public class PanelPostDataModel: DataModel
         get; set;
     }
 
-    public int PanelID
-    {
-        get; set;
-    }
-
-    public PagePanelDataModel? PagePanel
-    {
-        get; set;
-    }
-
     public int PageID
-    {
-        get; set;
-    }
-
-    public int ImageArea
     {
         get; set;
     }

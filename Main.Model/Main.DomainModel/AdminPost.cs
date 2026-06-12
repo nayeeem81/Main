@@ -1,40 +1,72 @@
 ﻿using Main.Common.Enums;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;
 
-public class AdminPost : BaseEntity
+public class AdminPost: BaseEntity
 {
-    public AdminPost() {
+    public AdminPost ( )
+    {
 
     }
 
     [Key]
-    public int AdminPostID { get; set; }
+    public int AdminPostID
+    {
+        get; set;
+    }
 
     [Required]
-    public EnumPostType PostType { get; set; }
-    
-    [Required]
-    public string PosterName { get; set; }
+    public EnumPostType PostType
+    {
+        get; set;
+    }
 
     [Required]
-    public string Title { get; set; }
+    public string PosterName
+    {
+        get; set;
+    }
+
+    [Required]
+    public string Title
+    {
+        get; set;
+    }
 
 
     //Nullable
-    [StringLength(11)]
-    public string? PosterContactNumber { get; set; } 
+    [StringLength ( 11 )]
+    [DataType ( DataType.PhoneNumber )]
+    public string? PosterContactNumber
+    {
+        get; set;
+    }
 
-    public string? WebsiteUrl { get; set; }
 
-    [MaxLength(1000)]
-    public string? ShortNote { get; set; }
+    [DataType ( DataType.Url )]
+    public string? WebsiteUrl
+    {
+        get; set;
+    }
 
-    public string? SearchTag { get; set; }
 
-    public virtual ICollection<AdminImageFile> ListAdminImageFiles { get; set; } = new HashSet<AdminImageFile>();
+    [MaxLength ( 4000 )]
+    public string? ShortNote
+    {
+        get; set;
+    }
 
-    public virtual ICollection<AdminPostComment> ListAdminPostComments { get; set; } = new HashSet<AdminPostComment>();
+
+    public string? SearchTag
+    {
+        get; set;
+    }
+
+
+    public virtual ICollection<AdminImageFile> ListAdminImageFiles { get; set; } = new HashSet<AdminImageFile> ( );
+
+    public virtual ICollection<AdminPostComment> ListAdminPostComments { get; set; } = new HashSet<AdminPostComment> ( );
 
 }
