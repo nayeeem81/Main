@@ -1,14 +1,4 @@
-﻿/* Prevent text highlighting inside the header while trying to grab */
-.panel-header {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-/* Ensure content elements use normal pointer cursor */
-.panel-content, h4 {
-    cursor: default;
-}
-
+﻿
 /* Base Panel Styles */
 .panel {
     background: #ffffff;

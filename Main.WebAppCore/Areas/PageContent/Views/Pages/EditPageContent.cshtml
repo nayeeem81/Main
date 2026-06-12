@@ -58,86 +58,66 @@
         (function () {
 
             const container = document.querySelector('.panel-list');
-
             let dragSrcEl = null;
 
-            // 1. Listen for mousedown to activate dragging ONLY when clicking the handle
-            container.addEventListener('mousedown', (e) => {
-
-                  const handle = e.target.closest('.drag-handle');
-
-                  if (!handle) return;
-
-                  const panel = handle.closest('.panel');
-
-                  if (panel) {
-                    panel.setAttribute('draggable', 'true');
-                  }
-            });
-
-            // 2. Clean up: Turn off dragging on mouseup or if the user leaves the panel
-            const disableDragging = (e) => {
-
-                  const panel = e.target.closest('.panel');
-
-                  if (panel) {
-                    panel.removeAttribute('draggable');
-                  }
-            };
-
-            container.addEventListener('mouseup', disableDragging);
-            container.addEventListener('mouseleave', disableDragging);
-
-            // 3. Drag Start: Native behavior triggers now that draggable="true" is set
+            // 1. Drag Start: User picks up a panel
             container.addEventListener('dragstart', (e) => {
-
                   const targetPanel = e.target.closest('.panel');
 
-                  // Extra security check: ensure they actually used the handle
-                  const activeElement = document.activeElement;
-
-                  const usedHandle = e.target.querySelector('.drag-handle')?.contains(activeElement) || true;
-
-                  if (!targetPanel || !usedHandle) {
-                    e.preventDefault();
-                    return;
-                  }
+                  if (!targetPanel) return;
 
                   dragSrcEl = targetPanel;
 
+                  // Delay adding the class so the browser's native drag image doesn't look invisible
                   setTimeout(() => {
                     targetPanel.classList.add('is-dragging');
                   }, 0);
 
+                  // Set drag effect allowed
                   e.dataTransfer.effectAllowed = 'move';
             });
 
-            // 4. Drag Over: Keep identical logic for moving elements
+            // 2. Drag Over: Fired continuously as an item is dragged over a valid target
             container.addEventListener('dragover', (e) => {
-                  e.preventDefault();
+                  e.preventDefault(); // Required to allow dropping
 
                   const targetPanel = e.target.closest('.panel');
-
                   if (!targetPanel || targetPanel === dragSrcEl) return;
 
+                  // Determine where to insert based on the mouse position relative to the target panel
                   const rect = targetPanel.getBoundingClientRect();
-
                   const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
 
+                  // Dynamically move the element in the DOM (simulates the placeholder reflow)
                   container.insertBefore(dragSrcEl, next ? targetPanel.nextSibling : targetPanel);
             });
 
-            // 5. Drag End: Reset everything safely
+            // 3. Drag End: User releases the item (anywhere)
             container.addEventListener('dragend', (e) => {
-
                   const targetPanel = e.target.closest('.panel');
+                  if (!targetPanel) return;
 
-                  if (targetPanel) {
-                    targetPanel.classList.remove('is-dragging');
-                    targetPanel.removeAttribute('draggable'); // Reset state
-                  }
+                  // Clean up the styling classes
+                  targetPanel.classList.remove('is-dragging');
                   dragSrcEl = null;
+
+                  // Optional: Trigger a save function here
+                  //saveNewOrder();
             });
+
+            // 4. Save Layout Function
+            function saveNewOrder() {
+                  const panels = Array.from(container.querySelectorAll('.panel'));
+                  const order = panels.map((panel, index) => {
+                    return {
+                      id: panel.dataset.id || index,
+                      position: index
+                    };
+                  });
+                  console.log('Saved layout order:', order);
+                  // Send 'order' data to your backend API or localStorage
+            }
+
 
 
         });
