@@ -1,0 +1,42 @@
+﻿@using Main.Common.Enums
+@model List<PagePanelViewModel>
+
+@{
+    ViewData["Title"] = "Preview Contents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.ExcludeHeader = false;
+}
+
+<div class="container"> 
+
+    <div class="gap"></div>
+
+    <h4 class="card-title">PREVIEW CONTENT</h4>
+
+    <div class="gap"></div>
+    <div class="gap"></div>
+
+</div>
+
+    @{
+        foreach(var model in Model.ToList())
+        {
+
+            if ( model.PanelTemplate == EnumPanelTemplate.ProductSixer)
+            {
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel6X.cshtml",model )
+            }
+            else if ( model.PanelTemplate == EnumPanelTemplate.ProductQuard )
+            {
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel4X.cshtml",model )
+            }
+            else if ( model.PanelTemplate == EnumPanelTemplate.ProductTriangle )
+            {
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel3X.cshtml",model )
+            }
+            else if ( model.PanelTemplate == EnumPanelTemplate.ProductDouble )
+            {
+                @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/EditPanels/_ProductPanel2X.cshtml",model )
+            }
+        }
+    }

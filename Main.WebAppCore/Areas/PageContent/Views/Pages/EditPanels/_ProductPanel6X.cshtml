@@ -1,0 +1,106 @@
+﻿@model PagePanelViewModel
+
+@{
+    string hide = "";
+
+    List<PanelPostViewModel> list = new List<PanelPostViewModel>();
+
+    if ( Model.ListPanelPosts == null || Model.ListPanelPosts.Count == 0)
+    {
+        hide = "hide";
+    }
+    else
+    {
+        if ( Model.ListPanelPosts.Count < 6)
+        {
+            hide = "hide";
+        }
+        else
+        {
+            list = Model.ListPanelPosts.Take<PanelPostViewModel> ( 6 ).ToList();
+        }
+    }
+}
+
+<div class="container @hide edit-panel-item"
+     data-panelorder="@Model.PanelPosition"
+     data-panelid="@Model.PanelID"
+     draggable="true">
+    
+    <h4 class="sub-title"
+        draggable="false">
+        @Model.PanelTitle
+    </h4>
+
+    @{
+        string droppostid = "dropPost" + @Model.PanelID.ToString();
+    }
+
+    <div id="@droppostid"
+         class="row edit-post-parent"
+         draggable="false">
+
+        @{
+            foreach ( var product in list.ToList())
+            {
+                <div id="@product.PanelPostID" 
+                     class="col-md-2 col-sm-2 col-lg-2 col-xs-2 card  edit-post-item"
+                     data-postorder="@product.ImageOrderID"
+                     data-postid="@product.PanelPostID"
+                     draggable="true">
+                           
+                    <a class="thumbnail only-image card-img-top" draggable="false">
+
+                        @if ( product.ImageFileContent != null )
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", product.ImageFileContent )
+                                
+                        }
+                        else
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image6X.cshtml", new byte[1] )
+                                    
+                        }
+
+                    </a>
+
+
+                    <div class="caption" 
+                         style="margin-bottom:10px;" 
+                         draggable="false">
+
+                        <h5 class="truncate text-bg-success card-title" 
+                            style="text-align:center;"
+                            draggable="false">
+
+                                @product.PostTitle
+
+                        </h5>
+
+                        <p class="fa-dollar text-info-emphasis card-text" 
+                            style="text-align:center;"
+                            draggable="false">
+
+                                @product.Price Taka
+
+                        </p>
+
+                        <span style="vertical-align:middle;" draggable="false">
+
+                            <i class="fa fa-plus fa-fw" draggable="false"></i>
+
+                                ADD TO CART
+
+                        </span>
+                        
+                    </div>
+
+                </div>
+            }
+        }
+
+    </div>
+
+</div>

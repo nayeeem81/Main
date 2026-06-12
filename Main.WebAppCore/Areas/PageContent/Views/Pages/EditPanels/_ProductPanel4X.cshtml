@@ -1,0 +1,106 @@
+﻿@using System.Linq;
+@using System.Collections.Generic;
+@model PagePanelViewModel
+
+@{
+    string hide = "";
+
+    List<PanelPostViewModel> list = new List<PanelPostViewModel>();
+
+    if ( Model.ListPanelPosts == null || Model.ListPanelPosts.Count == 0)
+    {
+        hide = "hide";
+    }
+    else
+    {
+        if ( Model.ListPanelPosts.Count < 4)
+        {
+            hide = "hide";
+        }
+        else
+        {
+            list = Model.ListPanelPosts.Take<PanelPostViewModel> ( 4 ).ToList();
+        }
+    }
+}
+
+<div class="container @hide edit-panel-item"
+     data-panelorder="@Model.PanelPosition"
+     data-panelid="@Model.PanelID"
+     draggable="true">
+
+    <h4 class="sub-title"
+        draggable="false">
+
+        @Model.PanelTitle
+
+    </h4>
+
+    @{
+        string droppostid = "dropPost" + @Model.PanelID.ToString();
+    }
+
+    <div id="@droppostid"
+         class="row edit-post-parent"
+         draggable="false">
+
+        @{
+            foreach ( var product in list.ToList())
+            {
+                <div id="@product.PanelPostID" 
+                     class="col-md-3 col-sm-3 col-lg-3 col-xs-3 card-form edit-post-item"
+                     data-postorder="@product.ImageOrderID"
+                     data-postid="@product.PanelPostID"
+                     draggable="true">
+                           
+                    <a class="thumbnail only-image" draggable="false">
+
+                        @if ( product.ImageFileContent != null )
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", product.ImageFileContent )
+                                
+                        }
+                        else
+                        {
+
+                            @await Html.PartialAsync( "~/Areas/PageContent/Views/Pages/Images/_Image4X.cshtml", new byte[1] )
+                                    
+                        }
+
+                    </a>
+
+
+                    <div class="caption" style="margin-bottom:10px;" draggable="false">
+
+                        <div class="truncate text-bg-success" draggable="false">
+
+                                @product.PostTitle
+                                    
+                        </div>
+
+                        <div class="fa-dollar text-info-emphasis" draggable="false">
+
+                                @product.Price Taka
+                                    
+                        </div>
+                                    
+                        <div class="add-to-cart sub-content text-center" 
+                             data-id="@product.RootID"      
+                             draggable="false">
+                                        
+                            <button role="link" class="primary-button max" draggable="false"> 
+                                ADD TO CART 
+                            </button>
+
+                        </div>   
+                            
+                    </div>
+                
+                </div>
+            }
+        }
+
+    </div>
+
+</div>

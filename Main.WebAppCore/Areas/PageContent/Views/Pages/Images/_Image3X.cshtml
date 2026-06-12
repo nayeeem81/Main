@@ -1,8 +1,8 @@
 ﻿@model System.Byte[]
 
-<div class="image-content">
-    <div title="Product Image">
-        <a class="thumbnail">
+<div class="image-content" draggable="false">
+    <div title="Product Image" draggable="false">
+        <a class="thumbnail" draggable="false">
             @if (Model != null && Model != null && Model.Length > 1)
             {
                 string imageBase64 = Convert.ToBase64String(Model);
