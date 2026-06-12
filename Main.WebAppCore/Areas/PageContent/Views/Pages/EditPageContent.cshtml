@@ -1,13 +1,17 @@
 ﻿@using Main.Common.Enums
 @model List<PagePanelViewModel>
 
-
+@section Styles {
+    <link rel="stylesheet" href="~/css/dragdrop.css" />
+}
 
 @{
     ViewData["Title"] = "Edit Panels";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.ExcludeHeader = false;
 }
+
+
 
 <div class="container"> 
 
