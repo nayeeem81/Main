@@ -22,13 +22,14 @@
     }
 }
 
-<div class="container @hide panel"
+<div id="@Model.PanelID"
+     class="@hide panel"
      data-panelorder="@Model.PanelPosition"
      data-panelid="@Model.PanelID"
      draggable="true">
    
     <div class="row panel-header">
-        <span class="drag-handle">⋮⋮</span>
+        
         <div class="col-12">
             <h4 class="sub-title" draggable="false">
                 @Model.PanelTitle

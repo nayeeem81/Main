@@ -2,13 +2,13 @@
 @model List<PagePanelViewModel>
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/dragdrop.css" />
+    <link rel="stylesheet" href="~/css/panel-up-down.css" />
 }
 
 @{
     ViewData["Title"] = "Edit Panels";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.ExcludeHeader = false;
+    ViewBag.ExcludeHeader = true;
 }
 
 
@@ -20,11 +20,10 @@
     <h4 class="card-title">EDIT PANELS</h4>
 
     <div class="gap"></div>
-    <div class="gap"></div>
 
 </div>
 
-<div class="panel-list">
+<div class="container panel-list">
 
     @{
         foreach(var model in Model.ToList())
@@ -53,75 +52,9 @@
 
 @section scriptsapp {
 
+    <script src="~/js/panel-step-updown.js"></script>
+
     <script>
-
-        (function () {
-
-            const container = document.querySelector('.panel-list');
-            let dragSrcEl = null;
-
-            // 1. Drag Start: User picks up a panel
-            container.addEventListener('dragstart', (e) => {
-                  const targetPanel = e.target.closest('.panel');
-
-                  if (!targetPanel) return;
-
-                  dragSrcEl = targetPanel;
-
-                  // Delay adding the class so the browser's native drag image doesn't look invisible
-                  setTimeout(() => {
-                    targetPanel.classList.add('is-dragging');
-                  }, 0);
-
-                  // Set drag effect allowed
-                  e.dataTransfer.effectAllowed = 'move';
-            });
-
-            // 2. Drag Over: Fired continuously as an item is dragged over a valid target
-            container.addEventListener('dragover', (e) => {
-                  e.preventDefault(); // Required to allow dropping
-
-                  const targetPanel = e.target.closest('.panel');
-                  if (!targetPanel || targetPanel === dragSrcEl) return;
-
-                  // Determine where to insert based on the mouse position relative to the target panel
-                  const rect = targetPanel.getBoundingClientRect();
-                  const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
-
-                  // Dynamically move the element in the DOM (simulates the placeholder reflow)
-                  container.insertBefore(dragSrcEl, next ? targetPanel.nextSibling : targetPanel);
-            });
-
-            // 3. Drag End: User releases the item (anywhere)
-            container.addEventListener('dragend', (e) => {
-                  const targetPanel = e.target.closest('.panel');
-                  if (!targetPanel) return;
-
-                  // Clean up the styling classes
-                  targetPanel.classList.remove('is-dragging');
-                  dragSrcEl = null;
-
-                  // Optional: Trigger a save function here
-                  //saveNewOrder();
-            });
-
-            // 4. Save Layout Function
-            function saveNewOrder() {
-                  const panels = Array.from(container.querySelectorAll('.panel'));
-                  const order = panels.map((panel, index) => {
-                    return {
-                      id: panel.dataset.id || index,
-                      position: index
-                    };
-                  });
-                  console.log('Saved layout order:', order);
-                  // Send 'order' data to your backend API or localStorage
-            }
-
-
-
-        });
-
     </script>
 
 }

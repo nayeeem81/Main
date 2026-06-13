@@ -1,4 +1,4 @@
-const listPanel = document.querySelector('.list-panel');
+const listPanel = document.querySelector('.panel-list');
 let selectedPanel = null;
 const panelOrder = [];
 
@@ -183,8 +183,10 @@ function updatePanelOrder() {
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
     panelOrder.length = 0;
     panels.forEach((panel, index) => {
-        panelOrder.push(index);
+        var panelId = panel.id;
+        panelOrder.push({ "PanelID" : panelId, "PanelPosition" : index });
     });
+
     console.log('Current panel order:', panelOrder);
 }
 
