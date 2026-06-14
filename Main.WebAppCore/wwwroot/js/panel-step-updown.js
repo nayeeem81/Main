@@ -3,19 +3,23 @@ let selectedPanel = null;
 const panelOrder = [];
 
 // Initialize panel order array
-function initializePanelOrder() {
+function initializePanelOrder()
+{
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
     panelOrder.length = 0;
-    panels.forEach((panel, index) => {
+    panels.forEach((panel, index) =>
+    {
         panelOrder.push(index);
     });
 }
 
 // Setup event listeners for all panels
-function setupPanels() {
+function setupPanels()
+{
     const panels = listPanel.querySelectorAll('.panel');
 
-    panels.forEach(panel => {
+    panels.forEach(panel =>
+    {
         // Single click to select
         panel.addEventListener('click', (e) => {
             if (e.detail !== 2) { // Ignore double-clicks
@@ -29,9 +33,11 @@ function setupPanels() {
 }
 
 // Select a panel
-function selectPanel(panel) {
+function selectPanel(panel)
+{
     // Deselect previous panel
-    if (selectedPanel) {
+    if (selectedPanel)
+    {
         selectedPanel.classList.remove('selected');
         removeArrows();
     }
@@ -48,7 +54,8 @@ function selectPanel(panel) {
 }
 
 // Scroll selected panel to middle of screen
-function scrollToMiddle() {
+function scrollToMiddle()
+{
     if (!selectedPanel) return;
 
     selectedPanel.scrollIntoView({
@@ -57,33 +64,17 @@ function scrollToMiddle() {
     });
 }
 
-function GetPanelPositionData()
-{
-    const panels = listPanel.querySelectorAll('.panel');
-    let count = 0;
-    let panelId = 0;
-    const listPanelOrder = [];
-    panels.forEach(panel => {
-        count += 1;
-        panelId = panel.id;
-        listPanelOrder.push({ "PanelID": panelId, "PanelPosition": count })
-    });
-
-    return listPanelOrder;
-}
-
-function savePanelOrders()
-{
-    var data = GetPanelPositionData();
 
 
 
-}
 
 // Add up and down arrow buttons to selected panel
-function addArrows() {
+function addArrows()
+{
     const existingArrows = selectedPanel.querySelector('.arrow-buttons');
-    if (existingArrows) return;
+
+    if (existingArrows)
+        return;
 
     const arrowContainer = document.createElement('div');
     arrowContainer.className = 'arrow-buttons';
@@ -95,7 +86,8 @@ function addArrows() {
     upArrowBtn.title = 'Move up';
     upArrowBtn.setAttribute('aria-label', 'Move up');
 
-    upArrowBtn.addEventListener('click', (e) => {
+    upArrowBtn.addEventListener('click', (e) =>
+    {
         e.stopPropagation();
         moveUp();
     });
@@ -107,7 +99,8 @@ function addArrows() {
     downArrowBtn.title = 'Move down';
     downArrowBtn.setAttribute('aria-label', 'Move down');
 
-    downArrowBtn.addEventListener('click', (e) => {
+    downArrowBtn.addEventListener('click', (e) =>
+    {
         e.stopPropagation();
         moveDown();
     });
@@ -119,21 +112,26 @@ function addArrows() {
     saveBtn.title = 'Save or Press Enter';
     saveBtn.setAttribute('aria-label', 'Save or Press Enter');
 
-    saveBtn.addEventListener('click', (e) => {
+    saveBtn.addEventListener('click', (e) =>
+    {
         e.stopPropagation();
-        unselectPanel();
+       
+        savePanelOrders();
     });
 
     // Delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'delete-btn';
+    deleteBtn.id = selectedPanel.id;
     deleteBtn.innerHTML = 'Delete';
     deleteBtn.title = 'Click to Delete Panel';
     deleteBtn.setAttribute('aria-label', 'Click to Delete Panel');
 
-    deleteBtn.addEventListener('click', (e) => {
+    deleteBtn.addEventListener('click', (e) =>
+    {
         e.stopPropagation();
-        deletePanel();
+
+        deletePanel(e.target.id);
     });
 
     arrowContainer.appendChild(deleteBtn);
@@ -147,15 +145,128 @@ function addArrows() {
     updateArrowVisibility();
 }
 
+async function deletePanel(id)
+{
+    if (!selectedPanel)
+        return;
+
+    console.log("Delete Panel Id:" + id);
+
+    try
+    {
+
+        const response =
+
+            await fetch( '@Url.Action("DeletePanel", "Pages", new { area = "PageContent" })' + $ { id },
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+        if (response.ok)
+        {
+            console.log(`Product ${id} successfully deleted.`);
+
+            const element = document.getElementById(id);
+
+            if (element)
+            {
+                element.remove();
+                unselectPanel();
+
+                return true;
+            }
+        }
+        else if (response.status === 404)
+        {
+            console.error('The item could not be found on the server.');
+        }
+        else
+        {
+            console.error('An error occurred while trying to delete the item.');
+        }
+    }
+    catch (error)
+    {
+        console.error('Network error or request failure:', error);
+    }
+
+    return false;
+}
+
+function GetPanelPositionData()
+{
+    const panels = listPanel.querySelectorAll('.panel');
+
+    let count = 0;
+    let panelId = 0;
+    const listPanelOrder = [];
+
+    panels.forEach(panel =>
+    {
+        count += 1;
+        panelId = panel.id;
+
+        listPanelOrder.push({ "PanelID": panelId, "PanelPosition": count })
+    });
+
+    return listPanelOrder;
+}
+
+async function savePanelOrders()
+{
+
+    const data = GetPanelPositionData();
+
+    const urlUpdateOprders = '@Url.Action("UpdatePositions", "Pages", new { area = "PageContent" })';
+
+    try
+    {
+        const response =
+
+            await fetch( urlUpdateOprders ,
+            {
+                method: 'POST' ,
+                headers: { 'Content-Type': 'application/json' } ,
+                body: JSON.stringify(data)
+            } );
+
+        if (response.ok)
+        {
+            const result = await response.json();
+
+            unselectPanel();
+
+            console.log("Success:", result.success);
+        }
+        else
+        {
+            console.error("Server Error:", response.success, response.error);
+        }
+    }
+    catch (error)
+    {
+        console.error("Network Error:", error);
+    }
+
+}
+
 // Remove arrow buttons
-function removeArrows() {
+function removeArrows()
+{
     const arrowContainer = selectedPanel.querySelector('.arrow-buttons');
-    if (arrowContainer) arrowContainer.remove();
+
+    if (arrowContainer)
+        arrowContainer.remove();
 }
 
 // Update arrow button visibility based on position
-function updateArrowVisibility() {
-    if (!selectedPanel) return;
+function updateArrowVisibility()
+{
+    if (!selectedPanel)
+        return;
 
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
     const currentIndex = panels.indexOf(selectedPanel);
@@ -166,22 +277,29 @@ function updateArrowVisibility() {
     const downArrowBtn = selectedPanel.querySelector('.down-arrow-btn');
 
     // Hide/disable up arrow if first
-    if (upArrowBtn) {
+    if (upArrowBtn)
+    {
         if (isFirst) {
             upArrowBtn.classList.add('disabled');
             upArrowBtn.disabled = true;
-        } else {
+        }
+        else
+        {
             upArrowBtn.classList.remove('disabled');
             upArrowBtn.disabled = false;
         }
     }
 
     // Hide/disable down arrow if last
-    if (downArrowBtn) {
-        if (isLast) {
+    if (downArrowBtn)
+    {
+        if (isLast)
+        {
             downArrowBtn.classList.add('disabled');
             downArrowBtn.disabled = true;
-        } else {
+        }
+        else
+        {
             downArrowBtn.classList.remove('disabled');
             downArrowBtn.disabled = false;
         }
@@ -189,13 +307,16 @@ function updateArrowVisibility() {
 }
 
 // Move selected panel up one step
-function moveUp() {
-    if (!selectedPanel) return;
+function moveUp()
+{
+    if (!selectedPanel)
+        return;
 
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
     const currentIndex = panels.indexOf(selectedPanel);
 
-    if (currentIndex > 0) {
+    if (currentIndex > 0)
+    {
         const prevPanel = selectedPanel.previousElementSibling;
         listPanel.insertBefore(selectedPanel, prevPanel);
 
@@ -209,13 +330,17 @@ function moveUp() {
 }
 
 // Move selected panel down one step
-function moveDown() {
-    if (!selectedPanel) return;
+function moveDown()
+{
+    if (!selectedPanel)
+        return;
 
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
+
     const currentIndex = panels.indexOf(selectedPanel);
 
-    if (currentIndex < panels.length - 1) {
+    if (currentIndex < panels.length - 1)
+    {
         const nextPanel = selectedPanel.nextElementSibling;
         listPanel.insertBefore(nextPanel, selectedPanel);
 
@@ -229,42 +354,41 @@ function moveDown() {
 }
 
 // Update panel order array
-function updatePanelOrder() {
+function updatePanelOrder()
+{
     const panels = Array.from(listPanel.querySelectorAll('.panel'));
     panelOrder.length = 0;
+
     panels.forEach((panel, index) => {
         panelOrder.push(index);
     });
+
     console.log('Current panel order:', panelOrder);
 }
 
 // Unselect panel
-function unselectPanel() {
-    if (selectedPanel) {
+function unselectPanel()
+{
+    if (selectedPanel)
+    {
         selectedPanel.classList.remove('selected');
         removeArrows();
         selectedPanel = null;
     }
 }
 
-function deletePanel() {
-    if (!selectedPanel)
-        return;
-
-    let panelId = selectedPanel.id;
-    console.log("Delete Panel Id:" + panelId);
-    alert(panelId);
-}
 
 // Listen for Enter key to unselect
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', (e) =>
+{
     if (e.key === 'Enter' && selectedPanel) {
         unselectPanel();
     }
 });
 
 // Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () =>
+{
     initializePanelOrder();
     setupPanels();
 });

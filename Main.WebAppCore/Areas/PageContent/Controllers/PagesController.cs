@@ -216,13 +216,13 @@ public class PagesController: BaseController
     }
 
 
-    [HttpDelete]
+    [HttpDelete ( "{id:int}" )]
     [Authorize ( Roles = "Admin" )]
-    public async Task<IActionResult> DeletePanel ( int panelId )
+    public async Task<IActionResult> DeletePanel ( int id )
     {
         try
         {
-            bool result = await _pageService.DeletePanelAsync(panelId);
+            bool result = await _pageService.DeletePanelAsync(id);
 
             return Ok ( new
             {
