@@ -227,10 +227,7 @@ public class PagesController: BaseController
     {
         try
         {
-            bool result = await _pageService.DeletePanelAsync (
-                                                panelId, pageId,
-                                                _userContext.EnumCompanyName,
-                                                _userContext.EnumCountry);
+            bool result = await _pageService.DeletePanelAsync ( panelId );
 
 
             return Json ( new

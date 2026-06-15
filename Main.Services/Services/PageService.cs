@@ -17,17 +17,20 @@ public class PageService: IPageService
     public readonly IAdminPostImageRepository _adminPostImageRepository;
     public readonly IAdminPostImageRepository _adminPostsImageRepository;
     public readonly IPageRepository _pageRepository;
+    public readonly IPanelRepository _panelRepository;
 
     public PageService (
         IProductImageRepository productImageRepository,
         IAdminPostImageRepository adminPostsImageRepository,
         IPageRepository pageRepository,
-        IAdminPostImageRepository adminPostImageRepository )
+        IAdminPostImageRepository adminPostImageRepository,
+        IPanelRepository panelRepository )
     {
         _productImageRepository = productImageRepository;
         _adminPostsImageRepository = adminPostsImageRepository;
         _pageRepository = pageRepository;
         _adminPostImageRepository = adminPostImageRepository;
+        _panelRepository = panelRepository;
     }
 
     public async Task<bool> CreateNewPanel ( PanelDataModel pagePanelDataModel )
@@ -103,14 +106,14 @@ public class PageService: IPageService
                  PanelPosition: panelPosition.PanelPosition) );
         } );
 
-        bool result = await _pageRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions, baseDataModel );
+        bool result = await _panelRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions, baseDataModel );
 
         return result;
     }
 
-    public async Task<bool> DeletePanelAsync ( int panelId,int pageId,EnumCompanyName company,EnumCountry country )
+    public async Task<bool> DeletePanelAsync ( int panelId )
     {
-        bool result = await _pageRepository.DeletePanelAsync ( panelId, pageId, company, country );
+        bool result = await _panelRepository.DeletePanelAsync ( panelId );
 
         return result;
     }

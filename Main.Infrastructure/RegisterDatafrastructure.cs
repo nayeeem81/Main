@@ -1,13 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using IRepository;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Repository;
-using IRepository;
 
 namespace Main.Infrastructure;
 
 public static class RegisterDatafrastructure
 {
-    public static IServiceCollection AddDataInfrastructureServices ( 
+    public static IServiceCollection AddDataInfrastructureServices (
                   this IServiceCollection services,IConfiguration configuration )
     {
 
@@ -27,6 +29,8 @@ public static class RegisterDatafrastructure
         services.AddScoped<IProductRepository,ProductRepository> ( );
 
         services.AddScoped<IPageRepository,PageRepository> ( );
+
+        services.AddScoped<IPanelRepository,PanelRepository> ( );
 
         return services;
 

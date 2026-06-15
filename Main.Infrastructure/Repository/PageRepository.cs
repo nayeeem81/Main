@@ -4,7 +4,6 @@ using Domain.Model;
 using IRepository;
 
 using Main.Common.Enums;
-using Main.Common.Model;
 using Main.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
@@ -65,49 +64,5 @@ public class PageRepository: IPageRepository
     }
 
 
-    public async Task<bool> UpdatePanelsOrderAsync (
-        List<(int PageID,int PanelID,int PanelPosition)> listPanelPositions,
-        BaseDataModel baseDataModel )
-    {
-        int result = 0;
-        foreach ( var panelVariable in listPanelPositions.ToList ( ) )
-        {
-            Panel? panel = await _context.Panels.FirstOrDefaultAsync<Panel>
-                                ( a =>
-                                  a.PanelID == panelVariable.PanelID
-                               && a.PageID == panelVariable.PageID
-                               && a.HostCompanyName == baseDataModel.HostCompanyName
-                               && a.HostCountry == baseDataModel.HostCountry);
-
-            if ( panel != null )
-            {
-                panel.PanelPosition = panelVariable.PanelPosition;
-                panel.ModifyBaseData ( baseDataModel );
-                _context.Panels.Update ( panel );
-                result = await _context.SaveChangesAsync ( );
-            }
-        }
-
-        return result > 0;
-    }
-
-    public async Task<bool> DeletePanelAsync (
-        int panelId,int pageId,
-        EnumCompanyName company,
-        EnumCountry country )
-    {
-        Panel panel = await _context.Panels.FirstAsync<Panel>
-                                ( a =>
-                                  a.PanelID == panelId
-                               && a.PageID == pageId
-                               && a.HostCompanyName == company
-                               && a.HostCountry == country);
-
-        _context.Panels.Remove ( panel );
-
-        int result = await _context.SaveChangesAsync();
-
-        return result > 0;
-    }
 }
 
