@@ -2,6 +2,36 @@
 
 namespace Main.Common.Enums;
 
+public enum EnumPostCount
+{
+    [Description("1")]
+    PostCountOne = 1,
+
+    [Description("2")]
+    PostCountTwo = 2,
+
+    [Description("3")]
+    PostCountThree = 3,
+
+    [Description("4")]
+    PostCountFour = 4,
+
+    [Description("6")]
+    PostCountSix = 6
+}
+
+public enum EnumIsValidTemplate
+{
+    [Description("Template can display in panel")]
+    ExactMatchValid = 1,
+
+    [Description("Template has more posts than required. Template needs moderating!")]
+    GreaterMatchValid = 2,
+
+    [Description("Template has wrong configuration!")]
+    Invalid = 3
+}
+
 public enum EnumAccountType
 {
     Vendor = 1,

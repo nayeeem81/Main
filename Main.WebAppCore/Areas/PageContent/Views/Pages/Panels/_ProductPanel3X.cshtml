@@ -1,28 +1,6 @@
 ﻿@model PanelViewModel
 
-@{
-    string hide = "";
-
-    List<PostViewModel> list = new List<PostViewModel>();
-
-    if ( Model.ListPosts == null || Model.ListPosts.Count == 0)
-    {
-        hide = "hide";
-    }
-    else
-    {
-        if ( Model.ListPosts.Count < 3)
-        {
-            hide = "hide";
-        }
-        else
-        {
-            list = Model.ListPosts.Take<PostViewModel> ( 3 ).ToList();
-        }
-    }
-}
-
-<div class="container @hide">
+<div class="container">
    
     <h4 class="sub-title">
         @Model.PanelTitle
@@ -31,7 +9,7 @@
     <div class="row">
 
         @{
-            foreach ( var product in list.ToList())
+            foreach ( var product in Model.ListPosts.ToList())
             {
                 <div class="col-md-4 col-sm-4 col-lg-4 col-xs-4 card">
                            

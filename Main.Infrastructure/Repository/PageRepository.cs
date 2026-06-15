@@ -63,41 +63,42 @@ public class PageRepository: IPageRepository
         return await _context.Pages.AnyAsync ( e => e.PageID == id );
     }
 
-    public async Task<bool> UpdatePanelsOrderAsync
-        ( List<(int PanelID,int PanelPosition)> listPanelPositions )
+
+    public async Task<bool> UpdatePanelsOrderAsync (
+        List<(int PageId,int PanelId,int PanelPosition,
+            EnumCompanyName company,EnumCountry country)> listPanelPositions )
     {
-        int result = 0;
-
-        listPanelPositions.ForEach ( async p =>
+        foreach ( var panelVariable in listPanelPositions )
         {
-            Panel? panel = _context.Panels.FirstOrDefault<Panel>
-                                ( a => a.PanelID == p.PanelID );
+            Panel panel = await _context.Panels.FirstAsync<Panel>
+                                ( a =>
+                                  a.PanelID == panelVariable.PanelId
+                               && a.PageID == panelVariable.PageId
+                               && a.HostCompanyName == panelVariable.company
+                               && a.HostCountry == panelVariable.country);
 
-            if ( panel == null )
-            {
-                return;
-            }
-
-            panel.PanelPosition = p.PanelPosition;
+            panel.PanelPosition = panelVariable.PanelPosition;
 
             _context.Panels.Update ( panel );
 
-            result = await _context.SaveChangesAsync ( );
+        }
 
-        } );
+        int result = await _context.SaveChangesAsync ( );
 
         return result > 0;
     }
 
-    public async Task<bool> DeletePanelAsync ( int panelID )
+    public async Task<bool> DeletePanelAsync (
+        int panelId,int pageId,
+        EnumCompanyName company,
+        EnumCountry country )
     {
-        Panel? panel = _context.Panels.FirstOrDefault<Panel>
-                                ( a => a.PanelID == panelID );
-
-        if ( panel == null )
-        {
-            return false;
-        }
+        Panel panel = await _context.Panels.FirstAsync<Panel>
+                                ( a =>
+                                  a.PanelID == panelId
+                               && a.PageID == pageId
+                               && a.HostCompanyName == company
+                               && a.HostCountry == country);
 
         _context.Panels.Remove ( panel );
 

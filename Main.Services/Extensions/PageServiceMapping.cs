@@ -2,6 +2,9 @@
 
 using Domain.Model;
 
+using Main.Common.Enums;
+using Main.Common.HelperRelated;
+
 namespace Main.Services.Extensions;
 
 public static class PageServiceMapping
@@ -120,8 +123,26 @@ public static class PageServiceMapping
                     panelDataModel.CreatePost ( postDataModel );
                 } );
 
-                pageDataModel.CreatePanel ( panelDataModel );
+                int actualCount  = panelDataModel.ListPosts.Count;
 
+                EnumIsValidTemplate validTemplate =
+                ValidationRelated.IsValidTemplate ( actualCount, panelDataModel.PanelTemplate );
+
+                if ( validTemplate == EnumIsValidTemplate.ExactMatchValid )
+                {
+                    pageDataModel.CreatePanel ( panelDataModel );
+                }
+
+                if ( validTemplate == EnumIsValidTemplate.GreaterMatchValid )
+                {
+                    int count = ValidationRelated.GetPostCount(panelDataModel.PanelTemplate);
+                    List<PostDataModel> listPosts =
+                    panelDataModel.ListPosts.Take(count).ToList();
+
+                    panelDataModel.ListPosts = listPosts;
+
+                    pageDataModel.CreatePanel ( panelDataModel );
+                }
             } );
 
             return pageDataModel;

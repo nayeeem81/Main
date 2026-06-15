@@ -5,20 +5,27 @@ const panelOrder = [];
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', async () =>
 {
+    function getElementDataId(panelElement) {
+        if (!panelElement)
+            return;
+
+        const id = panelElement.dataset.panelId;
+
+        return id;
+    }
     
     const listPanel = document.querySelector('.list-panel');
 
-    async function enterKeyDown(e) {
-        if (e.key === 'Enter' && selectedPanel) {
+    async function enterKeyDown(e)
+    {
+        if (e.key === 'Enter' && selectedPanel)
+        {
             await unselectPanel();
         }
     }
-
-
-    // Listen for Enter key to unselect
+    
     document.addEventListener('keydown', enterKeyDown);
-
-    // Initialize panel order array
+    
     async function initializePanelOrder()
     {
 
@@ -26,66 +33,70 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         panelOrder.length = 0;
 
-        panels.forEach((panel, index) => {
+        panels.forEach( (panel, index) =>
+        {
+            const panelId = panel.dataset.panelId;
+            const pageId = panel.dataset.panelId;
 
-            panelId = panel.id;
+            panelOrder.push (
+                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
 
-            panelOrder.push({ "PanelID": panelId, "PanelPosition": index });
         });
     }
 
-    // Setup event listeners for all panels
+    
     async function setupPanels()
     {
         const panels = listPanel.querySelectorAll('.panel');
 
-        panels.forEach(panel => {
-            // Single click to select
-            panel.addEventListener('click', async (e) => {
-                if (e.detail !== 2) { // Ignore double-clicks
+        panels.forEach(panel =>
+        {
+            
+            panel.addEventListener('click', async (e) =>
+            {
+                if (e.detail !== 2)
+                { 
                     await selectPanel(panel);
                 }
             });
 
-            // Double-click to unselect
+            
             panel.addEventListener('dblclick', unselectPanel);
         });
     }
 
-    // Select a panel
+    
     async function selectPanel(panel)
     {
-        // Deselect previous panel
-        if (selectedPanel) {
+        if (selectedPanel)
+        {
             selectedPanel.classList.remove('selected');
             removeArrows();
         }
 
-        // Select new panel
+        
         selectedPanel = panel;
         selectedPanel.classList.add('selected');
-
-        // Add arrow buttons
+        
         await addArrows();
-
-        // Scroll to middle of screen
+        
         scrollToMiddle();
     }
 
-
-    // Scroll selected panel to middle of screen
+    
     function scrollToMiddle()
     {
-        if (!selectedPanel) return;
+        if (!selectedPanel)
+           return;
 
-        selectedPanel.scrollIntoView({
+        selectedPanel.scrollIntoView ({
             behavior: 'smooth',
             block: 'center'
         });
     }
 
 
-    // Add up and down arrow buttons to selected panel
+    
     async function addArrows()
     {
         const existingArrows = selectedPanel.querySelector('.arrow-buttons');
@@ -96,6 +107,8 @@ document.addEventListener('DOMContentLoaded', async () =>
         const arrowContainer = document.createElement('div');
         arrowContainer.className = 'arrow-buttons';
 
+
+        // Button
         // Up arrow button
         const upArrowBtn = document.createElement('button');
         upArrowBtn.className = 'arrow-btn up-arrow-btn';
@@ -103,11 +116,14 @@ document.addEventListener('DOMContentLoaded', async () =>
         upArrowBtn.title = 'Move up';
         upArrowBtn.setAttribute('aria-label', 'Move up');
 
-        upArrowBtn.addEventListener('click', async (e) => {
+        upArrowBtn.addEventListener('click', async (e) =>
+        {
             e.stopPropagation();
             await moveUp();
         });
 
+
+        // Button 
         // Down arrow button
         const downArrowBtn = document.createElement('button');
         downArrowBtn.className = 'arrow-btn down-arrow-btn';
@@ -120,6 +136,8 @@ document.addEventListener('DOMContentLoaded', async () =>
             await moveDown();
         });
 
+
+        // Button
         // Save button
         const saveBtn = document.createElement('button');
         saveBtn.className = 'save-btn';
@@ -137,10 +155,11 @@ document.addEventListener('DOMContentLoaded', async () =>
             
         });
 
+
+        // Button
         // Delete button
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
-        deleteBtn.id = selectedPanel.id;
         deleteBtn.innerHTML = 'Delete';
         deleteBtn.title = 'Click to Delete Panel';
         deleteBtn.setAttribute('aria-label', 'Click to Delete Panel');
@@ -148,9 +167,10 @@ document.addEventListener('DOMContentLoaded', async () =>
         deleteBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
 
-            var id = e.target.id;
+            const panelId = selectedPanel.dataset.panelId;
+            const pageId = selectedPanel.dataset.pageId;
 
-            await deletePanel(id);
+            await deletePanel(panelId, pageId);
 
             await unselectPanel();
         });
@@ -161,8 +181,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         arrowContainer.appendChild(downArrowBtn);
 
         selectedPanel.appendChild(arrowContainer);
-
-        // Update arrow visibility
+        
         updateArrowVisibility();
     }
 
@@ -173,11 +192,14 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         panelOrder.length = 0;
 
-        panels.forEach((panel, index) => {
+        panels.forEach((panel, index) =>
+        {
 
-            panelId = panel.id;
+            const panelId = panel.dataset.panelId;
+            const pageId = panel.dataset.panelId;
 
-            panelOrder.push({ "PanelID": panelId, "PanelPosition": index });
+            panelOrder.push(
+                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
         });
 
         console.log(panelOrder);
@@ -198,10 +220,11 @@ document.addEventListener('DOMContentLoaded', async () =>
         if (!tokenElement)
         {
             console.log("Anti-forgery token element not found in the DOM.");
-            return false;
+            return;
         }
 
-        try {
+        try
+        {
             $.ajax({
                 url: urlUpdateOprders,
                 type: 'POST',
@@ -218,13 +241,14 @@ document.addEventListener('DOMContentLoaded', async () =>
                     console.error(error.error);
                 }
             });
-        } catch (err) {
-            console.error("Network or parsing error:", err);
+        }
+        catch (err)
+        {
+            console.log(err);
         }
     }
 
-
-    // Remove arrow buttons
+    
     function removeArrows()
     {
         const arrowContainer = selectedPanel.querySelector('.arrow-buttons');
@@ -232,9 +256,8 @@ document.addEventListener('DOMContentLoaded', async () =>
         if (arrowContainer)
             arrowContainer.remove();
     }
-    
 
-    // Update arrow button visibility based on position
+    
     function updateArrowVisibility()
     {
         if (!selectedPanel)
@@ -298,6 +321,7 @@ document.addEventListener('DOMContentLoaded', async () =>
 
             // Update order array and arrow visibility
             await updatePanelOrder();
+
             updateArrowVisibility();
 
             // Keep panel centered on screen after move
@@ -323,6 +347,7 @@ document.addEventListener('DOMContentLoaded', async () =>
 
             // Update order array and arrow visibility
             await updatePanelOrder();
+
             updateArrowVisibility();
 
             // Keep panel centered on screen after move
@@ -341,14 +366,14 @@ document.addEventListener('DOMContentLoaded', async () =>
         panels.forEach((panel, index) =>
         {
 
-            panelId = panel.id;
+            const panelId = panel.dataset.panelId;
+            const pageId = panel.dataset.panelId;
 
-            panelOrder.push({ "PanelID": panelId, "PanelPosition": index });
+            panelOrder.push(
+                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
         });
 
         console.log(panelOrder);
-
-        
     }
 
 
@@ -368,22 +393,23 @@ document.addEventListener('DOMContentLoaded', async () =>
 
     function deleteElementById(elementId)
     {
+        if (selectedPanel)
+        {
+            selectedPanel = null;
+        }
+
         const element = document.getElementById(elementId);
-        if (element) {
+
+        if (element)
+        {
             element.remove();
         } 
     }
 
-    async function deletePanel(id)
+    async function deletePanel(panelId, pageId)
     {
         if (!selectedPanel)
             return;
-
-        console.log("Delete Panel Id:" + id);
-
-        // if (! await confirmAndProceed()) {
-        //     return false;
-        // }
 
         const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
 
@@ -395,10 +421,10 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         const tokenValue = tokenElement.value;
 
-        const urlDeletePanel = '@Url.Action("DeletePanel", "Pages", new { area = "PageContent" })' + id;
+        const urlDeletePanel = '@Url.Action("DeletePanel", "Pages", new { area = "PageContent", panelId = panelId, pageId = pageId })';
 
-
-        try {
+        try
+        {
             $.ajax({
                 url: urlDeletePanel,
                 type: 'DELETE',
@@ -406,17 +432,20 @@ document.addEventListener('DOMContentLoaded', async () =>
                 headers: {
                     'RequestVerificationToken': tokenValue
                 },
-                success: function (response) {
+                success: function (response)
+                {
                     console.log('Success:', response);
                     const deletedId = response.id;
                     deleteElementById(deletedId);
                 },
                 error: function (response) {
-                    console.error(response.error);
+                    console.log(response.error);
                 }
             });
-        } catch (err) {
-            console.error("Network or parsing error:", err);
+        }
+        catch (err)
+        {
+            console.log(err);
         }
     }
 

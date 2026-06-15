@@ -14,7 +14,12 @@ public interface IPageRepository
 
     Task<bool> UpdatePage ( Panel panel,List<Post> listPosts );
 
-    Task<bool> UpdatePanelsOrderAsync ( List<(int PanelID,int PanelPosition)> listPanelPositions );
+    Task<bool> UpdatePanelsOrderAsync (
+        List<(int PageId,int PanelId,int PanelPosition,
+            EnumCompanyName company,EnumCountry country)> listPanelPositions );
 
-    Task<bool> DeletePanelAsync ( int panelID );
+    Task<bool> DeletePanelAsync (
+        int panelId,int pageId,
+        EnumCompanyName company,
+        EnumCountry country );
 }

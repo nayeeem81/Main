@@ -1,31 +1,9 @@
 ﻿@model PanelViewModel
 
-@{
-    string hide = "";
-
-    List<PostViewModel> list = new List<PostViewModel>();
-
-    if ( Model.ListPosts == null || Model.ListPosts.Count == 0)
-    {
-        hide = "hide";
-    }
-    else
-    {
-        if ( Model.ListPosts.Count < 4)
-        {
-            hide = "hide";
-        }
-        else
-        {
-            list = Model.ListPosts.Take<PostViewModel> ( 4 ).ToList();
-        }
-    }
-}
-
-<div id="@Model.PanelID" 
-     class="@hide panel container"
-     data-panelorder="@Model.PanelPosition"
-     data-panelid="@Model.PanelID"
+<div class="panel container"
+     data-panel-position="@Model.PanelPosition"
+     data-page-id="@Model.PageID"
+     data-panel-id="@Model.PanelID"
      draggable="true">
 
     <div class="row panel-header">
@@ -41,17 +19,23 @@
         string droppostid = "dropPost" + @Model.PanelID.ToString();
     }
 
-    <div id="@droppostid"
-         class="row edit-post-parent"
+    <div class="row edit-post-parent panel-content" 
+         data-panel-id = "@Model.PanelID"
+         data-page-id = "@Model.PageID"
          draggable="false">
 
         @{
-            foreach ( var product in list.ToList())
+            foreach ( var product in Model.ListPosts.ToList())
             {
-                <div id="@product.PanelPostID" 
+                <div 
                      class="col-md-3 col-sm-3 col-lg-3 col-xs-3 card-form edit-post-item"
                      data-postorder="@product.ImageOrderID"
-                     data-postid="@product.PanelPostID"
+                     data-panelpostid = "@product.PanelPostID"
+                     data-panelid = "@Model.PanelID"
+                     data-pageid = "@Model.PageID"
+                     data-imageid = "@product.ImageFileID"
+                     data-imageorder = "@product.ImageOrderID"
+                     data-postid = "@product.RootID"
                      draggable="true">
                            
                     <a class="thumbnail only-image" draggable="false">

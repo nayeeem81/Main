@@ -220,17 +220,26 @@ public class PagesController: BaseController
     [HttpDelete]
     [ValidateAntiForgeryToken]
     [Authorize ( Roles = "Admin" )]
-    public async Task<IActionResult> DeletePanel ( int id )
+    public async Task<IActionResult> DeletePanel ( int panelId,int pageId )
     {
         try
         {
-            bool result = await _pageService.DeletePanelAsync(id);
+            bool result = await _pageService.DeletePanelAsync (
+                                                panelId, pageId,
+                                                _userContext.EnumCompanyName,
+                                                _userContext.EnumCountry);
 
-            return Json ( new
+            return RedirectToAction ( "EditPageContent",new
             {
-                success = result,
-                id = id
+                id = pageId
             } );
+
+
+            //return Json ( new
+            //{
+            //    success = result,
+            //    id = panelId
+            //} );
         }
         catch ( Exception ex )
         {

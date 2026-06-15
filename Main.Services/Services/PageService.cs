@@ -89,11 +89,14 @@ public class PageService: IPageService
         ( List<PanelPositionDataModel> listPanelPositions )
     {
 
-        List<(int PanelID, int PanelPosition)> listTuplePanelPositions = new List<(int, int)>();
+        List<(int PanelId,int PageId, int PanelPosition, EnumCompanyName company,
+            EnumCountry country)> listTuplePanelPositions = new List<(int, int, int, EnumCompanyName, EnumCountry)>();
 
         listTuplePanelPositions.ForEach ( panelPosition =>
         {
-            listTuplePanelPositions.Add ( (panelPosition.PanelID,panelPosition.PanelPosition) );
+            listTuplePanelPositions.Add (
+                (panelPosition.PanelId,panelPosition.PageId,
+                panelPosition.PanelPosition,panelPosition.company,panelPosition.country) );
         } );
 
         bool result = await _pageRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions );
@@ -101,9 +104,9 @@ public class PageService: IPageService
         return result;
     }
 
-    public async Task<bool> DeletePanelAsync ( int panelId )
+    public async Task<bool> DeletePanelAsync ( int panelId,int pageId,EnumCompanyName company,EnumCountry country )
     {
-        bool result = await _pageRepository.DeletePanelAsync ( panelId );
+        bool result = await _pageRepository.DeletePanelAsync ( panelId, pageId, company, country );
 
         return result;
     }

@@ -18,6 +18,6 @@ public interface IPageService
 
     Task<bool> UpdatePanelsOrderAsync ( List<PanelPositionDataModel> listPanelPositionDataModel );
 
-    Task<bool> DeletePanelAsync ( int panelId );
+    Task<bool> DeletePanelAsync ( int panelId,int pageId,EnumCompanyName company,EnumCountry country );
 }
 
