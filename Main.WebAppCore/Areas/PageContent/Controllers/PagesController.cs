@@ -1,6 +1,7 @@
 ﻿using DataTransferModel;
 
 using Main.Common.Enums;
+using Main.Common.Model;
 using Main.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -196,7 +197,9 @@ public class PagesController: BaseController
                 }
             }
 
-            bool result = await _pageService.UpdatePanelsOrderAsync ( listPanelPositionDataModel );
+            BaseDataModel baseDataModel = _userContext.GetUpdateBaseDataModel ();
+
+            bool result = await _pageService.UpdatePanelsOrderAsync ( listPanelPositionDataModel, baseDataModel );
 
 
             return Json ( new
@@ -229,17 +232,16 @@ public class PagesController: BaseController
                                                 _userContext.EnumCompanyName,
                                                 _userContext.EnumCountry);
 
-            return RedirectToAction ( "EditPageContent",new
+
+            return Json ( new
             {
-                id = pageId
+                success = result,
+                receivedUrl = Url.Action ( "EditPageContent","Pages",new
+                {
+                    Area = "PageContent",
+                    id = pageId
+                } )
             } );
-
-
-            //return Json ( new
-            //{
-            //    success = result,
-            //    id = panelId
-            //} );
         }
         catch ( Exception ex )
         {

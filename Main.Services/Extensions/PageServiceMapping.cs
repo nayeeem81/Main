@@ -119,6 +119,8 @@ public static class PageServiceMapping
                     postDataModel.Price = panelPost.Price;
                     postDataModel.ImageFileContent = panelPost.FileContent;
                     postDataModel.PostOrder = panelPost.Order;
+                    postDataModel.PageID = panelDataModel.PageID;
+
 
                     panelDataModel.CreatePost ( postDataModel );
                 } );

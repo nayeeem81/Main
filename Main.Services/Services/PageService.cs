@@ -5,6 +5,7 @@ using Domain.Model;
 using IRepository;
 
 using Main.Common.Enums;
+using Main.Common.Model;
 using Main.Services.Extensions;
 
 namespace Main.Services;
@@ -86,20 +87,23 @@ public class PageService: IPageService
     }
 
     public async Task<bool> UpdatePanelsOrderAsync
-        ( List<PanelPositionDataModel> listPanelPositions )
+        ( List<PanelPositionDataModel> listPanelPositions,BaseDataModel baseDataModel )
     {
 
-        List<(int PanelId,int PageId, int PanelPosition, EnumCompanyName company,
-            EnumCountry country)> listTuplePanelPositions = new List<(int, int, int, EnumCompanyName, EnumCountry)>();
+        List<(int PanelID, int PageID, int PanelPosition)> listTuplePanelPositions = new();
 
-        listTuplePanelPositions.ForEach ( panelPosition =>
+
+
+        listPanelPositions.ForEach ( panelPosition =>
         {
+
             listTuplePanelPositions.Add (
-                (panelPosition.PanelId,panelPosition.PageId,
-                panelPosition.PanelPosition,panelPosition.company,panelPosition.country) );
+                (PanelID: panelPosition.PanelID,
+                 PageID: panelPosition.PageID,
+                 PanelPosition: panelPosition.PanelPosition) );
         } );
 
-        bool result = await _pageRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions );
+        bool result = await _pageRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions, baseDataModel );
 
         return result;
     }

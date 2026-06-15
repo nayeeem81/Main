@@ -1,104 +1,129 @@
 
 let selectedPanel = null;
 const panelOrder = [];
+var urlDeletePanel = '';
+var urlUpdatePanelPositon = '';
 
-// Initialize on DOM ready
+// DOM ready
 document.addEventListener('DOMContentLoaded', async () =>
 {
-    function getElementDataId(panelElement) {
-        if (!panelElement)
-            return;
-
-        const id = panelElement.dataset.panelId;
-
-        return id;
-    }
-    
     const listPanel = document.querySelector('.list-panel');
 
-    async function enterKeyDown(e)
-    {
-        if (e.key === 'Enter' && selectedPanel)
-        {
-            await unselectPanel();
+    function deleteElementById(elementId) {
+        if (selectedPanel) {
+            selectedPanel = null;
+        }
+
+        const element = document.getElementById(elementId);
+
+        if (element) {
+            element.remove();
         }
     }
-    
-    document.addEventListener('keydown', enterKeyDown);
-    
-    async function initializePanelOrder()
-    {
+
+    function removeArrows() {
+        const arrowContainer = selectedPanel.querySelector('.arrow-buttons');
+
+        if (arrowContainer)
+            arrowContainer.remove();
+    }
+
+    function updateArrowVisibility() {
+        if (!selectedPanel)
+            return;
 
         const panels = Array.from(listPanel.querySelectorAll('.panel'));
+        const currentIndex = panels.indexOf(selectedPanel);
+        const isFirst = currentIndex === 0;
+        const isLast = currentIndex === panels.length - 1;
 
-        panelOrder.length = 0;
+        const upArrowBtn = selectedPanel.querySelector('.up-arrow-btn');
+        const downArrowBtn = selectedPanel.querySelector('.down-arrow-btn');
 
-        panels.forEach( (panel, index) =>
-        {
-            const panelId = panel.dataset.panelId;
-            const pageId = panel.dataset.panelId;
-
-            panelOrder.push (
-                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
-
-        });
-    }
-
-    
-    async function setupPanels()
-    {
-        const panels = listPanel.querySelectorAll('.panel');
-
-        panels.forEach(panel =>
-        {
-            
-            panel.addEventListener('click', async (e) =>
-            {
-                if (e.detail !== 2)
-                { 
-                    await selectPanel(panel);
-                }
-            });
-
-            
-            panel.addEventListener('dblclick', unselectPanel);
-        });
-    }
-
-    
-    async function selectPanel(panel)
-    {
-        if (selectedPanel)
-        {
-            selectedPanel.classList.remove('selected');
-            removeArrows();
+        // Hide/disable up arrow if first
+        if (upArrowBtn) {
+            if (isFirst) {
+                upArrowBtn.classList.add('disabled');
+                upArrowBtn.disabled = true;
+            }
+            else {
+                upArrowBtn.classList.remove('disabled');
+                upArrowBtn.disabled = false;
+            }
         }
 
-        
-        selectedPanel = panel;
-        selectedPanel.classList.add('selected');
-        
-        await addArrows();
-        
-        scrollToMiddle();
+        // Hide/disable down arrow if last
+        if (downArrowBtn) {
+            if (isLast) {
+                downArrowBtn.classList.add('disabled');
+                downArrowBtn.disabled = true;
+            }
+            else {
+                downArrowBtn.classList.remove('disabled');
+                downArrowBtn.disabled = false;
+            }
+        }
     }
 
-    
     function scrollToMiddle()
     {
         if (!selectedPanel)
-           return;
+            return;
 
-        selectedPanel.scrollIntoView ({
+        selectedPanel.scrollIntoView({
             behavior: 'smooth',
             block: 'center'
         });
     }
 
-
-    
-    async function addArrows()
+    async function getValidationToken()
     {
+        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+
+        if (!tokenElement)
+        {
+            console.log("Anti-forgery token element not found in the DOM.");
+            return;
+        }
+
+        return tokenElement.value;
+    }
+
+    // Move selected panel up one step
+    async function moveUp() {
+        if (!selectedPanel)
+            return;
+
+        const panels = Array.from(listPanel.querySelectorAll('.panel'));
+        const currentIndex = panels.indexOf(selectedPanel);
+
+        if (currentIndex > 0) {
+            const prevPanel = selectedPanel.previousElementSibling;
+            listPanel.insertBefore(selectedPanel, prevPanel);
+            await setPanelOrder();
+            updateArrowVisibility();
+            scrollToMiddle();
+        }
+    }
+
+    // Move selected panel down one step
+    async function moveDown() {
+        if (!selectedPanel)
+            return;
+
+        const panels = Array.from(listPanel.querySelectorAll('.panel'));
+        const currentIndex = panels.indexOf(selectedPanel);
+
+        if (currentIndex < panels.length - 1) {
+            const nextPanel = selectedPanel.nextElementSibling;
+            listPanel.insertBefore(nextPanel, selectedPanel);
+            await setPanelOrder();
+            updateArrowVisibility();
+            scrollToMiddle();
+        }
+    }
+
+    async function addArrows() {
         const existingArrows = selectedPanel.querySelector('.arrow-buttons');
 
         if (existingArrows)
@@ -106,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         const arrowContainer = document.createElement('div');
         arrowContainer.className = 'arrow-buttons';
-
 
         // Button
         // Up arrow button
@@ -116,12 +140,10 @@ document.addEventListener('DOMContentLoaded', async () =>
         upArrowBtn.title = 'Move up';
         upArrowBtn.setAttribute('aria-label', 'Move up');
 
-        upArrowBtn.addEventListener('click', async (e) =>
-        {
+        upArrowBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             await moveUp();
         });
-
 
         // Button 
         // Down arrow button
@@ -136,7 +158,6 @@ document.addEventListener('DOMContentLoaded', async () =>
             await moveDown();
         });
 
-
         // Button
         // Save button
         const saveBtn = document.createElement('button');
@@ -145,16 +166,11 @@ document.addEventListener('DOMContentLoaded', async () =>
         saveBtn.title = 'Save or Press Enter';
         saveBtn.setAttribute('aria-label', 'Save or Press Enter');
 
-        saveBtn.addEventListener('click', async (e) =>
-        {
+        saveBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-
             await savePanelOrders();
-           
             await unselectPanel();
-            
         });
-
 
         // Button
         // Delete button
@@ -166,27 +182,62 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         deleteBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
-
             const panelId = selectedPanel.dataset.panelId;
             const pageId = selectedPanel.dataset.pageId;
-
             await deletePanel(panelId, pageId);
-
-            await unselectPanel();
         });
 
         arrowContainer.appendChild(deleteBtn);
         arrowContainer.appendChild(saveBtn);
         arrowContainer.appendChild(upArrowBtn);
         arrowContainer.appendChild(downArrowBtn);
-
+        // Add in panel
         selectedPanel.appendChild(arrowContainer);
-        
         updateArrowVisibility();
     }
 
+    async function selectPanel(panel)
+    {
+        if (selectedPanel)
+        {
+            selectedPanel.classList.remove('selected');
+            removeArrows();
+        }
 
-    async function GetPanelPositionData()
+        selectedPanel = panel;
+        selectedPanel.classList.add('selected');
+        await addArrows();
+        scrollToMiddle();
+    }
+
+    // Unselect panel
+    async function unselectPanel() {
+        if (selectedPanel) {
+            selectedPanel.classList.remove('selected');
+            await removeArrows();
+            selectedPanel = null;
+        }
+    }
+
+    async function setupPanels()
+    {
+        const panels = listPanel.querySelectorAll('.panel');
+
+        panels.forEach(panel =>
+        {
+            panel.addEventListener('click', async (e) =>
+            {
+                if (e.detail !== 2)
+                {
+                    await selectPanel(panel);
+                }
+            });
+
+            panel.addEventListener('dblclick', unselectPanel);
+        });
+    }
+
+    async function setPanelOrder()
     {
         const panels = Array.from(listPanel.querySelectorAll('.panel'));
 
@@ -194,51 +245,49 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         panels.forEach((panel, index) =>
         {
-
             const panelId = panel.dataset.panelId;
-            const pageId = panel.dataset.panelId;
+            const pageId = panel.dataset.pageId;
 
             panelOrder.push(
-                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
+                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index });
+
         });
-
-        console.log(panelOrder);
-
-        return panelOrder;
     }
 
+    async function enterKeyDown(e)
+    {
+        if (e.key === 'Enter' && selectedPanel)
+        {
+            await unselectPanel();
+        }
+    }
+    
+    document.addEventListener('keydown', enterKeyDown);
 
     async function savePanelOrders()
     {
-
-        const data = await GetPanelPositionData();
-
-        const urlUpdateOprders = '@Url.Action("UpdatePositions", "Pages", new { area = "PageContent" })';
-
-        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
-
-        if (!tokenElement)
-        {
-            console.log("Anti-forgery token element not found in the DOM.");
-            return;
-        }
+        await setPanelOrder();
+        const token = await getValidationToken();
 
         try
-        {
+        { 
             $.ajax({
-                url: urlUpdateOprders,
+                url: urlUpdatePanelPositon,
                 type: 'POST',
                 contentType: 'application/json',
                 dataType: 'json',
-                data: JSON.stringify(data),
-                headers: {
-                    'RequestVerificationToken': tokenElement.value
+                data: JSON.stringify(panelOrder),
+                headers:
+                {
+                    'RequestVerificationToken': token
                 },
-                success: function (response) {
-                    console.log('Success:', response);
+                success: function (response)
+                {
+                    console.log(response);
                 },
-                error: function (error) {
-                    console.error(error.error);
+                error: function (error)
+                {
+                    console.log(error);
                 }
             });
         }
@@ -246,164 +295,6 @@ document.addEventListener('DOMContentLoaded', async () =>
         {
             console.log(err);
         }
-    }
-
-    
-    function removeArrows()
-    {
-        const arrowContainer = selectedPanel.querySelector('.arrow-buttons');
-
-        if (arrowContainer)
-            arrowContainer.remove();
-    }
-
-    
-    function updateArrowVisibility()
-    {
-        if (!selectedPanel)
-            return;
-
-        const panels = Array.from(listPanel.querySelectorAll('.panel'));
-        const currentIndex = panels.indexOf(selectedPanel);
-        const isFirst = currentIndex === 0;
-        const isLast = currentIndex === panels.length - 1;
-
-        const upArrowBtn = selectedPanel.querySelector('.up-arrow-btn');
-        const downArrowBtn = selectedPanel.querySelector('.down-arrow-btn');
-
-        // Hide/disable up arrow if first
-        if (upArrowBtn)
-        {
-            if (isFirst)
-            {
-                upArrowBtn.classList.add('disabled');
-                upArrowBtn.disabled = true;
-            }
-            else
-            {
-                upArrowBtn.classList.remove('disabled');
-                upArrowBtn.disabled = false;
-            }
-        }
-
-        // Hide/disable down arrow if last
-        if (downArrowBtn)
-        {
-            if (isLast)
-            {
-                downArrowBtn.classList.add('disabled');
-                downArrowBtn.disabled = true;
-            }
-            else
-            {
-                downArrowBtn.classList.remove('disabled');
-                downArrowBtn.disabled = false;
-            }
-        }
-    }
-
-
-    // Move selected panel up one step
-    async function moveUp()
-    {
-        if (!selectedPanel)
-            return;
-
-        const panels = Array.from(listPanel.querySelectorAll('.panel'));
-
-        const currentIndex = panels.indexOf(selectedPanel);
-
-        if (currentIndex > 0)
-        {
-            const prevPanel = selectedPanel.previousElementSibling;
-
-            listPanel.insertBefore(selectedPanel, prevPanel);
-
-            // Update order array and arrow visibility
-            await updatePanelOrder();
-
-            updateArrowVisibility();
-
-            // Keep panel centered on screen after move
-            scrollToMiddle();
-        }
-    }
-
-
-    // Move selected panel down one step
-    async function moveDown()
-    {
-        if (!selectedPanel)
-            return;
-
-        const panels = Array.from(listPanel.querySelectorAll('.panel'));
-
-        const currentIndex = panels.indexOf(selectedPanel);
-
-        if (currentIndex < panels.length - 1)
-        {
-            const nextPanel = selectedPanel.nextElementSibling;
-            listPanel.insertBefore(nextPanel, selectedPanel);
-
-            // Update order array and arrow visibility
-            await updatePanelOrder();
-
-            updateArrowVisibility();
-
-            // Keep panel centered on screen after move
-            scrollToMiddle();
-        }
-    }
-
-
-    // Update panel order array 
-    async function updatePanelOrder()
-    {
-        const panels = Array.from(listPanel.querySelectorAll('.panel'));
-
-        panelOrder.length = 0;
-
-        panels.forEach((panel, index) =>
-        {
-
-            const panelId = panel.dataset.panelId;
-            const pageId = panel.dataset.panelId;
-
-            panelOrder.push(
-                { "PanelID": panelId, "PageID": pageId, "PanelPosition": index, "Company": 0, "Country": 0 });
-        });
-
-        console.log(panelOrder);
-    }
-
-
-    // Unselect panel
-    async function unselectPanel()
-    {
-        if (selectedPanel)
-        {
-            selectedPanel.classList.remove('selected');
-
-            await removeArrows();
-
-            selectedPanel = null;
-        }
-    }
-   
-
-    function deleteElementById(elementId)
-    {
-        if (selectedPanel)
-        {
-            selectedPanel = null;
-        }
-
-        const element = document.getElementById(elementId);
-
-        if (element)
-        {
-            element.remove();
-        } 
     }
 
     async function deletePanel(panelId, pageId)
@@ -411,35 +302,27 @@ document.addEventListener('DOMContentLoaded', async () =>
         if (!selectedPanel)
             return;
 
-        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
-
-        if (!tokenElement)
-        {
-            console.log("Anti-forgery token element not found in the DOM.");
-            return;
-        }
-
-        const tokenValue = tokenElement.value;
-
-        const urlDeletePanel = '@Url.Action("DeletePanel", "Pages", new { area = "PageContent", panelId = panelId, pageId = pageId })';
+        const token = await getValidationToken();
 
         try
         {
             $.ajax({
-                url: urlDeletePanel,
+                url: urlDeletePanel + "?panelId=" + panelId + "&pageId=" + pageId,
                 type: 'DELETE',
                 dataType: 'json',
+                processData: false,
+                cache: false,
+                async: true,
                 headers: {
-                    'RequestVerificationToken': tokenValue
+                    'RequestVerificationToken': token
                 },
                 success: function (response)
                 {
-                    console.log('Success:', response);
-                    const deletedId = response.id;
-                    deleteElementById(deletedId);
+                    console.log(response);
+                    location.href = response.receivedUrl;
                 },
                 error: function (response) {
-                    console.log(response.error);
+                    console.log(response);
                 }
             });
         }
@@ -449,7 +332,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         }
     }
 
-    await initializePanelOrder();
+    await setPanelOrder();
 
     await setupPanels();
 

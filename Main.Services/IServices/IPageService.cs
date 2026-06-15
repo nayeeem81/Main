@@ -1,6 +1,7 @@
 ﻿using DataTransferModel;
 
 using Main.Common.Enums;
+using Main.Common.Model;
 
 namespace Main.Services;
 
@@ -16,7 +17,8 @@ public interface IPageService
 
     Task<List<PageDisplayDataModel>> GetAllPages ( EnumCompanyName company );
 
-    Task<bool> UpdatePanelsOrderAsync ( List<PanelPositionDataModel> listPanelPositionDataModel );
+    Task<bool> UpdatePanelsOrderAsync
+        ( List<PanelPositionDataModel> listPanelPositions,BaseDataModel baseDataModel );
 
     Task<bool> DeletePanelAsync ( int panelId,int pageId,EnumCompanyName company,EnumCountry country );
 }

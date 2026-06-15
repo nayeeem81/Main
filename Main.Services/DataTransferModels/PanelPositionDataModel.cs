@@ -1,11 +1,12 @@
-﻿using Main.Common.Enums;
+﻿using Main.Common.Model;
 
 namespace DataTransferModel;
 
-public class PanelPositionDataModel
+public class PanelPositionDataModel: DataModel
 {
     public PanelPositionDataModel ( )
     {
+        BaseDataModel = new BaseDataModel ( );
     }
 
     public int PanelID
@@ -19,16 +20,6 @@ public class PanelPositionDataModel
     }
 
     public int PanelPosition
-    {
-        get; set;
-    }
-
-    public EnumCompanyName Company
-    {
-        get; set;
-    }
-
-    public EnumCountry Country
     {
         get; set;
     }

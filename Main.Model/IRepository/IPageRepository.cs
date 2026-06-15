@@ -1,6 +1,7 @@
 ﻿using Domain.Model;
 
 using Main.Common.Enums;
+using Main.Common.Model;
 
 namespace IRepository;
 
@@ -15,8 +16,7 @@ public interface IPageRepository
     Task<bool> UpdatePage ( Panel panel,List<Post> listPosts );
 
     Task<bool> UpdatePanelsOrderAsync (
-        List<(int PageId,int PanelId,int PanelPosition,
-            EnumCompanyName company,EnumCountry country)> listPanelPositions );
+        List<(int PageID,int PanelID,int PanelPosition)> listPanelPositions,BaseDataModel baseDataModel );
 
     Task<bool> DeletePanelAsync (
         int panelId,int pageId,

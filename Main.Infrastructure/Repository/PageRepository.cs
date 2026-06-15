@@ -4,6 +4,7 @@ using Domain.Model;
 using IRepository;
 
 using Main.Common.Enums;
+using Main.Common.Model;
 using Main.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
@@ -65,25 +66,27 @@ public class PageRepository: IPageRepository
 
 
     public async Task<bool> UpdatePanelsOrderAsync (
-        List<(int PageId,int PanelId,int PanelPosition,
-            EnumCompanyName company,EnumCountry country)> listPanelPositions )
+        List<(int PageID,int PanelID,int PanelPosition)> listPanelPositions,
+        BaseDataModel baseDataModel )
     {
-        foreach ( var panelVariable in listPanelPositions )
+        int result = 0;
+        foreach ( var panelVariable in listPanelPositions.ToList ( ) )
         {
-            Panel panel = await _context.Panels.FirstAsync<Panel>
+            Panel? panel = await _context.Panels.FirstOrDefaultAsync<Panel>
                                 ( a =>
-                                  a.PanelID == panelVariable.PanelId
-                               && a.PageID == panelVariable.PageId
-                               && a.HostCompanyName == panelVariable.company
-                               && a.HostCountry == panelVariable.country);
+                                  a.PanelID == panelVariable.PanelID
+                               && a.PageID == panelVariable.PageID
+                               && a.HostCompanyName == baseDataModel.HostCompanyName
+                               && a.HostCountry == baseDataModel.HostCountry);
 
-            panel.PanelPosition = panelVariable.PanelPosition;
-
-            _context.Panels.Update ( panel );
-
+            if ( panel != null )
+            {
+                panel.PanelPosition = panelVariable.PanelPosition;
+                panel.ModifyBaseData ( baseDataModel );
+                _context.Panels.Update ( panel );
+                result = await _context.SaveChangesAsync ( );
+            }
         }
-
-        int result = await _context.SaveChangesAsync ( );
 
         return result > 0;
     }

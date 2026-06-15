@@ -73,6 +73,7 @@ public static class PageMapping
         pageDataModel.ListPanels.ForEach ( pagePanelDataModel =>
         {
             panelViewModel = new PanelViewModel ( );
+            panelViewModel.PageID = pagePanelDataModel.PageID;
             panelViewModel.PanelID = pagePanelDataModel.PanelID;
             panelViewModel.PanelTitle = pagePanelDataModel.PanelTitle ?? "";
             panelViewModel.PanelTemplate = pagePanelDataModel.PanelTemplate;
@@ -87,8 +88,9 @@ public static class PageMapping
                 postViewModel.ImageFileContent = panelPostDataModel.ImageFileContent;
                 postViewModel.ImageFileID = panelPostDataModel.ImageFileID;
                 postViewModel.Price = panelPostDataModel.Price;
-                postViewModel.PageID = panelPostDataModel.PageID;
+                postViewModel.PageID = panelViewModel.PageID;
                 postViewModel.CategoryID = panelPostDataModel.CategoryID;
+                postViewModel.PanelID = panelViewModel.PanelID;
 
                 panelViewModel.CreatePanelPost ( postViewModel );
 

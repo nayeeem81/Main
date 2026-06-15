@@ -53,4 +53,15 @@
 @section scriptsapp 
 {
     <script src="~/js/panel-step-updown.js"></script>
+
+    <script>
+        $(function() {
+        
+            urlDeletePanel = "@Url.Action("DeletePanel", "Pages", new { area = "PageContent" })";
+
+            urlUpdatePanelPositon = "@Url.Action("UpdatePositions", "Pages", new { area = "PageContent" })";
+
+        });
+    </script>
+    
 }
