@@ -772,7 +772,7 @@
     <value>Configure Package</value>
   </data>
   <data name="LinkConfigurePanels" xml:space="preserve">
-    <value>Configure Webpages</value>
+    <value>All Pages</value>
   </data>
   <data name="LinkConfigurePrice" xml:space="preserve">
     <value>Configure Package Prices</value>
@@ -3189,13 +3189,13 @@
   <data name="PageNameResetEmail" xml:space="preserve">
     <value>Reset Password</value>
   </data>
+  <data name="NewProductLinkText" xml:space="preserve">
+    <value>Add Product</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>BDT</value>
   </data>
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
-  </data>
-  <data name="NewProductLinkText" xml:space="preserve">
-    <value>Add Product</value>
   </data>
 </root>
