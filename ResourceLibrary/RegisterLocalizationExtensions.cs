@@ -1,11 +1,12 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 
+using System.Globalization;
+
 namespace ResourceLibrary.Resources;
 
-public static class LocalizationExtensions
+public static class RegisterLocalizationExtensions
 {
 
     private static readonly CultureInfo[] SupportedCultures = new []
@@ -15,7 +16,7 @@ public static class LocalizationExtensions
         new CultureInfo("bn-BD")
     };
 
-    
+
     public static IServiceCollection AddCustomLocalization ( this IServiceCollection services )
     {
 
@@ -25,7 +26,7 @@ public static class LocalizationExtensions
             .AddViewLocalization ( )
             .AddDataAnnotationsLocalization ( options =>
             {
-                options.DataAnnotationLocalizerProvider = ( type, factory ) =>
+                options.DataAnnotationLocalizerProvider = ( type,factory ) =>
 
                     factory.Create ( typeof ( SharedResource ) );
 
@@ -35,7 +36,7 @@ public static class LocalizationExtensions
     }
 
 
-    public static IApplicationBuilder UseCustomLocalization ( 
+    public static IApplicationBuilder UseCustomLocalization (
         this IApplicationBuilder app )
     {
         var localizationOptions = new RequestLocalizationOptions

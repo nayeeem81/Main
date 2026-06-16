@@ -1,18 +1,19 @@
 ﻿
 using Main.Infrastructure;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Main.Services;
 
-public static class RegisterDepedentServices
+public static class RegisterDependentServices
 {
-    public static IServiceCollection AddServiceDependencies ( 
+    public static IServiceCollection AddServiceDependencies (
                                 this IServiceCollection services,
                                 IConfiguration configuration )
     {
 
-        
+
         services.AddEmailService ( configuration );
 
         services.AddDataInfrastructureServices ( configuration );

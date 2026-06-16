@@ -80,11 +80,6 @@ public class PagesController: BaseController
     [Authorize ( Roles = "Admin" )]
     public async Task<IActionResult> SaveNewProductPanel ( [FromBody] LocalModel model )
     {
-        _logger.LogWarning ( model.PanelTitle );
-        _logger.LogWarning ( model.PageID.ToString ( ) );
-        _logger.LogWarning ( model.TemplateTypeID.ToString ( ) );
-        _logger.LogWarning ( model.Numbers[0].ToString ( ) );
-
         if ( model == null )
         {
             return Json ( new
@@ -109,16 +104,12 @@ public class PagesController: BaseController
             List<PostDataModel> listReferencePosts
                 = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
 
-            _logger.LogWarning ( "listReferencePosts (count):" + listReferencePosts.Count.ToString ( ) );
-
             List<PostDataModel> listUserSelectedPosts = new List<PostDataModel>();
 
             listUserSelectedPosts = listReferencePosts.Where ( obj =>
             {
                 return model.Numbers.Contains ( obj.PanelPostID );
             } ).ToList ( );
-
-            _logger.LogWarning ( "listUserSelectedPosts (count):" + listUserSelectedPosts.Count.ToString ( ) );
 
             listUserSelectedPosts.ForEach ( selectedPost =>
             {
@@ -183,6 +174,8 @@ public class PagesController: BaseController
             } );
         }
 
+        int pageId = listPanelPositionDataModel.Last().PageID;
+
         try
         {
             foreach ( var item in listPanelPositionDataModel )
@@ -199,7 +192,7 @@ public class PagesController: BaseController
 
             BaseDataModel baseDataModel = _userContext.GetUpdateBaseDataModel ();
 
-            bool result = await _pageService.UpdatePanelsOrderAsync ( listPanelPositionDataModel, baseDataModel );
+            bool result = await _pageService.UpdatePanelsOrderAsync ( listPanelPositionDataModel, baseDataModel, pageId );
 
 
             return Json ( new
@@ -209,7 +202,7 @@ public class PagesController: BaseController
         }
         catch ( Exception ex )
         {
-            _logger.LogError ( ex,"Error updating panel positions" );
+            _logger.LogWarning ( ex,"Error updating panel positions" );
             return Json ( new
             {
                 success = false,

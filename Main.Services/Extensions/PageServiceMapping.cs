@@ -89,7 +89,7 @@ public static class PageServiceMapping
     {
         if ( pageEntity != null )
         {
-            var listPanels = pageEntity.ListPanels.ToList();
+            var listPanels = pageEntity.ListPanels;
 
             PageDataModel pageDataModel = new PageDataModel( );
 
@@ -100,7 +100,7 @@ public static class PageServiceMapping
 
             PostDataModel postDataModel;
 
-            listPanels.ForEach ( panel =>
+            listPanels.ToList<Panel> ( ).OrderBy ( a => a.PanelPosition ).ToList ( ).ForEach ( panel =>
             {
                 panelDataModel = new PanelDataModel ( );
 

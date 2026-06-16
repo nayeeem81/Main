@@ -1,33 +1,35 @@
 ﻿@model PanelViewModel
 
 <div class="panel container"
-     data-panel-position="@Model.PanelPosition"
      data-page-id="@Model.PageID" 
      data-panel-id="@Model.PanelID" 
      draggable="true">
-   
-    <div class="row panel-header">
-        <div class="col-12">
-            <h4 class="sub-title" draggable="false">
-                @Model.PanelTitle
-            </h4>
-        </div>
-    </div>
 
-    <div class="row edit-post-parent panel-content" 
-        data-panel-id = "@Model.PanelID"
-        data-page-id = "@Model.PageID"
+    <div class="row"
         draggable="false">
+
+        <div class="panel-header col-12" 
+             draggable="false">
+
+            <h4 class="sub-title" 
+                draggable="false">
+
+                @Model.PanelTitle
+
+            </h4>
+
+        </div>
+
+    </div>
+        
+
+    <div class="row panel-content"
+         draggable="false">
 
         @{
             foreach ( var product in Model.ListPosts.ToList())
             {
-                <div class="col-md-6 col-sm-6 col-lg-6 col-xs-6 card edit-post-item" 
-                     data-image-order-id="@product.ImageOrderID"
-                     data-panel-post-id = "@product.PanelPostID"
-                     data-image-file-id = "@product.ImageFileID"
-                     data-image-order-id = "@product.ImageOrderID"
-                     data-root-id = "@product.RootID"
+                <div class="col-md-6 col-sm-6 col-lg-6 col-xs-6 card" 
                      draggable="true">
                            
                     <a class="thumbnail only-image" draggable="false">
@@ -48,25 +50,37 @@
                     </a>
 
 
-                    <div class="caption card-body" style="margin-bottom:10px;" draggable="false">
+                    <div class="caption card-body" 
+                         draggable="false">
 
-                        <h5 class="truncate text-bg-success card-title" style="text-align:center;" draggable="false">
+                        <h5 class="truncate text-bg-success card-title" 
+                            draggable="false">
+
                             @product.PostTitle
+
                         </h5>
 
-                        <p class="fa-dollar text-info-emphasis card-text" style="text-align:center;" draggable="false">
+                        <p class="fa-dollar text-info-emphasis card-text" 
+                           draggable="false">
+
                             @product.Price Taka
+
                         </p>
 
-                        <span style="vertical-align:middle;" draggable="false">
-                            <i class="fa fa-plus fa-fw"></i>ADD TO CART
+                        <span draggable="false">
+
+                            <i class="fa fa-plus fa-fw"></i> 
+
+                            ADD TO CART
+
                         </span>
+
                     </div>
                 
                 </div>
             }
         }
 
-    </div>
+        </div>
 
 </div>

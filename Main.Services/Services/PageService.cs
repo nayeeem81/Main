@@ -12,24 +12,20 @@ namespace Main.Services;
 
 public class PageService: IPageService
 {
-
-    public readonly IProductImageRepository _productImageRepository;
-    public readonly IAdminPostImageRepository _adminPostImageRepository;
-    public readonly IAdminPostImageRepository _adminPostsImageRepository;
+    public readonly IProductRepository _productRepository;
+    public readonly IAdminPostRepository _adminPostRepository;
     public readonly IPageRepository _pageRepository;
     public readonly IPanelRepository _panelRepository;
 
     public PageService (
-        IProductImageRepository productImageRepository,
-        IAdminPostImageRepository adminPostsImageRepository,
+        IProductRepository productRepository,
+        IAdminPostRepository adminPostRepository,
         IPageRepository pageRepository,
-        IAdminPostImageRepository adminPostImageRepository,
         IPanelRepository panelRepository )
     {
-        _productImageRepository = productImageRepository;
-        _adminPostsImageRepository = adminPostsImageRepository;
+        _productRepository = productRepository;
         _pageRepository = pageRepository;
-        _adminPostImageRepository = adminPostImageRepository;
+        _adminPostRepository = adminPostRepository;
         _panelRepository = panelRepository;
     }
 
@@ -46,7 +42,7 @@ public class PageService: IPageService
 
     public async Task<List<PostDataModel>> GetSelectProducts ( EnumCompanyName company )
     {
-        List<Product> listProducts = await _productImageRepository.GetSelectProducts ( company );
+        List<Product> listProducts = await _productRepository.GetSelectProducts ( company );
         List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
 
         return listPanelPostDataModel;
@@ -54,7 +50,7 @@ public class PageService: IPageService
 
     public async Task<List<PostDataModel>> GetSelectPosts ( EnumCompanyName company )
     {
-        List<AdminPost> listAdminPosts = await _adminPostImageRepository.GetSelectAdminPosts( company );
+        List<AdminPost> listAdminPosts = await _adminPostRepository.GetSelectAdminPosts( company );
 
         List<PostDataModel> listPanelPostDataModel
                                             = PageServiceMapping.GetPostDataModels   ( listAdminPosts );
@@ -89,24 +85,25 @@ public class PageService: IPageService
         return listPageDisplayDataModel.ToList ( );
     }
 
-    public async Task<bool> UpdatePanelsOrderAsync
-        ( List<PanelPositionDataModel> listPanelPositions,BaseDataModel baseDataModel )
+    public async Task<bool> UpdatePanelsOrderAsync ( List<PanelPositionDataModel> listPanelPositionDataModel,BaseDataModel baseDataModel,int pageId )
     {
+        List<int> listPanelIds = listPanelPositionDataModel.Select(x => x.PanelID).ToList();
 
-        List<(int PanelID, int PageID, int PanelPosition)> listTuplePanelPositions = new();
+        Page page = await _pageRepository.GetSinglePage ( pageId );
 
+        List<Panel> listPanels = page.ListPanels.ToList<Panel> () ?? new List<Panel>();
 
-
-        listPanelPositions.ForEach ( panelPosition =>
+        listPanels.Where ( panel => listPanelIds.Contains ( panel.PanelID ) ).ToList ( ).ForEach ( updatePanel =>
         {
+            updatePanel.ModifyBaseData ( baseDataModel );
 
-            listTuplePanelPositions.Add (
-                (PanelID: panelPosition.PanelID,
-                 PageID: panelPosition.PageID,
-                 PanelPosition: panelPosition.PanelPosition) );
+            updatePanel.PanelPosition = listPanelPositionDataModel.First ( a => a.PanelID == updatePanel.PanelID ).PanelPosition;
+
         } );
 
-        bool result = await _panelRepository.UpdatePanelsOrderAsync ( listTuplePanelPositions, baseDataModel );
+        page.ModifyBaseData ( baseDataModel );
+
+        bool result = await _pageRepository.UpdatePage ( page, listPanels );
 
         return result;
     }

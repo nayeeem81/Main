@@ -1,25 +1,23 @@
 ﻿
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using System.Net.Mail;
-using Microsoft.AspNetCore.Identity.UI.Services;    
 
 namespace Main.Services;
 
-public static class ApplcationEmailServices
+public static class RegisterEmailService
 {
-    public static IServiceCollection AddEmailService ( 
+    public static IServiceCollection AddEmailService (
                                 this IServiceCollection services,
                                 IConfiguration configuration )
     {
 
-        
+
         var smtpSection = configuration.GetSection("SmtpSettings");
 
 
-        services.AddFluentEmail ( smtpSection["SenderEmail"], smtpSection["SenderName"] )
-                
+        services.AddFluentEmail ( smtpSection["SenderEmail"],smtpSection["SenderName"] )
+
                 .AddSmtpSender (
                         smtpSection["Server"],
                         int.Parse ( smtpSection["Port"] ?? "587" ),
@@ -27,11 +25,11 @@ public static class ApplcationEmailServices
                         smtpSection["Password"]
                  );
 
-       
+
 
 
         services.AddTransient<IEmailSender,EmailSenderService> ( );
-        
+
 
         return services;
     }

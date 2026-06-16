@@ -1,70 +1,74 @@
 ﻿
 using Domain.Model;
+
 using IRepository;
+
+using Main.Common.Enums;
 using Main.Infrastructure;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
-public class AdminPostRepository : IAdminPostRepository
+public class AdminPostRepository: IAdminPostRepository
 {
-    private readonly BussinessAppDbContext _Context;
+    private readonly BussinessAppDbContext _context;
 
-    public AdminPostRepository( BussinessAppDbContext context )
+    public AdminPostRepository ( BussinessAppDbContext context )
     {
-        _Context = context;
+        _context = context;
     }
 
-    public async Task<bool> SaveChanges()
+    public async Task<bool> SaveChanges ( )
     {
-        var result = await _Context.SaveChangesAsync();
+        var result = await _context.SaveChangesAsync();
         return result > 0;
     }
 
-    public async Task<List<AdminPost>> GetAllAdminContentPosts()
+    public async Task<List<AdminPost>> GetAllAdminContentPosts ( )
     {
-        var listPostEntity = await _Context.AdPosts
+        var listPostEntity = await _context.AdPosts
                                            .ToListAsync();
 
         return listPostEntity;
     }
 
-    public async Task<bool> DeleteAdminPost(int postId)
+    public async Task<bool> DeleteAdminPost ( int postId )
     {
-        var adminPost = _Context.AdPosts.ToList()
+        var adminPost = _context.AdPosts.ToList()
             .Single(a => a.AdminPostID == postId);
 
-        if (adminPost != null)
+        if ( adminPost != null )
         {
-            _Context.AdPosts.Remove(adminPost);
+            _context.AdPosts.Remove ( adminPost );
         }
-                
-        var result = await _Context.SaveChangesAsync();
+
+        var result = await _context.SaveChangesAsync();
 
         return result > 0;
     }
 
-    public async Task<bool> DeleteAdminPostImage(int id, int postId)
+    public async Task<bool> DeleteAdminPostImage ( int id,int postId )
     {
-        var adminImageFile = await _Context.AdImageFiles
+        var adminImageFile = await _context.AdImageFiles
                         .Where(
-                           a => a.AdminImageFileID == id 
+                           a => a.AdminImageFileID == id
                            && a.AdminPostID == postId)
                         .FirstOrDefaultAsync();
 
-        if (adminImageFile != null)
+        if ( adminImageFile != null )
         {
-            _Context.AdImageFiles.Remove(adminImageFile);
+            _context.AdImageFiles.Remove ( adminImageFile );
         }
 
-        var result = await _Context.SaveChangesAsync();
+        var result = await _context.SaveChangesAsync();
 
         return result > 0;
     }
 
-    public async Task<AdminPost> GetAdminPostByPostID(int postId)
+    public async Task<AdminPost> GetAdminPostByPostID ( int postId )
     {
-        var postEntity = await _Context.AdPosts
+        var postEntity = await _context.AdPosts
                             .SingleAsync (a => a.AdminPostID == postId);
 
         return postEntity;
@@ -72,20 +76,25 @@ public class AdminPostRepository : IAdminPostRepository
 
     public async Task<bool> SaveNewAdminPost ( AdminPost adminPostEntity )
     {
-        _Context.AdPosts.Add( adminPostEntity );
+        _context.AdPosts.Add ( adminPostEntity );
 
-        int result = await _Context.SaveChangesAsync();
+        int result = await _context.SaveChangesAsync();
 
         return result > 0;
     }
 
     public async Task<bool> UpdateAdminPost ( AdminPost postEntity )
     {
-        _Context.AdPosts.Update ( postEntity );
+        _context.AdPosts.Update ( postEntity );
 
-        var result = await _Context.SaveChangesAsync();
+        var result = await _context.SaveChangesAsync();
 
         return result > 0;
+    }
+
+    public async Task<List<AdminPost>> GetSelectAdminPosts ( EnumCompanyName company )
+    {
+        return await _context.AdPosts.Where ( a => a.HostCompanyName == company ).ToListAsync<AdminPost> ( );
     }
 }
 

@@ -57,12 +57,21 @@ public class PageRepository: IPageRepository
         return result > 0;
     }
 
+    public async Task<bool> UpdatePage ( Page page,List<Panel> listPanels )
+    {
+        page.ListPanels = listPanels;
+
+        _context.Pages.Update ( page );
+
+        int result = await _context.SaveChangesAsync();
+
+        return result > 0;
+    }
+
 
     public async Task<bool> PageExists ( int id )
     {
         return await _context.Pages.AnyAsync ( e => e.PageID == id );
     }
-
-
 }
 

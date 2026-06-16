@@ -2,15 +2,16 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #fafafa;
+    padding: 0px;
+    border: 0px solid #ddd;
+    background-color: transparent;
+    /*#fafafa;*/
 }
 
 .panel {
-    padding: 20px;
+    padding: 11px;
     border: 2px solid transparent;
-    background-color: #ffffff;
+    background-color: *#ffffff;
     cursor: pointer;
     position: relative;
     transition: all 0.3s ease;

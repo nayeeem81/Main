@@ -14,4 +14,6 @@ public interface IPageRepository
 
     Task<bool> UpdatePage ( Panel panel,List<Post> listPosts );
 
+    Task<bool> UpdatePage ( Page page,List<Panel> listPanels );
+
 }

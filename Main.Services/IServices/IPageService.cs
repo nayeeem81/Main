@@ -17,8 +17,7 @@ public interface IPageService
 
     Task<List<PageDisplayDataModel>> GetAllPages ( EnumCompanyName company );
 
-    Task<bool> UpdatePanelsOrderAsync
-        ( List<PanelPositionDataModel> listPanelPositions,BaseDataModel baseDataModel );
+    Task<bool> UpdatePanelsOrderAsync ( List<PanelPositionDataModel> listPanelPositionDataModel,BaseDataModel baseDataModel,int pageId );
 
     Task<bool> DeletePanelAsync ( int panelId );
 }

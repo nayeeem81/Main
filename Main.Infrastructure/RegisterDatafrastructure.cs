@@ -20,11 +20,7 @@ public static class RegisterDatafrastructure
 
         //Register Repository
 
-        services.AddScoped<IAdminPostImageRepository,AdminPostImageRepository> ( );
-
         services.AddScoped<IAdminPostRepository,AdminPostRepository> ( );
-
-        services.AddScoped<IProductImageRepository,ProductImageRepository> ( );
 
         services.AddScoped<IProductRepository,ProductRepository> ( );
 

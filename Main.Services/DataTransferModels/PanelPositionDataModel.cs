@@ -1,12 +1,10 @@
-﻿using Main.Common.Model;
+﻿namespace DataTransferModel;
 
-namespace DataTransferModel;
-
-public class PanelPositionDataModel: DataModel
+public class PanelPositionDataModel
 {
+
     public PanelPositionDataModel ( )
     {
-        BaseDataModel = new BaseDataModel ( );
     }
 
     public int PanelID

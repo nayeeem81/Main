@@ -78,6 +78,7 @@ public static class PageMapping
             panelViewModel.PanelTitle = pagePanelDataModel.PanelTitle ?? "";
             panelViewModel.PanelTemplate = pagePanelDataModel.PanelTemplate;
             panelViewModel.PageName = ListEnum.GetPageDescription ( pageDataModel.EnumPublicPage );
+            panelViewModel.PanelPosition = pagePanelDataModel.PanelPosition;
 
             PostViewModel postViewModel;
 
@@ -102,7 +103,8 @@ public static class PageMapping
 
         PageViewModel pageViewModel = new PageViewModel ( );
 
-        pageViewModel.ListPagePanels = listPanelViewModel;
+        pageViewModel.ListPagePanels =
+            listPanelViewModel.ToList<PanelViewModel> ( ).OrderBy ( a => a.PanelPosition ).ToList ( );
 
         return pageViewModel;
     }
