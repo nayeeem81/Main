@@ -5,19 +5,11 @@
      data-page-id="@Model.PageID"
      data-panel-id="@Model.PanelID"
      draggable="true">
-    
-    <div class="row panel-header">
-        
-        <div class="col-12">
-            <h4 class="sub-title" draggable="false">
-                @Model.PanelTitle
-            </h4>
-        </div>
-    </div>
 
-    @{
-        string droppostid = "dropPost" + @Model.PanelID.ToString();
-    }
+    <h4 class="sub-title" draggable="false">
+        @Model.PanelTitle
+    </h4>
+   
 
     <div class="row edit-post-parent panel-content" 
          data-panel-id = "@Model.PanelID"
@@ -31,10 +23,7 @@
                      class="col-md-2 col-sm-2 col-lg-2 col-xs-2 card  edit-post-item"
                      data-postorder="@product.ImageOrderID"
                      data-panelpostid = "@product.PanelPostID"
-                     data-panelid = "@Model.PanelID"
-                     data-pageid = "@Model.PageID"
                      data-imageid = "@product.ImageFileID"
-                     data-imageorder = "@product.ImageOrderID"
                      data-postid = "@product.RootID"
                      draggable="true">
                            

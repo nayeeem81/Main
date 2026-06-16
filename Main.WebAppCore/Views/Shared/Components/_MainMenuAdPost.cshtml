@@ -1,0 +1,36 @@
+﻿<li class="dropdown-header">Advertisements</li>
+
+<li class="admin-menu">
+    <a class="dropdown-item dropdown-item-text icon-button"
+       asp-area="AdminContent"
+       asp-controller="ManageAdminPost"
+       asp-action="NewContent">
+
+        <i class="fa fa-fw fa-plus"></i>
+
+        <span>
+            @SharedLocalizer["LinkAddShortContent"]
+        </span>
+
+    </a>
+</li>
+
+<li class="admin-menu">
+    <a title="Add Advertisement"
+       class="dropdown-item dropdown-item-text icon-button"
+       asp-area="AdminContent"
+       asp-controller="ManageAdminPost"
+       asp-action="Index">
+
+        <i class="fa fa-fw fa-list"></i>
+
+        <span>
+            @SharedLocalizer["LinkManageAdminContents"]
+        </span>
+
+    </a>
+</li>
+
+<li>
+    <hr class="dropdown-divider">
+</li>

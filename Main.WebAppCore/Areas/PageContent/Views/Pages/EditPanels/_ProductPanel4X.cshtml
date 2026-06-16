@@ -6,19 +6,11 @@
      data-panel-id="@Model.PanelID"
      draggable="true">
 
-    <div class="row panel-header">
-        
-        <div class="col-12">
-            <h4 class="sub-title" draggable="false">
-                @Model.PanelTitle
-            </h4>
-        </div>
-    </div>
+    <h4 class="sub-title" draggable="false">
+        @Model.PanelTitle
+    </h4>
 
-    @{
-        string droppostid = "dropPost" + @Model.PanelID.ToString();
-    }
-
+  
     <div class="row edit-post-parent panel-content" 
          data-panel-id = "@Model.PanelID"
          data-page-id = "@Model.PageID"
@@ -28,13 +20,10 @@
             foreach ( var product in Model.ListPosts.ToList())
             {
                 <div 
-                     class="col-md-3 col-sm-3 col-lg-3 col-xs-3 card-form edit-post-item"
+                     class="col-md-3 col-sm-3 col-lg-3 col-xs-3 card edit-post-item"
                      data-postorder="@product.ImageOrderID"
                      data-panelpostid = "@product.PanelPostID"
-                     data-panelid = "@Model.PanelID"
-                     data-pageid = "@Model.PageID"
                      data-imageid = "@product.ImageFileID"
-                     data-imageorder = "@product.ImageOrderID"
                      data-postid = "@product.RootID"
                      draggable="true">
                            
@@ -56,30 +45,31 @@
                     </a>
 
 
-                    <div class="caption" style="margin-bottom:10px;" draggable="false">
+                    <div class="caption card-body"
+                         draggable="false">
 
-                        <div class="truncate text-bg-success" draggable="false">
+                        <h5 class="truncate text-bg-success card-title"
+                            draggable="false">
 
-                                @product.PostTitle
-                                    
-                        </div>
+                            @product.PostTitle
 
-                        <div class="fa-dollar text-info-emphasis" draggable="false">
+                        </h5>
 
-                                @product.Price Taka
-                                    
-                        </div>
-                                    
-                        <div class="add-to-cart sub-content text-center" 
-                             data-id="@product.RootID"      
-                             draggable="false">
-                                        
-                            <button role="link" class="primary-button max" draggable="false"> 
-                                ADD TO CART 
-                            </button>
+                        <p class="fa-dollar text-info-emphasis card-text"
+                           draggable="false">
 
-                        </div>   
-                            
+                            @product.Price Taka
+
+                        </p>
+
+                        <span draggable="false">
+
+                            <i class="fa fa-plus fa-fw"></i>
+
+                            ADD TO CART
+
+                        </span>
+
                     </div>
                 
                 </div>

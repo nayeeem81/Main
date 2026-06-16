@@ -1,0 +1,42 @@
+﻿<li class="dropdown-header">Shop Products</li>
+
+
+<li class="company-menu">
+
+    <a class="dropdown-item dropdown-item-text icon-button"
+       asp-area="CompanyContent"
+       asp-controller="ManageProduct"
+       asp-action="NewProduct">
+
+        <i class="fa fa-fw fa-plus"></i>
+
+        <span>
+            @SharedLocalizer["NewProductLinkText"]
+        </span>
+
+    </a>
+
+</li>
+
+<li class="company-menu">
+
+    <a class="dropdown-item dropdown-item-text icon-button"
+       asp-area="CompanyContent"
+       asp-controller="ManageProduct"
+       asp-action="Index">
+
+        <i class="fa fa-fw fa-list"></i>
+
+        <span>
+
+            @SharedLocalizer["ManageProductsLinkText"]
+
+        </span>
+
+    </a>
+
+</li>
+
+<li>
+    <hr class="dropdown-divider">
+</li>

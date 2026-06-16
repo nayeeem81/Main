@@ -769,7 +769,7 @@
     <value>প্যাকেজ কনফিগার করুন</value>
   </data>
   <data name="LinkConfigurePanels" xml:space="preserve">
-    <value>ওয়েবপেজ কনফিগার করুন</value>
+    <value>সব ওয়েবপেজ</value>
   </data>
   <data name="LinkConfigurePrice" xml:space="preserve">
     <value>প্যাকেজের মূল্য কনফিগার করুন</value>
@@ -3143,6 +3143,9 @@
   <data name="PageNameResetEmail" xml:space="preserve">
     <value>রিসেট</value>
   </data>
+  <data name="NewProductLinkText" xml:space="preserve">
+    <value>পণ্য যোগ করুন</value>
+  </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>
   </data>
@@ -3193,8 +3196,5 @@
   </data>
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
-  </data>
-  <data name="NewProductLinkText" xml:space="preserve">
-    <value>পণ্য যোগ করুন</value>
   </data>
 </root>

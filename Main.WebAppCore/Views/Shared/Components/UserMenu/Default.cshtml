@@ -18,24 +18,9 @@
                     
             <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
 
-                <li class="user-menu">
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuProfile.cshtml" )
 
-                    <a class="dropdown-item dropdown-item-text icon-button" 
-                        asp-controller="Account" 
-                        asp-action="Profile"
-                        asp-area="">
-                        
-                        <i class="fa fa-user fa-fw"></i>
-                        
-                        <span>
-                            @SharedLocalizer["ProfileLinkText"]
-                        </span>
-
-                    </a>
-
-                </li>
-
-                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuLogout.cshtml" )
                 
             </ul>
         </div>

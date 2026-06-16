@@ -18,131 +18,15 @@
                     
             <ul class="dropdown dropdown-menu" id="divMenuMyHomeSignin">
 
-                <li class="admin-menu">
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuPage.cshtml" )
+               
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuProduct.cshtml" )
 
-                    <a class="dropdown-item dropdown-item-text icon-button"
-                       asp-area="Company"
-                       asp-controller="CompanySettings"
-                       asp-action="ManageAccount">
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuAdPost.cshtml" )
 
-                        <i class="fa fa-fw fa-user"></i>
-
-                        <span>
-                            @SharedLocalizer["ProfileLinkText"]
-                        </span>
-                    </a>
-
-                </li>
-
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text icon-button" 
-                        asp-area="AdminContent" 
-                        asp-controller="ManageAdminPost" 
-                        asp-action="NewContent">
-
-                        <i class="fa fa-fw fa-plus"></i>
-
-                        <span>
-                            @SharedLocalizer["LinkAddShortContent"]
-                        </span>
-
-                    </a>
-                </li>
-
-                <li class="admin-menu">
-                    <a title="Add Advertisement"
-                        class="dropdown-item dropdown-item-text icon-button"
-                        asp-area="AdminContent" 
-                        asp-controller="ManageAdminPost" 
-                        asp-action="Index">
-
-                        <i class="fa fa-fw fa-list"></i>
-
-                        <span>
-                            @SharedLocalizer["LinkManageAdminContents"]
-                        </span>
-
-                    </a>
-                </li>
-
-                <li class="admin-menu">
-                        <a class="dropdown-item dropdown-item-text icon-button" 
-                            asp-area="PageContent" 
-                            asp-controller="Pages" 
-                            asp-action="Index">
-
-                        <i class="fa fa-fw fa-list"></i>
-
-                        <span>
-                            @SharedLocalizer["LinkConfigurePanels"]
-                        </span>
-                    </a>
-
-                </li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageFabiaService" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkFabiaServices"]
-                        </span>
-                    </a>
-                </li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="Image" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkEditImages"]
-                        </span>
-                    </a>
-                </li>
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuProfile.cshtml" )
             
-                <li class="admin-menu"><hr class="dropdown-divider"></li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="PackageConfiguration" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkConfigurePackage"]
-                        </span>
-                    </a>
-                </li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="ManageConfiguration" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkConfigurePrice"]
-                        </span>
-                    </a>
-                </li>
-
-                <li class="admin-menu"><hr class="dropdown-divider"></li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Admin" asp-controller="BikashBillTransactons" asp-action="Index">
-                        <i class="fa fa-cog fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkManageBikashBills"]
-                        </span>
-                    </a>
-                </li>
-
-                <li class="admin-menu">
-                    <a class="dropdown-item dropdown-item-text" asp-area="Report" asp-controller="ApplicationLogReport" asp-action="Index">
-                        <i class="fa fa-address-book fa-fw fa-1x"></i>
-                        <span>
-                            @SharedLocalizer["LinkLogReports"]
-                        </span>
-                    </a>
-                </li>
-            
-            @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuCommonLinks.cshtml" )
+                @await Html.PartialAsync( "~/Views/Shared/Components/_MainMenuLogout.cshtml" )
 
         </ul>
     </div>
