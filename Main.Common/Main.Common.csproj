@@ -26,6 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HelperRelated\HelperTemplate.cs" />
     <Compile Remove="ImageHelper.cs" />
   </ItemGroup>
 
