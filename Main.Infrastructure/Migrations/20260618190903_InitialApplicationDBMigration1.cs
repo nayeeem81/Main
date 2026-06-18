@@ -65,7 +65,7 @@ namespace Main.Infrastructure.Migrations
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -384,10 +384,10 @@ namespace Main.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TenantId", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "e03fd0d4-00fd-090a-ca10-0d00a1118ba4", 0, "abae671a-329f-4577-894d-b22610360eb3", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN1", "AQAAAAIAAYagAAAAEIQl9FBFD3yJyJUrZKLTVLZXh7g9EBbHRrW3waK5uprkAW3VGD8qy62IPytPu5eXhQ==", null, false, "a80b4766-3125-47a5-acd0-1669977f9987", "e02fd0e1-00fd-009a-ca30-0d00a2345ba0", false, "SuperAdmin1" },
-                    { "e03fd0d4-00fd-090a-da10-0d00a2228ba4", 0, "7f17a283-2a14-42a1-a560-818b679f0121", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN2", "AQAAAAIAAYagAAAAEI+/FiLhk07GD3bVI4BtjrIIbciLCOPgoQaXxZF+OKt5FfNE6mcXlVUsq8CrNE+Fyw==", null, false, "94dd4490-be9a-4410-93e4-de6593948453", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "SuperAdmin2" },
-                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba4", 0, "170f8f54-c18a-4e75-8044-9349d7130d1f", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN1", "AQAAAAIAAYagAAAAEKJS65A1cB34h7uFLIIu2D6MiKIWQnjaDpicjAof0WK9nPcEkW8FfvTtqAQ2TrfWGA==", null, false, "e5a6e5e3-f95a-428d-818e-baf141de982b", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "Admin1" },
-                    { "e03fd0e4-55fd-095a-ca10-0d00a0018ba4", 0, "23a83d5d-aba1-46fb-ab99-c5c9259814a1", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN2", "AQAAAAIAAYagAAAAEEn7Uonuc9wxnmDG92bXB5/8CDcx3uqun5yqKV6cBn7S7x80f64ElPV/7bZzIJ31sg==", null, false, "1db03677-9a86-4e40-a728-4cff0b0952ab", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "Admin2" }
+                    { "e03fd0d4-00fd-090a-ca10-0d00a1118ba4", 0, "97a662c1-aff7-48a8-81a4-1c5ebbfca850", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN1", "AQAAAAIAAYagAAAAEP0J9Skjr4ht06d28ZQezgKHFhQ+ETaoNcQ3W9JaX2qHX/BN2ernC0+tobpCjMEetw==", null, false, "7224ebc4-3aa8-43b8-8c4c-69540589246c", "e02fd0e1-00fd-009a-ca30-0d00a2345ba0", false, "SuperAdmin1" },
+                    { "e03fd0d4-00fd-090a-da10-0d00a2228ba4", 0, "26c50294-1a79-4209-9a82-d9d8b8c038c7", "naimul.prodhan@gmail.com", true, false, null, "NAIMUL.PRODHAN@GMAIL.COM", "SUPERADMIN2", "AQAAAAIAAYagAAAAEOHofetYdE8Dxecq6FGj+WXfDdNpsAEYsFuRcJpEzSDnYu2n4Mapx4DWgHII9k4fdQ==", null, false, "66ad697b-51ec-43f1-9250-f40c37a88e41", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "SuperAdmin2" },
+                    { "e03fd0e4-00fd-090a-ca10-0d00a0018ba4", 0, "26015cf6-a8b1-44e7-8f05-c79a2af6bc30", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN1", "AQAAAAIAAYagAAAAEDrbEbcsTPhgT3vjJ0XxP7IvJfnz1chTEF6XaWldlK6aWvXxf78UYlk85mZtLZIiaA==", null, false, "d63faf03-9d67-4b2c-aeca-677fb6f21c8c", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "Admin1" },
+                    { "e03fd0e4-55fd-095a-ca10-0d00a0018ba4", 0, "48611df6-7743-42a8-a6f5-f3f5956f9c2d", "syedron@gmail.com", true, false, null, "SYEDRON@GMAIL.COM", "ADMIN2", "AQAAAAIAAYagAAAAEIdeBlaaVpLyEhwpAdW5xtnCHX5hQi4OMSzYnaNN7kuvTHjG8EA6xBT/7Sur/3jK+w==", null, false, "74926dac-064a-4d1a-bf91-e56df4d000fb", "e02fd0e1-00fd-008a-ca30-5d00a5242ba0", false, "Admin2" }
                 });
 
             migrationBuilder.InsertData(
@@ -453,13 +453,6 @@ namespace Main.Infrastructure.Migrations
                 columns: new[] { "NormalizedName", "TenantId" },
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "ApplicationUsers",
-                columns: new[] { "NormalizedEmail", "TenantId" },
-                unique: true,
-                filter: "[NormalizedEmail] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

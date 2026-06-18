@@ -202,7 +202,6 @@ public class ApplicationDbContext: DbContext
         builder.Entity<ApplicationUser> ( entity =>
         {
             entity.HasIndex ( u => new { u.NormalizedUserName,u.TenantId } ).IsUnique ( ).HasDatabaseName ( "UserNameIndex" );
-            entity.HasIndex ( u => new { u.NormalizedEmail,u.TenantId } ).IsUnique ( ).HasDatabaseName ( "EmailIndex" );
         } );
 
         // Adjust Unique Index for Roles to include Tenant ID
@@ -220,6 +219,27 @@ public class ApplicationDbContext: DbContext
             .Property ( t => t.TenantId )
             .HasValueGenerator<Microsoft.EntityFrameworkCore.ValueGeneration.GuidValueGenerator> ( );
 
+        builder.Entity<Post> ( b =>
+        {
+            // Configures the decimal column to use decimal(18, 2) in SQL Server
+            b.Property ( p => p.Price )
+             .HasColumnType ( "decimal(18,2)" )
+             .IsRequired ( );
+        } );
+
+
+        builder.Entity<Product> ( b =>
+        {
+            b.Property ( p => p.Price )
+             .HasColumnType ( "decimal(18,2)" )
+             .IsRequired ( );
+
+            b.Property ( p => p.Discount )
+             .HasColumnType ( "decimal(18,2)" );
+
+            b.Property ( p => p.SaleCommission )
+             .HasColumnType ( "decimal(18,2)" );
+        } );
 
     }
 
