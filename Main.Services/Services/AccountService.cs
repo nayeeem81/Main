@@ -1,20 +1,24 @@
 ﻿using DataTransferModel;
-using IRepository; 
+
+using Domain.Model;
+
 using Main.Common.Model;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using System.Security.Claims;
 namespace Main.Services;
 
-public class AccountService : IAccountService
+public class AccountService: IAccountService
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AccountService ( 
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager
+    public AccountService (
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager
         )
     {
         _userManager = userManager;
@@ -26,11 +30,11 @@ public class AccountService : IAccountService
 
     public async Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel )
     {
-        IdentityUser userIdentityEntity = CreateIdentityUser(userAccountDataModel);
+        ApplicationUser userIdentityEntity = CreateIdentityUser(userAccountDataModel);
 
-        var resultCreateIdentityUser = await 
+        var resultCreateIdentityUser = await
                                         _userManager
-                                        .CreateAsync(userIdentityEntity, 
+                                        .CreateAsync(userIdentityEntity,
                                          userAccountDataModel.Password);
 
         await _userManager.AddToRoleAsync ( userIdentityEntity,"User" );
@@ -39,16 +43,16 @@ public class AccountService : IAccountService
     }
 
 
-    public async Task<IdentityUser?> GetIdentityUser ( string email )
+    public async Task<ApplicationUser?> GetIdentityUser ( string email )
     {
-        IdentityUser? identityUser  
+        ApplicationUser? identityUser
             = await _userManager.FindByEmailAsync ( email );
 
         return identityUser;
     }
 
 
-    public async Task<SignInResult> AuthenticateUser ( string email, string password )
+    public async Task<SignInResult> AuthenticateUser ( string email,string password )
     {
         var userIdentity = await _userManager.FindByEmailAsync(email.Trim());
 
@@ -58,7 +62,7 @@ public class AccountService : IAccountService
         }
 
         var result = await _signInManager.PasswordSignInAsync ( userIdentity, password, true,   lockoutOnFailure: false);
-        
+
         return result;
     }
 
@@ -66,7 +70,7 @@ public class AccountService : IAccountService
     public async Task<bool> ChangePasswordAsync ( string email,string password,
         string rePassword )
     {
-        IdentityUser? identityUser = await GetIdentityUser ( email );
+        ApplicationUser? identityUser = await GetIdentityUser ( email );
 
         if ( identityUser == null )
         {
@@ -81,26 +85,26 @@ public class AccountService : IAccountService
 
     public async Task<string?> GetEmailVerifyToken ( string email )
     {
-        IdentityUser? user = await _userManager.FindByEmailAsync ( email );
-        
+        ApplicationUser? user = await _userManager.FindByEmailAsync ( email );
+
         if ( user == null )
         {
             return null;
         }
-        
+
         var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
 
-        return code;    
+        return code;
     }
 
 
-    public async Task<bool> CreateAppicationUser ( string email, string token, BaseDataModel baseDataModel )
+    public async Task<bool> CreateAppicationUser ( string email,string token,BaseDataModel baseDataModel )
     {
         var userIdentity = await _userManager.FindByEmailAsync (email);
 
-        if ( userIdentity != null)
+        if ( userIdentity != null )
         {
-            await _userManager.ConfirmEmailAsync ( userIdentity, token );
+            await _userManager.ConfirmEmailAsync ( userIdentity,token );
 
             return true;
         }
@@ -112,32 +116,32 @@ public class AccountService : IAccountService
     {
         var user = await _userManager.FindByEmailAsync(email);
 
-        if (user == null)
+        if ( user == null )
         {
             return null;
         }
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        if (!roles.Any())
+        if ( !roles.Any ( ) )
         {
             return null;
         }
 
         var claims = roles.Select(role => new Claim(ClaimTypes.Role, role));
 
-        return new ClaimsIdentity(claims);
+        return new ClaimsIdentity ( claims );
     }
 
 
 
     #region Priate Methods (CreateUser, CreateIdentityUser, CreateAppicationUser, RemoveIdentityUser)
 
-    
 
-    private IdentityUser CreateIdentityUser ( UserAccountDataModel userAccountDataModel )
+
+    private ApplicationUser CreateIdentityUser ( UserAccountDataModel userAccountDataModel )
     {
-        var userIdentity = new IdentityUser
+        var userIdentity = new ApplicationUser
         {
             Email = userAccountDataModel.Email,
 
@@ -154,19 +158,19 @@ public class AccountService : IAccountService
     public async Task<bool> UnlockUser ( string userId )
     {
         var user = await _userManager.FindByIdAsync(userId);
-        
+
         if ( user == null )
         {
             return false;
         }
-        
+
         var lockoutResult = await _userManager.SetLockoutEndDateAsync(user, null);
 
         if ( !lockoutResult.Succeeded )
         {
             return false;
         }
-        
+
         var resetResult = await _userManager.ResetAccessFailedCountAsync(user);
 
         if ( !resetResult.Succeeded )
@@ -179,7 +183,7 @@ public class AccountService : IAccountService
 
     public async Task<List<IdentityUserDataModel>?> Users ( )
     {
-        List<IdentityUser> identityUsers = await _userManager.Users.ToListAsync<IdentityUser>();
+        List<ApplicationUser> identityUsers = await _userManager.Users.ToListAsync<ApplicationUser>();
 
         List<IdentityUserDataModel> identityUserDataModel = identityUsers.Select(u => new IdentityUserDataModel
         {
@@ -188,10 +192,10 @@ public class AccountService : IAccountService
             LockoutEnd = u.LockoutEnd
         }).ToList<IdentityUserDataModel>();
 
-        return identityUserDataModel;  
+        return identityUserDataModel;
     }
 
-    
+
 
 
 

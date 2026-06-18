@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5185",
+      "applicationUrl": "http://*:5197",
       "nativeDebugging": true,
       "sqlDebugging": true,
       "jsWebView2Debugging": true

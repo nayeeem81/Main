@@ -39,11 +39,15 @@ public enum EnumAccountType
     User = 3
 }
 
-public enum EnumCategoryFor
+public enum EnumShopType
 {
-    DeshiHutBazar = 3,
-    FineArts = 2,
-    LifeStyles = 1
+    LifeStylesShop = 1,
+    FineArtsShop = 2,
+    SportsShop = 3,
+    ServiceShop = 4,
+    ConsultantShop = 5,
+    DoctorShop = 6,
+    DentistShop = 7
 }
 
 public enum EnumCompanyName

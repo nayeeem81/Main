@@ -1,36 +1,42 @@
-using ResourceLibrary.Resources;
+using Main.Infrastructure;
 using Main.Services;
-using WebAppCore.Helper;
-using WebAppCore.Runtime.Helper;
 
-internal class Program
+using ResourceLibrary.Resources;
+
+using WebAppCore.Helper;
+
+public class Program
 {
     private static void Main ( string[] args )
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddControllersWithViews ( );
+
+        builder.Services.AddDatabase ( builder.Configuration );
+
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter ( );
+
         AppSettings.Current = builder.Configuration.GetSection ( "MyAppSettings" )
                                      .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
 
+        builder.Services.AddRepository ( builder.Configuration );
+
+        builder.Services.AddService ( builder.Configuration );
+
         builder.Services.AddHttpContextAccessor ( );
 
-        builder.Services.AddScoped<IUserContext,UserContext> ( );
-
-        builder.Services.AddServiceDependencies ( builder.Configuration );
+        builder.Services.AddScoped<IUserContext,WebAppCore.Helper.HttpContextAccessor> ( );
 
         builder.Services.AddCustomLocalization ( );
 
         builder.Services.AddControllersWithViews ( );
 
-        builder.Services.AddWebOptimizer ( pipeline =>
-        {
-            pipeline.CompileLessFiles ( );
-        } );
+        builder.Services.AddWebOptimizer ( pipeline => { pipeline.CompileLessFiles ( ); } );
 
         builder.Logging.ClearProviders ( );
 
         builder.Logging.AddConsole ( );
-
 
         var app = builder.Build();
 
@@ -44,7 +50,7 @@ internal class Program
             app.UseHsts ( );
         }
 
-        app.UseHttpsRedirection ( );
+        //app.UseHttpsRedirection ( );
 
         app.UseStatusCodePages ( );
 
@@ -58,16 +64,17 @@ internal class Program
 
         app.UseResponseCaching ( );
 
-        app.UseCors ( "AllowAll" );    // for dev: "AllowAll"  // for production: "AllowFrontendApp"   
+        app.UseCors ( );
 
         app.UseCustomLocalization ( );
+
+        app.UseMiddleware<TenantResolverMiddleware> ( );
 
         app.UseAuthentication ( );
 
         app.UseAuthorization ( );
 
         app.MapControllers ( );
-
 
         app.MapControllerRoute (
             name: "MyArea",

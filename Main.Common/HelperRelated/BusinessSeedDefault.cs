@@ -1,7 +1,7 @@
-﻿using Main.Common;
-using Main.Common.Enums;
+﻿using Main.Common.Enums;
 using Main.Common.Model;
-using ResourceLibrary.Resources; 
+
+using ResourceLibrary.Resources;
 
 //Default (Vendor: DeshiHutBazar)
 public static class BusinessSeedDefault
@@ -13,7 +13,7 @@ public static class BusinessSeedDefault
             //category
             new ParentChildVriableModel()
             {
-                ValueID = (int) EnumMarket.Beauty , ParentValueID = 0, Variable = EnumAllowedVariable.Category, Text = GlobalResources.Localizer["Beauty"], 
+                ValueID = (int) EnumMarket.Beauty , ParentValueID = 0, Variable = EnumAllowedVariable.Category, Text = GlobalResources.Localizer["Beauty"],
                   IconLink= "fas fa-user-injured"
             },
 
@@ -345,9 +345,9 @@ public static class BusinessSeedDefault
         return ListEnglishAValues;
     }
 
-    public static List<ParentChildVriableModel> GetCategoryList ( EnumCategoryFor categoryFor )
+    public static List<ParentChildVriableModel> GetCategoryList ( EnumShopType categoryFor )
     {
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             return LifeStyleBusinessSeed ( )
                 .ToList ( )
@@ -359,9 +359,9 @@ public static class BusinessSeedDefault
     }
 
     public static List<ParentChildVriableModel>
-        GetSubCategoryList ( EnumCategoryFor categoryFor )
+        GetSubCategoryList ( EnumShopType categoryFor )
     {
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             return LifeStyleBusinessSeed ( )
                    .Where ( a => a.Variable
@@ -374,9 +374,9 @@ public static class BusinessSeedDefault
 
     public static List<ParentChildVriableModel> GetSubCategoryListByCategoryID (
                 int parentId,
-                EnumCategoryFor categoryFor )
+                EnumShopType categoryFor )
     {
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             return LifeStyleBusinessSeed ( )
                 .Where ( a =>
@@ -390,12 +390,12 @@ public static class BusinessSeedDefault
 
     public static string GetItemText (
             int? id,
-            EnumCategoryFor categoryFor )
+            EnumShopType categoryFor )
     {
         if ( !id.HasValue )
             return "";
 
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             var obj = LifeStyleBusinessSeed()
                      .FirstOrDefault(a => a.ValueID == id);
@@ -409,7 +409,7 @@ public static class BusinessSeedDefault
         return "";
     }
 
-    public static string GetCSS ( int? id,EnumCategoryFor categoryFor )
+    public static string GetCSS ( int? id,EnumShopType categoryFor )
     {
         if ( !id.HasValue )
             return "";
@@ -417,7 +417,7 @@ public static class BusinessSeedDefault
         if ( id.HasValue && id.Value == 0 )
             return "";
 
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             var obj = LifeStyleBusinessSeed()
                      .FirstOrDefault(a => a.ValueID == id);
@@ -447,9 +447,9 @@ public static class BusinessSeedDefault
     }
 
 
-    public static List<ParentChildVriableModel> GetByVariableAndParent ( EnumAllowedVariable variable,int parentId,EnumCategoryFor categoryFor )
+    public static List<ParentChildVriableModel> GetByVariableAndParent ( EnumAllowedVariable variable,int parentId,EnumShopType categoryFor )
     {
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             return LifeStyleBusinessSeed ( )
                 .Where ( a =>
@@ -463,9 +463,9 @@ public static class BusinessSeedDefault
 
     public static List<ParentChildVriableModel>
         GetListByVariable ( EnumAllowedVariable variable,
-        EnumCategoryFor categoryFor )
+        EnumShopType categoryFor )
     {
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             return LifeStyleBusinessSeed ( )
                 .Where ( a => a.Variable == variable )
@@ -476,12 +476,12 @@ public static class BusinessSeedDefault
         return new List<ParentChildVriableModel> ( );
     }
 
-    public static string GetItemTextById ( int valueId,EnumCategoryFor categoryFor )
+    public static string GetItemTextById ( int valueId,EnumShopType categoryFor )
     {
         if ( valueId == 0 )
             return "";
 
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             var obj = LifeStyleBusinessSeed()
                      .SingleOrDefault
@@ -493,12 +493,12 @@ public static class BusinessSeedDefault
         return "";
     }
 
-    public static int GetCategoryIDForSubCategoryID ( int valueId,EnumCategoryFor categoryFor )
+    public static int GetCategoryIDForSubCategoryID ( int valueId,EnumShopType categoryFor )
     {
         if ( valueId == 0 )
             return 0;
 
-        if ( categoryFor == EnumCategoryFor.LifeStyles )
+        if ( categoryFor == EnumShopType.LifeStylesShop )
         {
             var obj = LifeStyleBusinessSeed()
                      .SingleOrDefault(a => a.ValueID == valueId);

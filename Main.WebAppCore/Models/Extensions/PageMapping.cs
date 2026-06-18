@@ -31,7 +31,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,EnumCategoryFor categoryFor,EnumCurrency currency )
+    public static List<PostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,EnumShopType categoryFor,EnumCurrency currency )
     {
         if ( listSelectProductsDataModels == null )
         {
@@ -49,7 +49,7 @@ public static class PageMapping
                 dataModel.RootID,dataModel.ImageFileID,dataModel.ImageOrderID );
 
             postSelectViewModel.ImageFileContent = dataModel.ImageFileContent;
-            postSelectViewModel.CategoryName = SelectListItemDropDown.GetCategoryText ( categoryFor,
+            postSelectViewModel.CategoryName = DropDownListItems.GetCategoryText ( categoryFor,
                 dataModel.CategoryID );
 
             postSelectViewModel.PostTitle = dataModel.PostTitle;

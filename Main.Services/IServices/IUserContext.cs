@@ -31,7 +31,7 @@ public interface IUserContext
         get;
     }
 
-    EnumCategoryFor EnumCategoryFor
+    EnumShopType EnumShopType
     {
         get;
     }

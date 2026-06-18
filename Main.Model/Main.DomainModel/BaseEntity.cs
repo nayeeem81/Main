@@ -3,7 +3,7 @@ using Main.Common.Model;
 
 namespace Domain.Model;
 
-public class BaseEntity
+public class BaseEntity: IMustHaveTenant
 {
     public BaseEntity ( )
     {
@@ -75,5 +75,11 @@ public class BaseEntity
     public string IdentityUserId
     {
         get; set;
+    }
+
+    public string TenantId
+    {
+        get;
+        set;
     }
 }

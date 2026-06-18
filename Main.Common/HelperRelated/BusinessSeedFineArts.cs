@@ -1,8 +1,5 @@
-﻿using Main.Common;
-using Main.Common.Enums;
+﻿using Main.Common.Enums;
 using Main.Common.Model;
-using Microsoft.Extensions.Localization;
-using ResourceLibrary;
 
 namespace Main.Common.HelperServices;
 
@@ -140,162 +137,162 @@ public static class BusinessSeedFineArts
         return ListEnglishAValues;
     }
 
-    public static List<ParentChildVriableModel> GetCategoryList(EnumCategoryFor categoryFor)
+    public static List<ParentChildVriableModel> GetCategoryList ( EnumShopType categoryFor )
     {
-        if(categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             return FineArtsBusinessSeed ( )
-                    .ToList()
-                    .Where(a => a.Variable == EnumAllowedVariable.Category)
-                    .ToList<ParentChildVriableModel>();
+                    .ToList ( )
+                    .Where ( a => a.Variable == EnumAllowedVariable.Category )
+                    .ToList<ParentChildVriableModel> ( );
         }
 
-        return new List<ParentChildVriableModel>();
+        return new List<ParentChildVriableModel> ( );
     }
 
-    public static List<ParentChildVriableModel> GetSubCategoryList(EnumCategoryFor categoryFor)
+    public static List<ParentChildVriableModel> GetSubCategoryList ( EnumShopType categoryFor )
     {
-        if(categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             return FineArtsBusinessSeed ( )
-                    .ToList()
-                    .Where(a => a.Variable ==       EnumAllowedVariable.SubCategory)
-                    .ToList<ParentChildVriableModel>();
+                    .ToList ( )
+                    .Where ( a => a.Variable == EnumAllowedVariable.SubCategory )
+                    .ToList<ParentChildVriableModel> ( );
         }
 
-        return new List<ParentChildVriableModel>();
+        return new List<ParentChildVriableModel> ( );
     }
 
     public static List<ParentChildVriableModel> GetSubCategoryListByCategoryID (
-                    int parentId,               
-                    EnumCategoryFor categoryFor)
+                    int parentId,
+                    EnumShopType categoryFor )
     {
-        if (categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
-            return FineArtsBusinessSeed ( )                    
-                .ToList ()
-                .Where(a =>
+            return FineArtsBusinessSeed ( )
+                .ToList ( )
+                .Where ( a =>
                     a.Variable == EnumAllowedVariable.SubCategory &&
-                    a.ParentValueID == parentId)
-                .ToList<ParentChildVriableModel>();
+                    a.ParentValueID == parentId )
+                .ToList<ParentChildVriableModel> ( );
         }
 
-        return new List<ParentChildVriableModel>();
+        return new List<ParentChildVriableModel> ( );
     }
 
-    public static string GetItemText(
-            int? id, 
-            EnumCategoryFor categoryFor)
+    public static string GetItemText (
+            int? id,
+            EnumShopType categoryFor )
     {
         if ( !id.HasValue )
             return "";
 
-        if(categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             var obj = FineArtsBusinessSeed()
-                    .FirstOrDefault <ParentChildVriableModel> 
+                    .FirstOrDefault <ParentChildVriableModel>
                      (a => a.ValueID == id);
-            
+
             return obj != null ? obj.Text : "";
         }
 
         return "";
     }
 
-    public static string GetCSS(
-            int? id, 
-            EnumCategoryFor categoryFor)
+    public static string GetCSS (
+            int? id,
+            EnumShopType categoryFor )
     {
-        if (!id.HasValue)
+        if ( !id.HasValue )
             return "";
 
-        if (id.HasValue && id.Value == 0)
+        if ( id.HasValue && id.Value == 0 )
             return "";
 
-        if(categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
-           var obj = FineArtsBusinessSeed()
+            var obj = FineArtsBusinessSeed()
                     .ToList()
                     .FirstOrDefault(a => a.ValueID == id);
 
             return obj != null ? obj.IconLink : "";
-        }   
-       
+        }
+
         return "";
     }
 
-    public static List<ParentChildVriableModel> 
-        GetSubCategoryList()
+    public static List<ParentChildVriableModel>
+        GetSubCategoryList ( )
     {
-        return FineArtsBusinessSeed ( ).ToList()
-                .Where ( a => 
-                    a.Variable == EnumAllowedVariable.SubCategory)
-                .ToList<ParentChildVriableModel>(); 
+        return FineArtsBusinessSeed ( ).ToList ( )
+                .Where ( a =>
+                    a.Variable == EnumAllowedVariable.SubCategory )
+                .ToList<ParentChildVriableModel> ( );
     }
 
-    public static List<ParentChildVriableModel> GetCategoryList()
+    public static List<ParentChildVriableModel> GetCategoryList ( )
     {
         return FineArtsBusinessSeed ( )
-                .ToList()
-                .Where(a => 
-                       a.Variable == EnumAllowedVariable.Category)
-                .ToList<ParentChildVriableModel>();
+                .ToList ( )
+                .Where ( a =>
+                       a.Variable == EnumAllowedVariable.Category )
+                .ToList<ParentChildVriableModel> ( );
     }
 
-    public static List<ParentChildVriableModel> GetByVariableAndParent(EnumAllowedVariable variable, long parentId, EnumCategoryFor categoryFor)
+    public static List<ParentChildVriableModel> GetByVariableAndParent ( EnumAllowedVariable variable,long parentId,EnumShopType categoryFor )
     {
-        if (categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             return FineArtsBusinessSeed ( )
-                     .Where(a => a.Variable == variable &&
-                            a.ParentValueID == parentId)
-                            .OrderBy(order => order.ValueID)
-                            .ToList();
+                     .Where ( a => a.Variable == variable &&
+                            a.ParentValueID == parentId )
+                            .OrderBy ( order => order.ValueID )
+                            .ToList ( );
         }
 
-        return new List<ParentChildVriableModel>();
+        return new List<ParentChildVriableModel> ( );
     }
 
-    public static List<ParentChildVriableModel> GetListByVariable(EnumAllowedVariable variable, EnumCategoryFor categoryFor)
+    public static List<ParentChildVriableModel> GetListByVariable ( EnumAllowedVariable variable,EnumShopType categoryFor )
     {
-        if (categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
-            return FineArtsBusinessSeed().Where(a => 
-                a.Variable == variable).OrderBy(order => order.ValueID).ToList();
+            return FineArtsBusinessSeed ( ).Where ( a =>
+                a.Variable == variable ).OrderBy ( order => order.ValueID ).ToList ( );
         }
 
-        return new List<ParentChildVriableModel>();
+        return new List<ParentChildVriableModel> ( );
     }
 
-    public static string GetItemTextById(int valueId, EnumCategoryFor categoryFor)
+    public static string GetItemTextById ( int valueId,EnumShopType categoryFor )
     {
-        if (valueId == 0)
+        if ( valueId == 0 )
             return "";
 
-        if (categoryFor == EnumCategoryFor.FineArts) 
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             var obj = FineArtsBusinessSeed()
                      .SingleOrDefault(a => a.ValueID == valueId);
-            
+
             return obj != null ? obj.Text : "";
         }
 
         return "";
     }
 
-    public static long GetCatIDBySubCategoryID(
-                        int valueId, 
-                        EnumCategoryFor categoryFor)
+    public static long GetCatIDBySubCategoryID (
+                        int valueId,
+                        EnumShopType categoryFor )
     {
-        if (valueId == 0)
+        if ( valueId == 0 )
             return 0;
 
-        if (categoryFor == EnumCategoryFor.FineArts)
+        if ( categoryFor == EnumShopType.FineArtsShop )
         {
             var obj = FineArtsBusinessSeed()
                 .SingleOrDefault
                  (a => a.ValueID == valueId);
-            
+
             return obj != null ? obj.ParentValueID : 0;
         }
 

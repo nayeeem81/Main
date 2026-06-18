@@ -1,6 +1,11 @@
 ﻿using DataTransferModel;
+
+using Domain.Model;
+
 using Main.Common.Model;
+
 using Microsoft.AspNetCore.Identity;
+
 using System.Security.Claims;
 
 namespace Main.Services;
@@ -9,11 +14,11 @@ public interface IAccountService
 {
     Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
 
-    Task<IdentityUser?> GetIdentityUser ( string email );
+    Task<ApplicationUser?> GetIdentityUser ( string email );
 
-    Task<SignInResult> AuthenticateUser ( string email, string password );
+    Task<SignInResult> AuthenticateUser ( string email,string password );
 
-    Task<bool> ChangePasswordAsync ( string email, string password, string rePassword );
+    Task<bool> ChangePasswordAsync ( string email,string password,string rePassword );
 
     Task<bool> UnlockUser ( string userId );
 
@@ -21,7 +26,7 @@ public interface IAccountService
 
     Task<string?> GetEmailVerifyToken ( string email );
 
-    Task<bool> CreateAppicationUser ( string email, string token,BaseDataModel baseDataModel );
+    Task<bool> CreateAppicationUser ( string email,string token,BaseDataModel baseDataModel );
 
     Task<ClaimsIdentity?> GetUserRole ( string email );
 

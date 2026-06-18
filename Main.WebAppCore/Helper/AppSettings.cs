@@ -14,7 +14,7 @@ public class MyConfigSettings
 
     public int PostImageSize { get; set; }
 
-    public EnumCategoryFor EnumCategoryFor
+    public EnumShopType EnumShopType
     {
         get; set;
     }

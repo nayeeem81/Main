@@ -7,18 +7,14 @@ using Repository;
 
 namespace Main.Infrastructure;
 
-public static class RegisterDatafrastructure
+public static class RegisterData
 {
-    public static IServiceCollection AddDataInfrastructureServices (
+    public static IServiceCollection AddRepository (
                   this IServiceCollection services,IConfiguration configuration )
     {
+        services.AddScoped<TenantService> ( );
 
-        services.AddDatabases ( configuration );
-
-        services.AddIdentitySecurity ( configuration );
-
-
-        //Register Repository
+        services.AddScoped<ITenantSetter> ( provider => provider.GetRequiredService<TenantService> ( ) );
 
         services.AddScoped<IAdminPostRepository,AdminPostRepository> ( );
 

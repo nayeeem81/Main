@@ -11,11 +11,11 @@ public class ProductViewModel : BaseViewModel
 {
     public ProductViewModel()
     {
-        AV_Category = SelectListItemDropDown.GetCategoryList
-                ( ( EnumCategoryFor ) AppSettings.Current.EnumCategoryFor );
+        AV_Category = DropDownListItems.GetCategoryList
+                ( ( EnumShopType ) AppSettings.Current.EnumShopType );
 
-        AV_SubCategory = SelectListItemDropDown.GetSubCategoryList
-                ( ( EnumCategoryFor ) AppSettings.Current.EnumCategoryFor );
+        AV_SubCategory = DropDownListItems.GetSubCategoryList
+                ( ( EnumShopType ) AppSettings.Current.EnumShopType );
 
     }
 
@@ -75,11 +75,11 @@ public class ProductViewModel : BaseViewModel
     [Display(Name = "Sub Category")]
     public string? SubCategoryText { get; set; }
 
-    public void SetDisplaytext ( EnumCategoryFor enumCategoryFor)
+    public void SetDisplaytext ( EnumShopType EnumShopType)
     {
-        CategoryText = SelectListItemDropDown.GetCategoryText ( ( EnumCategoryFor )  enumCategoryFor, CategoryID );
+        CategoryText = DropDownListItems.GetCategoryText ( ( EnumShopType )  EnumShopType, CategoryID );
 
-        SubCategoryText = SelectListItemDropDown.GetCategoryText ( ( EnumCategoryFor ) enumCategoryFor, SubCategoryID );
+        SubCategoryText = DropDownListItems.GetCategoryText ( ( EnumShopType ) EnumShopType, SubCategoryID );
     }
 
     public IEnumerable<SelectListItem> AV_Category { get; set; }

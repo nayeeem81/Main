@@ -10,7 +10,7 @@ public class AdminPostViewModel : BaseViewModel
 {
     public AdminPostViewModel()
     {
-        AV_PostType = SelectListItemDropDown.GetAdminPostTypeList ( );
+        AV_PostType = DropDownListItems.GetAdminPostTypeList ( );
 
         ListAdminPostFileImages = new List<ImageFile> ( );
     }

@@ -10,13 +10,13 @@ public class PostViewModel: BaseViewModel
 {
     public PostViewModel ( )
     {
-        AV_Category = SelectListItemDropDown.GetCategoryList ( AppSettings.Current.EnumCategoryFor );
+        AV_Category = DropDownListItems.GetCategoryList ( AppSettings.Current.EnumShopType );
     }
 
 
     public PostViewModel ( EnumPostType enumPostType,int rootId,int imageId,int order )
     {
-        AV_Category = SelectListItemDropDown.GetCategoryList ( AppSettings.Current.EnumCategoryFor );
+        AV_Category = DropDownListItems.GetCategoryList ( AppSettings.Current.EnumShopType );
 
         EnumPostType = enumPostType;
         RootID = rootId;

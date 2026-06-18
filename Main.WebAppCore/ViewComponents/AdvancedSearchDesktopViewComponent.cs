@@ -10,7 +10,7 @@ public class AdvancedSearchDesktopViewComponent : ViewComponent
     {
         MenuObjectModel menuObjectModel = 
             new MenuObjectModel(
-                (EnumCategoryFor)AppSettings.Current.EnumCategoryFor);
+                (EnumShopType)AppSettings.Current.EnumShopType);
 
         return View(menuObjectModel);
     }

@@ -75,7 +75,7 @@ public static class ProductMapping
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels, EnumCategoryFor enumCategoryFor )
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels, EnumShopType EnumShopType )
     {
         List<ProductDisplayViewModel> dispayProductViewModels = new List<ProductDisplayViewModel>();
 
@@ -86,9 +86,9 @@ public static class ProductMapping
             productDisplayViewModel = new ProductDisplayViewModel ( )
             {
                 ProductID = model.ProductID,
-                DisplayCategory = SelectListItemDropDown.GetCategoryText ( enumCategoryFor,model.CategoryID ),
+                DisplayCategory = DropDownListItems.GetCategoryText ( EnumShopType,model.CategoryID ),
                 ProductName = model.ProductName,
-                DisplaySubCategory = SelectListItemDropDown.GetSubCategoryText ( enumCategoryFor,model.SubCategoryID )  ,
+                DisplaySubCategory = DropDownListItems.GetSubCategoryText ( EnumShopType,model.SubCategoryID )  ,
                 UnitPrice = model.UnitPrice
             };
 

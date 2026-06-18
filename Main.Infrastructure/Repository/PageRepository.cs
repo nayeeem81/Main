@@ -12,9 +12,9 @@ namespace Repository;
 
 public class PageRepository: IPageRepository
 {
-    private readonly BussinessAppDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public PageRepository ( BussinessAppDbContext context )
+    public PageRepository ( ApplicationDbContext context )
     {
         _context = context;
     }

@@ -9,9 +9,14 @@ namespace Repository;
 
 public class PanelRepository: IPanelRepository
 {
-    private readonly BussinessAppDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public PanelRepository ( BussinessAppDbContext context )
+    public PanelRepository ( )
+    {
+    }
+
+
+    public PanelRepository ( ApplicationDbContext context )
     {
         _context = context;
     }

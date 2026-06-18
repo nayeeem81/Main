@@ -1,5 +1,7 @@
 ﻿using DataTransferModel;
 
+using Domain.Model;
+
 using Main.Common.Model;
 using Main.Services;
 
@@ -17,15 +19,15 @@ public class AuthController: BaseController
 {
     private readonly IUserContext _userContext;
     private readonly IAccountService _userAccountService;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IEmailSenderService _emailService;
 
     public AuthController (
         IAccountService userAccountService,
         IUserContext userContext,
-        SignInManager<IdentityUser> signInManager,
-        UserManager<IdentityUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
         IEmailSenderService emailService
        )
     {
@@ -154,7 +156,7 @@ public class AuthController: BaseController
             return View ( loginDisplayViewModel );
         }
 
-        IdentityUser? userIdentity = await _userManager
+        ApplicationUser? userIdentity = await _userManager
             .FindByEmailAsync(loginDisplayViewModel.Email);
 
 
@@ -199,7 +201,7 @@ public class AuthController: BaseController
 
 
     // Helper method to set user claims for the current session after successful login (OWASP Mitigation)
-    private async Task SetUserClaimsForCurrentSession ( IdentityUser userIdentity,string email )
+    private async Task SetUserClaimsForCurrentSession ( ApplicationUser userIdentity,string email )
     {
         // OWASP Mitigation: Add claims to the user identity for role-based authorization and do not reveal if the user has a specific role
         var userRole = await _userAccountService.GetUserRole(email);
@@ -388,10 +390,10 @@ public class AuthController: BaseController
         if ( !ModelState.IsValid )
             return View ( resetPasswordViewModel );
 
-        IdentityUser? userIdentity = await _userManager.FindByEmailAsync(resetPasswordViewModel.Email);
+        ApplicationUser? userIdentity = await _userManager.FindByEmailAsync(resetPasswordViewModel.Email);
 
 
-        // Reset with new passwrd and invalidate the token and timestamp to prevent reuse (OWASP Mitigation)
+        // Reset with new password and invalidate the token and timestamp to prevent reuse (OWASP Mitigation)
         var result = await _userManager.ResetPasswordAsync(userIdentity ?? throw new InvalidOperationException("User not found"), resetPasswordViewModel.Token, resetPasswordViewModel.ConfirmPassword);
 
 

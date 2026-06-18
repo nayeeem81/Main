@@ -20,8 +20,9 @@ public class Page: BaseEntity
 
     //Ony used for seeding
     //Seed constructor hard coded
-    public Page ( EnumPublicPage enumPublicPage,int pageId )
+    public Page ( EnumPublicPage enumPublicPage,int pageId,string tenantId )
     {
+        TenantId = tenantId;
         PageID = pageId;
         EnumPublicPage = enumPublicPage;
 
