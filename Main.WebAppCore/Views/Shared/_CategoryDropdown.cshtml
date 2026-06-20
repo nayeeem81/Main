@@ -5,7 +5,7 @@
 @{
     var listCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.Category).ToList();
     var listSubCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.SubCategory).ToList();
-    var InitText = !String.IsNullOrEmpty(Model.InitCategoryText) ? Model.InitCategoryText : @SharedLocalizer["CateAccordionViewByMarkets"];
+    var InitText = !String.IsNullOrEmpty(Model.CategoryText) ? Model.CategoryText : @SharedLocalizer["CateAccordionViewByMarkets"];
     var categoryCss = "";
 }
 <ul class="side-menu">

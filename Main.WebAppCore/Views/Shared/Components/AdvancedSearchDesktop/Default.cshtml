@@ -44,7 +44,7 @@
         </div>
         <div class="col-sm-12 col-md-6">
             <select name="StateID" class="fff">
-                @foreach (var cat in Model.AV_State)
+                @* @foreach (var cat in Model.AV_State)
                 {
                     var selected = Model.StateID.Equals(cat.Value) ? "selected" : "";
 
@@ -56,7 +56,8 @@
                     {
                         <option value="@cat.Value">@cat.Text</option>
                     }
-                }
+                } *@
+                <option value=""></option>
             </select>
         </div>
         <div class="col-sm-12 col-md-6">
@@ -71,43 +72,43 @@
         <div class="col-sm-12">
             <div class="chip-container">
                 <label class="chip">
-                    <input name="IsUrgent" type="checkbox" value="true" checked="@Model.IsUrgent" />
+                    <input name="IsUrgent" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextUrgentSale"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsUsed" type="checkbox" value="true" checked="@Model.IsUsed" />
+                    <input name="IsUsed" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextUsedItem"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsBrandNew" type="checkbox" value="true" checked="@Model.IsBrandNew" />
+                    <input name="IsBrandNew" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextNewItem"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsForSell" type="checkbox" value="true" checked="@Model.IsForSell" />
+                    <input name="IsForSell" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextForSale"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsForRent" type="checkbox" value="true" checked="@Model.IsForRent" />
+                    <input name="IsForRent" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextForRent"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsPrivateSeller" type="checkbox" value="true" checked="@Model.IsPrivateSeller" />
+                    <input name="IsPrivateSeller" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextIndividualAd"]
                     </span>
                 </label>
                 <label class="chip">
-                    <input name="IsCompanySeller" type="checkbox" value="true" checked="@Model.IsCompanySeller" />
+                    <input name="IsCompanySeller" type="checkbox" value="true" checked="checked" />
                     <span>
                         @SharedLocalizer["ButtonTextCompanyAd"]
                     </span>

@@ -3,7 +3,6 @@ using Domain.Model;
 
 using IRepository;
 
-using Main.Common.Enums;
 using Main.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
@@ -91,10 +90,9 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<List<Product>> GetSelectProducts ( EnumCompanyName company )
+    public async Task<List<Product>> GetSelectProducts ( )
     {
         return await _context.Products
-                .Where ( a => a.HostCompanyName == company )
                 .ToListAsync ( );
     }
 }

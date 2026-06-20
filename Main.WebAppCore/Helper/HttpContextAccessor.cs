@@ -3,7 +3,6 @@ using Main.Common.Model;
 using Main.Services;
 
 using System.Security.Claims;
-
 namespace WebAppCore.Helper;
 
 public class HttpContextAccessor: IUserContext
@@ -15,15 +14,10 @@ public class HttpContextAccessor: IUserContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
+    public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
-    //Current User
-    public string IdentityId => User?.FindFirst ( ClaimTypes.NameIdentifier )?.Value ?? string.Empty;
-
-    //Configuration file
-    public EnumShopType EnumShopType => AppSettings.Current.EnumShopType;
-
-    public EnumCompanyName EnumCompanyName => AppSettings.Current.EnumCompanyName;
+    public string IdentityId
+                  => User?.FindFirst ( ClaimTypes.NameIdentifier )?.Value ?? string.Empty;
 
     public EnumCurrency EnumCurrency => AppSettings.Current.EnumCurrency;
 
@@ -39,38 +33,35 @@ public class HttpContextAccessor: IUserContext
     public DateTime GetLocalNow ( )
     {
         string timeZoneId = "Bangladesh Standard Time";
-
         TimeZoneInfo userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-
         return TimeZoneInfo.ConvertTimeFromUtc ( DateTime.UtcNow,userTimeZone );
     }
 
     public BaseDataModel GetCreateBaseDataModel ( )
     {
-        BaseDataModel baseDataModel = new BaseDataModel();
-
-        baseDataModel.ModifiedDate = GetLocalNow ( );
-        baseDataModel.CreatedDate = GetLocalNow ( );
-        baseDataModel.HostCompanyName = EnumCompanyName;
-        baseDataModel.HostCountry = EnumCountry;
-        baseDataModel.Currency = EnumCurrency;
-        baseDataModel.CreatedBy = IdentityId;
-        baseDataModel.ModifiedBy = IdentityId;
-
-        baseDataModel.Id = IdentityId;
+        BaseDataModel baseDataModel = new BaseDataModel
+        {
+            ModifiedDate = GetLocalNow ( ),
+            CreatedDate = GetLocalNow ( ),
+            HostCountry = EnumCountry,
+            Currency = EnumCurrency,
+            CreatedBy = IdentityId,
+            ModifiedBy = IdentityId,
+            Id = IdentityId
+        };
 
         return baseDataModel;
     }
 
     public BaseDataModel GetUpdateBaseDataModel ( )
     {
-        BaseDataModel baseDataModel = new BaseDataModel();
-
-        baseDataModel.ModifiedDate = GetLocalNow ( );
-        baseDataModel.HostCompanyName = EnumCompanyName;
-        baseDataModel.HostCountry = EnumCountry;
-        baseDataModel.Currency = EnumCurrency;
-        baseDataModel.ModifiedBy = IdentityId;
+        BaseDataModel baseDataModel = new BaseDataModel
+        {
+            ModifiedDate = GetLocalNow ( ),
+            HostCountry = EnumCountry,
+            Currency = EnumCurrency,
+            ModifiedBy = IdentityId
+        };
 
         return baseDataModel;
     }

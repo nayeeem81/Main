@@ -2,6 +2,7 @@
 
 using Main.Common.Enums;
 using Main.Common.Model;
+using Main.Infrastructure;
 using Main.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
-
 namespace Main.WebAppCore;
 
 [Area ( "PageContent" )]
@@ -19,13 +19,19 @@ public class PagesController: BaseController
     private readonly IPageService _pageService;
     private readonly IUserContext _userContext;
     private readonly ILogger<PagesController> _logger;
+    private readonly ITenantSetter _tenantSetter;
 
-    public PagesController ( IPageService pageDataService,
-                           IUserContext userContext,ILogger<PagesController> logger )
+    public PagesController (
+      IPageService pageDataService,
+      IUserContext userContext,
+      ITenantSetter tenantSetter,
+      ILogger<PagesController> logger
+    )
     {
         _pageService = pageDataService;
         _userContext = userContext;
         _logger = logger;
+        _tenantSetter = tenantSetter;
     }
 
 
@@ -34,11 +40,9 @@ public class PagesController: BaseController
     {
         try
         {
-            EnumCompanyName company = _userContext.EnumCompanyName;
+            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(_tenantSetter.TenantName);
 
-            List<PageDisplayDataModel> listPageDataModel = await _pageService.GetAllPages(company);
-
-            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel);
+            List<PageDisplayViewModel> listPageViewModel = PageMapping.PageDisplayMapping(listPageDataModel, _tenantSetter.TenantName);
 
             return View ( listPageViewModel );
 
@@ -57,14 +61,12 @@ public class PagesController: BaseController
     {
         PanelViewModel pagePanelViewModel = new PanelViewModel();
 
-
-
         List<PostDataModel> listSelectProductsDataModel =
-            await _pageService.GetSelectProducts(_userContext.EnumCompanyName);
+            await _pageService.GetSelectProducts();
 
         pagePanelViewModel.ListSelectPosts =
             PageMapping.MapSelectPostViewModel ( listSelectProductsDataModel
-                                                ,_userContext.EnumShopType
+                                                ,_tenantSetter.TenantShopType
                                                 ,_userContext.EnumCurrency );
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
@@ -95,14 +97,10 @@ public class PagesController: BaseController
             = new PanelDataModel( ( EnumPanelTemplate ) model.TemplateTypeID,
                                     model.PageID, model.PanelTitle  );
 
-            _logger.LogWarning ( pagePanelDataModel.PanelTitle );
-            _logger.LogWarning ( pagePanelDataModel.PageID.ToString ( ) );
-            _logger.LogWarning ( pagePanelDataModel.PanelTemplate.ToString ( ) );
-
             pagePanelDataModel.SetBaseDataModel ( _userContext.GetCreateBaseDataModel ( ) );
 
             List<PostDataModel> listReferencePosts
-                = await _pageService.GetSelectProducts( _userContext.EnumCompanyName );
+                = await _pageService.GetSelectProducts( );
 
             List<PostDataModel> listUserSelectedPosts = new List<PostDataModel>();
 

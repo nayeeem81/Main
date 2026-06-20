@@ -1,6 +1,7 @@
 ﻿using DataTransferModel;
 
 using Main.Common.Model;
+using Main.Infrastructure;
 using Main.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -21,14 +22,17 @@ public class ManageProductController: BaseController
     private readonly IProductService _productService;
     private readonly ILogger<ManageProductController> _logger;
     private readonly IUserContext _userContext;
+    private readonly ITenantSetter _tenantSetter;
 
     public ManageProductController ( IProductService productService,
         ILogger<ManageProductController> logger,
-        IUserContext userContext )
+        IUserContext userContext,
+        ITenantSetter tenantSetter )
     {
         _productService = productService;
         _logger = logger;
         _userContext = userContext;
+        _tenantSetter = tenantSetter;
     }
 
 
@@ -40,7 +44,7 @@ public class ManageProductController: BaseController
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
             List<ProductDisplayViewModel> disayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels, _userContext.EnumShopType );
+                ( productDataModels, _tenantSetter.TenantShopType );
 
             return View ( disayProductViewModels );
         }
@@ -87,7 +91,7 @@ public class ManageProductController: BaseController
         {
             ClearImageFileListSession ( );
 
-            ProductViewModel objProductViewModel = new ProductViewModel();
+            ProductViewModel objProductViewModel = new ProductViewModel(_tenantSetter.TenantShopType);
 
             objProductViewModel.PageName = "New Product";
 
@@ -95,7 +99,7 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View ( new ProductViewModel ( ) );
+            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
         }
     }
 
@@ -148,7 +152,7 @@ public class ManageProductController: BaseController
 
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _tenantSetter.TenantShopType );
 
             productViewModel.PageName = "Edit Product";
 
@@ -156,7 +160,7 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View ( new ProductViewModel ( ) );
+            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
         }
     }
 
@@ -207,9 +211,9 @@ public class ManageProductController: BaseController
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel , _tenantSetter.TenantShopType);
 
-            productViewModel.SetDisplaytext ( _userContext.EnumShopType );
+            productViewModel.SetDisplaytext ( _tenantSetter.TenantShopType );
 
             productViewModel.PageName = "Product Details";
 
@@ -217,7 +221,7 @@ public class ManageProductController: BaseController
         }
         catch
         {
-            return View ( new ProductViewModel ( ) );
+            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
         }
     }
 
@@ -344,7 +348,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var listSubCategories = DropDownListItems.GetSubCategories( _userContext.EnumShopType, id );
+            var listSubCategories = DropDownListItems.GetSubCategories( _tenantSetter.TenantShopType, id );
 
             return Json ( listSubCategories );
         }
@@ -361,7 +365,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            ProductViewModel productViewModel = new ProductViewModel ();
+            ProductViewModel productViewModel = new ProductViewModel (_tenantSetter.TenantShopType);
             productViewModel.ProductID = id;
 
             return View ( productViewModel );

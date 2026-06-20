@@ -1,14 +1,16 @@
-﻿using DataTransferModel;  
+﻿using DataTransferModel;
+
 using Main.Common.Enums;
+
 using WebAppCore.Helper;
 
 namespace WebAppCore.ViewModel.Extensions;
 
 public static class ProductMapping
 {
-    public static ProductDataModel NewProductDataModel (ProductViewModel productViewModel)
+    public static ProductDataModel NewProductDataModel ( ProductViewModel productViewModel )
     {
-        return new ProductDataModel( )
+        return new ProductDataModel ( )
         {
             ProductName = productViewModel.ProductName,
             SearchTag = productViewModel.SearchTag,
@@ -23,13 +25,13 @@ public static class ProductMapping
         };
     }
 
-    public static ProductViewModel MapProductViewModel ( ProductDataModel productDataModel )
+    public static ProductViewModel MapProductViewModel ( ProductDataModel productDataModel,EnumShopType enumShopType )
     {
-        ProductViewModel productViewModel = new ProductViewModel();
+        ProductViewModel productViewModel = new ProductViewModel(enumShopType);
 
         productViewModel.ProductID = productDataModel.ProductID;
         productViewModel.CategoryID = productDataModel.CategoryID;
-        productViewModel.SubCategoryID = productDataModel.SubCategoryID;  
+        productViewModel.SubCategoryID = productDataModel.SubCategoryID;
         productViewModel.ProductName = productDataModel.ProductName;
         productViewModel.UnitPrice = productDataModel.UnitPrice;
         productViewModel.Discount = productDataModel.Discount;
@@ -43,13 +45,13 @@ public static class ProductMapping
 
         productDataModel.ImageFiles.ForEach ( file =>
         {
-            imageFile = new ImageFile (file.ImageFileContent, file.ProductID, file.ProductImageFileID);
-            imageFiles.Add(imageFile);
+            imageFile = new ImageFile ( file.ImageFileContent,file.ProductID,file.ProductImageFileID );
+            imageFiles.Add ( imageFile );
         } );
 
         productViewModel.ImageFiles = imageFiles;
 
-        return  productViewModel;
+        return productViewModel;
 
     }
 
@@ -75,26 +77,26 @@ public static class ProductMapping
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels, EnumShopType EnumShopType )
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels,EnumShopType EnumShopType )
     {
         List<ProductDisplayViewModel> dispayProductViewModels = new List<ProductDisplayViewModel>();
 
         ProductDisplayViewModel productDisplayViewModel;
 
-        productDataModels.ForEach( model =>
+        productDataModels.ForEach ( model =>
         {
             productDisplayViewModel = new ProductDisplayViewModel ( )
             {
                 ProductID = model.ProductID,
                 DisplayCategory = DropDownListItems.GetCategoryText ( EnumShopType,model.CategoryID ),
                 ProductName = model.ProductName,
-                DisplaySubCategory = DropDownListItems.GetSubCategoryText ( EnumShopType,model.SubCategoryID )  ,
+                DisplaySubCategory = DropDownListItems.GetSubCategoryText ( EnumShopType,model.SubCategoryID ),
                 UnitPrice = model.UnitPrice
             };
 
-            dispayProductViewModels.Add( productDisplayViewModel );
+            dispayProductViewModels.Add ( productDisplayViewModel );
         } );
 
-        return dispayProductViewModels.ToList();
+        return dispayProductViewModels.ToList ( );
     }
 }

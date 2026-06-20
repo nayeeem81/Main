@@ -23,7 +23,7 @@ public class TenantRepository: ITenantRepository
         set;
     }
 
-    public async Task FindCurrentTenant ( string? hostName )
+    public async Task FindCurrentTenantAsync ( string? hostName )
     {
         string host = hostName != null ? hostName : "";
 
@@ -35,9 +35,11 @@ public class TenantRepository: ITenantRepository
         }
 
 
-        tenant = await _context.Tenants.FirstOrDefaultAsync<Tenant> (
-            tenant => tenant.Domain.Length == host.Length &&
-            tenant.Equals ( host ) );
+        tenant = await _context.Tenants
+            .IgnoreQueryFilters ( )
+            .FirstOrDefaultAsync<Tenant>
+             ( tenant => tenant.Domain.Length == host.Length
+              && tenant.Equals ( host ) );
 
         if ( tenant == null )
         {

@@ -4,10 +4,8 @@ using Domain.Model;
 
 using IRepository;
 
-using Main.Common.Enums;
 using Main.Common.Model;
 using Main.Services.Extensions;
-
 namespace Main.Services;
 
 public class PageService: IPageService
@@ -40,17 +38,17 @@ public class PageService: IPageService
         return result;
     }
 
-    public async Task<List<PostDataModel>> GetSelectProducts ( EnumCompanyName company )
+    public async Task<List<PostDataModel>> GetSelectProducts ( )
     {
-        List<Product> listProducts = await _productRepository.GetSelectProducts ( company );
+        List<Product> listProducts = await _productRepository.GetSelectProducts (  );
         List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
 
         return listPanelPostDataModel;
     }
 
-    public async Task<List<PostDataModel>> GetSelectPosts ( EnumCompanyName company )
+    public async Task<List<PostDataModel>> GetSelectPosts ( )
     {
-        List<AdminPost> listAdminPosts = await _adminPostRepository.GetSelectAdminPosts( company );
+        List<AdminPost> listAdminPosts = await _adminPostRepository.GetSelectAdminPosts(  );
 
         List<PostDataModel> listPanelPostDataModel
                                             = PageServiceMapping.GetPostDataModels   ( listAdminPosts );
@@ -67,9 +65,9 @@ public class PageService: IPageService
         return pageDataModel;
     }
 
-    public async Task<List<PageDisplayDataModel>> GetAllPages ( EnumCompanyName company )
+    public async Task<List<PageDisplayDataModel>> GetAllPages ( string company )
     {
-        List<Page> listPageEntity = await _pageRepository.GetAllPages ( company );
+        List<Page> listPageEntity = await _pageRepository.GetAllPages (  );
 
         List<PageDisplayDataModel> listPageDisplayDataModel = new List <PageDisplayDataModel> ();
 
@@ -77,8 +75,7 @@ public class PageService: IPageService
         {
             listPageDisplayDataModel.Add ( new PageDisplayDataModel
                                                ( pageEntity.PageID,
-                                                 pageEntity.EnumPublicPage,
-                                                 pageEntity.HostCompanyName ) );
+                                                 pageEntity.EnumPublicPage,company ) );
 
         } );
 

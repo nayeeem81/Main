@@ -33,9 +33,9 @@ public class TenancyService: ITenancyService
         get; set;
     }
 
-    public async Task FindTenant ( string? hostName )
+    public async Task FindTenantAsync ( string? hostName )
     {
-        await _tenantRepository.FindCurrentTenant ( hostName );
+        await _tenantRepository.FindCurrentTenantAsync ( hostName );
 
         Tenant? tenant = _tenantRepository.CurrentTenant;
 

@@ -1,17 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Main.Common.Enums;
-using WebAppCore.Helper;
+﻿using Main.Infrastructure;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Main.WebAppCore.ViewCompont;
 
-public class AdvancedSearchDesktopViewComponent : ViewComponent
+public class AdvancedSearchDesktopViewComponent: ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync()
-    {
-        MenuObjectModel menuObjectModel = 
-            new MenuObjectModel(
-                (EnumShopType)AppSettings.Current.EnumShopType);
+    private readonly ITenantSetter _tenantSetter;
 
-        return View(menuObjectModel);
+    public AdvancedSearchDesktopViewComponent ( ITenantSetter tenantSetter )
+    {
+        _tenantSetter = tenantSetter;
+    }
+
+    public async Task<IViewComponentResult> InvokeAsync ( )
+    {
+        MenuObjectModel menuObjectModel =
+            new MenuObjectModel(_tenantSetter.TenantShopType);
+
+        return View ( menuObjectModel );
     }
 }

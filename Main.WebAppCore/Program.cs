@@ -4,7 +4,6 @@ using Main.Services;
 using ResourceLibrary.Resources;
 
 using WebAppCore.Helper;
-
 public class Program
 {
     private static void Main ( string[] args )
@@ -20,7 +19,7 @@ public class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter ( );
 
         AppSettings.Current = builder.Configuration.GetSection ( "MyAppSettings" )
-                                     .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
+                            .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
 
         builder.Services.AddRepository ( builder.Configuration );
 

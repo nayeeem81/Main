@@ -20,5 +20,5 @@ public interface ITenancyService
         get; set;
     }
 
-    Task FindTenant ( string? hostName );
+    Task FindTenantAsync ( string? hostName );
 }

@@ -3,99 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two Column Layout</title>
+    <title>Multi tenant shopping store</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <style>
-        /* Sets up the two-column grid structure */
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(90deg, #FF0033, #0066FF); /* Electric red to electric blue */
+            color: #FFFFFF; /* White text for contrast */
+            font-family: 'Roboto', sans-serif; /* Clean, modern font */
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: justify;
+            padding: 20px;
+            line-height: 1.2;
+        }
+
+            header h1 {
+                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
+            }
+
+           
+
+        /* Global Reset */
+        *, ::before, ::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        
+
+        /* Header */
+        .site-header {
+            background: linear-gradient(90deg, #FF0033, #0066FF);
+            color: #fff;
+            padding: 1rem 2rem;
+        }
+
+            .site-header h1 {
+                font-size: 2rem;
+                font-weight: bold;
+                text-align: justify;
+                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
+            }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 1rem;
+        }
+
+            .header-nav ul {
+                list-style: none;
+                display: flex;
+                gap: 1rem;
+            }
+
+            .header-nav a {
+                text-decoration: none;
+                color: #fff;
+            }
+
+                .header-nav a:hover {
+                    color: #FFD700; /* Gold hover for UX contrast */
+                }
+
+        /* Layout */
         .container {
             display: grid;
             grid-template-columns: 250px 1fr;
             gap: 20px;
-            font-family: sans-serif;
+            padding: 2rem;
         }
 
-        /* Styling for the left navigation column */
-        .left-column {
-            background-color: #f0f0f0;
-            padding: 20px;
+        /* Sidebar */
+        .sidebar {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
             border-right: 1px solid #ccc;
         }
 
-        .left-column ul {
-            list-style-type: none;
-            padding: 0;
-        }
+            .sidebar h2 {
+                margin-bottom: 1rem;
+                font-size: 1.2rem;
+                color: #FF0033;
+            }
 
-        .left-column li {
-            margin-bottom: 15px;
-        }
+            .sidebar ul {
+                list-style: none;
+            }
 
-        .left-column a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
+            .sidebar li {
+                margin-bottom: 1rem;
+            }
 
-        .left-column a:hover {
-            color: #0066cc;
-        }
+            .sidebar a {
+                text-decoration: none;
+                color: #333;
+                transition: color 0.3s ease;
+            }
 
-        /* Styling for the right content column */
-        .right-column {
-            padding: 20px;
+                .sidebar a:hover {
+                    color: #0066FF;
+                }
+
+        /* Main Content */
+        .main-content {
+            padding: 1.5rem;
             overflow-y: auto;
-            scroll-behavior: smooth;
         }
 
         .content-section {
-            min-height: 100vh;
+            min-height: 80vh;
             border-bottom: 1px dashed #ccc;
-            padding-top: 20px;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
         }
 
-        .header {
-            padding: 30px;
-            background: content-box;
-            background-color: #e60023;
-        }
+            .content-section h2 {
+                margin-bottom: 1rem;
+                color: #FF0033;
+            }
+
+       
+
+           
     </style>
 </head>
 <body>
-    <header id="layoutHeaderContainer" class="header">
-       
-    </header>
-    <div class="container">
-
-        <!-- Left Column: Navigation Links -->
-        <nav class="left-column">
-            <h2>Multi Tenant Shop CMS</h2>
+    <header class="site-header">
+        <h1 id="pik">tenantors</h1>
+        <nav class="header-nav">
             <ul>
-                <li><a href="#section1">Topic One</a></li>
-                <li><a href="#section2">Topic Two</a></li>
-                <li><a href="#section3">Topic Three</a></li>
+                <li><a href="#">Project</a></li>
+                <li><a href="#">Github Repository</a></li>
+                <li><a href="#">Learning Zone</a></li>
+               
             </ul>
         </nav>
+    </header>
 
-        <!-- Right Column: Content Display -->
-        <main class="right-column">
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Multi-tenant shops</h2>
+            <ul>
+                <li><a href="#section1">Project goals</a></li>
+                <li><a href="#section2">Repository contents</a></li>
+                <li><a href="#section3">Scope of the software</a></li>
+            </ul>
+        </aside>
 
+        <!-- Main Content -->
+        <main class="main-content">
             <section id="section1" class="content-section">
-                <h2>Topic One Content</h2>
-                <p>This is the content for the first topic. Clicking "Topic One" in the left menu will scroll the page directly to this section.</p>
+                <h2>Project goals</h2>
+                <p>This section describes the goals of the project and its intended outcomes.</p>
+                <a href="#pik"> back to up </a>
             </section>
 
             <section id="section2" class="content-section">
-                <h2>Topic Two Content</h2>
-                <p>This is the content for the second topic. Each section has a minimum height to ensure the page can scroll properly between links.</p>
+                <h2>Repository contents</h2>
+                <p>This section explains what is included in the repository and how it is structured.</p>
+                <a href="#pik"> back to up </a>
             </section>
 
             <section id="section3" class="content-section">
-                <h2>Topic Three Content</h2>
-                <p>This is the content for the third topic. You can add as many sections and links as you need by matching the anchor links.</p>
+                <h2>Scope of the software</h2>
+                <p>This section outlines the scope of the software, including features and limitations.</p>
+                <a href="#pik"> back to up </a>
             </section>
-
         </main>
-
     </div>
-
 </body>
 </html>

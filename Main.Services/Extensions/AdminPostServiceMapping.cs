@@ -1,12 +1,13 @@
 ﻿using DataTransferModel;
+
 using Domain.Model;
-using Main.Common.Enums;
 
 namespace Services.Extensions;
 
 public static class AdminPostServiceMappings
 {
-    public static List<AdminPostDisplayModel> MapListDataModel ( List<AdminPost> listadminPostEntities )
+    public static List<AdminPostDisplayModel> MapListDataModel (
+        List<AdminPost> listadminPostEntities )
     {
         AdminPostDisplayModel objDataModel;
 
@@ -19,7 +20,6 @@ public static class AdminPostServiceMappings
 
             objDataModel.AdminPostID = postEntity.AdminPostID;
             objDataModel.PosterName = postEntity.PosterName;
-            objDataModel.HostCompanyName = postEntity.HostCompanyName;
             objDataModel.PostTitle = postEntity.Title;
             objDataModel.PostType = postEntity.PostType;
 
@@ -121,7 +121,7 @@ public static class AdminPostServiceMappings
         {
             PosterName = adminPostDataModel.PosterName,
             Title = adminPostDataModel.PostTitle,
-            PostType = ( EnumPostType ) adminPostDataModel.PostType,
+            PostType =     adminPostDataModel.PostType ,
             WebsiteUrl = adminPostDataModel.WebsiteUrl,
             SearchTag = adminPostDataModel.SearchTag,
             ShortNote = adminPostDataModel.ShortNote,
@@ -130,7 +130,7 @@ public static class AdminPostServiceMappings
             PosterContactNumber = adminPostDataModel.PosterContactNumber
         };
 
-        adminPost.CreateBaseData(adminPostDataModel.BaseDataModel);
+        adminPost.CreateBaseData ( adminPostDataModel.BaseDataModel );
 
         return adminPost;
     }
@@ -147,7 +147,7 @@ public static class AdminPostServiceMappings
             adminFileEntity = new AdminImageFile ( fileDataModel.ImageFileContent );
 
             adminFileEntity.CreateBaseData ( fileDataModel.BaseDataModel );
-            
+
             objListFileEntity.Add ( adminFileEntity );
 
         } );
@@ -168,7 +168,7 @@ public static class AdminPostServiceMappings
             AdminImageFile adminImageFile = new AdminImageFile(fileDataModel.ImageFileContent);
             adminImageFile.AdminPostID = adminPostDataModel.AdminPostID;
 
-            adminImageFile.CreateBaseData( fileDataModel.BaseDataModel );
+            adminImageFile.CreateBaseData ( fileDataModel.BaseDataModel );
 
             newListFileEntities.Add ( adminImageFile );
         } );
@@ -194,7 +194,7 @@ public static class AdminPostServiceMappings
         adminPostEntity.WebsiteUrl = adminPostDataModel.WebsiteUrl;
         adminPostEntity.ShortNote = adminPostDataModel.ShortNote;
         adminPostEntity.SearchTag = adminPostDataModel.SearchTag;
-        adminPostEntity.PostType = ( EnumPostType ) adminPostDataModel.PostType;
+        adminPostEntity.PostType = adminPostDataModel.PostType;
         adminPostEntity.ListAdminPostComments = newListcommentEntities;
         adminPostEntity.ListAdminImageFiles = newListFileEntities;
         adminPostEntity.AdminPostID = adminPostDataModel.AdminPostID;

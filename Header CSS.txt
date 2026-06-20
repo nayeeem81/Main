@@ -1,0 +1,27 @@
+Here’s a CSS snippet you can use to style your header with **electric red and blue** tones, while keeping UX-friendly contrast and readability. I’ve chosen vibrant but accessible color codes:
+
+```css
+header {
+  background: linear-gradient(90deg, #FF0033, #0066FF); /* Electric red to electric blue */
+  color: #FFFFFF; /* White text for contrast */
+  font-family: 'Roboto', sans-serif; /* Clean, modern font */
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Optional: add a subtle glow effect for extra electric feel */
+header h1 {
+  text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
+}
+```
+
+### 🎨 Color Codes
+- **Electric Red:** `#FF0033`  
+- **Electric Blue:** `#0066FF`  
+- **Text (UX-friendly):** `#FFFFFF` (white, ensures readability against strong colors)
+
+This will give your header a **gradient background** flowing from red to blue, with crisp white text and a glowing effect that emphasizes the electric theme.  
+
+Would you like me to also show you a **hover animation** (like shifting the gradient or glowing stronger when hovered) to make the header more interactive?
