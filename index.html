@@ -3,9 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi tenant shoping store</title>
+    <title>Multi tenant shopping store</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <style>
-      
+        /* Global Reset */
+        *, ::before, ::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        .site-header {
+            background: linear-gradient(90deg, #FF0033, #0066FF);
+            color: #fff;
+            padding: 1rem 2rem;
+        }
+
+            .site-header h1 {
+                font-size: 2rem;
+                font-weight: bold;
+                text-align: center;
+                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
+            }
+
+        /* Header Navigation */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+            .header-nav ul {
+                list-style: none;
+                display: flex;
+                gap: 1.5rem;
+            }
+
+            .header-nav a {
+                text-decoration: none;
+                color: #fff;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+                .header-nav a:hover {
+                    color: #FFD700; /* Gold hover for UX contrast */
+                }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-right: 1px solid #ccc;
+        }
+
+            .sidebar h2 {
+                margin-bottom: 1rem;
+                font-size: 1.2rem;
+                color: #0066cc;
+            }
+
+            .sidebar ul {
+                list-style: none;
+            }
+
+            .sidebar li {
+                margin-bottom: 1rem;
+            }
+
+            .sidebar a {
+                text-decoration: none;
+                color: #333;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+                .sidebar a:hover {
+                    color: #0066FF;
+                }
+
+        /* Main Content */
+        .main-content {
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            min-height: 80vh;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+            .content-section h2 {
+                margin-bottom: 1rem;
+                color: #FF0033;
+            }
 
         header {
             background: linear-gradient(90deg, #FF0033, #0066FF); /* Electric red to electric blue */
@@ -21,260 +130,63 @@
                 text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
             }
 
-        .brand {
-        }
-
-.site-header__top {
-   }
-  .site-header__top ul {
-    display: flex; }
-  .site-header__top li:not(:last-child) {
-    margin-right: 1.5rem; }
-  .site-header__top .site-header__start {
-    display: none; }
-
-.site-header__bottom {
-  position: relative;
-   }
-  @media (max-width: 939px) {
-    .site-header__bottom .site-header__end {
-      order: -1; } }
-.site-header__wrapper {
-  display: flex;
-  justify-content: space-between; }
-
-.site-header__wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem; }
-  @media (min-width: 940px) {
-    .site-header__wrapper {
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem; } }
-  @media (min-width: 940px) {
-    .site-header__top .site-header__wrapper {
-      padding-top: 1rem;
-      padding-bottom: 1rem; } }
-.nav {
-  margin-left: 1rem;
-  margin-right: 1rem; }
-
-@media (min-width: 940px) {
-  .nav__wrapper {
-    display: flex; } }
-
-@media (max-width: 939px) {
-  .nav__wrapper {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    left: 0;
-    z-index: -1;
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out; }
-    .nav__wrapper.active {
-      visibility: visible;
-      opacity: 1;
-      transform: translateY(0); } }
-
-.nav__item a {
-  display: block;
-  padding: 1.5rem 1.25rem; }
-
-.nav__item svg {
-  display: inline-block;
-  vertical-align: middle;
-  width: 28px;
-  height: 28px;
-  margin-right: 1rem; }
-  @media (min-width: 940px) {
-    .nav__item svg {
-      display: block;
-      margin: 0 auto 0.5rem; } }
-.nav__item.active a {
-  border-left-color: #222; }
-  @media (min-width: 800px) {
-    .nav__item.active a {} }
-.nav__toggle {
-  position: absolute;
-  right: 1rem;
-  top: 1rem; }
-  @media (min-width: 940px) {
-    .nav__toggle {
-      display: none; } }
-.search {
-  display: flex; }
-
-.search__toggle {
-  appearance: none;
-  order: 1;
-  font-size: 0;
-  width: 34px;
-  height: 34px;
-  border: 0; }
-  @media (max-width: 939px) {
-    .search__toggle {
-      position: absolute;
-      right: 5.5rem;
-      top: 0.65rem; } }
-  .search__toggle.active {}
-
-.search__form {
-  display: none; }
-  .search__form.active {
-    display: block; }
-  @media (max-width: 799px) {
-    .search__form {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 100%;}
-      .search__form input {
-        width: 100%; } }
-  .search__form input {
-    min-width: 200px;
-    appearance: none;
-    border: 0;
-    border-radius: 0;
-    font-size: 16px;
-    padding: 0.5rem; }
-    @media (max-width: 799px) {
-      .search__form input { } }
-
-
-
-        
-        /* Sets up the two-column grid structure */
-        .container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 20px;
-            font-family: sans-serif;
-        }
-
-        /* Styling for the left navigation column */
-        .left-column {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-right: 1px solid #ccc;
-        }
-
-        .left-column ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .left-column li {
-            margin-bottom: 15px;
-        }
-
-        .left-column a {
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .left-column a:hover {
-            color: #0066cc;
-        }
-
-        /* Styling for the right content column */
-        .right-column {
-            padding: 20px;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-        }
-
-        .content-section {
-            min-height: 100vh;
-            border-bottom: 1px dashed #ccc;
-            padding-top: 20px;
-        }
+            header label {
+                color: #FFFFFF;
+                font-weight: bold;
+                font-family: 'Roboto', sans-serif; /* Clean, modern font */
+                font-size: 3rem;
+                font-weight: bold;
+                text-align: center;
+                background-color: #5D6532;
+                padding: 3px;
+                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
+            }
     </style>
 </head>
 <body>
     <header class="site-header">
-      <div class="site-header__top">
-        <div class="wrapper site-header__wrapper">
-          <div class="site-header__start">
-            <ul class="">
-              <li class=""><a href="#">Project</a></li>
-              <li class=""><a href="#">Github Repository</a></li>
-            </ul>
-          </div>
-          <div class="site-header__middle">
-            <a href="#" class="brand">Multi tenant stores</a>
-          </div>
-          <div class="site-header__end">
-            <a href="#" class="button">Learning zone</a>
-          </div>
-        </div>
-      </div>
-      <div class="site-header__bottom">
-        <div class="wrapper site-header__wrapper">
-          <div class="site-header__start">
-            <div class="search">
-                <label class="sr-only" for="search">Naim Ul Islam Prodhan</label>
-            </div>
-          </div>
-
-          <div class="site-header__middle">
-            <nav class="nav">
-              <button class="nav__toggle" aria-expanded="false" type="button">
-                menu
-              </button>
-              <ul class="nav__wrapper">
-                <li class="nav__item"><a href="#">Home</a></li>
-                <li class="nav__item"><a href="#">Project</a></li>
-                <li class="nav__item"><a href="#">Architecture</a></li>
-                <li class="nav__item"><a href="#">Research</a></li>
-                <li class="nav__item"><a href="#">Contact</a></li>
-              </ul>
-            </nav>
-          </div>
-
-          <div class="site-header__end">
-            <a href="#">عربي</a>
-          </div>
-        </div>
-      </div>
-    </header>
-    <div class="container">
-
-        <!-- Left Column: Navigation Links -->
-        <nav class="left-column">
-            <h2>Multi Tenant Shops</h2>
+        <h1 id="pik">tenantors</h1>
+        <nav class="header-nav">
             <ul>
-                <li><a href="#section1">Project Goals</a></li>
-                <li><a href="#section2">What has in this repository?</a></li>
-                <li><a href="#section3">Scope of the software</a></li>
+                <li><a href="#">Project</a></li>
+                <li><a href="#">Github Repository</a></li>
+                <li><a href="#">Learning Zone</a></li>
+                <li><label>عربي</label></li>
             </ul>
         </nav>
+    </header>
 
-        <!-- Right Column: Content Display -->
-        <main class="right-column">
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Multi-tenant shops</h2>
+            <ul>
+                <li><a href="#section1">Project goals</a></li>
+                <li><a href="#section2">Repository contents</a></li>
+                <li><a href="#section3">Scope of the software</a></li>
+            </ul>
+        </aside>
 
+        <!-- Main Content -->
+        <main class="main-content">
             <section id="section1" class="content-section">
-                <h2>Project Goals</h2>
-                <p>This is the content for the first topic. Clicking "Topic One" in the left menu will scroll the page directly to this section.</p>
+                <h2>Project goals</h2>
+                <p>This section describes the goals of the project and its intended outcomes.</p>
+                <a href="#pik"> back to up </a>
             </section>
 
             <section id="section2" class="content-section">
-                <h2>What has in this repository?</h2>
-                <p>This is the content for the second topic. Each section has a minimum height to ensure the page can scroll properly between links.</p>
+                <h2>Repository contents</h2>
+                <p>This section explains what is included in the repository and how it is structured.</p>
+                <a href="#pik"> back to up </a>
             </section>
 
             <section id="section3" class="content-section">
                 <h2>Scope of the software</h2>
-                <p>This is the content for the third topic. You can add as many sections and links as you need by matching the anchor links.</p>
+                <p>This section outlines the scope of the software, including features and limitations.</p>
+                <a href="#pik"> back to up </a>
             </section>
-
         </main>
-
     </div>
-
 </body>
 </html>
