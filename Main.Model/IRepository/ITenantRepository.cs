@@ -9,6 +9,6 @@ public interface ITenantRepository
         get; set;
     }
 
-    Task FindCurrentTenant ( string? hostName );
+    Task FindCurrentTenantAsync ( string? hostName );
 
 }

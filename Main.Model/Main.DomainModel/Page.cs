@@ -1,7 +1,6 @@
 ﻿using Main.Common.Enums;
 
 using System.ComponentModel.DataAnnotations;
-
 namespace Domain.Model;
 
 public class Page: BaseEntity
@@ -32,7 +31,6 @@ public class Page: BaseEntity
         ModifiedDate = DateTime.MinValue;
 
         HostCountry = EnumCountry.Bangladesh;
-        HostCompanyName = EnumCompanyName.FineArts;
         IsActive = true;
 
         IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";

@@ -1,22 +1,17 @@
 ﻿using Main.Common.Enums;
 using Main.Common.Model;
-using System.Security.Claims;
 
+using System.Security.Claims;
 namespace Main.Services;
 
 public interface IUserContext
 {
-    public ClaimsPrincipal? User
+    ClaimsPrincipal? User
     {
         get;
     }
 
     string IdentityId
-    {
-        get;
-    }
-
-    EnumCompanyName EnumCompanyName
     {
         get;
     }
@@ -31,16 +26,10 @@ public interface IUserContext
         get;
     }
 
-    EnumShopType EnumShopType
-    {
-        get;
-    }
-
 
     DateTime GetLocalNow ( );
 
     BaseDataModel GetCreateBaseDataModel ( );
 
     BaseDataModel GetUpdateBaseDataModel ( );
-
 }

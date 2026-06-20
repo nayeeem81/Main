@@ -1,13 +1,10 @@
-﻿
-using Domain.Model;
+﻿using Domain.Model;
 
 using IRepository;
 
-using Main.Common.Enums;
 using Main.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
-
 namespace Repository;
 
 public class PageRepository: IPageRepository
@@ -19,11 +16,11 @@ public class PageRepository: IPageRepository
         _context = context;
     }
 
-    public async Task<List<Page>> GetAllPages ( EnumCompanyName company )
+    public async Task<List<Page>> GetAllPages ( )
     {
         List<Page> listPages = await _context.Pages.ToListAsync();
 
-        return listPages.Where ( a => ( int ) a.HostCompanyName == ( int ) company ).ToList ( );
+        return listPages.ToList ( );
     }
 
     public async Task<Page> GetSinglePage ( int id )
@@ -67,7 +64,6 @@ public class PageRepository: IPageRepository
 
         return result > 0;
     }
-
 
     public async Task<bool> PageExists ( int id )
     {

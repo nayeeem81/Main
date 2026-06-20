@@ -1,6 +1,5 @@
-﻿@using Main.Common.Enums
-@inject IStringLocalizer<SharedResource> SharedLocalizer
-
+﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
+@inject ITenantSetter TenantSetter
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,11 +7,11 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="application-name"  
-          content="@ListEnum.GetCompanyDescription(AppSettings.Current.EnumCompanyName)" />
+          content="@TenantSetter.TenantName" />
 
           
     <title>
-        @ViewBag.Title | @ListEnum.GetCompanyDescription( AppSettings.Current.EnumCompanyName )
+        @ViewBag.Title | @TenantSetter.TenantName )
     </title>
 
     <link rel="shortcut icon"
@@ -55,13 +54,13 @@
     else 
     {
         <header id="layoutHeaderContainer">
-          @*   @await Component.InvokeAsync("TopHeaderPanel")
+            @await Component.InvokeAsync("TopHeaderPanel")
             @await Component.InvokeAsync("MainHeaderPanel")
-            @await Component.InvokeAsync("BottomHeaderPanel") *@
+            @await Component.InvokeAsync("BottomHeaderPanel") 
         </header>
 
         @await Component.InvokeAsync("AdvancedSearchDesktop")
-        @* @await Component.InvokeAsync("ShoppingCartNotification") *@
+        @await Component.InvokeAsync("ShoppingCartNotification") 
        
         <div id="layoutBodyContainer" class="body-content">
             <main>

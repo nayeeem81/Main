@@ -3,11 +3,9 @@ using Domain.Model;
 
 using IRepository;
 
-using Main.Common.Enums;
 using Main.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
-
 namespace Repository;
 
 public class AdminPostRepository: IAdminPostRepository
@@ -93,9 +91,9 @@ public class AdminPostRepository: IAdminPostRepository
         return result > 0;
     }
 
-    public async Task<List<AdminPost>> GetSelectAdminPosts ( EnumCompanyName company )
+    public async Task<List<AdminPost>> GetSelectAdminPosts ( )
     {
-        return await _context.AdPosts.Where ( a => a.HostCompanyName == company ).ToListAsync<AdminPost> ( );
+        return await _context.AdPosts.ToListAsync<AdminPost> ( );
     }
 }
 

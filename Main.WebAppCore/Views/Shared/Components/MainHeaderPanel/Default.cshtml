@@ -1,6 +1,4 @@
-﻿
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+﻿@inject ITenantSetter TenantSetter
 @model MenuObjectModel
 
 
@@ -12,7 +10,7 @@
            id="ancor_Index_Home" 
            href="@Url.Action("Index", "Home")">
 
-            @ListEnum.GetCompanyDescription(AppSettings.Current.EnumCompanyName)
+            @TenantSetter.TenantName
 
         </a>
 

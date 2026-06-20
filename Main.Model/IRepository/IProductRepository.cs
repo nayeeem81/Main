@@ -1,7 +1,4 @@
 ﻿using Domain.Model;
-
-using Main.Common.Enums;
-
 namespace IRepository;
 
 public interface IProductRepository
@@ -20,5 +17,5 @@ public interface IProductRepository
 
     Task<bool> UpdateProduct ( Product productEntity );
 
-    Task<List<Product>> GetSelectProducts ( EnumCompanyName company );
+    Task<List<Product>> GetSelectProducts ( );
 }

@@ -1,16 +1,21 @@
-﻿using Main.Common.Enums;
-using Microsoft.AspNetCore.Mvc;
-using WebAppCore.Helper;
+﻿using Main.Infrastructure;
 
+using Microsoft.AspNetCore.Mvc;
 namespace Main.WebAppCore.ViewCompont;
 
-public class TopHeaderPanelViewComponent : ViewComponent
+public class TopHeaderPanelViewComponent: ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync()
-    {
-        MenuObjectModel menuObjectModel 
-            = new MenuObjectModel((EnumShopType)AppSettings.Current.EnumShopType);
+    private readonly ITenantSetter _tenantSetter;
 
-        return View(menuObjectModel);
+    public TopHeaderPanelViewComponent ( ITenantSetter tenantSetter )
+    {
+        _tenantSetter = tenantSetter;
+    }
+    public async Task<IViewComponentResult> InvokeAsync ( )
+    {
+        MenuObjectModel menuObjectModel
+            = new MenuObjectModel(_tenantSetter.TenantShopType);
+
+        return View ( menuObjectModel );
     }
 }

@@ -17,7 +17,6 @@ public class BaseEntity: IMustHaveTenant
         CreatedDate = modelBase.CreatedDate;
         CreatedBy = modelBase.CreatedBy;
 
-        HostCompanyName = modelBase.HostCompanyName;
         HostCountry = modelBase.HostCountry;
 
         ModifiedBy = modelBase.ModifiedBy;
@@ -31,7 +30,6 @@ public class BaseEntity: IMustHaveTenant
         ModifiedDate = modelBase.ModifiedDate;
         ModifiedBy = modelBase.ModifiedBy;
 
-        HostCompanyName = modelBase.HostCompanyName;
         HostCountry = modelBase.HostCountry;
 
         IsActive = true;
@@ -53,11 +51,6 @@ public class BaseEntity: IMustHaveTenant
     }
 
     public DateTime ModifiedDate
-    {
-        get; set;
-    }
-
-    public EnumCompanyName HostCompanyName
     {
         get; set;
     }

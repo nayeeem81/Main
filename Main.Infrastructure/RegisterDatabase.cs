@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace Main.Infrastructure;
 
 public static class RegisterDatabase
@@ -41,6 +40,9 @@ public static class RegisterDatabase
         } )
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
         .AddDefaultTokenProviders ( );
+
+        services.Configure<DataProtectionTokenProviderOptions>
+        ( options => options.TokenLifespan = TimeSpan.FromHours ( 3 ) );
 
         services.AddScoped<IUserValidator<ApplicationUser>,TenantAwareUserValidator> ( );
 

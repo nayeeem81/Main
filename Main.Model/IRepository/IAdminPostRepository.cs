@@ -1,7 +1,4 @@
 ﻿using Domain.Model;
-
-using Main.Common.Enums;
-
 namespace IRepository;
 
 public interface IAdminPostRepository
@@ -20,6 +17,6 @@ public interface IAdminPostRepository
 
     Task<bool> UpdateAdminPost ( AdminPost objPostDm );
 
-    Task<List<AdminPost>> GetSelectAdminPosts ( EnumCompanyName company );
+    Task<List<AdminPost>> GetSelectAdminPosts ( );
 }
 

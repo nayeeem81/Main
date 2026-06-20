@@ -4,17 +4,17 @@ namespace WebAppCore.Helper;
 
 public class MyConfigSettings
 {
-    public EnumCountry EnumCountry { get; set; } 
+    public EnumCountry EnumCountry
+    {
+        get; set;
+    }
 
-    public EnumCompanyName EnumCompanyName { get; set; } 
+    public EnumCurrency EnumCurrency
+    {
+        get; set;
+    }
 
-    public EnumCurrency EnumCurrency { get; set; } 
-
-    public int SeedUserId { get; set; }
-
-    public int PostImageSize { get; set; }
-
-    public EnumShopType EnumShopType
+    public int PostImageSize
     {
         get; set;
     }
@@ -22,6 +22,9 @@ public class MyConfigSettings
 
 public static class AppSettings
 {
-    public static MyConfigSettings Current { get; set; } 
+    public static MyConfigSettings Current
+    {
+        get; set;
+    }
         = new ( );
 }

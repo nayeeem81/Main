@@ -1,12 +1,21 @@
-﻿using Main.Infrastructure;
-
-using Microsoft.EntityFrameworkCore;
-
+﻿using Main.Common.Enums;
+using Main.Infrastructure;
+using Main.Services;
 namespace WebAppCore.Helper;
 
 public class TenantService: ITenantSetter
 {
     public string CurrentTenantId
+    {
+        get; set;
+    }
+
+    public EnumShopType TenantShopType
+    {
+        get; set;
+    }
+
+    public string TenantName
     {
         get; set;
     }
@@ -22,12 +31,9 @@ public class TenantResolverMiddleware
     }
 
     public async Task InvokeAsync ( HttpContext context,ITenantSetter tenantSetter,
-        ApplicationDbContext dbContext )
+        ITenancyService tenancyService )
     {
         string host = context.Request.Host.Host ?? string.Empty;
-
-        // Localhost for fine arts (development)
-        string tenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0";
 
         if ( !string.IsNullOrWhiteSpace ( host ) )
         {
@@ -42,30 +48,31 @@ public class TenantResolverMiddleware
             {
                 string subdomain = segments[0];
 
-                var tenant = await dbContext.Tenants
-                                    .IgnoreQueryFilters()
-                                    .FirstOrDefaultAsync(t => t.Domain == subdomain);
+                await tenancyService.FindTenantAsync ( subdomain );
 
             }
             else if ( segments.Length > 1 )
             {
-                string subdomain = segments[0];
-                var tenant = await dbContext.Tenants
-                                    .IgnoreQueryFilters()
-                                    .FirstOrDefaultAsync(t => t.Domain == subdomain);
+                string domain = segments[0];
+                await tenancyService.FindTenantAsync ( domain );
             }
-
-            else if ( segments.Length == 1 )
+            else if ( host.Length > 0 )
             {
-                var tenant = await dbContext.Tenants
-                                    .IgnoreQueryFilters()
-                                    .FirstOrDefaultAsync(t => t.Domain == host);
-            }
-            else
-            {
-                tenantSetter.CurrentTenantId = tenantId;
+                await tenancyService.FindTenantAsync ( host );
             }
         }
+
+        if ( tenancyService.TenancyFound )
+        {
+            tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
+            tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
+            tenantSetter.TenantShopType = tenancyService.CurrentTenant!.ShopType;
+        }
+        else
+        {
+            throw new Exception ( "We are facing challenges and under maintenance." );
+        }
+
 
         await _next ( context );
     }
