@@ -6,11 +6,11 @@ using IRepository;
 
 namespace Main.Services;
 
-public class TenantService: ITenantService
+public class TenancyService: ITenancyService
 {
     public readonly ITenantRepository _tenantRepository;
 
-    public TenantService ( ITenantRepository tenantRepository )
+    public TenancyService ( ITenantRepository tenantRepository )
     {
         TenantTd = "";
         TenancyFound = false;

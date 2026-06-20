@@ -11,6 +11,8 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddScoped<ITenantSetter,TenantService> ( );
+
         builder.Services.AddControllersWithViews ( );
 
         builder.Services.AddDatabase ( builder.Configuration );
@@ -43,6 +45,7 @@ public class Program
         if ( app.Environment.IsDevelopment ( ) )
         {
             app.UseMigrationsEndPoint ( );
+            //app.UseDeveloperExceptionPage ( );
         }
         else
         {

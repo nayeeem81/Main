@@ -27,6 +27,7 @@ public static class RegisterServices
 
         services.AddEmailService ( configuration );
 
+        services.AddScoped<ITenancyService,TenancyService> ( );
         services.AddScoped<IAccountService,AccountService> ( );
         services.AddScoped<IAdminPostService,AdminPostService> ( );
         services.AddScoped<IProductService,ProductService> ( );

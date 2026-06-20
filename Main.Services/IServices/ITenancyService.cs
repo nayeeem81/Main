@@ -2,7 +2,7 @@
 
 namespace Main.Services;
 
-public interface ITenantService
+public interface ITenancyService
 {
     string TenantTd
     {

@@ -1,26 +1,35 @@
 ﻿using Main.Infrastructure;
-using Main.Services;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace WebAppCore.Helper;
+
+public class TenantService: ITenantSetter
+{
+    public string CurrentTenantId
+    {
+        get; set;
+    }
+}
 
 public class TenantResolverMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ITenantService _tenantService;
 
-    public TenantResolverMiddleware ( RequestDelegate next,ITenantService tenantService )
+    public TenantResolverMiddleware ( RequestDelegate next )
     {
         _next = next;
-        _tenantService = tenantService;
     }
 
-    public async Task InvokeAsync ( HttpContext context,ITenantSetter tenantSetter )
+    public async Task InvokeAsync ( HttpContext context,ITenantSetter tenantSetter,
+        ApplicationDbContext dbContext )
     {
         string host = context.Request.Host.Host ?? string.Empty;
 
         // Localhost for fine arts (development)
         string tenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0";
 
-        if ( !string.IsNullOrWhiteSpace ( host ) && host != "localhost" )
+        if ( !string.IsNullOrWhiteSpace ( host ) )
         {
             string[] segments = host.Split('.');
 
@@ -29,30 +38,34 @@ public class TenantResolverMiddleware
                 segments = segments.Skip ( 1 ).ToArray ( );
                 host = string.Join ( ".",segments );
             }
-
-            if ( segments.Length > 2 )
+            else if ( segments.Length > 2 )
             {
                 string subdomain = segments[0];
-                await _tenantService.FindTenant ( subdomain );
+
+                var tenant = await dbContext.Tenants
+                                    .IgnoreQueryFilters()
+                                    .FirstOrDefaultAsync(t => t.Domain == subdomain);
+
+            }
+            else if ( segments.Length > 1 )
+            {
+                string subdomain = segments[0];
+                var tenant = await dbContext.Tenants
+                                    .IgnoreQueryFilters()
+                                    .FirstOrDefaultAsync(t => t.Domain == subdomain);
             }
 
-            if ( !_tenantService.TenancyFound )
+            else if ( segments.Length == 1 )
             {
-                string subdomain = segments[0];
-                await _tenantService.FindTenant ( subdomain );
+                var tenant = await dbContext.Tenants
+                                    .IgnoreQueryFilters()
+                                    .FirstOrDefaultAsync(t => t.Domain == host);
             }
             else
             {
-                tenantId = _tenantService.TenantTd;
+                tenantSetter.CurrentTenantId = tenantId;
             }
         }
-
-        // development
-        if ( host == "localhost" )
-        {
-        }
-
-        tenantSetter.CurrentTenantId = tenantId;
 
         await _next ( context );
     }

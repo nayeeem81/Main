@@ -20,9 +20,9 @@ public class ApplicationDbContext: DbContext
         _tenantSetter = tenantSetter;
     }
 
-    //public ApplicationDbContext ( DbContextOptions<ApplicationDbContext> options ) : base ( options )
-    //{
-    //}
+    public ApplicationDbContext ( DbContextOptions<ApplicationDbContext> options ) : base ( options )
+    {
+    }
 
     public DbSet<ApplicationUser> ApplicationUsers
     {

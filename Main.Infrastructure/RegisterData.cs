@@ -12,9 +12,7 @@ public static class RegisterData
     public static IServiceCollection AddRepository (
                   this IServiceCollection services,IConfiguration configuration )
     {
-        services.AddScoped<TenantService> ( );
-
-        services.AddScoped<ITenantSetter> ( provider => provider.GetRequiredService<TenantService> ( ) );
+        services.AddScoped<ITenantRepository,TenantRepository> ( );
 
         services.AddScoped<IAdminPostRepository,AdminPostRepository> ( );
 

@@ -40,8 +40,7 @@ public static class RegisterDatabase
             options.User.RequireUniqueEmail = user.GetValue<bool> ( "RequireUniqueEmail" );
         } )
         .AddEntityFrameworkStores<ApplicationDbContext> ( )
-        .AddDefaultTokenProviders ( )
-        .AddSignInManager ( );
+        .AddDefaultTokenProviders ( );
 
         services.AddScoped<IUserValidator<ApplicationUser>,TenantAwareUserValidator> ( );
 
