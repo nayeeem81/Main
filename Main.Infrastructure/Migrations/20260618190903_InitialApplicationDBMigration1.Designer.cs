@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Main.Infrastructure.Data.Migrations.Business
+namespace Main.Infrastructure.Migrations
 {
-    [DbContext(typeof(BussinessAppDbContext))]
-    [Migration("20260611225425_InitialBusinessMigration2")]
-    partial class InitialBusinessMigration2
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20260618190903_InitialApplicationDBMigration1")]
+    partial class InitialApplicationDBMigration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,12 +21,135 @@ namespace Main.Infrastructure.Data.Migrations.Business
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("ApplicationRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN",
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
+                        },
+                        new
+                        {
+                            Id = "e02fd0e4-00fd-090a-ca30-0d00a0038ba4",
+                            Name = "User",
+                            NormalizedName = "USER",
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
+                        },
+                        new
+                        {
+                            Id = "e02fd0e4-00fd-090a-ca30-0F00a0898ba4",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN",
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
+                        },
+                        new
+                        {
+                            Id = "d02fd0e4-10fd-090a-ca30-0d00a0038ba0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            Id = "d02fd0e4-20fd-090a-ca30-0d00a0038ba4",
+                            Name = "User",
+                            NormalizedName = "USER",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            Id = "d02fd0e4-30fd-090a-ca30-0F00a0898ba4",
+                            Name = "SuperAdmin",
+                            NormalizedName = "SUPERADMIN",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Model.AValue", b =>
+                {
+                    b.Property<long>("ValueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ValueID"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("HostCompanyName")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HostCountry")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ParentValueId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Variable")
+                        .HasColumnType("int");
+
+                    b.HasKey("ValueID");
+
+                    b.ToTable("AValue");
+                });
 
             modelBuilder.Entity("Domain.Model.AdminImageFile", b =>
                 {
@@ -69,6 +192,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AdminImageFileID");
 
@@ -130,6 +257,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -184,11 +315,146 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("AdminPostCommentID");
 
                     b.HasIndex("AdminPostID");
 
                     b.ToTable("AdPostComments");
+                });
+
+            modelBuilder.Entity("Domain.Model.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedUserName", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("ApplicationUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "e03fd0d4-00fd-090a-ca10-0d00a1118ba4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "97a662c1-aff7-48a8-81a4-1c5ebbfca850",
+                            Email = "naimul.prodhan@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "NAIMUL.PRODHAN@GMAIL.COM",
+                            NormalizedUserName = "SUPERADMIN1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP0J9Skjr4ht06d28ZQezgKHFhQ+ETaoNcQ3W9JaX2qHX/BN2ernC0+tobpCjMEetw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7224ebc4-3aa8-43b8-8c4c-69540589246c",
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0",
+                            TwoFactorEnabled = false,
+                            UserName = "SuperAdmin1"
+                        },
+                        new
+                        {
+                            Id = "e03fd0d4-00fd-090a-da10-0d00a2228ba4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "26c50294-1a79-4209-9a82-d9d8b8c038c7",
+                            Email = "naimul.prodhan@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "NAIMUL.PRODHAN@GMAIL.COM",
+                            NormalizedUserName = "SUPERADMIN2",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOHofetYdE8Dxecq6FGj+WXfDdNpsAEYsFuRcJpEzSDnYu2n4Mapx4DWgHII9k4fdQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "66ad697b-51ec-43f1-9250-f40c37a88e41",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0",
+                            TwoFactorEnabled = false,
+                            UserName = "SuperAdmin2"
+                        },
+                        new
+                        {
+                            Id = "e03fd0e4-00fd-090a-ca10-0d00a0018ba4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "26015cf6-a8b1-44e7-8f05-c79a2af6bc30",
+                            Email = "syedron@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SYEDRON@GMAIL.COM",
+                            NormalizedUserName = "ADMIN1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDrbEbcsTPhgT3vjJ0XxP7IvJfnz1chTEF6XaWldlK6aWvXxf78UYlk85mZtLZIiaA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d63faf03-9d67-4b2c-aeca-677fb6f21c8c",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin1"
+                        },
+                        new
+                        {
+                            Id = "e03fd0e4-55fd-095a-ca10-0d00a0018ba4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "48611df6-7743-42a8-a6f5-f3f5956f9c2d",
+                            Email = "syedron@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SYEDRON@GMAIL.COM",
+                            NormalizedUserName = "ADMIN2",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIdeBlaaVpLyEhwpAdW5xtnCHX5hQi4OMSzYnaNN7kuvTHjG8EA6xBT/7Sur/3jK+w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "74926dac-064a-4d1a-bf91-e56df4d000fb",
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin2"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Model.Page", b =>
@@ -229,6 +495,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("PageID");
 
                     b.ToTable("Pages");
@@ -245,7 +515,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
@@ -258,7 +529,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
@@ -271,7 +543,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
@@ -284,7 +557,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
@@ -297,7 +571,8 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
@@ -310,11 +585,12 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
-                            PageID = 8,
+                            PageID = 7,
                             CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 6,
@@ -323,11 +599,12 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
-                            PageID = 9,
+                            PageID = 8,
                             CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 9,
@@ -336,11 +613,12 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
-                            PageID = 11,
+                            PageID = 9,
                             CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 10,
@@ -349,11 +627,12 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
                         },
                         new
                         {
-                            PageID = 12,
+                            PageID = 10,
                             CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EnumPublicPage = 8,
@@ -362,7 +641,148 @@ namespace Main.Infrastructure.Data.Migrations.Business
                             IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
                             IsActive = true,
                             ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0"
+                        },
+                        new
+                        {
+                            PageID = 11,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 1,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 12,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 3,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 13,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 12,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 14,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 11,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 15,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 2,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 16,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 7,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 17,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 6,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 18,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 9,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 19,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 10,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
+                        },
+                        new
+                        {
+                            PageID = 20,
+                            CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EnumPublicPage = 8,
+                            HostCompanyName = 2,
+                            HostCountry = 1,
+                            IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            IsActive = true,
+                            ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1",
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0"
                         });
                 });
 
@@ -411,6 +831,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                         .HasColumnType("int");
 
                     b.Property<string>("PanelTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -474,6 +898,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.Property<int>("RootID")
                         .HasColumnType("int");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -554,6 +982,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("SubCategoryID")
                         .HasColumnType("int");
 
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ProductID");
 
                     b.ToTable("Products");
@@ -600,6 +1032,10 @@ namespace Main.Infrastructure.Data.Migrations.Business
 
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductCommentID");
 
@@ -650,11 +1086,87 @@ namespace Main.Infrastructure.Data.Migrations.Business
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
 
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ProductImageFileID");
 
                     b.HasIndex("ProductID");
 
                     b.ToTable("ProductImageFiles");
+                });
+
+            modelBuilder.Entity("Domain.Model.Tenant", b =>
+                {
+                    b.Property<string>("TenantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Domain")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShopType")
+                        .HasColumnType("int");
+
+                    b.HasKey("TenantId");
+
+                    b.ToTable("Tenants");
+
+                    b.HasData(
+                        new
+                        {
+                            TenantId = "e02fd0e1-00fd-009a-ca30-0d00a2345ba0",
+                            Domain = "fanarts-local",
+                            Name = "Fine Arts Store",
+                            ShopType = 2
+                        },
+                        new
+                        {
+                            TenantId = "e02fd0e1-00fd-008a-ca30-5d00a5242ba0",
+                            Domain = "lifestyle-local",
+                            Name = "LifeStyle Store",
+                            ShopType = 1
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("IdentityUserRole<string>");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "e03fd0d4-00fd-090a-ca10-0d00a1118ba4",
+                            RoleId = "e02fd0e4-00fd-090a-ca30-0F00a0898ba4"
+                        },
+                        new
+                        {
+                            UserId = "e03fd0d4-00fd-090a-da10-0d00a2228ba4",
+                            RoleId = "d02fd0e4-30fd-090a-ca30-0F00a0898ba4"
+                        },
+                        new
+                        {
+                            UserId = "e03fd0e4-00fd-090a-ca10-0d00a0018ba4",
+                            RoleId = "e02fd0e4-00fd-090a-ca30-0d00a0038ba0"
+                        },
+                        new
+                        {
+                            UserId = "e03fd0e4-55fd-095a-ca10-0d00a0018ba4",
+                            RoleId = "d02fd0e4-10fd-090a-ca30-0d00a0038ba0"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Model.AdminImageFile", b =>

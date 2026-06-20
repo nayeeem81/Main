@@ -7,16 +7,16 @@ namespace Main.WebAppCore.ViewCompont;
 
 public class MenuObjectModel
 {
-    public MenuObjectModel(EnumCategoryFor categoryFor)
+    public MenuObjectModel(EnumShopType categoryFor)
     {
         ListCatSubCategory = 
             new List<ParentChildVriableModel> ( );
 
-        AV_Category = SelectListItemDropDown.GetCategoryList (categoryFor);
+        AV_Category = DropDownListItems.GetCategoryList (categoryFor);
 
-        AV_SubCategory = SelectListItemDropDown.GetSubCategoryList ( categoryFor );
+        AV_SubCategory = DropDownListItems.GetSubCategoryList ( categoryFor );
         
-        AV_State = SelectListItemDropDown.GetAllStateList();
+        AV_State = DropDownListItems.GetAllStateList();
     }
 
     public bool IsAdminUser { get; set; }

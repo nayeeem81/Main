@@ -40,7 +40,7 @@ public class ManageProductController: BaseController
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
             List<ProductDisplayViewModel> disayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels, _userContext.EnumCategoryFor );
+                ( productDataModels, _userContext.EnumShopType );
 
             return View ( disayProductViewModels );
         }
@@ -209,7 +209,7 @@ public class ManageProductController: BaseController
 
             ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel );
 
-            productViewModel.SetDisplaytext ( _userContext.EnumCategoryFor );
+            productViewModel.SetDisplaytext ( _userContext.EnumShopType );
 
             productViewModel.PageName = "Product Details";
 
@@ -344,7 +344,7 @@ public class ManageProductController: BaseController
     {
         try
         {
-            var listSubCategories = SelectListItemDropDown.GetSubCategories( _userContext.EnumCategoryFor, id );
+            var listSubCategories = DropDownListItems.GetSubCategories( _userContext.EnumShopType, id );
 
             return Json ( listSubCategories );
         }

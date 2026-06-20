@@ -14,13 +14,13 @@ public class PanelViewModel: BaseViewModel
     {
         ListSelectPosts = new List<PostSelectViewModel> ( );
         ListPosts = new List<PostViewModel> ( );
-        AV_PanelTemplate = SelectListItemDropDown.GetPanelTempletList ( );
+        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ( );
     }
 
     public PanelViewModel ( EnumPanelTemplate enumPanelTemplate )
     {
         ListPosts = new List<PostViewModel> ( );
-        AV_PanelTemplate = SelectListItemDropDown.GetPanelTempletList ( );
+        AV_PanelTemplate = DropDownListItems.GetPanelTempletList ( );
         PanelTemplate = enumPanelTemplate;
     }
 

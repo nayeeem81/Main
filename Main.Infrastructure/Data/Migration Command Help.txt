@@ -1,13 +1,5 @@
-1. Identity:
 
-Add-Migration InitialIdentityMigration2 -Context Main.Infrastructure.ApplicationDbContext -OutputDir Data/Migrations/Identity
+
+Add-Migration InitialApplicationDBMigration1 -Context Main.Infrastructure.ApplicationDbContext
 
 Update-Database -Context Main.Infrastructure.ApplicationDbContext
-
-
-2. Business Web Context:
-
-Add-Migration InitialBusinessMigration2 -Context Main.Infrastructure.BussinessAppDbContext -OutputDir Data/Migrations/Business
-
-Update-Database -Context Main.Infrastructure.BussinessAppDbContext
-

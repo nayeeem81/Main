@@ -9,7 +9,7 @@ public class BottomHeaderPanelViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync()
     {
         MenuObjectModel menuObjectModel 
-            = new MenuObjectModel((EnumCategoryFor) AppSettings.Current.EnumCategoryFor);
+            = new MenuObjectModel((EnumShopType) AppSettings.Current.EnumShopType);
 
         return View(menuObjectModel);
     }

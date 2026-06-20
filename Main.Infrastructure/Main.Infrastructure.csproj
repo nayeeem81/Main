@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\DbInitializer.cs" />
     <Compile Remove="Data\Seeder.cs" />
     <Compile Remove="Repository\Seeder.cs" />
   </ItemGroup>
@@ -34,10 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Main.Model\Main.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>

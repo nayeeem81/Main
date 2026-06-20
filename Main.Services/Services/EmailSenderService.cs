@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using DataTransferModel;
+
+using Domain.Model;
+
 using FluentEmail.Core;
-using DataTransferModel;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Main.Services;
 
@@ -9,12 +13,12 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 {
     private readonly IFluentEmailFactory _emailFactory;
 
-    private readonly UserManager<IdentityUser> _userManager;
-    
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public EmailSenderService (  
+
+    public EmailSenderService (
         IFluentEmailFactory emailFactory,
-        UserManager<IdentityUser> userManager )
+        UserManager<ApplicationUser> userManager )
     {
         _emailFactory = emailFactory;
         _userManager = userManager;
@@ -24,7 +28,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
     public async Task<string> SendEmailAsync ( string userId )
     {
-        IdentityUser? identityUser = await _userManager.FindByIdAsync ( userId );
+        ApplicationUser? identityUser = await _userManager.FindByIdAsync ( userId );
 
         await SendEmailAsync (
             identityUser?.Email != null ? identityUser.Email : "",
@@ -37,7 +41,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
 
 
-    public async Task SendEmailAsync ( string email, string subject, string htmlMessage )
+    public async Task SendEmailAsync ( string email,string subject,string htmlMessage )
     {
         var response = await _emailFactory
                 .Create()
@@ -56,7 +60,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
     public async Task SendEmailVerificationAsync ( VerifyDataModel verifyEmailDataModel )
     {
-        string template 
+        string template
             = @"
             <html>
             <body>
@@ -74,7 +78,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
                     .Replace("{{ Name }}", verifyEmailDataModel.UserName)
                     .Replace("{{ LinkUrl }}", verifyEmailDataModel.VerifyLink ?? string.Empty);
 
-        await SendEmailAsync ( 
+        await SendEmailAsync (
             verifyEmailDataModel.Email,
             verifyEmailDataModel.Subject,
             populatedTemplate );

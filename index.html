@@ -10,7 +10,6 @@
             display: grid;
             grid-template-columns: 250px 1fr;
             gap: 20px;
-            height: 100vh;
             font-family: sans-serif;
         }
 
@@ -52,15 +51,22 @@
             border-bottom: 1px dashed #ccc;
             padding-top: 20px;
         }
+
+        .header {
+            padding: 30px;
+            background: content-box;
+        }
     </style>
 </head>
 <body>
-
+    <header id="layoutHeaderContainer" class="header">
+       
+    </header>
     <div class="container">
-        
+
         <!-- Left Column: Navigation Links -->
         <nav class="left-column">
-            <h2>Navigation</h2>
+            <h2>Multi Tenant Shop CMS</h2>
             <ul>
                 <li><a href="#section1">Topic One</a></li>
                 <li><a href="#section2">Topic Two</a></li>
@@ -70,7 +76,7 @@
 
         <!-- Right Column: Content Display -->
         <main class="right-column">
-            
+
             <section id="section1" class="content-section">
                 <h2>Topic One Content</h2>
                 <p>This is the content for the first topic. Clicking "Topic One" in the left menu will scroll the page directly to this section.</p>

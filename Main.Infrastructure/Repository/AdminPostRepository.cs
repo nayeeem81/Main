@@ -12,9 +12,10 @@ namespace Repository;
 
 public class AdminPostRepository: IAdminPostRepository
 {
-    private readonly BussinessAppDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public AdminPostRepository ( BussinessAppDbContext context )
+
+    public AdminPostRepository ( ApplicationDbContext context )
     {
         _context = context;
     }
@@ -36,7 +37,7 @@ public class AdminPostRepository: IAdminPostRepository
     public async Task<bool> DeleteAdminPost ( int postId )
     {
         var adminPost = _context.AdPosts.ToList()
-            .Single(a => a.AdminPostID == postId);
+            .FirstOrDefault(a => a.AdminPostID == postId);
 
         if ( adminPost != null )
         {
