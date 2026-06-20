@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Column Layout</title>
+    <style>
+        /* Sets up the two-column grid structure */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+
+        /* Styling for the left navigation column */
+        .left-column {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+
+        .left-column ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .left-column li {
+            margin-bottom: 15px;
+        }
+
+        .left-column a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .left-column a:hover {
+            color: #0066cc;
+        }
+
+        /* Styling for the right content column */
+        .right-column {
+            padding: 20px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .content-section {
+            min-height: 100vh;
+            border-bottom: 1px dashed #ccc;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Left Column: Navigation Links -->
+        <nav class="left-column">
+            <h2>Navigation</h2>
+            <ul>
+                <li><a href="#section1">Topic One</a></li>
+                <li><a href="#section2">Topic Two</a></li>
+                <li><a href="#section3">Topic Three</a></li>
+            </ul>
+        </nav>
+
+        <!-- Right Column: Content Display -->
+        <main class="right-column">
+            
+            <section id="section1" class="content-section">
+                <h2>Topic One Content</h2>
+                <p>This is the content for the first topic. Clicking "Topic One" in the left menu will scroll the page directly to this section.</p>
+            </section>
+
+            <section id="section2" class="content-section">
+                <h2>Topic Two Content</h2>
+                <p>This is the content for the second topic. Each section has a minimum height to ensure the page can scroll properly between links.</p>
+            </section>
+
+            <section id="section3" class="content-section">
+                <h2>Topic Three Content</h2>
+                <p>This is the content for the third topic. You can add as many sections and links as you need by matching the anchor links.</p>
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
