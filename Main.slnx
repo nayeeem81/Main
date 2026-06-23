@@ -53,6 +53,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="index.html" />
+    <File Path="site-github.css" />
     <File Path="TextFileDatabaseDegradatinMultiTenant.txt" />
   </Folder>
   <Folder Name="/WebsitePages/">
