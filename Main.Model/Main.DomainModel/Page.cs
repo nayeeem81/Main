@@ -16,15 +16,11 @@ public class Page: BaseEntity
         EnumPublicPage = enumPublicPage;
     }
 
-
-    //Ony used for seeding
-    //Seed constructor hard coded
-    public Page ( EnumPublicPage enumPublicPage,int pageId,string tenantId )
+    public Page ( EnumPublicPage enumPublicPage,string tenantId,bool isSeed )
     {
-        TenantId = tenantId;
-        PageID = pageId;
+        ListPanels = new List<Panel> ( );
         EnumPublicPage = enumPublicPage;
-
+        TenantId = tenantId;
         ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedDate = DateTime.MinValue;

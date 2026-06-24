@@ -1,58 +1,58 @@
 ﻿using Main.Common.Enums;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace WebAppCore.ViewModel;
 
-public class PageViewModel : BaseViewModel
+public class PageViewModel: BaseViewModel
 {
-    public PageViewModel() {
-        ListPagePanels = new List<PanelViewModel>();
+    public PageViewModel ( )
+    {
+        ListPagePanels = new List<PanelViewModel> ( );
+    }
+
+    public int PageID
+    {
+        get; set;
     }
 
 
-    public PageViewModel(int id, 
-                        EnumPublicPage enumPublicPage, 
-                        EnumCompanyName enumCompany)
+    public EnumPublicPage EnumPublicPage
     {
-        ListPagePanels = new List<PanelViewModel>();
-
-        PageID = id;
-        
-        EnumPublicPage = enumPublicPage;
-
-        PageName = ListEnum.GetPageDescription ( enumPublicPage );
-
-        CompanyName = ListEnum.GetCompanyDescription(enumCompany);
+        get; set;
     }
 
 
-    public int PageID { get; set; }
-
-
-    public EnumPublicPage EnumPublicPage { get; set; }
-
-
-    [Display(Name = "Configurable Page Name")]
-    public string? PublicPageName { get; set; }
-
-
-    [Display(Name = "Company Name")]
-    public string? CompanyName { get; set; }
-
-
-    public List<PanelViewModel> ListPagePanels { get; set; }
-
-
-    public void CreatePageContent(PanelViewModel pageContentViveModel)
+    [Display ( Name = "Configurable Page Name" )]
+    public string? PublicPageName
     {
-        if (ListPagePanels == null)
+        get; set;
+    }
+
+
+    [Display ( Name = "Company Name" )]
+    public string? CompanyName
+    {
+        get; set;
+    }
+
+
+    public List<PanelViewModel> ListPagePanels
+    {
+        get; set;
+    }
+
+
+    public void CreatePageContent ( PanelViewModel pageContentViveModel )
+    {
+        if ( ListPagePanels == null )
         {
-            ListPagePanels = new List<PanelViewModel>();
+            ListPagePanels = new List<PanelViewModel> ( );
         }
 
-        if (pageContentViveModel != null)
+        if ( pageContentViveModel != null )
         {
-            ListPagePanels.Add(pageContentViveModel);
+            ListPagePanels.Add ( pageContentViveModel );
         }
     }
 }

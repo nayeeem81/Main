@@ -12,22 +12,22 @@ namespace Main.Services;
 
 public interface IAccountService
 {
-    Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel );
+    Task<IdentityResult> CreateIdentityUserAccount (UserAccountDataModel userAccountDataModel);
 
-    Task<ApplicationUser?> GetIdentityUser ( string email );
+    Task<ApplicationUser?> GetIdentityUser (string email);
 
-    Task<SignInResult> AuthenticateUser ( string email,string password );
+    Task<SignInResult> AuthenticateUser (string email,string password);
 
-    Task<bool> ChangePasswordAsync ( string email,string password,string rePassword );
+    Task<bool> ChangePasswordAsync (string email,string password,string rePassword);
 
-    Task<bool> UnlockUser ( string userId );
+    Task<bool> UnlockUser (string userId);
 
-    Task<List<IdentityUserDataModel>?> Users ( );
+    Task<List<IdentityUserDataModel>?> Users ();
 
-    Task<string?> GetEmailVerifyToken ( string email );
+    Task<string?> GetEmailVerifyToken (string email);
 
-    Task<bool> CreateAppicationUser ( string email,string token,BaseDataModel baseDataModel );
+    Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel);
 
-    Task<ClaimsIdentity?> GetUserRole ( string email );
+    Task<ClaimsIdentity?> GetUserRole (string email,string tenantId);
 
 }

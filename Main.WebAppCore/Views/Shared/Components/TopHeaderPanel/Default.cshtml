@@ -1,50 +1,38 @@
-﻿@model MenuObjectModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
-
-<div class="top-header">
+﻿<div class="top-header">
     <div class="header-container">
         <ul>
             <li>
                 @await Component.InvokeAsync( "MainMenu" )
             </li>
-
-            <li>
-
-            </li>
-
-            <li>
-
-            </li>
-
+            <li></li>
+            <li></li>
             <li>
                 <a id="ancor_AllItemMarket_Market" class=""
-                       href="@Url.Action("Market", "AllItemMarket", new { pageNumber = "1" })">
+                   href="@Url.Action("Market", "AllItemMarket", new { pageNumber = "1" })">
+
                     <i class="fa fa-ad fa-1x link-dark"> </i>
+
                 </a>
             </li>
-           
-            <li>
-
-            </li>
-
+            <li></li>
             <li>
                 <a id="ancor_Cart_Product_Shop" class=""
-                       href="@Url.Action("GetShoppingCart", "ProductShoppingCart", new { pageNumber = "1" })">
-                    <i class="fa fa-shopping-basket fa-1x link-dark"></i>
+                   href="@Url.Action("GetShoppingCart", "ProductShoppingCart", 
+                   new { pageNumber = "1" })">
+
+                   <i class="fa fa-shopping-basket fa-1x link-dark"></i>
+
                 </a>
             </li>
-
         </ul>
     
-        <div class="flex-grow"></div>
+        <div class="flex-grow"> </div>
 
         <ul>
             <li>
                 @await Component.InvokeAsync( "HelpMenu" )
             </li>
-
             <li></li>
-
             <li>
                 @await Component.InvokeAsync( "LanguageMenu" )
             </li>

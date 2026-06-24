@@ -14,8 +14,8 @@ using WebAppCore.ViewModel.Extensions;
 
 namespace Main.WebAppCore;
 
-[Area ( "CompanyContent" )]
-[Authorize ( Roles = "Company,Admin" )]
+[Area ("CompanyContent")]
+[Authorize (Roles = "Company,Admin")]
 public class ManageProductController: BaseController
 {
 
@@ -24,10 +24,10 @@ public class ManageProductController: BaseController
     private readonly IUserContext _userContext;
     private readonly ITenantSetter _tenantSetter;
 
-    public ManageProductController ( IProductService productService,
+    public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
         IUserContext userContext,
-        ITenantSetter tenantSetter )
+        ITenantSetter tenantSetter)
     {
         _productService = productService;
         _logger = logger;
@@ -36,29 +36,29 @@ public class ManageProductController: BaseController
     }
 
 
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> Index ( )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> Index ()
     {
         try
         {
             List<ProductDisplayModel> productDataModels = await _productService.GetAllProducts();
 
-            List<ProductDisplayViewModel> disayProductViewModels = ProductMapping.MapDisplayProductViewModel
-                ( productDataModels, _tenantSetter.TenantShopType );
+            List<ProductDisplayViewModel> displayProductViewModels = ProductMapping.MapDisplayProductViewModel
+                ( productDataModels, _tenantSetter.TenantStore );
 
-            return View ( disayProductViewModels );
+            return View (displayProductViewModels);
         }
         catch
         {
-            return View ( new List<ProductDisplayViewModel> ( ) );
+            return View (new List<ProductDisplayViewModel> ());
         }
     }
 
 
-    private void SetImageInDataModel ( ProductDataModel productDataModel )
+    private void SetImageInDataModel (ProductDataModel productDataModel)
     {
         List<ProductFileDataModel> listProductImageFileDataModels
-                                      = new List<ProductFileDataModel>();
+                                      = new();
 
         BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
 
@@ -66,60 +66,61 @@ public class ManageProductController: BaseController
 
         List<ImageFile> listSessionImageFiles = GetAllSessionImages();
 
-        listSessionImageFiles.ForEach ( imgFile =>
+        listSessionImageFiles.ForEach (imgFile =>
         {
-            productImageFileDataModel = new ProductFileDataModel ( baseDataModel )
+            productImageFileDataModel = new ProductFileDataModel (baseDataModel)
             {
                 ImageFileContent = imgFile.FileContent,
                 ProductID = imgFile.PostID ?? 0,
                 ProductImageFileID = 0
             };
 
-            listProductImageFileDataModels.Add ( productImageFileDataModel );
-        } );
+            listProductImageFileDataModels.Add (productImageFileDataModel);
+        });
 
         productDataModel.ImageFiles = listProductImageFileDataModels;
 
-        ClearImageFileListSession ( );
+        ClearImageFileListSession ();
     }
 
 
-    [Authorize ( Roles = "Company,Admin" )]
-    public IActionResult NewProduct ( )
+    [Authorize (Roles = "Company,Admin")]
+    public IActionResult NewProduct ()
     {
         try
         {
-            ClearImageFileListSession ( );
+            ClearImageFileListSession ();
 
-            ProductViewModel objProductViewModel = new ProductViewModel(_tenantSetter.TenantShopType);
+            ProductViewModel objProductViewModel = new (_tenantSetter.TenantStore)
+            {
+                PageName = "New Product"
+            };
 
-            objProductViewModel.PageName = "New Product";
-
-            return View ( objProductViewModel );
+            return View (objProductViewModel);
         }
         catch
         {
-            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
+            return View (new ProductViewModel (_tenantSetter.TenantStore));
         }
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> SaveProduct ( ProductViewModel collection )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> SaveProduct (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
         {
-            return BadRequest ( ModelState );
+            return BadRequest (ModelState);
         }
 
         try
         {
             ProductDataModel productDataModel = ProductMapping.NewProductDataModel ( collection );
 
-            productDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ( );
+            productDataModel.BaseDataModel = _userContext.GetCreateBaseDataModel ();
 
-            SetImageInDataModel ( productDataModel );
+            SetImageInDataModel (productDataModel);
 
             var result = await _productService.SaveNewProduct(productDataModel);
 
@@ -128,116 +129,116 @@ public class ManageProductController: BaseController
                 Area = "CompanyContent"
             });
 
-            return Ok ( new
+            return Ok (new
             {
                 success = result,urlGo = redirectUrl
-            } );
+            });
         }
         catch ( Exception ex )
         {
-            return BadRequest ( new
+            return BadRequest (new
             {
                 success = false,message = ex.Message
-            } );
+            });
         }
     }
 
     [HttpGet]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<ActionResult> Edit ( int id )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<ActionResult> Edit (int id)
     {
         try
         {
-            ClearImageFileListSession ( );
+            ClearImageFileListSession ();
 
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _tenantSetter.TenantShopType );
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel, _tenantSetter.TenantStore );
 
             productViewModel.PageName = "Edit Product";
 
-            return View ( productViewModel );
+            return View (productViewModel);
         }
         catch
         {
-            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
+            return View (new ProductViewModel (_tenantSetter.TenantStore));
         }
     }
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> Edit ( ProductViewModel collection )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> Edit (ProductViewModel collection)
     {
         if ( !ModelState.IsValid )
         {
-            return BadRequest ( ModelState );
+            return BadRequest (ModelState);
         }
 
         try
         {
             ProductDataModel productDataModel = ProductMapping.MapProductDataModel ( collection );
 
-            productDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ( );
+            productDataModel.BaseDataModel = _userContext.GetUpdateBaseDataModel ();
 
-            SetImageInDataModel ( productDataModel );
+            SetImageInDataModel (productDataModel);
 
             var result = await _productService.UpdateProduct(productDataModel);
 
-            return Ok ( new
+            return Ok (new
             {
                 success = true,
-                urlGo = Url.Action ( "Index","ManageProduct",new
+                urlGo = Url.Action ("Index","ManageProduct",new
                 {
                     Area = "CompanyContent"
-                } )
-            } );
+                })
+            });
         }
         catch ( Exception ex )
         {
-            return BadRequest ( new
+            return BadRequest (new
             {
                 success = false,message = ex.Message
-            } );
+            });
         }
     }
 
 
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> Details ( int id )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> Details (int id)
     {
         try
         {
             ProductDataModel productDataModel = await _productService.GetProductForEditProductID(id);
 
-            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel , _tenantSetter.TenantShopType);
+            ProductViewModel productViewModel = ProductMapping.MapProductViewModel ( productDataModel , _tenantSetter.TenantStore);
 
-            productViewModel.SetDisplaytext ( _tenantSetter.TenantShopType );
+            productViewModel.SetDisplaytext (_tenantSetter.TenantStore);
 
             productViewModel.PageName = "Product Details";
 
-            return View ( productViewModel );
+            return View (productViewModel);
         }
         catch
         {
-            return View ( new ProductViewModel ( _tenantSetter.TenantShopType ) );
+            return View (new ProductViewModel (_tenantSetter.TenantStore));
         }
     }
 
 
     [HttpPost]
-    [Authorize ( Roles = "Company,Admin" )]
-    public JsonResult UploadImage ( IFormFile file )
+    [Authorize (Roles = "Company,Admin")]
+    public JsonResult UploadImage (IFormFile file)
     {
         if ( file != null && file.Length > 0 )
         {
             if ( file == null || file.Length > AppSettings.Current.PostImageSize )
             {
-                return Json ( new
+                return Json (new
                 {
                     success = false
-                } );
+                });
             }
             else
             {
@@ -245,40 +246,40 @@ public class ManageProductController: BaseController
 
                 if ( imageFile.IsNew )
                 {
-                    SetSessionImageFile ( imageFile );
+                    SetSessionImageFile (imageFile);
                 }
 
-                return Json ( new
+                return Json (new
                 {
                     success = true
-                } );
+                });
             }
         }
 
-        return Json ( new
+        return Json (new
         {
             success = false
-        } );
+        });
     }
 
 
-    private ImageFile ReadImage ( IFormFile file )
+    private ImageFile ReadImage (IFormFile file)
     {
-        if ( !string.IsNullOrEmpty ( file.ContentType ) && file.FileName != null )
+        if ( !string.IsNullOrEmpty (file.ContentType) && file.FileName != null )
         {
             string extension = Path.GetExtension(file.FileName).ToLower();
 
-            if ( extension.Equals ( ".jpg" ) || extension.Equals ( ".jpeg" )
+            if ( extension.Equals (".jpg") || extension.Equals (".jpeg")
 
-                || extension.Equals ( ".png" ) || extension.Equals ( ".gif" ) )
+                || extension.Equals (".png") || extension.Equals (".gif") )
             {
                 var imgByte = new Byte[file.Length];
 
                 var stream = file.OpenReadStream();
 
-                var result = stream.Read(imgByte);
+                _ = stream.Read (imgByte);
 
-                ImageFile objFile = new ImageFile ()
+                ImageFile objFile = new()
                 {
                     FileContent = imgByte ,
                     IsNew = true ,
@@ -289,12 +290,12 @@ public class ManageProductController: BaseController
             }
         }
 
-        return new ImageFile ( );
+        return new ImageFile ();
     }
 
     [HttpGet]
-    [Authorize ( Roles = "Company,Admin" )]
-    public PartialViewResult LoadImage ( )
+    [Authorize (Roles = "Company,Admin")]
+    public PartialViewResult LoadImage ()
     {
         try
         {
@@ -302,87 +303,86 @@ public class ManageProductController: BaseController
 
             var objImage = objImageList.Last();
 
-            return PartialView ( "~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",objImage );
+            return PartialView ("~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",objImage);
         }
         catch
         {
-            return PartialView ( "~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",new ImageFile ( ) );
+            return PartialView ("~/Areas/CompanyContent/Views/ManageProduct/_Image.cshtml",new ImageFile ());
         }
     }
 
 
     [HttpDelete]
-    [Authorize ( Roles = "Company,Admin" )]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<JsonResult> ImageRemove ( int id,int postId )
+    [Authorize (Roles = "Company,Admin")]
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<JsonResult> ImageRemove (int id,int postId)
     {
-        bool result = false;
-
         try
         {
+            bool result;
             if ( postId != 0 )
             {
-                result = await _productService.DeleteProductImage ( id,postId );
+                result = await _productService.DeleteProductImage (id,postId);
             }
 
-            result = RemoveSessionImageFile ( id );
+            result = RemoveSessionImageFile (id);
 
-            return Json ( new
+            return Json (new
             {
                 success = result
-            } );
+            });
         }
         catch
         {
-            return Json ( new
+            return Json (new
             {
                 errors = false
-            } );
+            });
         }
     }
 
 
     [HttpGet]
-    [Authorize ( Roles = "Company,Admin" )]
-    public JsonResult GetSubCategories ( int id )
+    [Authorize (Roles = "Company,Admin")]
+    public JsonResult GetSubCategories (int id)
     {
         try
         {
-            var listSubCategories = DropDownListItems.GetSubCategories( _tenantSetter.TenantShopType, id );
+            var listSubCategories = DropDownListItems.GetSubCategories( _tenantSetter.TenantStore, id );
 
-            return Json ( listSubCategories );
+            return Json (listSubCategories);
         }
         catch
         {
-            return Json ( new List<SelectListItem> ( ) );
+            return Json (new List<SelectListItem> ());
         }
     }
 
 
     [HttpGet]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> Delete ( int id )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> Delete (int id)
     {
         try
         {
-            ProductViewModel productViewModel = new ProductViewModel (_tenantSetter.TenantShopType);
+            ProductViewModel productViewModel = new(_tenantSetter.TenantStore);
             productViewModel.ProductID = id;
 
-            return View ( productViewModel );
+            return View (productViewModel);
         }
         catch
         {
-            return BadRequest ( new
+            return BadRequest (new
             {
                 success = false
-            } );
+            });
         }
     }
 
 
     [HttpGet]
-    [Authorize ( Roles = "Company,Admin" )]
-    public async Task<IActionResult> DeleteProduct ( int id,int fakeId )
+    [Authorize (Roles = "Company,Admin")]
+    public async Task<IActionResult> DeleteProduct (int id,int fakeId)
     {
         try
         {
@@ -390,20 +390,20 @@ public class ManageProductController: BaseController
 
             if ( result )
             {
-                return RedirectToAction ( "Index" );
+                return RedirectToAction ("Index");
             }
 
-            return RedirectToAction ( "Delete",new
+            return RedirectToAction ("Delete",new
             {
                 id = id
-            } );
+            });
         }
         catch
         {
-            return BadRequest ( new
+            return BadRequest (new
             {
                 success = false
-            } );
+            });
         }
     }
 }

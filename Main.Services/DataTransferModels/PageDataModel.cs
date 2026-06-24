@@ -19,11 +19,6 @@ public class PageDataModel
         get; set;
     }
 
-    public EnumCompanyName CompanyName
-    {
-        get; set;
-    }
-
     public List<PanelDataModel> ListPanels
     {
         get; set;

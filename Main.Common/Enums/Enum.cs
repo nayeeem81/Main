@@ -2,6 +2,167 @@
 
 namespace Main.Common.Enums;
 
+public enum EnumShowOrHide
+{
+    Yes = 1,
+    No = 2
+}
+
+public enum EnumPublicPage
+{
+    [Description("Home Page")]
+    Home = 1,
+
+    [Description("All Market Page")]
+    AllMarket = 2,
+
+    [Description("Details Page")]
+    AdsDetail = 3,
+
+    [Description("Category Button Page")]
+    CategoryButtonMarket = 6,
+
+    [Description("Category Dropdown Page")]
+    SubCategoryDropdownMarket = 7,
+
+    [Description("Special Button Page")]
+    SpecialMarketButton = 8,
+
+    [Description("News/Notice Page")]
+    NoticeAndNews = 9,
+
+    [Description("Resource Page")]
+    Resources = 10,
+
+    [Description("Login Page")]
+    Login = 11,
+
+    [Description("Register Page")]
+    Signup = 12
+}
+
+public enum EnumPanelTemplate
+{
+    [Description("Product: (Double 2 Products)")]
+    ProductDouble = 9,
+
+    [Description("Product: (Quard 4 Products)")]
+    ProductQuard = 1,
+
+    [Description("Product: (Triangle 3 Products)")]
+    ProductTriangle = 2,
+
+    [Description("Product: (Sixer 6 Products)")]
+    ProductSixer = 3,
+
+    [Description("Product: (Popular Products)")]
+    ProductMostPopular = 4,
+
+    [Description("Product: (Market Page)")]
+    MarketPanel = 5,
+
+    [Description("Product: (Similar Products Panel)")]
+    SimilarItemsMarketPanel = 6,
+
+    [Description("Admin: (Banner Carousel: 4 Ad Spases)")]
+    AdminBannerCarousel = 7,
+
+    [Description("Admin: (Fixed Banner: 1 Ad Spases)")]
+    AdminSingleBanner = 8
+}
+
+
+public enum EnumPostType
+{
+    [Description("Ad Space")]
+    AdSpace = 1,
+
+    [Description("Short Note")]
+    ShortNote = 2,
+
+    [Description("Youtube Video")]
+    ShortVideo = 3,
+
+    [Description("Product")]
+    Product = 4
+}
+
+public enum EnumStoreType
+{
+    LifeStyles = 1,
+    FineArts = 2,
+    Sports = 3
+}
+
+public enum EnumTenantVariable
+{
+    [Description("Product Category")]
+    ProductCategory = 1,
+
+    [Description("Product Sub Category")]
+    ProductSubCategory = 2
+}
+
+public enum EnumStoreMenu
+{
+    [Description("Beauty")]
+    Beauty = 1,
+
+    [Description("Health")]
+    Health = 2,
+
+    [Description("Fashion")]
+    Fashion = 3,
+
+    [Description("Lifestyles")]
+    Fitness = 4,
+
+    [Description("Arts")]
+    ARTS = 5,
+
+    [Description("Crafts")]
+    CRAFTS = 6,
+
+    [Description("Collectibles")]
+    COLLECTIBLES = 7
+}
+
+public enum EnumStoreSubMenu
+{
+    [Description("Make up")]
+    Makeup = 1,
+
+    [Description("Skin care")]
+    SkinCare = 2,
+
+    [Description("Beauty tools")]
+    BeautyTools = 3,
+
+    [Description("Wellbeing")]
+    Wellbeing = 4,
+
+    [Description("Pharmacy product")]
+    PharmacyProduct = 5,
+
+    [Description("Medical supplies")]
+    MedicalSupplies = 6,
+
+    [Description("Sculpture")]
+    Sculpture = 7,
+
+    [Description("Drawing")]
+    Drawing = 8,
+
+    [Description("Water color")]
+    WaterColor = 9,
+
+    [Description("Photography")]
+    Photography = 10,
+
+    [Description("Painting")]
+    Painting = 11
+}
+
 public enum EnumPostCount
 {
     [Description("1")]
@@ -32,161 +193,9 @@ public enum EnumIsValidTemplate
     Invalid = 3
 }
 
-public enum EnumAccountType
-{
-    Vendor = 1,
-    Company = 2,
-    User = 3
-}
-
-public enum EnumShopType
-{
-    LifeStylesShop = 1,
-    FineArtsShop = 2,
-    SportsShop = 3,
-    ServiceShop = 4,
-    ConsultantShop = 5,
-    DoctorShop = 6,
-    DentistShop = 7
-}
-
-public enum EnumCompanyName
-{
-    [Description("Deshi Hut Bazar (Vendor)")]
-    DeshiHutBazar = 1,
-
-    [Description("Fine Arts Store")]
-    FineArts = 2,
-
-    [Description("Life Styles Store")]
-    LifeStyles = 3,
-}
-
 public enum EnumCountry
 {
     Bangladesh = 1
-}
-
-public enum EnumAllowedVariable
-{
-    Country = 0,
-    State = 1,
-    City = 2,
-    Area = 3,
-    Category = 4,
-    SubCategory = 5
-}
-
-public enum EnumPhoto
-{
-    Carousel = 1,
-    Thumbnail = 2,
-    Square =  3,
-    Rectangle = 4,
-    Banner = 5,
-    Other = 6
-}
-
-public enum EnumMarketType
-{
-    AllItems = 1,
-    Category = 2,
-    SubCategory = 3,
-    Special = 4,
-    SimilarItems = 5
-}
-
-public enum EnumCustomButtonItemType
-{
-    Men = 1,
-    Women = 2,
-    Kids = 3,
-    Food = 4
-}
-
-public enum EnumReportLength
-{
-    [Description("Last 1 Hour")]
-    LastOneHour = 1,
-    [Description("Last 2 Hours")]
-    LastTwoHour = 2,
-    [Description("Last 3 Hours")]
-    LastThreeHour = 3,
-    [Description("Last 4 Hours")]
-    LastFourHour = 4,
-    [Description("Last 5 Hours")]
-    LastFiveHour = 5,
-    [Description("Last 6 Hours")]
-    LastSixHour = 6,
-    [Description("Last 12 Hours")]
-    LastTwelveHour = 12,
-    [Description("Last 18 Hours")]
-    LastEighteenHour = 18,
-    [Description("Today")]
-    Today = 24,
-    [Description("Last 1 Weeks")]
-    LastOneWeek = 168,
-    [Description("Last 2 Weeks")]
-    LastTwoWeek = 336,
-    [Description("Last 3 Weeks")]
-    LastThreeWeek = 504,
-    [Description("Last 1 Month")]
-    LastOneMonth = 720,
-    [Description("Last 1.5 Months")]
-    LastOneAndHalfMonth = 1080,
-    [Description("Last 2 Months")]
-    LastTwoMonth = 1440,
-    [Description("Last 3 Months")]
-    LastThreeMonth = 2160,
-    [Description("Last 1 Year")]
-    LastOneYear = 8760
-}
-
-public enum EnumPaidBy
-{
-    DeshiHutBazar = 1,
-    Company = 2,
-    ServiceProvider = 3
-}
-
-public enum EnumWeekDays
-{
-    [Description("Sunday")]
-    Sunday = 1,
-    [Description("Monday")]
-    Monday = 2,
-    [Description("Tuesday")]
-    Tuesday = 3,
-    [Description("Wednesday")]
-    Wednesday = 4,
-    [Description("Thursday")]
-    Thursday = 5,
-    [Description("Friday")]
-    Friday = 6,
-    [Description("Saturday")]
-    Saturday = 7
-}
-
-public enum EnumOfferType
-{
-    General = 1,
-    Premium = 2
-}
-
-public enum EnumMarket
-{
-    [Description("Beauty")]
-    Beauty = 1004,
-    [Description("Health")]
-    Health = 1005,
-    [Description("Fashion for Women")]
-    WomanFashion = 1006,
-    [Description("Fashion for Men")]
-    MenFashion = 1007,
-    [Description("Kids & Babies")]
-    ToysKidsAndBabies = 1008,
-    [Description("Fitness & Lifestyles")]
-    FitnessAndLifeStyles = 1010
 }
 
 public enum EnumSpecialMarket
@@ -284,167 +293,8 @@ public enum EnumSpecialMarket
     MusicBooksGames = 1010005
 }
 
-public enum EnumPostType
-{
-    [Description("Ad Space")]
-    AdSpace = 1,
-
-    [Description("Short Note")]
-    ShortNote = 2,
-
-    [Description("Youtube Video")]
-    ShortVideo = 3,
-
-    [Description("Product")]
-    Product = 4
-}
-
-
-public enum EnumPanelStatus
-{
-    Saved = 1,
-    Published = 2
-}
-
-public enum EnumPublicPage
-{
-    [Description("Home Page")]
-    Home = 1,
-
-    [Description("All Market Page")]
-    AllMarket = 2,
-
-    [Description("Details Page")]
-    AdsDetail = 3,
-
-    [Description("Category Button Page")]
-    CategoryButtonMarket = 6,
-
-    [Description("Category Dropdown Page")]
-    SubCategoryDropdownMarket = 7,
-
-    [Description("Special Button Page")]
-    SpecialMarketButton = 8,
-
-    [Description("News/Notice Page")]
-    NoticeAndNews = 9,
-
-    [Description("Resource Page")]
-    Resources = 10,
-
-    [Description("Login Page")]
-    Login = 11,
-
-    [Description("Register Page")]
-    Signup = 12
-}
-
-public enum EnumPanelTemplate
-{
-    [Description("Product: (Double 2 Products)")]
-    ProductDouble = 9,
-
-    [Description("Product: (Quard 4 Products)")]
-    ProductQuard = 1,
-
-    [Description("Product: (Triangle 3 Products)")]
-    ProductTriangle = 2,
-
-    [Description("Product: (Sixer 6 Products)")]
-    ProductSixer = 3,
-
-    [Description("Product: (Popular Products)")]
-    ProductMostPopular = 4,
-
-    [Description("Product: (Market Page)")]
-    MarketPanel = 5,
-
-    [Description("Product: (Similar Products Panel)")]
-    SimilarItemsMarketPanel = 6,
-
-    [Description("Admin: (Banner Carousel: 4 Ad Spases)")]
-    AdminBannerCarousel = 7,
-
-    [Description("Admin: (Fixed Banner: 1 Ad Spases)")]
-    AdminSingleBanner = 8
-}
-
-public enum EnumRoles
-{
-    Admin = 1,
-    User = 2,
-    Company = 3,
-    VisitorOnly = 4
-}
-
-public enum EnumDeviceType
-{
-    Desktop = 1,
-    Mobile = 2,
-    Tablet = 3
-}
-
-public enum EnumShowOrHide
-{
-    Yes = 1,
-    No = 2
-}
-
-public enum EnumOrderStatus
-{
-    Saved = 0,
-    Paid = 1,
-    Approved = 2
-}
-
 public enum EnumCurrency
 {
     [Description("Taka")]
     BDT = 2
-}
-
-public enum EnumLogType
-{
-    HomePageLink = 5,
-    PostDetailLink = 1,
-    AllItemMarketLink = 3,
-    CategoryMarketLink = 4,
-    SubCategoryMarketLink = 11,
-    SearchMarketLink = 6,
-    SimpleSearchLink = 7,
-    AdvancedSearchLink = 8,
-    SpecialMarketLink = 12,
-    NoticePage = 13
-}
-
-public enum EnumState
-{
-    Dhaka=1,
-    Chittagong=2,
-    Khulna=3,
-    Rajshahi=4,
-    Barishal=5,
-    Sylhet=6,
-    Maimenshing=7,
-    Rangpur=8
-}
-
-public enum EnumTransactionStatus
-{
-    AdminCheckPending = 0,
-    AdminApproved = 1,
-    SystemApproved = 2
-}
-
-public enum EnumReasonForEmail
-{
-    VerifyEmailAddress = 1,
-    ResetPassword = 2,
-    AdLikedByUserEmail = 3,
-    AdBrowsedByUser = 4,
-    AdvertiserContactRequested = 5,
-    UserMessaged = 6,
-    Export = 7,
-    Import = 8,
-    Request = 9
 }

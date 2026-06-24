@@ -1,6 +1,4 @@
-﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
-@inject ITenantSetter TenantSetter
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,7 +9,7 @@
 
           
     <title>
-        @ViewBag.Title | @TenantSetter.TenantName )
+        @ViewBag.Title | @TenantSetter.TenantName 
     </title>
 
     <link rel="shortcut icon"
@@ -56,11 +54,11 @@
         <header id="layoutHeaderContainer">
             @await Component.InvokeAsync("TopHeaderPanel")
             @await Component.InvokeAsync("MainHeaderPanel")
-            @await Component.InvokeAsync("BottomHeaderPanel") 
+            @await Component.InvokeAsync( "BottomHeaderPanel",new MenuObjectModel( TenantSetter.TenantStore ) )
         </header>
 
-        @await Component.InvokeAsync("AdvancedSearchDesktop")
-        @await Component.InvokeAsync("ShoppingCartNotification") 
+        @await Component.InvokeAsync( "AdvancedSearch",new MenuObjectModel( true,TenantSetter.TenantStore ) )
+        @* @await Component.InvokeAsync("ShoppingCartNotification")  *@
        
         <div id="layoutBodyContainer" class="body-content">
             <main>

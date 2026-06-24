@@ -6,27 +6,27 @@ namespace Main.Services.Extensions;
 
 public static class ProductServiceMapping
 {
-    public static List<ProductDisplayModel> GetProductDisplayModels ( List<Product> listProducts )
+    public static List<ProductDisplayModel> GetProductDisplayModels (List<Product> listProducts)
     {
         List<ProductDisplayModel> objListPostDisplayModel
-            = new List<ProductDisplayModel>();
+            = new();
 
         ProductDisplayModel objProductDisplayModel;
 
-        foreach ( Product item in listProducts.ToList ( ) )
+        foreach ( Product item in listProducts.ToList () )
         {
-            objProductDisplayModel = new ProductDisplayModel ( );
+            objProductDisplayModel = new ProductDisplayModel ();
 
-            MapProductDisplayModel ( item,objProductDisplayModel );
+            MapProductDisplayModel (item,objProductDisplayModel);
 
-            objListPostDisplayModel.Add ( objProductDisplayModel );
+            objListPostDisplayModel.Add (objProductDisplayModel);
         }
 
         return objListPostDisplayModel;
     }
 
     private static void MapProductDisplayModel (
-        Product productEntity,ProductDisplayModel productDisplayModel )
+        Product productEntity,ProductDisplayModel productDisplayModel)
     {
         productDisplayModel.ProductID = productEntity.ProductID;
         productDisplayModel.CategoryID = productEntity.CategoryID;
@@ -36,11 +36,11 @@ public static class ProductServiceMapping
         productDisplayModel.Discount = productEntity.Discount;
     }
 
-    public static Product MapSaveProdurtEntity ( ProductDataModel productDataModel )
+    public static Product MapSaveProductEntity (ProductDataModel productDataModel)
     {
         Product productEntity = CreateProductEntity(productDataModel);
 
-        productEntity.CreateBaseData ( productDataModel.BaseDataModel );
+        productEntity.CreateBaseData (productDataModel.BaseDataModel);
 
         List <ProductImageFile> objListFileEntity
             = MapProductFileEntity(productDataModel);
@@ -48,20 +48,20 @@ public static class ProductServiceMapping
         if ( productDataModel != null )
         {
             productEntity.ListImageFiles = objListFileEntity;
-            productEntity.ListComments = new List<ProductComment> ( );
+            productEntity.ListComments = new List<ProductComment> ();
         }
 
         return productEntity;
     }
 
-    private static Product CreateProductEntity ( ProductDataModel productDataModel )
+    private static Product CreateProductEntity (ProductDataModel productDataModel)
     {
-        return new Product ( )
+        return new Product ()
         {
             ProductName = productDataModel.ProductName,
             SearchTag =
                 string
-                .IsNullOrWhiteSpace ( productDataModel.SearchTag )
+                .IsNullOrWhiteSpace (productDataModel.SearchTag)
                 ? null
                 : productDataModel.SearchTag,
 
@@ -71,7 +71,7 @@ public static class ProductServiceMapping
             CategoryID = productDataModel.CategoryID,
             SubCategoryID = productDataModel.SubCategoryID,
             Description = string
-                    .IsNullOrWhiteSpace ( productDataModel.Description )
+                    .IsNullOrWhiteSpace (productDataModel.Description)
                     ? null
                     : productDataModel.Description,
 
@@ -80,78 +80,80 @@ public static class ProductServiceMapping
     }
 
     private static List<ProductImageFile> MapProductFileEntity
-        ( ProductDataModel productDataModel )
+        (ProductDataModel productDataModel)
     {
         List<ProductImageFile> listProductFileEntity
-            = new List<ProductImageFile>();
+            = new();
 
         ProductImageFile productImageFile;
-        productDataModel.ImageFiles.ForEach ( fileDataModel =>
+        productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            productImageFile = new ProductImageFile ( fileDataModel.ImageFileContent );
+            productImageFile = new ProductImageFile (fileDataModel.ImageFileContent);
             productImageFile.ProductID = fileDataModel.ProductID;
-            productImageFile.CreateBaseData ( fileDataModel.BaseDataModel );
-            listProductFileEntity.Add ( productImageFile );
-        } );
+            productImageFile.CreateBaseData (fileDataModel.BaseDataModel);
+            listProductFileEntity.Add (productImageFile);
+        });
 
         return listProductFileEntity;
     }
 
-    public static ProductDataModel MapSingelProductDataModel ( Product productEntity )
+    public static ProductDataModel MapSingleProductDataModel (Product productEntity)
     {
-        if( productEntity == null )
+        if ( productEntity == null )
+        {
             return new ProductDataModel ();
+        }
 
         List<ProductFileDataModel> listProductFilesDataModel =
-            new List<ProductFileDataModel>();
+            new();
 
         if ( productEntity.ListImageFiles != null
             && productEntity.ListImageFiles.Count > 0 )
         {
 
-            productEntity.ListImageFiles.ToList ( ).ForEach ( fileEntity =>
+            productEntity.ListImageFiles.ToList ().ForEach (fileEntity =>
                 {
-                    ProductFileDataModel fileDataModel = new ProductFileDataModel()
+                    ProductFileDataModel fileDataModel = new()
                     {
                         ProductImageFileID = fileEntity.ProductImageFileID,
                         ImageFileContent = fileEntity.ImageFileContent,
                         ProductID = fileEntity.ProductID
                     };
 
-                    listProductFilesDataModel.Add ( fileDataModel );
+                    listProductFilesDataModel.Add (fileDataModel);
 
-                } );
+                });
         }
 
         List<ProductCommentDataModel> listCommentsDataModel
-            = new List<ProductCommentDataModel>();
+            = new();
 
         if ( productEntity.ListComments != null
              && productEntity.ListComments.Count > 0 )
         {
 
-            productEntity.ListComments.ToList ( ).ForEach ( commentEntity =>
+            productEntity.ListComments.ToList ().ForEach (commentEntity =>
             {
-                ProductCommentDataModel objCommentDataModel = new ProductCommentDataModel()
+                ProductCommentDataModel objCommentDataModel = new()
                 {
                     ProductCommentID = commentEntity.ProductCommentID,
                     Comment = commentEntity.Comment,
                     ProductID = commentEntity.ProductID
                 };
 
-                listCommentsDataModel.Add ( objCommentDataModel );
+                listCommentsDataModel.Add (objCommentDataModel);
 
-            } );
+            });
         }
 
-        ProductDataModel productDataModel = new ProductDataModel()
+        ProductDataModel productDataModel = new()
         {
             ProductID = productEntity.ProductID,
             ProductName = productEntity.ProductName,
             Discount = productEntity.Discount.HasValue ? productEntity.Discount.Value : 0,
             SaleCommission = productEntity.SaleCommission.HasValue ? productEntity.SaleCommission.Value : 0,
             SearchTag = productEntity.SearchTag,
-            PostType = (EnumPostType) productEntity.PostType,
+            PostType =   productEntity.PostType ,
             Description = productEntity.Description,
             CategoryID = productEntity.CategoryID,
             SubCategoryID = productEntity.SubCategoryID,
@@ -163,42 +165,42 @@ public static class ProductServiceMapping
         return productDataModel;
     }
 
-    public static Product MapProductUpdateEntity ( Product productEntity,ProductDataModel productDataModel )
+    public static Product MapProductUpdateEntity (Product productEntity,ProductDataModel productDataModel)
     {
         List<ProductImageFile> listProductImageFileEntity
-            = new List<ProductImageFile>();
+            = new();
 
-        listProductImageFileEntity.AddRange ( productEntity.ListImageFiles );
+        listProductImageFileEntity.AddRange (productEntity.ListImageFiles);
 
         ProductImageFile fileEntity;
 
-        productDataModel.ImageFiles.ForEach ( fileDataModel =>
+        productDataModel.ImageFiles.ForEach (fileDataModel =>
         {
-            fileEntity = new ProductImageFile(fileDataModel.ImageFileContent);
+            fileEntity = new ProductImageFile (fileDataModel.ImageFileContent);
 
-            fileEntity.CreateBaseData ( fileDataModel.BaseDataModel );
+            fileEntity.CreateBaseData (fileDataModel.BaseDataModel);
 
             fileEntity.ProductID = productEntity.ProductID;
 
-            listProductImageFileEntity.Add ( fileEntity );
+            listProductImageFileEntity.Add (fileEntity);
 
-        } );
+        });
 
         List<ProductComment> listProductCommentsEntity
-            = new List<ProductComment>();
+            = new();
 
-        listProductCommentsEntity.AddRange ( productEntity.ListComments );
+        listProductCommentsEntity.AddRange (productEntity.ListComments);
 
 
-        productDataModel.ListComments.ForEach ( commentDataModel =>
+        productDataModel.ListComments.ForEach (commentDataModel =>
         {
             var commentEntity = new ProductComment();
 
             commentEntity.ProductID = productEntity.ProductID;
             commentEntity.Comment = commentEntity.Comment;
 
-            listProductCommentsEntity.Add ( commentEntity );
-        } );
+            listProductCommentsEntity.Add (commentEntity);
+        });
 
         productEntity.ProductName = productDataModel.ProductName;
         productEntity.Discount = productDataModel.Discount;
@@ -213,7 +215,7 @@ public static class ProductServiceMapping
         productEntity.ListComments = listProductCommentsEntity;
         productEntity.ListImageFiles = listProductImageFileEntity;
 
-        productEntity.ModifyBaseData ( productDataModel.BaseDataModel );
+        productEntity.ModifyBaseData (productDataModel.BaseDataModel);
 
         return productEntity;
     }

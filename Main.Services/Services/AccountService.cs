@@ -28,22 +28,22 @@ public class AccountService: IAccountService
 
 
 
-    public async Task<IdentityResult> CreateIdentityUserAccount ( UserAccountDataModel userAccountDataModel )
+    public async Task<IdentityResult> CreateIdentityUserAccount (UserAccountDataModel userAccountDataModel)
     {
         ApplicationUser userIdentityEntity = CreateIdentityUser(userAccountDataModel);
 
         var resultCreateIdentityUser = await
-                                        _userManager
-                                        .CreateAsync(userIdentityEntity,
-                                         userAccountDataModel.Password);
+        _userManager
+        .CreateAsync(userIdentityEntity,
+        userAccountDataModel.Password);
 
-        await _userManager.AddToRoleAsync ( userIdentityEntity,"User" );
+        _ = await _userManager.AddToRoleAsync (userIdentityEntity,"User");
 
         return resultCreateIdentityUser;
     }
 
 
-    public async Task<ApplicationUser?> GetIdentityUser ( string email )
+    public async Task<ApplicationUser?> GetIdentityUser (string email)
     {
         ApplicationUser? identityUser
             = await _userManager.FindByEmailAsync ( email );
@@ -52,7 +52,7 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<SignInResult> AuthenticateUser ( string email,string password )
+    public async Task<SignInResult> AuthenticateUser (string email,string password)
     {
         var userIdentity = await _userManager.FindByEmailAsync(email.Trim());
 
@@ -67,8 +67,8 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<bool> ChangePasswordAsync ( string email,string password,
-        string rePassword )
+    public async Task<bool> ChangePasswordAsync (string email,string password,
+        string rePassword)
     {
         ApplicationUser? identityUser = await GetIdentityUser ( email );
 
@@ -83,7 +83,7 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<string?> GetEmailVerifyToken ( string email )
+    public async Task<string?> GetEmailVerifyToken (string email)
     {
         ApplicationUser? user = await _userManager.FindByEmailAsync ( email );
 
@@ -98,13 +98,13 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<bool> CreateAppicationUser ( string email,string token,BaseDataModel baseDataModel )
+    public async Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel)
     {
         var userIdentity = await _userManager.FindByEmailAsync (email);
 
         if ( userIdentity != null )
         {
-            await _userManager.ConfirmEmailAsync ( userIdentity,token );
+            _ = await _userManager.ConfirmEmailAsync (userIdentity,token);
 
             return true;
         }
@@ -112,25 +112,43 @@ public class AccountService: IAccountService
         return false;
     }
 
-    public async Task<ClaimsIdentity?> GetUserRole ( string email )
+    public async Task<ClaimsIdentity?> GetUserRole (string email,string tenantId)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
+        ApplicationUser? user = await _userManager.FindByEmailAsync(email);
         if ( user == null )
         {
             return null;
         }
 
         var roles = await _userManager.GetRolesAsync(user);
-
-        if ( !roles.Any ( ) )
+        if ( !roles.Any () )
         {
             return null;
         }
 
-        var claims = roles.Select(role => new Claim(ClaimTypes.Role, role));
+        if ( roles[0] == "GlobalAdmin" )
+        {
+            List<Claim>  claims = [new Claim (ClaimTypes.Role,roles[0])];
+            return new ClaimsIdentity (claims);
+        }
 
-        return new ClaimsIdentity ( claims );
+        var userTenants = user.UserTenants.ToList<UserTenant>();
+        if ( userTenants != null && userTenants.Any () )
+        {
+            UserTenant? currentUserTenant = userTenants.FirstOrDefault<UserTenant>
+            (a => a.TenantId == tenantId);
+
+            if ( currentUserTenant != null )
+            {
+                string? tenantRole =  currentUserTenant.TenantRole;
+                var roleClaim = $"{tenantId}:{tenantRole}";
+
+                Claim claimRole = new("TenantRole", roleClaim);
+                ( ( List<Claim> ) [] ).Add (claimRole);
+                return new ClaimsIdentity (( List<Claim> ) []);
+            }
+        }
+        return null;
     }
 
 
@@ -139,7 +157,7 @@ public class AccountService: IAccountService
 
 
 
-    private ApplicationUser CreateIdentityUser ( UserAccountDataModel userAccountDataModel )
+    private ApplicationUser CreateIdentityUser (UserAccountDataModel userAccountDataModel)
     {
         var userIdentity = new ApplicationUser
         {
@@ -155,7 +173,7 @@ public class AccountService: IAccountService
         return userIdentity;
     }
 
-    public async Task<bool> UnlockUser ( string userId )
+    public async Task<bool> UnlockUser (string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
 
@@ -181,7 +199,7 @@ public class AccountService: IAccountService
         return true;
     }
 
-    public async Task<List<IdentityUserDataModel>?> Users ( )
+    public async Task<List<IdentityUserDataModel>?> Users ()
     {
         List<ApplicationUser> identityUsers = await _userManager.Users.ToListAsync<ApplicationUser>();
 

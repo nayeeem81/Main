@@ -1,0 +1,111 @@
+To seed your test tenants along with their specific tenant users, you need to update your data seeder. This process involves three steps:
+
+Creating the test users with the global User role.
+Generating test tenants.
+Mapping those users to the tenants with their specific tenant roles inside the TenantUserRoles table.
+
+Here is the complete updated DataSeeder implementation for your multi-tenant .NET 8.0 setup.
+
+using Microsoft.AspNetCore.Identity;
+
+public static class DataSeeder
+{
+    public static async Task SeedDataAsync(IServiceProvider serviceProvider)
+    {
+        var roleManager = serviceProvider.GetRequiredService();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+        // ==========================================
+        // 1. SEED GLOBAL ROLES
+        // ==========================================
+        string[] globalRoles = ["GlobalAdmin", "User"];
+        foreach (var roleName in globalRoles)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
+        // ==========================================
+        // 2. SEED GLOBAL ADMIN
+        // ==========================================
+        var adminEmail = "globaladmin@yourdomain.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
+        {
+            var newAdmin = new ApplicationUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            var result = await userManager.CreateAsync(newAdmin, "SecureP@ss123!");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(newAdmin, "GlobalAdmin");
+            }
+        }
+
+        // ==========================================
+        // 3. SEED TENANT USERS WITH GLOBAL "User" ROLE
+        // ==========================================
+        // Define test users and their mapping details
+        var testUsersConfig = new[]
+        {
+            new { Email = "tenant1.admin@test.com", TenantId = "tenant-alpha", TenantRole = "Admin" },
+            new { Email = "tenant1.content@test.com", TenantId = "tenant-alpha", TenantRole = "ContentManager" },
+            new { Email = "tenant1.member@test.com", TenantId = "tenant-alpha", TenantRole = "Member" },
+            
+            new { Email = "tenant2.admin@test.com", TenantId = "tenant-beta", TenantRole = "Admin" },
+            new { Email = "tenant2.content@test.com", TenantId = "tenant-beta", TenantRole = "ContentManager" },
+            new { Email = "tenant2.member@test.com", TenantId = "tenant-beta", TenantRole = "Member" }
+        };
+
+        foreach (var config in testUsersConfig)
+        {
+            var existingUser = await userManager.FindByEmailAsync(config.Email);
+            
+            if (existingUser == null)
+            {
+                var newUser = new ApplicationUser 
+                { 
+                    UserName = config.Email, 
+                    Email = config.Email, 
+                    EmailConfirmed = true 
+                };
+
+                // Create the user globally
+                var createResult = await userManager.CreateAsync(newUser, "TenantP@ss123!");
+                
+                if (createResult.Succeeded)
+                {
+                    // Every regular person gets the global "User" identity role
+                    await userManager.AddToRoleAsync(newUser, "User");
+
+                    // Link the user to their specific tenant and custom tenant role
+                    var tenantMapping = new TenantUserRole
+                    {
+                        UserId = newUser.Id,
+                        TenantId = config.TenantId,
+                        TenantRoleName = config.TenantRole
+                    };
+
+                    context.TenantUserRoles.Add(tenantMapping);
+                }
+            }
+        }
+
+        // Save all the TenantUserRole links to the database
+        await context.SaveChangesAsync();
+    }
+}
+
+2. Verification Checklist
+
+Global Table Verification: 
+
+The AspNetUsers table will hold 7 total users (1 Global Admin + 6 Test Users).
+
+Identity Roles Verification: The AspNetUserRoles table will map the Global Admin to GlobalAdmin, and the other 6 users to User.
+
+Tenant Isolation Verification: The TenantUserRoles table will now contain 6 distinct records routing each user safely to tenant-alpha or tenant-beta without polluting your global application identity boundaries.
+
+Would you like to see how to write a LINQ query to fetch all users belonging to a specific tenant for an admin dashboard view?
+

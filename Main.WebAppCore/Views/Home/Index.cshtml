@@ -1,5 +1,4 @@
-﻿@model HomeViewModel;
-@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@model HomeViewModel
 
 @{
     ViewBag.Title = Model.PageName;
@@ -18,8 +17,8 @@
     @* @await Html.PartialAsync("../Shared/_PageContent", Model.ContentInfoViewModel) *@
 </div>
 @section scriptsapp {
-    <script>
 
+    <script>
         
         var commentUrl = '@Url.Action("AddComments", "Home")';
 

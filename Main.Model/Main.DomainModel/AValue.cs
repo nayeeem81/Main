@@ -9,7 +9,7 @@ public class AValue : BaseEntity
     {
     }
 
-    public AValue(EnumCountry country, string text, EnumAllowedVariable variable)
+    public AValue(EnumCountry country, string text, EnumTenantVariable variable)
     {
         if(string.IsNullOrEmpty(text))
             throw new ArgumentException("Text not provided.");
@@ -26,7 +26,7 @@ public class AValue : BaseEntity
 
     
     [Required]
-    public EnumAllowedVariable Variable { get; set; }
+    public EnumTenantVariable Variable { get; set; }
 
    
     public long ParentValueId { get; set; }        

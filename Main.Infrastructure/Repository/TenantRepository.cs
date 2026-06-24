@@ -17,7 +17,7 @@ public class TenantRepository: ITenantRepository
         _context = context;
     }
 
-    public Tenant? CurrentTenant
+    public TenantInfo? CurrentTenant
     {
         get;
         set;
@@ -27,27 +27,17 @@ public class TenantRepository: ITenantRepository
     {
         string host = hostName != null ? hostName : "";
 
-        Tenant? tenant = null;
-
         if ( host.Length == 0 )
         {
             CurrentTenant = null;
         }
 
-
-        tenant = await _context.Tenants
+        CurrentTenant = await _context.Tenants
             .IgnoreQueryFilters ( )
-            .FirstOrDefaultAsync<Tenant>
+            .FirstOrDefaultAsync<TenantInfo>
              ( tenant => tenant.Domain.Length == host.Length
-              && tenant.Equals ( host ) );
+              && string.Equals ( tenant.Domain,host ) );
 
-        if ( tenant == null )
-        {
-            CurrentTenant = null;
-        }
-        else
-        {
-            CurrentTenant = tenant;
-        }
+
     }
 }

@@ -1,92 +1,59 @@
 using Main.Infrastructure;
 using Main.Services;
 
+using Microsoft.AspNetCore.Authorization;
+
 using ResourceLibrary.Resources;
 
 using WebAppCore.Helper;
 public class Program
 {
-    private static void Main ( string[] args )
+    private static async Task Main (string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddScoped<ITenantSetter,TenantService> ( );
-
-        builder.Services.AddControllersWithViews ( );
-
-        builder.Services.AddDatabase ( builder.Configuration );
-
-        builder.Services.AddDatabaseDeveloperPageExceptionFilter ( );
-
-        AppSettings.Current = builder.Configuration.GetSection ( "MyAppSettings" )
-                            .Get<MyConfigSettings> ( ) ?? new MyConfigSettings ( );
-
-        builder.Services.AddRepository ( builder.Configuration );
-
-        builder.Services.AddService ( builder.Configuration );
-
-        builder.Services.AddHttpContextAccessor ( );
-
-        builder.Services.AddScoped<IUserContext,WebAppCore.Helper.HttpContextAccessor> ( );
-
-        builder.Services.AddCustomLocalization ( );
-
-        builder.Services.AddControllersWithViews ( );
-
-        builder.Services.AddWebOptimizer ( pipeline => { pipeline.CompileLessFiles ( ); } );
-
-        builder.Logging.ClearProviders ( );
-
-        builder.Logging.AddConsole ( );
+        _ = builder.Services.AddHttpContextAccessor ();
+        _ = builder.Services.AddTransient<IAuthorizationHandler,TenantRoleHandler> ();
+        _ = builder.Services.AddScoped<IUserContext,UserContext> ();
+        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+        _ = builder.Services.AddDatabase (builder.Configuration);
+        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
+                              .Get<MyConfigSettings> () ?? new MyConfigSettings ();
+        _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
+        _ = builder.Services.AddRepository (builder.Configuration);
+        _ = builder.Services.AddService (builder.Configuration);
+        _ = builder.Services.AddCustomLocalization ();
+        _ = builder.Services.AddControllersWithViews ();
+        _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
+        _ = builder.Logging.ClearProviders ();
+        _ = builder.Logging.AddConsole ();
 
         var app = builder.Build();
 
-        if ( app.Environment.IsDevelopment ( ) )
+        if ( app.Environment.IsDevelopment () )
         {
-            app.UseMigrationsEndPoint ( );
-            //app.UseDeveloperExceptionPage ( );
+            _ = app.UseMigrationsEndPoint ();
         }
         else
         {
-            app.UseExceptionHandler ( "/Home/Error" );
-            app.UseHsts ( );
+            _ = app.UseExceptionHandler ("/Home/Error");
+            _ = app.UseHsts ();
         }
 
-        //app.UseHttpsRedirection ( );
-
-        app.UseStatusCodePages ( );
-
-        app.UseWebOptimizer ( );
-
-        app.UseStaticFiles ( );
-
-        app.UseRouting ( );
-
-        app.UseSession ( );
-
-        app.UseResponseCaching ( );
-
-        app.UseCors ( );
-
-        app.UseCustomLocalization ( );
-
-        app.UseMiddleware<TenantResolverMiddleware> ( );
-
-        app.UseAuthentication ( );
-
-        app.UseAuthorization ( );
-
-        app.MapControllers ( );
-
-        app.MapControllerRoute (
-            name: "MyArea",
-            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}" );
-
-
-        app.MapControllerRoute (
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}" );
-
-        app.Run ( );
+        _ = app.UseHttpsRedirection ();
+        _ = app.UseStatusCodePages ();
+        _ = app.UseWebOptimizer ();
+        _ = app.UseStaticFiles ();
+        _ = app.UseRouting ();
+        _ = app.UseSession ();
+        _ = app.UseResponseCaching ();
+        _ = app.UseCors ();
+        _ = app.UseCustomLocalization ();
+        _ = app.UseMiddleware<TenantResolverMiddleware> ();
+        _ = app.UseAuthentication ();
+        _ = app.UseAuthorization ();
+        _ = app.MapControllers ();
+        _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        await DataSeeder.SeedDataAsync (app.Services);
+        await app.RunAsync ();
     }
 }

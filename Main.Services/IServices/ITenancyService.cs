@@ -4,12 +4,6 @@ namespace Main.Services;
 
 public interface ITenancyService
 {
-    string TenantTd
-    {
-        get;
-        set;
-    }
-
     bool TenancyFound
     {
         get; set;

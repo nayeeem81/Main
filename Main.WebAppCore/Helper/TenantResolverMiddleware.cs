@@ -3,14 +3,14 @@ using Main.Infrastructure;
 using Main.Services;
 namespace WebAppCore.Helper;
 
-public class TenantService: ITenantSetter
+public class TenantSetter: ITenantSetter
 {
     public string CurrentTenantId
     {
         get; set;
     }
 
-    public EnumShopType TenantShopType
+    public EnumStoreType TenantStore
     {
         get; set;
     }
@@ -24,6 +24,7 @@ public class TenantService: ITenantSetter
 public class TenantResolverMiddleware
 {
     private readonly RequestDelegate _next;
+
 
     public TenantResolverMiddleware ( RequestDelegate next )
     {
@@ -66,7 +67,7 @@ public class TenantResolverMiddleware
         {
             tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
             tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
-            tenantSetter.TenantShopType = tenancyService.CurrentTenant!.ShopType;
+            tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
         }
         else
         {

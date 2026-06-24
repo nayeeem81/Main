@@ -5,11 +5,11 @@ using Main.Services;
 using System.Security.Claims;
 namespace WebAppCore.Helper;
 
-public class HttpContextAccessor: IUserContext
+public class UserContext: IUserContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HttpContextAccessor ( IHttpContextAccessor httpContextAccessor )
+    public UserContext ( IHttpContextAccessor httpContextAccessor )
     {
         _httpContextAccessor = httpContextAccessor;
     }

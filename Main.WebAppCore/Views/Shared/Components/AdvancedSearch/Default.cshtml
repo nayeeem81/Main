@@ -1,5 +1,4 @@
 ﻿@model MenuObjectModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
 
 <div class="advance-search-container-background" data-adv-search="modal"></div>
 <form class="advance-search-container" data-adv-search="content" method="post" action="@Url.Action("AdvancedSearch","SearchMarket")">
@@ -12,12 +11,14 @@
             <select name="CategoryID" class="fff">
                 @foreach (var cat in Model.AV_Category)
                 {
-                    var selected = Model.CategoryID.HasValue &&  Model.CategoryID.Value.ToString().Equals(cat.Value) ? "selected='selected'" : "";
+                    var selected = Model.CategoryID.HasValue && Model.CategoryID.Value.ToString().Equals(cat.Value) ? "selected='selected'" : "";
                     if (string.IsNullOrEmpty(cat.Value))
                     {
-                        <option value="" selected>@SharedLocalizer["PlaceholderSelectCategory"]</option>
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectCategory"]</option>
                         continue;
-                    }else{
+                    }
+                    else
+                    {
                         <option value="@cat.Value" selected>@cat.Text</option>
                     }
                 }
@@ -31,12 +32,12 @@
 
                     if (string.IsNullOrEmpty(cat.Value))
                     {
-                        <option value="@selected">@SharedLocalizer["PlaceholderSelectSubCategory"]</option>                  
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectSubCategory"]</option>
                     }
                     else
-                    {         
-                        <option value="@cat.Value" selected>@cat.Text</option>                    
-                    }                    
+                    {
+                        <option value="@cat.Value" selected>@cat.Text</option>
+                    }
                 }
             </select>
         </div>
@@ -48,9 +49,10 @@
 
                     if (string.IsNullOrEmpty(cat.Value))
                     {
-                        <option value="@selected">@SharedLocalizer["PlaceholderSelectState"]</option>                        
+                        <option value="@selected">@SharedLocalizer["PlaceholderSelectState"]</option>
                     }
-                    else{
+                    else
+                    {
                         <option value="@cat.Value">@cat.Text</option>
                     }
                 } *@
@@ -111,12 +113,12 @@
                     </span>
                 </label>
                 <div class="row margin-padding-zero">
-                <div class="col-md-6">
-                    <button class="primary-button" type="submit">
-                        <i class="fa fa-search"></i>
-                        @SharedLocalizer["ButtonTextAdvancedSearch"]
-                    </button>
-                </div>
+                    <div class="col-md-6">
+                        <button class="primary-button" type="submit">
+                            <i class="fa fa-search"></i>
+                            @SharedLocalizer["ButtonTextAdvancedSearch"]
+                        </button>
+                    </div>
                     <div class="col-md-6">
                         <button class="light-button  col-md-6" type="button" data-adv-search="modal">
                             @SharedLocalizer["ButtonTextClose"]
@@ -127,3 +129,5 @@
         </div>
     </div>
 </form>
+
+                          

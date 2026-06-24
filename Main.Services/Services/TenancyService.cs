@@ -12,14 +12,8 @@ public class TenancyService: ITenancyService
 
     public TenancyService ( ITenantRepository tenantRepository )
     {
-        TenantTd = "";
         TenancyFound = false;
         _tenantRepository = tenantRepository;
-    }
-
-    public string TenantTd
-    {
-        get; set;
     }
 
     public bool TenancyFound
@@ -37,7 +31,7 @@ public class TenancyService: ITenancyService
     {
         await _tenantRepository.FindCurrentTenantAsync ( hostName );
 
-        Tenant? tenant = _tenantRepository.CurrentTenant;
+        TenantInfo? tenant = _tenantRepository.CurrentTenant;
 
         if ( tenant == null )
         {
@@ -47,7 +41,7 @@ public class TenancyService: ITenancyService
         else
         {
             CurrentTenant = new TenantDisplayDataModel ( tenant.TenantId,tenant.Name,
-                tenant.Domain,tenant.ShopType );
+                tenant.Domain,tenant.Store );
 
             TenancyFound = true;
         }

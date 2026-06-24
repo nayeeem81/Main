@@ -2257,6 +2257,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fashion.
+        /// </summary>
+        public static string Fashion {
+            get {
+                return ResourceManager.GetString("Fashion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fitness &amp; Lifestyles.
         /// </summary>
         public static string FitnessAndLifeStyles {

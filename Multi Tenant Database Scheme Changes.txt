@@ -1,0 +1,84 @@
+### TenantInfo
+
+using Main.Common.Enums;
+using System.ComponentModel.DataAnnotations;
+
+namespace Domain.Model;
+public class TenantInfo
+{
+    // seed
+    public TenantInfo ( string key )
+    {
+        TenantId = key;
+    }
+
+    public TenantInfo ( )
+    {
+    }
+
+    [Key]
+    public string TenantId
+    {
+        get; set;
+    }
+
+    [Required]
+    public string Name
+    {
+        get; set;
+    }
+
+    [Required]
+    public string Domain
+    {
+        get; set;
+    }
+
+    [Required]
+    public EnumStoreType Store
+    {
+        get; set;
+    }
+}
+
+
+
+### ApplicationUser
+
+using Microsoft.AspNetCore.Identity;
+
+namespace Domain.Model;
+public class ApplicationUser: IdentityUser
+{
+    public ApplicationUser ( )
+    {
+    }
+
+    public virtual ICollection<UserTenant> UserTenants
+    {
+        get; set;
+    } = new HashSet<UserTenant> ( );
+}
+
+
+
+### UserTenant
+
+namespace Domain.Model;
+public class UserTenant
+{
+    public UserTenant ( )
+    {
+    }
+
+    public string UserId { get; set; } = string.Empty;
+
+    public virtual ApplicationUser User { get; set; } = null!;
+
+    public string TenantId { get; set; } = string.Empty;
+
+    public virtual TenantInfo Tenant { get; set; } = null!;
+
+    public string TenantRole { get; set; } = string.Empty;
+}
+

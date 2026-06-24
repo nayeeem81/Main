@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
-
 namespace Domain.Model;
 
-public class ApplicationUser: IdentityUser, IMustHaveTenant
+public class ApplicationUser: IdentityUser
 {
     public ApplicationUser ( )
     {
     }
 
-    public string TenantId
+    public virtual ICollection<UserTenant> UserTenants
     {
-        get;
-        set;
-    }
+        get; set;
+    } = new HashSet<UserTenant> ( );
 }

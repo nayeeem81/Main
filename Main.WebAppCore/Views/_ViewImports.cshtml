@@ -8,10 +8,11 @@
 @using Microsoft.AspNetCore;
 @using Microsoft.AspNetCore.Identity;
 @using WebAppCore.Helper;
-@using Main.WebAppCore.ViewCompont;
 @using System.Security.Claims;
 @using Domain.Model;
 @inject IHtmlLocalizer<ResourceLibrary.Resources.SharedResource> SharedLocalizer
+@inject IStringLocalizer<ResourceLibrary.Resources.SharedResource> SharedStringLocalizer
+@inject ITenantSetter TenantSetter
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 

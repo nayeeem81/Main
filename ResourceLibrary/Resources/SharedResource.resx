@@ -3250,4 +3250,8 @@
     <value>NewProductLinkText</value>
     <comment>NewProductLinkText for Company Menu</comment>
   </data>
+  <data name="Fashion" xml:space="preserve">
+    <value>Fashion</value>
+    <comment>Fashion</comment>
+  </data>
 </root>

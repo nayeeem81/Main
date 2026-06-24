@@ -1,20 +1,16 @@
-﻿@using Main.Common.Enums
-@model MenuObjectModel
-@inject IStringLocalizer<SharedResource> SharedLocalizer
+﻿@model MenuObjectModel
 
 @{
-    var listCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.Category).ToList();
-    var listSubCategories = Model.ListCatSubCategory.Where(a => a.Variable == EnumAllowedVariable.SubCategory).ToList();
-    var InitText = !String.IsNullOrEmpty(Model.CategoryText) ? Model.CategoryText : @SharedLocalizer["CateAccordionViewByMarkets"];
-    var categoryCss = "";
+    var InitText = !String.IsNullOrEmpty(Model.CategoryText) ? Model.CategoryText : @SharedStringLocalizer["CateAccordionViewByMarkets"];
 }
+
 <ul class="side-menu">
     @{
         var counter = 1;
-        foreach (var category in listCategories.ToList())
+        foreach (var category in  Model.ListCategory.ToList())
         {
             <li class="category" data-category="@counter">
-                <i class="@category.IconLink"></i>
+                <i class=""></i>
                 <span class="custom-dropdown-category-text-spacing">
                     @category.Text
                 </span>
@@ -26,13 +22,12 @@
 </ul>
 @{
     var counter1 = 1;
-    foreach (var category in listCategories.ToList())
+    foreach (var category in Model.ListCategory.ToList())
     {
-        categoryCss = category.IconLink;
         <div class="subcategory side-menu" data-subcategory="@counter1">
             <h4 class="sub-category-title">@category.Text</h4>
             <ul>
-                @foreach (var subcategory in listSubCategories.Where(a => a.ParentValueID == category.ValueID).ToList())
+                @foreach (var subcategory in Model.ListSubCategory.Where(a => a.ParentID == category.ValueID).ToList())
                 {
                     <li class="sub-category">
                         <a class="sub-category-li @subcategory.Text.Replace(" ", "")"

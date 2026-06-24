@@ -172,7 +172,7 @@
     <value>রপ্তানি পণ্য</value>
   </data>
   <data name="FitnessAndLifeStyles" xml:space="preserve">
-    <value>ফিটনেস এবং লাইফ স্টাইল</value>
+    <value>ফিটনেস</value>
   </data>
   <data name="FitnessEquipments" xml:space="preserve">
     <value>ফিটনেস সরঞ্জাম</value>
@@ -3145,6 +3145,9 @@
   </data>
   <data name="NewProductLinkText" xml:space="preserve">
     <value>পণ্য যোগ করুন</value>
+  </data>
+  <data name="Fashion" xml:space="preserve">
+    <value>ফ্যাশন</value>
   </data>
   <data name="BDT3" xml:space="preserve">
     <value>টাকা</value>

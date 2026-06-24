@@ -39,7 +39,6 @@
 		<!-- Individual Code Exclusions -->
 		<Compile Remove="Controllers\SecureController.cs" />
 		<Compile Remove="Controllers\UserSessionLogController.cs" />
-		<Compile Remove="ViewComponents\ShoppingCartNotificationViewComponent.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

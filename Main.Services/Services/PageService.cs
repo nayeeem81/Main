@@ -19,7 +19,7 @@ public class PageService: IPageService
         IProductRepository productRepository,
         IAdminPostRepository adminPostRepository,
         IPageRepository pageRepository,
-        IPanelRepository panelRepository )
+        IPanelRepository panelRepository)
     {
         _productRepository = productRepository;
         _pageRepository = pageRepository;
@@ -27,7 +27,7 @@ public class PageService: IPageService
         _panelRepository = panelRepository;
     }
 
-    public async Task<bool> CreateNewPanel ( PanelDataModel pagePanelDataModel )
+    public async Task<bool> CreateNewPanel (PanelDataModel pagePanelDataModel)
     {
         Panel panelEntity = PageServiceMapping.CreatePanelEntity ( pagePanelDataModel );
 
@@ -38,7 +38,7 @@ public class PageService: IPageService
         return result;
     }
 
-    public async Task<List<PostDataModel>> GetSelectProducts ( )
+    public async Task<List<PostDataModel>> GetSelectProducts ()
     {
         List<Product> listProducts = await _productRepository.GetSelectProducts (  );
         List<PostDataModel> listPanelPostDataModel = PageServiceMapping.GetPostDataModels( listProducts );
@@ -46,7 +46,7 @@ public class PageService: IPageService
         return listPanelPostDataModel;
     }
 
-    public async Task<List<PostDataModel>> GetSelectPosts ( )
+    public async Task<List<PostDataModel>> GetSelectPosts ()
     {
         List<AdminPost> listAdminPosts = await _adminPostRepository.GetSelectAdminPosts(  );
 
@@ -56,7 +56,7 @@ public class PageService: IPageService
         return listPanelPostDataModel;
     }
 
-    public async Task<PageDataModel> GetPageDataModel ( int pageID )
+    public async Task<PageDataModel> GetPageDataModel (int pageID)
     {
         Page pageEntity =  await _pageRepository.GetSinglePage ( pageID );
 
@@ -65,50 +65,53 @@ public class PageService: IPageService
         return pageDataModel;
     }
 
-    public async Task<List<PageDisplayDataModel>> GetAllPages ( string company )
+    public async Task<List<PageDisplayDataModel>> GetAllPages (string company)
     {
         List<Page> listPageEntity = await _pageRepository.GetAllPages (  );
 
-        List<PageDisplayDataModel> listPageDisplayDataModel = new List <PageDisplayDataModel> ();
+        List<PageDisplayDataModel> listPageDisplayDataModel = [];
 
-        listPageEntity.ForEach ( pageEntity =>
+        listPageEntity.ForEach (pageEntity =>
         {
-            listPageDisplayDataModel.Add ( new PageDisplayDataModel
-                                               ( pageEntity.PageID,
-                                                 pageEntity.EnumPublicPage,company ) );
+            listPageDisplayDataModel.Add (new PageDisplayDataModel
+                                               (pageEntity.PageID,
+                                                pageEntity.EnumPublicPage,
+                                                company));
 
-        } );
+        });
 
-        return listPageDisplayDataModel.ToList ( );
+        return listPageDisplayDataModel.ToList ();
     }
 
-    public async Task<bool> UpdatePanelsOrderAsync ( List<PanelPositionDataModel> listPanelPositionDataModel,BaseDataModel baseDataModel,int pageId )
+    public async Task<bool> UpdatePanelsOrderAsync (List<PanelPositionDataModel> listPanelPositionDataModel,BaseDataModel baseDataModel,int pageId)
     {
-        List<int> listPanelIds = listPanelPositionDataModel.Select(x => x.PanelID).ToList();
+        ArgumentNullException.ThrowIfNull (listPanelPositionDataModel);
+
+        List<int> listPanelIds = listPanelPositionDataModel.Select(x => x.PanelID)
+            .ToList();
 
         Page page = await _pageRepository.GetSinglePage ( pageId );
 
-        List<Panel> listPanels = page.ListPanels.ToList<Panel> () ?? new List<Panel>();
+        List<Panel> listPanels = page.ListPanels.ToList<Panel> () ?? [];
 
-        listPanels.Where ( panel => listPanelIds.Contains ( panel.PanelID ) ).ToList ( ).ForEach ( updatePanel =>
+        listPanels.Where (panel =>
         {
-            updatePanel.ModifyBaseData ( baseDataModel );
+            return listPanelIds.Contains (panel.PanelID);
+        }).ToList ().ForEach (updatePanel =>
+        {
+            updatePanel.ModifyBaseData (baseDataModel);
+            updatePanel.PanelPosition = listPanelPositionDataModel.First (a => a.PanelID == updatePanel.PanelID).PanelPosition;
 
-            updatePanel.PanelPosition = listPanelPositionDataModel.First ( a => a.PanelID == updatePanel.PanelID ).PanelPosition;
+        });
 
-        } );
-
-        page.ModifyBaseData ( baseDataModel );
-
+        page.ModifyBaseData (baseDataModel);
         bool result = await _pageRepository.UpdatePage ( page, listPanels );
-
         return result;
     }
 
-    public async Task<bool> DeletePanelAsync ( int panelId )
+    public async Task<bool> DeletePanelAsync (int panelId)
     {
         bool result = await _panelRepository.DeletePanelAsync ( panelId );
-
         return result;
     }
 }

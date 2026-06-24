@@ -1,185 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi tenant shopping store</title>
+
+    <title> mutitenant store | github</title>
+    
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <style>
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        header {
-            background: linear-gradient(90deg, #FF0033, #0066FF); /* Electric red to electric blue */
-            color: #FFFFFF; /* White text for contrast */
-            font-family: 'Roboto', sans-serif; /* Clean, modern font */
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: justify;
-            padding: 20px;
-            line-height: 1.2;
-        }
-
-            header h1 {
-                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
-            }
-
-           
-
-        /* Global Reset */
-        *, ::before, ::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        
-
-        /* Header */
-        .site-header {
-            background: linear-gradient(90deg, #FF0033, #0066FF);
-            color: #fff;
-            padding: 1rem 2rem;
-        }
-
-            .site-header h1 {
-                font-size: 2rem;
-                font-weight: bold;
-                text-align: justify;
-                text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
-            }
-
-        /* Header Navigation */
-        .header-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 1rem;
-        }
-
-            .header-nav ul {
-                list-style: none;
-                display: flex;
-                gap: 1rem;
-            }
-
-            .header-nav a {
-                text-decoration: none;
-                color: #fff;
-            }
-
-                .header-nav a:hover {
-                    color: #FFD700; /* Gold hover for UX contrast */
-                }
-
-        /* Layout */
-        .container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 20px;
-            padding: 2rem;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            background-color: #f9f9f9;
-            padding: 1.5rem;
-            border-right: 1px solid #ccc;
-        }
-
-            .sidebar h2 {
-                margin-bottom: 1rem;
-                font-size: 1.2rem;
-                color: #FF0033;
-            }
-
-            .sidebar ul {
-                list-style: none;
-            }
-
-            .sidebar li {
-                margin-bottom: 1rem;
-            }
-
-            .sidebar a {
-                text-decoration: none;
-                color: #333;
-                transition: color 0.3s ease;
-            }
-
-                .sidebar a:hover {
-                    color: #0066FF;
-                }
-
-        /* Main Content */
-        .main-content {
-            padding: 1.5rem;
-            overflow-y: auto;
-        }
-
-        .content-section {
-            min-height: 80vh;
-            border-bottom: 1px dashed #ccc;
-            padding-bottom: 2rem;
-            margin-bottom: 2rem;
-        }
-
-            .content-section h2 {
-                margin-bottom: 1rem;
-                color: #FF0033;
-            }
-
-       
-
-           
-    </style>
+    <link href="site-github.css" rel="stylesheet" />
+   
 </head>
 <body>
     <header class="site-header">
+
         <h1 id="pik">tenantors</h1>
+
         <nav class="header-nav">
+
             <ul>
-                <li><a href="#">Project</a></li>
-                <li><a href="#">Github Repository</a></li>
-                <li><a href="#">Learning Zone</a></li>
-               
+                <li>
+                    <a href="https://github.com/users/nayeeem81/projects/1">Project</a>
+                </li>
+                <li>
+                    <a href="https://github.com/nayeeem81/Main">Github Repository</a>
+                </li>
+                <li>
+                    <a href="https://github.com/nayeeem81/Main/wiki">Learning Zone</a>
+                </li>
             </ul>
+
         </nav>
+
     </header>
 
     <div class="container">
+
         <!-- Sidebar -->
         <aside class="sidebar">
+
             <h2>Multi-tenant shops</h2>
+
             <ul>
                 <li><a href="#section1">Project goals</a></li>
+                <li><a href="#section3">Tech Stack</a></li>
+                <li><a href="#section4">Project Course</a></li>
+                <li><a href="#section5">Pre Courses</a></li>
                 <li><a href="#section2">Repository contents</a></li>
-                <li><a href="#section3">Scope of the software</a></li>
             </ul>
+
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <section id="section1" class="content-section">
-                <h2>Project goals</h2>
-                <p>This section describes the goals of the project and its intended outcomes.</p>
-                <a href="#pik"> back to up </a>
+
+            <section class="content-section">
+
+                <b> Hi there, I'm Naim Ul Islam Prodhan 👋 </b>
+
+                <br />
+                <br />
+                <p align="justify">
+                    I am an engineer, father, and community advocate from Bangladesh. My journey has taken me from local corporate offices to travels abroad, and now into the world of open-source and self-taught engineering.
+                </p>
+
+                <br />
+
+                <b> 📖 My Story & Resilience</b>
+
+                <p align="justify">
+                    In January 2024, I survived a mild brain stroke that temporarily took away my ability to speak. Facing a long recovery and time away from full-time work, I chose to redirect my energy toward continuous learning and technology.
+                </p>
+
+                <br />
+                
+                <p align="justify">
+                    I rebuilt my skills step-by-step—using my phone and tools like Google Colab to learn new programming languages and frameworks.
+                </p>
+
+                <br />
+                <p align="justify">
+                    Today, I am healthy, speaking again, and driven by a new purpose:
+
+                    <b>to share my knowledge and give back to the tech community.</b>
+                </p>
             </section>
 
-            <section id="section2" class="content-section">
-                <h2>Repository contents</h2>
-                <p>This section explains what is included in the repository and how it is structured.</p>
+            <section id="section1" class="content-section">
+
+                <h2>Project goals</h2>
+
+                <b>1. Volunteering for Code Reuse</b>
+                <br />
+                <p align="justify">
+                    Volunteering your time is one of the best examples of giving back to the community. While this can be one of the more time-consuming ways to give back, it can also be the most fulfilling and hands-on.
+
+                    <br />
+                    <br />
+                </p>
+                <p align="center">
+                    <b>
+                        “Knowledge is meant to be shared. I am dedicated to empowering the next generation of engineers. Goal is to create a community with same motivation.”
+                    </b>
+                </p>
+                <br />
+
+
+                <b>2. Deliver code & build community</b>
+                <br />
+                <p align="justify">
+                    This community is tring to deliver and engage engineers to practice collaborative production-grade software engineering. Our goal is to collectively design, build, and document a complete Multi-Tenant SaaS Storefront using .NET 8.0 ASP.NET Core MVC. Our focus is to encourage, engage new engineers and learners to join, learn and contribute in this community & project.
+                </p>
+                <br />
+
+                <b>3. Learn & build community</b>
+                <p align="left">
+                    <b>🚑 Real-World Problem Solving</b>
+                </p>
+                <p align="justify">
+                    We solve production challenges like tenant isolation pipelines, global database filtering with EF Core, and secure client-side scripting.
+                    <b>[ON GOING]</b>
+                </p>
+
+                <br />
+
+                <p align="left">
+                    <b>📝 Interactive Course Materials</b>
+                </p>
+                <p align="justify">
+                    Every major architectural component is accompanied by step-by-step documentation, real-life examples, and actionable lab challenges.
+                    <b>[Plan]</b>
+                </p>
+
+                <br />
+
+                <p align="left">
+                    <b>✨Co-Authoring Code</b>
+                </p>
+                <p align="justify">
+                    Community members collaborate directly through GitHub Pull Requests, code reviews, and automated CI/CD pipeline building. <b>[Plan]</b>
+                </p>
+
+                <br />
+
+                <p align="left">
+                    <b>👍 DevOps & Delivery: </b>
+                </p>
+                <p align="justify">
+                    We hopefully will finish by publishing our codebases to live Linux VPS servers, mastering the entire software development lifecycle (SDLC).
+                    <b>[ON GOING]</b>
+                </p>
+
+                <br />
                 <a href="#pik"> back to up </a>
+
             </section>
 
             <section id="section3" class="content-section">
-                <h2>Scope of the software</h2>
-                <p>This section outlines the scope of the software, including features and limitations.</p>
+
+                <h2>Tech Stack & Technologies</h2>
+
+                <p align="left">
+
+                    <b>🛠️ Development Tool (IDE)</b>
+                    <br />
+
+                    <b>🛠️ Framework:</b> .NET 8.0
+                    <br />
+
+                    <b>🛠️ Language:</b> C#
+                    <br />
+
+                    <b>🛠️ ORM:</b> Entity Framework Core
+                    <br />
+
+                    <b>🛠️ Database:</b> Sql Server
+                    <br />
+
+                    <b>🛠️ Database Tool: </b> Sql Server Management Studio 2022
+
+                    <br />
+                    <br />
+
+                    <b>Frontend & Styling</b>
+                    <br />
+
+                    <b>🎨 Scripting:</b> JavaScript
+                    <br />
+
+                    <b>🎨 Markup:</b> HTML5
+                    <br />
+
+                    <b>🎨 Styling:</b> CSS3
+                    <br />
+
+                    <b>🎨Preprocessors:</b> SCSS, Less
+                    
+                    <br />
+                    <br />
+
+                    <b>DevOps & Infrastructure</b>
+                    <br />
+
+                    <b>🎨Source Control (ALCM)</b> Git
+                    <br />
+
+                    <b> 🚀 Dev Ops (Agile)</b> Git Hub Project
+                    <br />
+
+                    <b>🐋 Containerization:</b> Docker
+
+                </p>
+
+                <br />
                 <a href="#pik"> back to up </a>
+
+            </section>
+
+            <section id="section4" class="content-section">
+
+                <h2>Course Curriculum Outline</h2>
+
+                <p>
+
+                    <b>Here is a structured course curriculum blueprint:</b>
+
+                    <br />
+
+                    Source material designed specifically for your .NET 8.0 ASP.NET Core MVC Multi-Tenant Store application. This curriculum is architected to teach junior developers how to build a production-ready SaaS (Software as a Service) platform using Clean Architecture.
+
+                </p>
+                <p>
+                    <br />
+                    <br />
+                    <b>📚 Chapter 1</b>
+                    <br />
+                    
+                    1. Architecture & SaaS Practices
+                    <br />
+                    2. Multi-Tenant Architecture & Domain Foundations
+                    <br />
+                    3. Understanding Tenant Isolation Strategies (Single DB vs. Multi-DB).
+                    <br />
+                    4. Setting up Clean Architecture layers (Core, Infrastructure, Web).
+                </p>
+
+                <p>
+                    
+                    <br />
+                    <b>📚 Chapter 2</b>
+                    <br />
+                    
+                    1. Data Isolation with EF CoreQuery Filters for automated Tenant Isolation.
+                    <br />
+                    2. Database migrations management on a shared platform.
+
+                </p>
+
+                <p>
+                   
+                    <br />
+                    <b>📚Chapter 3</b>
+                   
+                    <br />
+                    1. Modern MVC with Vanilla JavaScript
+                    <br />
+                    2. Building dynamic, non-blocking UI storefronts.
+                    <br />
+                    3. Asynchronous fetching (fetch API), secure anti-forgery tokens, and modular DOM scripts.
+
+                </p>
+
+                <p>
+                   
+                    <br />
+                    <b>📚 Chapter 4</b>
+                    <br />
+                   
+                    1. Production Deployment & DevOps
+                    <br />
+                    2. Managing environments safely via GitHub Actions and secrets.
+                    <br />
+                    3. Publishing, proxy configuration (Nginx), and hosting on a Linux VPS.
+                </p>
+                <br />
+                <a href="#pik"> back to up </a>
+
             </section>
         </main>
     </div>

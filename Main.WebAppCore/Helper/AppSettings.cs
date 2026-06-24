@@ -25,6 +25,5 @@ public static class AppSettings
     public static MyConfigSettings Current
     {
         get; set;
-    }
-        = new ( );
+    } = new ();
 }

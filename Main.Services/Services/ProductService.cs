@@ -5,16 +5,16 @@ using Main.Services.Extensions;
 
 namespace Main.Services;
 
-public class ProductService : IProductService
+public class ProductService: IProductService
 {
     private readonly IProductRepository _ProductRepository;
 
-    public ProductService ( IProductRepository productRepository)
+    public ProductService (IProductRepository productRepository)
     {
         _ProductRepository = productRepository;
     }
 
-    public async Task<List<ProductDisplayModel>> GetAllProducts()
+    public async Task<List<ProductDisplayModel>> GetAllProducts ()
     {
         var listProducts = await _ProductRepository.GetAllProducts();
 
@@ -25,30 +25,30 @@ public class ProductService : IProductService
     }
 
 
-    public async Task<bool> 
-        SaveNewProduct(ProductDataModel productDataModel)
+    public async Task<bool>
+        SaveNewProduct (ProductDataModel productDataModel)
     {
-        Product productEntity = ProductServiceMapping.MapSaveProdurtEntity ( productDataModel );
+        Product productEntity = ProductServiceMapping.MapSaveProductEntity ( productDataModel );
 
-            
+
         return await _ProductRepository
-                    .SaveNewProduct( productEntity );
+                    .SaveNewProduct (productEntity);
     }
 
-    public async Task<ProductDataModel> GetProductForEditProductID(int productID)
+    public async Task<ProductDataModel> GetProductForEditProductID (int productID)
     {
-        var productEntity 
+        var productEntity
             = await _ProductRepository
             .GetProductByProductID(productID);
 
         ProductDataModel productDataModel =
-            ProductServiceMapping.MapSingelProductDataModel(productEntity);
+            ProductServiceMapping.MapSingleProductDataModel(productEntity);
 
         return productDataModel;
     }
 
 
-    public async Task<bool> UpdateProduct(ProductDataModel productDataModel )
+    public async Task<bool> UpdateProduct (ProductDataModel productDataModel)
     {
 
         Product productEntity
@@ -57,22 +57,22 @@ public class ProductService : IProductService
 
         productEntity
             = ProductServiceMapping.MapProductUpdateEntity
-            ( productEntity, productDataModel );
+            (productEntity,productDataModel);
 
-        return await _ProductRepository.UpdateProduct( productEntity );
+        return await _ProductRepository.UpdateProduct (productEntity);
     }
 
 
-    public async Task<bool> DeleteProductImage(int id, int postId)
+    public async Task<bool> DeleteProductImage (int id,int postId)
     {
         return await _ProductRepository
-                    .DeleteProductImage (id, postId);
+                    .DeleteProductImage (id,postId);
     }
 
 
-    public async Task<bool> DeleteProduct(int postId)
+    public async Task<bool> DeleteProduct (int postId)
     {
-        return await _ProductRepository.DeleteProduct(postId);
+        return await _ProductRepository.DeleteProduct (postId);
     }
 }
 

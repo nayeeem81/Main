@@ -1,6 +1,4 @@
-﻿@inject IStringLocalizer<SharedResource> SharedLocalizer
-
-@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
+﻿@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
 {
     @if ( User.IsInRole ( "Admin" ) )
     {

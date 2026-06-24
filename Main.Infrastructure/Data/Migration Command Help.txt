@@ -1,5 +1,5 @@
 
 
-Add-Migration InitialApplicationDBMigration2 -Context Main.Infrastructure.ApplicationDbContext
+Add-Migration InitialApplicationDBMigration3 -Context Main.Infrastructure.ApplicationDbContext
 
 Update-Database -Context Main.Infrastructure.ApplicationDbContext

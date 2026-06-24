@@ -4,7 +4,7 @@ namespace IRepository;
 
 public interface ITenantRepository
 {
-    Tenant? CurrentTenant
+    TenantInfo? CurrentTenant
     {
         get; set;
     }

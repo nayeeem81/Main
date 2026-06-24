@@ -1,4 +1,4 @@
-﻿using Main.Common.Enums;
+﻿
 using System.ComponentModel;
 
 namespace WebAppCore.ViewModel;
@@ -9,27 +9,35 @@ public class AdminPostDisplayViewModel
     {
     }
 
-    public int AdminPostID { get; set; }
+    public int AdminPostID
+    {
+        get; set;
+    }
 
 
     [DisplayName ( "Poster Name" )]
-    public string PosterName { get; set; }
+    public string PosterName
+    {
+        get; set;
+    }
 
 
     [DisplayName ( "Post Title" )]
-    public string PostTitle { get; set; }
+    public string PostTitle
+    {
+        get; set;
+    }
 
 
     [DisplayName ( "Post Type" )]
-    public string DiispayPostType { get; set; }
+    public string DiispayPostType
+    {
+        get; set;
+    }
 
 
     [DisplayName ( "Host Company" )]
-    public EnumCompanyName HostCompanyName { get; set; }
-
-
-    [DisplayName ( "Host Company" )]
-    public string DiispayCompanyName
+    public string DisplayCompanyName
     {
         get; set;
     }

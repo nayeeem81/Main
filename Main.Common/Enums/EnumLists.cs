@@ -1,7 +1,7 @@
 ﻿using Main.Common.Model;
+
 using System.ComponentModel;
 using System.Reflection;
-using Main.Common.Enums;
 
 namespace Main.Common.Enums;
 
@@ -12,103 +12,39 @@ public class ListEnum
         { EnumCountry.Bangladesh, EnumCurrency.BDT}
     };
 
-    
-    public static EnumCurrency GetCountryCurrency(EnumCountry countryName)
+    public static EnumCurrency GetCountryCurrency ( EnumCountry countryName )
     {
         var item = objCountryCurrencyList[countryName];
         return item;
     }
-  
-    public static string GetCountryCurrencyDescription(EnumCountry countryName)
+
+    public static string GetCountryCurrencyDescription ( EnumCountry countryName )
     {
         var currency = GetCountryCurrency(countryName);
 
-        return GetCurrencyDescription(currency);
+        return GetCurrencyDescription ( currency );
     }
 
-    private static readonly List<KeyValuePair<EnumCountry, EnumState>> objCountryStateList = new List<KeyValuePair<EnumCountry, EnumState>>()
-    {
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Dhaka),
-
-        new KeyValuePair<EnumCountry, EnumState>(EnumCountry.Bangladesh, EnumState.Chittagong),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Rajshahi),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Khulna),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Barishal),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Sylhet),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Maimenshing),
-
-        new KeyValuePair<EnumCountry, EnumState>( EnumCountry.Bangladesh, EnumState.Rangpur)
-   };
-
-   public static List<ParentChildVriableModel> GetCountryStates(EnumCountry countryName, bool IsAllCountry)
-   {
-        List<KeyValuePair<EnumCountry, EnumState>> listStates;
-        if (IsAllCountry)
-        {
-            listStates = objCountryStateList.ToList();
-        }
-        else
-        {
-            listStates = objCountryStateList.Where(a => a.Key == countryName).ToList();
-        }
-        List<ParentChildVriableModel> objStateList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumState);
-
-        foreach (var item in listStates)
-        {
-            var value = item.Value;
-
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int) value
-            };
-
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-
-            objStateList.Add(objPair);
-        }
-
-        return objStateList;
-    }
-
-    public static string GetCurrencyDescription(EnumCurrency currencyEnum)
+    public static string GetCurrencyDescription ( EnumCurrency currencyEnum )
     {
         Type enumType = typeof(EnumCurrency);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumCurrency value in enumValues)
+        foreach ( EnumCurrency value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
-            if (value == currencyEnum)
+            if ( value == currencyEnum )
             {
-                if (descriptionAttribute != null)
+                if ( descriptionAttribute != null )
                 {
                     return descriptionAttribute.Description;
                 }
                 else
                 {
-                    return value.ToString();
+                    return value.ToString ( );
                 }
             }
         }
@@ -116,26 +52,26 @@ public class ListEnum
         return "";
     }
 
-    public static string GetCountryDescription(EnumCountry countryEnum)
+    public static string GetCountryDescription ( EnumCountry countryEnum )
     {
         Type enumType = typeof(EnumCountry);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumCountry value in enumValues)
+        foreach ( EnumCountry value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
-            if (value == countryEnum)
+            if ( value == countryEnum )
             {
-                if (descriptionAttribute != null)
+                if ( descriptionAttribute != null )
                 {
                     return descriptionAttribute.Description;
                 }
                 else
                 {
-                    return value.ToString();
+                    return value.ToString ( );
                 }
             }
         }
@@ -143,327 +79,222 @@ public class ListEnum
         return "";
     }
 
-    public static string GetStateDescription(EnumState? stateEnum)
+    public static List<TenantVariableModel> GetCountryList ( )
     {
-        if (!stateEnum.HasValue)
-            return "";
-
-        Type enumType = typeof(EnumState);
-
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumState value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute 
-                       = memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            if (value == stateEnum.Value)
-            {
-                if (descriptionAttribute != null)
-                {
-                    return descriptionAttribute.Description;
-                }
-                else
-                {
-                    return value.ToString();
-                }
-            }
-        } 
-
-        return "";
-    }
-
-
-    public static List<ParentChildVriableModel> GetCountryList()
-    {
-        List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objCountryList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumCountry);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumCountry value in enumValues)
+        foreach ( EnumCountry value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair = new ParentChildVriableModel
+            TenantVariableModel objPair = new TenantVariableModel
             {
                 ValueID = (int) value
             };
-            if (descriptionAttribute != null)
+            if ( descriptionAttribute != null )
             {
                 objPair.Text = descriptionAttribute.Description;
             }
             else
             {
-                objPair.Text = value.ToString();
+                objPair.Text = value.ToString ( );
             }
-            if (objPair.ValueID != 0)
+            if ( objPair.ValueID != 0 )
             {
-                objCountryList.Add(objPair);
+                objCountryList.Add ( objPair );
             }
         }
         return objCountryList;
     }
 
-    public static List<ParentChildVriableModel> GetCurrencyList()
+    public static List<TenantVariableModel> GetCurrencyList ( )
     {
-        List<ParentChildVriableModel> objCurrencyList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objCurrencyList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumCurrency);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumCurrency value in enumValues)
+        foreach ( EnumCurrency value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair 
-                = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
+            TenantVariableModel objPair
+                = new TenantVariableModel
+                {
+                    ValueID = (int)value
+                };
 
-            if (descriptionAttribute != null)
+            if ( descriptionAttribute != null )
             {
                 objPair.Text = descriptionAttribute.Description;
             }
             else
             {
-                objPair.Text = value.ToString();
+                objPair.Text = value.ToString ( );
             }
 
-            objCurrencyList.Add(objPair);
+            objCurrencyList.Add ( objPair );
 
         }
         return objCurrencyList;
     }
 
-    public static List<ParentChildVriableModel> GetDeviceTypeList()
+    public static List<TenantVariableModel> GetShowHideList ( )
     {
-        List<ParentChildVriableModel> objPackageTypeList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumDeviceType);
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumDeviceType value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
-
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-
-            objPackageTypeList.Add(objPair);
-        }
-
-        return objPackageTypeList;
-    }
-
-    public static List<ParentChildVriableModel> GetShowHideList()
-    {
-        List<ParentChildVriableModel> objPackageTypeList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objPackageTypeList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumShowOrHide);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumShowOrHide value in enumValues)
+        foreach ( EnumShowOrHide value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair = new ParentChildVriableModel();
+            TenantVariableModel objPair = new TenantVariableModel();
 
-            objPair.ValueID = (int)value;
+            objPair.ValueID = ( int ) value;
 
-            if (descriptionAttribute != null)
+            if ( descriptionAttribute != null )
             {
                 objPair.Text = descriptionAttribute.Description;
             }
             else
             {
-                objPair.Text = value.ToString();
+                objPair.Text = value.ToString ( );
             }
-            objPackageTypeList.Add(objPair);
+            objPackageTypeList.Add ( objPair );
         }
 
         return objPackageTypeList;
     }
 
-    public static List<ParentChildVriableModel> GetPanelTempletList()
+    public static List<TenantVariableModel> GetPanelTempletList ( )
     {
-        List<ParentChildVriableModel> objColumnList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objColumnList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumPanelTemplate);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumPanelTemplate value in enumValues)
+        foreach ( EnumPanelTemplate value in enumValues )
         {
             MemberInfo memberInfo = enumType.GetMember(value.ToString()).First();
 
             var descriptionAttribute = memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair = new ParentChildVriableModel
+            TenantVariableModel objPair = new TenantVariableModel
             {
                 ValueID = (int)value
             };
 
-            if (descriptionAttribute != null)
+            if ( descriptionAttribute != null )
             {
                 objPair.Text = descriptionAttribute.Description;
             }
             else
             {
-                objPair.Text = value.ToString();
+                objPair.Text = value.ToString ( );
             }
 
-            objColumnList.Add(objPair);
+            objColumnList.Add ( objPair );
         }
 
         return objColumnList;
     }
 
-    public static List<ParentChildVriableModel> GetPublicPages()
+    public static List<TenantVariableModel> GetPublicPages ( )
     {
-        List<ParentChildVriableModel> objColumnList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objColumnList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumPublicPage);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumPublicPage value in enumValues)
+        foreach ( EnumPublicPage value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair = new ParentChildVriableModel
+            TenantVariableModel objPair = new TenantVariableModel
             {
                 ValueID = (int)value
             };
 
-            if (descriptionAttribute != null)
+            if ( descriptionAttribute != null )
             {
                 objPair.Text = descriptionAttribute.Description;
             }
             else
             {
-                objPair.Text = value.ToString();
+                objPair.Text = value.ToString ( );
             }
 
-            objColumnList.Add(objPair);
+            objColumnList.Add ( objPair );
         }
 
         return objColumnList;
     }
-
-    public static List<ParentChildVriableModel> GetOfferTypeList()
+    public static List<TenantVariableModel> GetPostTypeList ( )
     {
-        List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumOfferType);
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumOfferType value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
-
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-
-            if (objPair.ValueID != 0)
-            {
-                objCountryList.Add(objPair);
-            }
-        }
-
-        return objCountryList;
-    }
-
-    public static List<ParentChildVriableModel> GetPostTypeList()
-    {
-        List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumPostType);
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumPostType value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
-
-
-
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = (string)descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-
-            if (objPair != null)
-            {
-                objCountryList.Add(objPair);
-            }
-        }
-
-        return objCountryList;
-    }
-
-    public static List<ParentChildVriableModel> GetAdminPostTypeList ( )
-    {
-        List<ParentChildVriableModel> objAdminPostTypeList = new List<ParentChildVriableModel>();
+        List<TenantVariableModel> objCountryList = new List<TenantVariableModel>();
 
         Type enumType = typeof(EnumPostType);
         var enumValues = enumType.GetEnumValues();
 
         foreach ( EnumPostType value in enumValues )
         {
-            if ( value == EnumPostType.Product)
+            MemberInfo memberInfo =
+                enumType.GetMember(value.ToString()).First();
+            var descriptionAttribute =
+                memberInfo.GetCustomAttribute<DescriptionAttribute>();
+
+            TenantVariableModel objPair = new TenantVariableModel
+            {
+                ValueID = (int)value
+            };
+
+
+
+            if ( descriptionAttribute != null )
+            {
+                objPair.Text = ( string ) descriptionAttribute.Description;
+            }
+            else
+            {
+                objPair.Text = value.ToString ( );
+            }
+
+            if ( objPair != null )
+            {
+                objCountryList.Add ( objPair );
+            }
+        }
+
+        return objCountryList;
+    }
+
+    public static List<TenantVariableModel> GetAdminPostTypeList ( )
+    {
+        List<TenantVariableModel> objAdminPostTypeList = new List<TenantVariableModel>();
+
+        Type enumType = typeof(EnumPostType);
+        var enumValues = enumType.GetEnumValues();
+
+        foreach ( EnumPostType value in enumValues )
+        {
+            if ( value == EnumPostType.Product )
             {
                 continue;
             }
@@ -473,7 +304,7 @@ public class ListEnum
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
 
-            ParentChildVriableModel objPair = new ParentChildVriableModel
+            TenantVariableModel objPair = new TenantVariableModel
             {
                 ValueID = (int) value
             };
@@ -492,128 +323,30 @@ public class ListEnum
         return objAdminPostTypeList;
     }
 
-    public static List<ParentChildVriableModel> GetPaidByList()
-    {
-        List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumPaidBy);
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumPaidBy value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-            if (objPair.ValueID != 0)
-            {
-                objCountryList.Add(objPair);
-            }
-        }
-        return objCountryList;
-    }
-
-    
-    public static List<ParentChildVriableModel> GetCompanyList()
-    {
-        List<ParentChildVriableModel> objCountryList = new List<ParentChildVriableModel>();
-
-        Type enumType = typeof(EnumCompanyName);
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumCompanyName value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-                memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            ParentChildVriableModel objPair = new ParentChildVriableModel
-            {
-                ValueID = (int)value
-            };
-            if (descriptionAttribute != null)
-            {
-                objPair.Text = descriptionAttribute.Description;
-            }
-            else
-            {
-                objPair.Text = value.ToString();
-            }
-            if (objPair.ValueID != 0)
-            {
-                objCountryList.Add(objPair);
-            }
-        }
-        return objCountryList;
-    }
-
-    public static string GetPageDescription(EnumPublicPage page)
+    public static string GetPageDescription ( EnumPublicPage page )
     {
         Type enumType = typeof(EnumPublicPage);
         var enumValues = enumType.GetEnumValues();
 
-        foreach (EnumPublicPage value in enumValues)
+        foreach ( EnumPublicPage value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
             var descriptionAttribute =
                 memberInfo.GetCustomAttribute<DescriptionAttribute>();
-            if (value == page)
+            if ( value == page )
             {
-                if (descriptionAttribute != null)
+                if ( descriptionAttribute != null )
                 {
                     return descriptionAttribute.Description;
                 }
                 else
                 {
-                    return value.ToString();
+                    return value.ToString ( );
                 }
             }
         }
 
         return " ";
-    }
-
-    public static string GetCompanyDescription(EnumCompanyName company)
-    {
-        Type enumType = typeof(EnumCompanyName);
-
-        var enumValues = enumType.GetEnumValues();
-
-        foreach (EnumCompanyName value in enumValues)
-        {
-            MemberInfo memberInfo =
-                enumType.GetMember(value.ToString()).First();
-            var descriptionAttribute =
-            memberInfo.GetCustomAttribute<DescriptionAttribute>();
-
-            if (value == company)
-            {
-                if (descriptionAttribute != null)
-                {
-                    return descriptionAttribute.Description;
-                }
-                else
-                {
-                    return value.ToString();
-                }
-            }
-        }
-
-        return "";
     }
 }

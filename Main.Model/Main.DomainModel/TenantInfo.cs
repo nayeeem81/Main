@@ -1,18 +1,17 @@
 ﻿using Main.Common.Enums;
 
 using System.ComponentModel.DataAnnotations;
-
 namespace Domain.Model;
 
-public class Tenant
+public class TenantInfo
 {
-    //  for seed only
-    public Tenant ( string key )
+    // seed
+    public TenantInfo ( string key )
     {
         TenantId = key;
     }
 
-    public Tenant ( )
+    public TenantInfo ( )
     {
     }
 
@@ -35,7 +34,7 @@ public class Tenant
     }
 
     [Required]
-    public EnumShopType ShopType
+    public EnumStoreType Store
     {
         get; set;
     }

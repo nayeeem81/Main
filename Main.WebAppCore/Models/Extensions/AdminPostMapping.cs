@@ -1,4 +1,5 @@
 ﻿using DataTransferModel;
+
 using Main.Common.Enums;
 
 namespace WebAppCore.ViewModel.Extensions;
@@ -7,16 +8,17 @@ public static class AdminPostMapping
 {
     public static AdminPostDataModel MapNewDataModel ( AdminPostViewModel adminPostViewModel )
     {
-        AdminPostDataModel adminPostDataModel = new AdminPostDataModel();
-
-        adminPostDataModel.AdminPostID = adminPostViewModel.AdminPostID ?? 0;
-        adminPostDataModel.PostTitle = adminPostViewModel.PostTitle;
-        adminPostDataModel.PosterName = adminPostViewModel.PosterName;
-        adminPostDataModel.PosterContactNumber = adminPostViewModel.PosterContactNumber;
-        adminPostDataModel.WebsiteUrl = adminPostViewModel.WebsiteUrl;
-        adminPostDataModel.ShortNote = adminPostViewModel.ShortNote;
-        adminPostDataModel.SearchTag = adminPostViewModel.SearchTag;
-        adminPostDataModel.PostType = adminPostViewModel.PostType;
+        AdminPostDataModel adminPostDataModel = new AdminPostDataModel
+        {
+            AdminPostID = adminPostViewModel.AdminPostID ?? 0,
+            PostTitle = adminPostViewModel.PostTitle,
+            PosterName = adminPostViewModel.PosterName,
+            PosterContactNumber = adminPostViewModel.PosterContactNumber,
+            WebsiteUrl = adminPostViewModel.WebsiteUrl,
+            ShortNote = adminPostViewModel.ShortNote,
+            SearchTag = adminPostViewModel.SearchTag,
+            PostType = adminPostViewModel.PostType
+        };
 
         return adminPostDataModel;
     }
@@ -65,10 +67,10 @@ public static class AdminPostMapping
         adminPostViewModel.PostType = adminPostDatatModel.PostType;
         adminPostViewModel.SearchTag = adminPostDatatModel.SearchTag;
         adminPostViewModel.ShortNote = adminPostDatatModel.ShortNote;
-        adminPostViewModel.DisplayPostType = EnumDescription.GetDescription ( ( EnumPostType ) adminPostDatatModel.PostType );
+        adminPostViewModel.DisplayPostType = EnumDescription.GetDescription ( adminPostDatatModel.PostType );
     }
 
-    public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList ( List<AdminPostDisplayModel> adminPostDisplayModelList )
+    public static List<AdminPostDisplayViewModel> MapAdminPostDisplayViewModelList ( List<AdminPostDisplayModel> adminPostDisplayModelList,string company )
     {
         var displayViewModels = new List<AdminPostDisplayViewModel>();
 
@@ -79,9 +81,8 @@ public static class AdminPostMapping
                 AdminPostID = model.AdminPostID,
                 PosterName = model.PosterName,
                 PostTitle = model.PostTitle,
-                DiispayPostType = EnumDescription.GetDescription ( model.PostType),
-                HostCompanyName = model.HostCompanyName,
-                DiispayCompanyName = EnumDescription.GetDescription ( model.HostCompanyName )
+                DiispayPostType = EnumDescription.GetDescription ( model.PostType ),
+                DisplayCompanyName = company
             } );
         }
 
