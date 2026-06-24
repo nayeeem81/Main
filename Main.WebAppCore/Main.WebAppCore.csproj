@@ -65,4 +65,8 @@
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\lib\Images\TenantBanners\" />
+	</ItemGroup>
+
 </Project>
