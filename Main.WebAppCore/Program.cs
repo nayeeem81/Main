@@ -11,7 +11,6 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddTransient<IAuthorizationHandler,TenantRoleHandler> ();
         _ = builder.Services.AddScoped<IUserContext,UserContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
         _ = builder.Services.AddDatabase (builder.Configuration);
@@ -21,10 +20,12 @@ public class Program
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
-        _ = builder.Services.AddControllersWithViews ();
+        _ = builder.Services.AddTransient<IAuthorizationHandler,TenantRoleHandler> ();
+        _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryOptions> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
         _ = builder.Logging.ClearProviders ();
         _ = builder.Logging.AddConsole ();
+        _ = builder.Services.AddControllersWithViews ();
 
         var app = builder.Build();
 
@@ -45,9 +46,10 @@ public class Program
         _ = app.UseRouting ();
         _ = app.UseSession ();
         _ = app.UseResponseCaching ();
-        _ = app.UseCors ();
         _ = app.UseCustomLocalization ();
         _ = app.UseMiddleware<TenantResolverMiddleware> ();
+        _ = app.UseCors ();
+        _ = app.UseAntiforgery ();
         _ = app.UseAuthentication ();
         _ = app.UseAuthorization ();
         _ = app.MapControllers ();

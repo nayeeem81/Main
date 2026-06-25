@@ -4,29 +4,31 @@ namespace Main.Services;
 
 public static class RegisterServices
 {
-    public static IServiceCollection AddService ( this IServiceCollection services,
-    IConfiguration configuration )
+    public static IServiceCollection AddService (this IServiceCollection services,
+    IConfiguration configuration)
     {
-        services.AddMemoryCache ( options =>
+
+
+        _ = services.AddMemoryCache (options =>
         {
             options.SizeLimit = 1024;
             options.CompactionPercentage = 0.25;
-        } );
+        });
 
-        services.AddSession ( options =>
+        _ = services.AddSession (options =>
         {
-            options.IdleTimeout = TimeSpan.FromMinutes ( 20 );
+            options.IdleTimeout = TimeSpan.FromMinutes (20);
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
-        } );
+        });
 
-        services.AddEmailService ( configuration );
-        services.AddScoped<ITenancyService,TenancyService> ( );
-        services.AddScoped<IAccountService,AccountService> ( );
-        services.AddScoped<IAdminPostService,AdminPostService> ( );
-        services.AddScoped<IProductService,ProductService> ( );
-        services.AddScoped<IPageService,PageService> ( );
-        services.AddScoped<IEmailSenderService,EmailSenderService> ( );
+        _ = services.AddEmailService (configuration);
+        _ = services.AddScoped<ITenancyService,TenancyService> ();
+        _ = services.AddScoped<IAccountService,AccountService> ();
+        _ = services.AddScoped<IAdminPostService,AdminPostService> ();
+        _ = services.AddScoped<IProductService,ProductService> ();
+        _ = services.AddScoped<IPageService,PageService> ();
+        _ = services.AddScoped<IEmailSenderService,EmailSenderService> ();
 
         return services;
     }

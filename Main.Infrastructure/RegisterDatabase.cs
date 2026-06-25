@@ -53,6 +53,8 @@ public static class RegisterDatabase
             options.AddPolicy ("TenantMember",policy => policy.Requirements.Add (new TenantRoleRequirement ("Member")));
         });
 
+
+
         return services;
     }
 }

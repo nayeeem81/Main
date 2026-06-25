@@ -139,7 +139,8 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials() // Required for cookie/antiforgery sharing
+              .AllowCredentials() 
+              // Required for cookie/antiforgery sharing
               .SetIsOriginAllowed(origin => 
               {
                   // 1. Inject or resolve your Tenant Service using HttpContext
@@ -361,4 +362,43 @@ Performance warning:
 **
 BuildServiceProvider() can cause unexpected singleton behavior if overused. If your lookup database logic is resource-heavy, fetch tenant configurations from an in-memory distributed cache (like Redis) inside this filter to keep request pipelines under a millisecond.
 
-Would you like help with either of these next steps? How to implement an efficient cache-backed ITenantStore serviceHow to pass and read the Antiforgery token via AJAX headers once CORS is allowed.
+Would you like help with either of these next steps? How to implement an efficient cache-backed ITenantStore service
+
+How to pass and read the Antiforgery token via AJAX headers once CORS is allowed.
+
+
+In your multi-tenant setup, both your custom Configure method and the framework’s internal default configuration will be called.
+
+ASP.NET Core uses the Options Pattern, which executes all matching configuration logic sequentially in a specific order: 
+
+## 1. Default Framework Configuration First
+
+When you call builder.Services.AddAntiforgery(), the framework internally registers its own hidden Configure logic. This sets up the factory-default settings for AntiforgeryOptions (like standard cookie behaviors and security policies).
+
+## 2. Your Custom Tenant Configuration Last
+
+When you register builder.Services.ConfigureOptions<ConfigureTenantAntiforgeryOptions>(), your class is appended to the end of the internal execution list.
+
+When a request comes in and the antiforgery system asks for IOptions<AntiforgeryOptions>, the framework runs the configuration chain in the exact order it was registered:
+
+   1. Framework Default: Sets up initial default options.
+   2. Your Configure Method: Runs last. It takes the pre-filled options object and overrides the specific properties you target (like options.Cookie.Name). 
+
+## When does it actually execute?
+
+The Configure(AntiforgeryOptions options) method runs lazily on the very first request that requires antiforgery verification (e.g., when a form renders an @Html.AntiForgeryToken() or evaluates a [ValidateAntiForgeryToken] attribute). 
+
+Because you registered your class via ConfigureOptions<T>, the Dependency Injection container automatically instantiates your class using a Scoped lifetime if it detects scoped dependencies (like ITenantAccessor). 
+
+This ensures that your Configure method safely reads the correct tenant data for that specific HTTP request. 
+
+Would you like to see how to implement a similar dynamic 
+
+IConfigureOptions<SessionOptions> to isolate session cookies per tenant as well?
+
+[1] [https://antondevtips.com](https://antondevtips.com/blog/master-configuration-in-asp-net-core-with-the-options-pattern)
+[2] [https://www.freedesktop.org](https://www.freedesktop.org/software/fontconfig/fontconfig-user.html)
+[3] [https://commons.apache.org](https://commons.apache.org/proper/commons-configuration/userguide/howto_builders.html)
+[4] [https://medium.com](https://medium.com/asp-dotnet/why-anti-forgery-tokens-use-in-net-core-75ab11f6c2da)
+[5] [https://medium.com](https://medium.com/@robert0321/asp-net-security-best-practices-protecting-your-web-applications-a9ea012d7434)
+[6] [https://www.youtube.com](https://www.youtube.com/watch?v=G910vWOdhQ8)

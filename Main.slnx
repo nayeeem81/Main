@@ -6,13 +6,13 @@
     <File Path="Docs/SECURITY.md" />
   </Folder>
   <Folder Name="/Docs/Research Online/">
+    <File Path="Docs/Research Online/Best Practices Branching Convention Help.txt" />
     <File Path="Docs/Research Online/Best Practices Service Layer .txt" />
     <File Path="Docs/Research Online/Best Practices Solution For DTO Mapping.txt" />
     <File Path="Docs/Research Online/Best Practices View Component .txt" />
     <File Path="Docs/Research Online/Command Database Migration Command.txt" />
     <File Path="Docs/Research Online/Command Migration Commands.txt" />
     <File Path="Docs/Research Online/Command Windows Commands.txt" />
-    <File Path="Docs/Research Online/GitHub Branching Convention Help.txt" />
     <File Path="Docs/Research Online/GitHub Commands.txt" />
     <File Path="Docs/Research Online/GitHub Containers.txt" />
     <File Path="Docs/Research Online/Github Contribution Note.txt" />
@@ -48,6 +48,7 @@
     <File Path="Docs/Research Online/MultiTenant Tenant Role .txt" />
     <File Path="Docs/Research Online/Muti Tenant Top Level Domain.txt" />
     <File Path="Help Lazy Loading.txt" />
+    <File Path="Multi Tenant Cors Options.txt" />
     <File Path="Security Krestel Server.txt" />
     <File Path="Security.txt" />
   </Folder>
