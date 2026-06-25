@@ -1,6 +1,5 @@
 using Main.Infrastructure;
 using Main.Services;
-
 using Microsoft.AspNetCore.Authorization;
 
 using ResourceLibrary.Resources;

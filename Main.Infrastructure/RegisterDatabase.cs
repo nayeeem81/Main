@@ -1,6 +1,4 @@
 ﻿using Domain.Model;
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +15,7 @@ public static class RegisterDatabase
 
         _ = services.AddDbContext<ApplicationDbContext> (options =>
         {
+            _ = options.UseLazyLoadingProxies ();
             _ = options.UseSqlServer (connectionString);
         });
 
@@ -58,11 +57,3 @@ public static class RegisterDatabase
     }
 }
 
-public class TenantRoleRequirement: IAuthorizationRequirement
-{
-    public string AllowedRole
-    {
-        get;
-    }
-    public TenantRoleRequirement (string allowedRole) => AllowedRole = allowedRole;
-}

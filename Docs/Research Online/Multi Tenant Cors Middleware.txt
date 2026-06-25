@@ -3,11 +3,15 @@
 If you created your project with standard Individual Accounts, it uses Cookie Authentication by default. No raw string tokens are passed back and forth; instead, the user's identity is encrypted and stored in a browser cookie.
 
 ### Default Identity
+
 ** Default Identity: ** ClaimsIdentity wrapped inside a ClaimsPrincipal 
+
 ** Default Storage: ** An encrypted HTTP-only cookie named .AspNetCore.Identity.Application.
+
 ** Default Lifespan: ** Sliding expiration (renews as long as the user is active) or hard expiration based on your configuration.
 
 ### Account Management Tokens (Email, Password Reset)
+
 When ASP.NET Core Identity needs to generate a token for user verification (e.g., verifying an email or resetting a password), it uses a specialized internal token provider.
 
 ** Default Provider: ** DataProtectorTokenProvider<TUser>
@@ -18,9 +22,11 @@ In ASP.NET Core MVC (including .NET 8.0), CORS (Cross-Origin Resource Sharing) a
 ### Antiforgery Tokens vs. CORS
 
 1. CORS allows or restricts browser clients on Domain A from reading data from Domain B.
+
 2. Antiforgery prevents a malicious website from executing state-changing actions (like POST requests) on your website using a victim's active session cookie.
 
 ### Crucial Rule: 
+
 If your MVC View needs to make a cross-origin AJAX POST request to another origin, the standard cookie-based Antiforgery token will fail unless you explicitly share tokens via headers and configure CORS to allow credentials.
 
 ** 
@@ -28,6 +34,7 @@ By default, the Razor engine automatically injects a hidden antiforgery token in
 **
 
 <!-- The Form Tag Helper automatically injects the hidden token -->
+
 <form asp-action="SubmitData" method="post">
     <input type="text" name="Username" />
     <button type="submit">Submit</button>
@@ -38,6 +45,7 @@ If you are using AJAX / JavaScript, you must manually fetch the token from the v
 **
 
 <!-- Generate token inside a hidden container or read it via C# -->
+
 <script>
     const token = '@Antiforgery.GetTokens(HttpContext).RequestToken';
 
@@ -59,9 +67,11 @@ To enforce token validation on your controllers, you apply specific filter attri
 **
 
 ** [ValidateAntiForgeryToken]: ** 
+
 Placed directly over a specific action method or controller. It forces the server to look for and validate the __RequestVerificationToken from either the form data or request headers.
 
 ** [AutoValidateAntiforgeryToken]: ** 
+
 Typically applied globally in Program.cs. It automatically validates tokens on all unsafe HTTP methods (POST, PUT, DELETE, PATCH) while bypassing safe methods (GET, HEAD)
 
 ### Configuring CORS for Antiforgery (.NET 8)
@@ -120,6 +130,7 @@ When moving to a multi-tenant architecture in an ASP.NET Core MVC application (.
 ** 
 1. Dynamic CORS Configuration (Per-Tenant Origins) 
 **
+
 If Tenant A uses tenant-a.com and Tenant B uses tenant-b.com, you cannot use static origins. You must use a dynamic strategy using the SetIsOriginAllowed option combined with a tenant resolution service.
 
 builder.Services.AddCors(options =>
@@ -132,15 +143,19 @@ builder.Services.AddCors(options =>
               .SetIsOriginAllowed(origin => 
               {
                   // 1. Inject or resolve your Tenant Service using HttpContext
+                  
                   var httpContextAccessor = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
+
                   var httpContext = httpContextAccessor.HttpContext;
                   
                   if (httpContext == null) return false;
 
                   // 2. Extract tenant from host, header, or query string
+
                   var currentTenant = ResolveTenantFromContext(httpContext); 
 
                   // 3. Look up allowed domains for this specific tenant from cache/DB
+
                   List<string> allowedTenantDomains = GetAllowedDomainsForTenant(currentTenant);
 
                   return allowedTenantDomains.Contains(origin);

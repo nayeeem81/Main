@@ -26,40 +26,40 @@ public class TenantResolverMiddleware
     private readonly RequestDelegate _next;
 
 
-    public TenantResolverMiddleware ( RequestDelegate next )
+    public TenantResolverMiddleware (RequestDelegate next)
     {
         _next = next;
     }
 
-    public async Task InvokeAsync ( HttpContext context,ITenantSetter tenantSetter,
-        ITenancyService tenancyService )
+    public async Task InvokeAsync (HttpContext context,ITenantSetter tenantSetter,
+        ITenancyService tenancyService)
     {
         string host = context.Request.Host.Host ?? string.Empty;
 
-        if ( !string.IsNullOrWhiteSpace ( host ) )
+        if ( !string.IsNullOrWhiteSpace (host) )
         {
             string[] segments = host.Split('.');
 
             if ( segments.Length > 0 && segments[0] == "www" )
             {
-                segments = segments.Skip ( 1 ).ToArray ( );
-                host = string.Join ( ".",segments );
+                segments = segments.Skip (1).ToArray ();
+                host = string.Join (".",segments);
             }
             else if ( segments.Length > 2 )
             {
                 string subdomain = segments[0];
 
-                await tenancyService.FindTenantAsync ( subdomain );
+                await tenancyService.FindTenantAsync (subdomain);
 
             }
             else if ( segments.Length > 1 )
             {
                 string domain = segments[0];
-                await tenancyService.FindTenantAsync ( domain );
+                await tenancyService.FindTenantAsync (domain);
             }
             else if ( host.Length > 0 )
             {
-                await tenancyService.FindTenantAsync ( host );
+                await tenancyService.FindTenantAsync (host);
             }
         }
 
@@ -71,10 +71,10 @@ public class TenantResolverMiddleware
         }
         else
         {
-            throw new Exception ( "We are facing challenges and under maintenance." );
+            throw new Exception ("We are facing challenges and under maintenance.");
         }
 
 
-        await _next ( context );
+        await _next (context);
     }
 }
