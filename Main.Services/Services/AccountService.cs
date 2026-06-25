@@ -3,170 +3,189 @@
 using Domain.Model;
 
 using Main.Common;
-
+using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 namespace Main.Services;
 
 public class AccountService: IAccountService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IApplicationUserRepository _userRepository;
 
-    private readonly SignInManager<ApplicationUser> _signInManager;
-
-    public AccountService (
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager
-        )
+    public AccountService (IApplicationUserRepository userRepository)
     {
-        _userManager = userManager;
+        _userRepository = userRepository;
+    }
 
-        _signInManager = signInManager;
+    public async Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel)
+    {
+        ApplicationUser userIdentityEntity = CreateApplicationUser(userAccountDataModel);
+
+        bool resultCreateIdentityUser = await
+        _userRepository.CreateAsync(userIdentityEntity, userAccountDataModel.Password);
+
+        if ( resultCreateIdentityUser )
+        {
+            await _userRepository.AddToRoleAsync (userIdentityEntity,"User");
+            return IdentityResult.Success;
+        }
+        else
+        {
+            IdentityError[] errors = [];
+            IdentityResult result = IdentityResult
+                .Failed( errors );
+            return result;
+        }
     }
 
 
-
-    public async Task<IdentityResult> CreateIdentityUserAccount (UserAccountDataModel userAccountDataModel)
+    public async Task<ApplicationUserDataModel?> GetApplicationUser (string email)
     {
-        ApplicationUser userIdentityEntity = CreateIdentityUser(userAccountDataModel);
+        ApplicationUser? applicationUser
+            = await _userRepository.FindByEmailAsync ( email );
 
-        var resultCreateIdentityUser = await
-        _userManager
-        .CreateAsync(userIdentityEntity,
-        userAccountDataModel.Password);
+        if ( applicationUser == null )
+        {
+            return null;
+        }
 
-        _ = await _userManager.AddToRoleAsync (userIdentityEntity,"User");
-
-        return resultCreateIdentityUser;
+        ApplicationUserDataModel? applicationUserDataModel = new
+()
+        {
+            Id = applicationUser.Id,
+            UserName = applicationUser.UserName,
+            Email = applicationUser.Email
+        };
+        return applicationUserDataModel;
     }
-
-
-    public async Task<ApplicationUser?> GetIdentityUser (string email)
-    {
-        ApplicationUser? identityUser
-            = await _userManager.FindByEmailAsync ( email );
-
-        return identityUser;
-    }
-
 
     public async Task<SignInResult> AuthenticateUser (string email,string password)
     {
-        var userIdentity = await _userManager.FindByEmailAsync(email.Trim());
+        var applicationUser = await _userRepository.FindByEmailAsync(email.Trim());
 
-        if ( userIdentity == null )
+        if ( applicationUser == null )
         {
             return SignInResult.Failed;
         }
 
-        var result = await _signInManager.PasswordSignInAsync ( userIdentity, password, true,   lockoutOnFailure: false);
+        bool result = await _userRepository.PasswordSignInAsync (applicationUser, password, true, false);
 
-        return result;
+        return result ? SignInResult.Success : SignInResult.Failed;
     }
-
 
     public async Task<bool> ChangePasswordAsync (string email,string password,
         string rePassword)
     {
-        ApplicationUser? identityUser = await GetIdentityUser ( email );
+        ApplicationUserDataModel? applicationUser = await GetApplicationUser ( email );
 
-        if ( identityUser == null )
+        if ( applicationUser == null )
         {
             return false;
         }
 
-        var result = await _userManager.ChangePasswordAsync(identityUser, password, rePassword);
+        bool result = await _userRepository.ChangePasswordAsync(email, password, rePassword);
 
-        return result.Succeeded;
+        return result;
     }
-
 
     public async Task<string?> GetEmailVerifyToken (string email)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync ( email );
+        ApplicationUser? user = await _userRepository.FindByEmailAsync ( email );
 
         if ( user == null )
         {
             return null;
         }
 
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+        string? code = await _userRepository.GenerateEmailConfirmationTokenAsync (user);
 
         return code;
+    }
+
+    public async Task<ApplicationUserDataModel?> FindByEmailAsync (string email)
+    {
+        ApplicationUser?  applicationUser
+            = await _userRepository.FindByEmailAsync ( email );
+
+        if ( applicationUser == null )
+        {
+            return null;
+        }
+
+        ApplicationUserDataModel? applicationUserDataModel = new
+()
+        {
+            Id = applicationUser.Id,
+            UserName = applicationUser.UserName,
+            Email = applicationUser.Email
+        };
+        return applicationUserDataModel;
     }
 
 
     public async Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel)
     {
-        var userIdentity = await _userManager.FindByEmailAsync (email);
+        var userIdentity = await _userRepository.FindByEmailAsync (email);
 
         if ( userIdentity != null )
         {
-            _ = await _userManager.ConfirmEmailAsync (userIdentity,token);
+            bool result = await _userRepository.ConfirmEmailAsync (userIdentity,token);
 
-            return true;
+            return result;
         }
 
         return false;
     }
 
-    public async Task<ClaimsIdentity?> GetUserRole (string email,string tenantId)
+    public async Task GetUserClaims (string email,string tenantId)
     {
-        ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+        ApplicationUser? user =
+            await _userRepository.FindByEmailAsync(email);
+
         if ( user == null )
         {
-            return null;
+            return;
         }
 
-        var roles = await _userManager.GetRolesAsync(user);
-        if ( !roles.Any () )
+        List<string>? listRoles = await _userRepository.GetRolesAsync (email,tenantId);
+
+        if ( listRoles == null )
         {
-            return null;
+            return;
         }
 
-        if ( roles[0] == "GlobalAdmin" )
+        if ( listRoles[0] == "GlobalAdmin" )
         {
-            List<Claim>  claims = [new Claim (ClaimTypes.Role,roles[0])];
-            return new ClaimsIdentity (claims);
+            Claim claim = new(ClaimTypes.Role,"GlobalAdmin");
+            await _userRepository.AddClaimAsync (user,claim);
         }
-
-        var userTenants = user.UserTenants.ToList<UserTenant>();
-        if ( userTenants != null && userTenants.Any () )
+        else
         {
-            UserTenant? currentUserTenant = userTenants.FirstOrDefault<UserTenant>
-            (a => a.TenantId == tenantId);
+            Claim claim1 = new(ClaimTypes.Role,"User");
+            await _userRepository.AddClaimAsync (user,claim1);
 
-            if ( currentUserTenant != null )
-            {
-                string? tenantRole =  currentUserTenant.TenantRole;
-                var roleClaim = $"{tenantId}:{tenantRole}";
-
-                Claim claimRole = new("TenantRole", roleClaim);
-                ( ( List<Claim> ) [] ).Add (claimRole);
-                return new ClaimsIdentity (( List<Claim> ) []);
-            }
+            Claim claim2 = new("TenantRole",listRoles[0]);
+            await _userRepository.AddClaimAsync (user,claim2);
         }
-        return null;
+
+        await _userRepository.AddClaimAsync (user,new (ClaimTypes.Email,user.Email!));
+
+        await _userRepository.AddClaimAsync (user,new (ClaimTypes.Name,user.UserName!));
+
+        await _userRepository.AddClaimAsync (user,new (ClaimTypes.NameIdentifier,user.Id.ToString ()));
+
+        await _userRepository.AddClaimAsync (user,new ("TenantId",tenantId));
+
     }
 
-
-
-    #region Priate Methods (CreateUser, CreateIdentityUser, CreateAppicationUser, RemoveIdentityUser)
-
-
-
-    private ApplicationUser CreateIdentityUser (UserAccountDataModel userAccountDataModel)
+    private ApplicationUser CreateApplicationUser (UserAccountDataModel userAccountDataModel)
     {
-        var userIdentity = new ApplicationUser
+        ApplicationUser userIdentity = new ()
         {
             Email = userAccountDataModel.Email,
-
             PhoneNumber = userAccountDataModel.PhoneNumber,
-
             NormalizedUserName = userAccountDataModel.Email.ToUpper(),
-
             UserName = userAccountDataModel.UserName
         };
 
@@ -175,48 +194,72 @@ public class AccountService: IAccountService
 
     public async Task<bool> UnlockUser (string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _userRepository.FindByNameIdAsync(userId);
 
         if ( user == null )
         {
             return false;
         }
 
-        var lockoutResult = await _userManager.SetLockoutEndDateAsync(user, null);
+        var result = await _userRepository.SetLockoutEndDateAsync(user);
 
-        if ( !lockoutResult.Succeeded )
+        if ( result )
         {
-            return false;
+            return true;
         }
 
-        var resetResult = await _userManager.ResetAccessFailedCountAsync(user);
+        bool resetResult = await _userRepository.ResetAccessFailedCountAsync(user);
 
-        if ( !resetResult.Succeeded )
-        {
-            return false;
-        }
-
-        return true;
+        return resetResult;
     }
 
-    public async Task<List<IdentityUserDataModel>?> Users ()
+    public async Task<List<ApplicationUserDataModel>?> Users ()
     {
-        List<ApplicationUser> identityUsers = await _userManager.Users.ToListAsync<ApplicationUser>();
+        List<ApplicationUser>? identityUsers =
+            await _userRepository.ApplicationUsers ();
 
-        List<IdentityUserDataModel> identityUserDataModel = identityUsers.Select(u => new IdentityUserDataModel
+        List<ApplicationUserDataModel>? identityUserDataModel = identityUsers?.Select(u => new ApplicationUserDataModel
         {
-            UserId = u.Id,
+            Id = u.Id,
             UserName = u.UserName,
             LockoutEnd = u.LockoutEnd
-        }).ToList<IdentityUserDataModel>();
+        }).ToList<ApplicationUserDataModel>();
 
         return identityUserDataModel;
     }
 
+    public async Task<bool> IsEmailConfirmedAsync (string email)
+    {
 
+        var result = await _userRepository.IsEmailConfirmedAsync (email);
 
+        return result;
+    }
 
+    public async Task<bool> PasswordSignInAsync
+    (string userName,string password,bool isPersistent,bool lockoutOnFailure)
+    {
+        var result = await _userRepository.PasswordSignInAsync (userName,password,isPersistent,lockoutOnFailure);
 
-    #endregion
+        return result;
+    }
+
+    public async Task SignOutAsync ()
+    {
+        await _userRepository.SignOutAsync ();
+    }
+
+    public async Task<string> GeneratePasswordResetTokenAsync (string email)
+    {
+        string token = await _userRepository.GeneratePasswordResetTokenAsync(email);
+        return token;
+    }
+
+    public async Task<bool> ResetPasswordAsync (string email,string token,string confirmPassword)
+    {
+        bool result = await _userRepository.ResetPasswordAsync (email, token, confirmPassword);
+
+        return result;
+    }
 }
 

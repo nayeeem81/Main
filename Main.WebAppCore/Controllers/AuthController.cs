@@ -1,7 +1,4 @@
 ﻿using DataTransferModel;
-
-using Domain.Model;
-
 using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
@@ -21,15 +18,11 @@ public class AuthController: BaseController
     private readonly ITenantSetter _tenantSetter;
     private readonly IUserContext _userContext;
     private readonly IAccountService _userAccountService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IEmailSenderService _emailService;
 
     public AuthController (
         IAccountService userAccountService,
         IUserContext userContext,
-        SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter
        )
@@ -37,8 +30,6 @@ public class AuthController: BaseController
         _userAccountService = userAccountService;
         _userContext = userContext;
         _emailService = emailService;
-        _userManager = userManager;
-        _signInManager = signInManager;
         _tenantSetter = tenantSetter;
     }
 
@@ -76,7 +67,7 @@ public class AuthController: BaseController
 
         // OWASP Mitigation: Create the user account with secure password hashing and do not reveal if the email is already registered or if the account creation failed
         IdentityResult result
-            = await _userAccountService.CreateIdentityUserAccount ( userAccountDataModel );
+            = await _userAccountService.CreateApplicationUserAccount ( userAccountDataModel );
 
 
         if ( result.Succeeded )
@@ -160,7 +151,7 @@ public class AuthController: BaseController
             return View (loginDisplayViewModel);
         }
 
-        ApplicationUser? userIdentity = await _userManager
+        ApplicationUserDataModel? userIdentity = await _userAccountService
             .FindByEmailAsync(loginDisplayViewModel.Email);
 
 
@@ -172,7 +163,7 @@ public class AuthController: BaseController
         }
 
 
-        if ( !await _userManager.IsEmailConfirmedAsync (userIdentity) )
+        if ( !await _userAccountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email) )
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
 
@@ -183,16 +174,15 @@ public class AuthController: BaseController
 
 
         // OWASP Mitigation: Use secure password verification and do not reveal if the password is incorrect or the account is locked
-        var result = await _signInManager.PasswordSignInAsync (
-                                        userIdentity.UserName!,
+        bool result = await _userAccountService.PasswordSignInAsync (
+                                      userIdentity.UserName!,
                                         loginDisplayViewModel.Password,
                                         isPersistent: false,
                                         lockoutOnFailure: false );
 
-        if ( result.Succeeded )
+        if ( result )
         {
-            await SetUserClaimsForCurrentSession (userIdentity,loginDisplayViewModel.Email);
-
+            await _userAccountService.GetUserClaims (loginDisplayViewModel.Email,_tenantSetter.CurrentTenantId);
 
             // Successful login, redirect to home page or dashboard
             return RedirectToAction ("Index","Home");
@@ -204,36 +194,11 @@ public class AuthController: BaseController
 
 
 
-    // Helper method to set user claims for the current session after successful login (OWASP Mitigation)
-    private async Task SetUserClaimsForCurrentSession (ApplicationUser userIdentity,string email)
-    {
-        // OWASP Mitigation: Add claims to the user identity for role-based authorization and do not reveal if the user has a specific role
-        var userRole = await _userAccountService.GetUserRole(email, _tenantSetter.CurrentTenantId);
-
-
-        string? roleName = userRole != null ? userRole.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Role)?.Value : "User";
-
-
-        _ = await _userManager.AddClaimAsync (userIdentity,new (ClaimTypes.Name,userIdentity.UserName != null ? userIdentity.UserName : ""));
-
-
-        _ = await _userManager.AddClaimAsync (userIdentity,new (ClaimTypes.Email,email));
-
-
-        _ = await _userManager.AddClaimAsync (userIdentity,
-            new (ClaimTypes.Role,roleName != null ? roleName : "User"));
-
-
-        _ = await _userManager.AddClaimAsync (userIdentity,new (ClaimTypes.NameIdentifier,
-            userIdentity.Id.ToString ()));
-    }
-
-
 
     // Logout Flow: User clicks the logout button, which triggers the Logout action that signs the user out and redirects to the home page
     public async Task<IActionResult> Logout ()
     {
-        await _signInManager.SignOutAsync ();
+        await _userAccountService.SignOutAsync ();
 
         return RedirectToAction ("Index","Home");
     }
@@ -243,13 +208,6 @@ public class AuthController: BaseController
     // Helper method to send email verification email with secure token if user exists but email is not verified (OWASP Mitigation)
     private async Task SendVerifyEmail (string email)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if ( user == null )
-        {
-            return;
-        }
-
         var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( email );
 
         if ( !string.IsNullOrEmpty (emailVerifyToken) )
@@ -295,10 +253,10 @@ public class AuthController: BaseController
             return View (forgotPasswordViewModel);
         }
 
-        var user = await _userManager.FindByEmailAsync(forgotPasswordViewModel.Email);
+        var user = await _userAccountService.FindByEmailAsync(forgotPasswordViewModel.Email);
 
         // OWASP Mitigation: Do not reveal if the user exists or is verified
-        if ( user == null || !await _userManager.IsEmailConfirmedAsync (user) )
+        if ( user == null || !await _userAccountService.IsEmailConfirmedAsync (user.Email!) )
         {
             await SendVerifyEmail (forgotPasswordViewModel.Email);
 
@@ -318,15 +276,8 @@ public class AuthController: BaseController
     // Step 2.1: Helper method to send password reset email with secure token
     private async Task SendResetEmail (string email)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if ( user == null )
-        {
-            return;
-        }
-
         // Step 2.1.1: Generate a secure single-use token embedded in the URL
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var token = await _userAccountService.GeneratePasswordResetTokenAsync(email);
 
         if ( !string.IsNullOrEmpty (token) )
         {
@@ -369,7 +320,7 @@ public class AuthController: BaseController
             return BadRequest ("Invalid link request.");
         }
 
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _userAccountService.FindByEmailAsync(email);
 
         if ( user == null )
         {
@@ -398,22 +349,17 @@ public class AuthController: BaseController
             return View (resetPasswordViewModel);
         }
 
-        ApplicationUser? userIdentity = await _userManager.FindByEmailAsync(resetPasswordViewModel.Email);
+        ApplicationUserDataModel? userIdentity = await _userAccountService.FindByEmailAsync(resetPasswordViewModel.Email);
 
 
         // Reset with new password and invalidate the token and timestamp to prevent reuse (OWASP Mitigation)
-        var result = await _userManager.ResetPasswordAsync(userIdentity ?? throw new InvalidOperationException("User not found"), resetPasswordViewModel.Token, resetPasswordViewModel.ConfirmPassword);
+        var email = userIdentity?.Email;
+        bool result = await _userAccountService.ResetPasswordAsync(email!, resetPasswordViewModel.Token, resetPasswordViewModel.ConfirmPassword);
 
 
-        if ( result.Succeeded )
+        if ( result )
         {
             return RedirectToAction (nameof (ResetComplete));
-        }
-
-
-        foreach ( var error in result.Errors )
-        {
-            ModelState.AddModelError (string.Empty,error.Description);
         }
 
         return View (resetPasswordViewModel);
@@ -441,9 +387,10 @@ public class AuthController: BaseController
             return RedirectToAction ("Login","Auth");
         }
 
-        var changePasswordViewModel = new ChangePasswordViewModel();
-
-        changePasswordViewModel.Email = User.Claims.FirstOrDefault (c => c.Type == ClaimTypes.Email)?.Value ?? "";
+        var changePasswordViewModel = new ChangePasswordViewModel
+        {
+            Email = User.Claims.FirstOrDefault (c => c.Type == ClaimTypes.Email)?.Value ?? ""
+        };
 
 
         return View (changePasswordViewModel);
@@ -462,7 +409,7 @@ public class AuthController: BaseController
             return View (changePasswordViewModel);
         }
 
-        var userIdentity = await _userManager.FindByEmailAsync(changePasswordViewModel.Email);
+        ApplicationUserDataModel? userIdentity = await _userAccountService.FindByEmailAsync(changePasswordViewModel.Email);
 
 
         if ( userIdentity == null )
@@ -471,18 +418,13 @@ public class AuthController: BaseController
         }
 
 
-        var result = await _userManager
-            .ChangePasswordAsync(userIdentity,changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
+        var result = await _userAccountService
+            .ChangePasswordAsync(userIdentity?.Email!, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
 
 
-        if ( result.Succeeded )
+        if ( result )
         {
             return RedirectToAction (nameof (ResetComplete));
-        }
-
-        foreach ( var error in result.Errors )
-        {
-            ModelState.AddModelError (string.Empty,error.Description);
         }
 
         return View (changePasswordViewModel);

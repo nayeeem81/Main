@@ -1,12 +1,14 @@
 ﻿namespace DataTransferModel;
 
-public class IdentityUserDataModel
+public class ApplicationUserDataModel
 {
-    public IdentityUserDataModel() { }
-
-    public string UserId
+    public ApplicationUserDataModel ()
     {
-        get; set;   
+    }
+
+    public string Id
+    {
+        get; set;
     }
 
     public string? UserName
@@ -14,8 +16,13 @@ public class IdentityUserDataModel
         get; set;
     }
 
+    public string? Email
+    {
+        get; set;
+    }
+
     public DateTimeOffset? LockoutEnd
     {
-        get; set;   
+        get; set;
     }
 }

@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAppCore.ViewModel;
 
-[Authorize ( Roles = "Admin" )]
+[Authorize (Roles = "Admin")]
 public class AdminController: Controller
 {
     private readonly IAccountService _accountService;
-    private readonly IEmailSenderService _emailSenderService; 
+    private readonly IEmailSenderService _emailSenderService;
 
 
-    public AdminController ( IAccountService accountService, 
-        IEmailSenderService emailSenderService )
+    public AdminController (IAccountService accountService,
+        IEmailSenderService emailSenderService)
     {
         _accountService = accountService;
 
@@ -20,38 +20,38 @@ public class AdminController: Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> UserDashboard ( )
+    public async Task<IActionResult> UserDashboard ()
     {
-        List<IdentityUserDataModel>? listIdentityUserDataModel = await _accountService.Users ( );
+        List<ApplicationUserDataModel>? listIdentityUserDataModel = await _accountService.Users ( );
 
-        List<IdentityUserViewModel> listIdentityUserDisplayViewModels 
-            = new List<IdentityUserViewModel>();
+        List<IdentityUserViewModel> listIdentityUserDisplayViewModels
+            = new();
 
         IdentityUserViewModel identityUserDisplayViewModel;
 
-        listIdentityUserDataModel?.ForEach ( identityUserDataModel =>
+        listIdentityUserDataModel?.ForEach (identityUserDataModel =>
         {
             identityUserDisplayViewModel = new IdentityUserViewModel
             {
-                UserId = identityUserDataModel.UserId,
+                UserId = identityUserDataModel.Id,
                 UserName = identityUserDataModel.UserName,
                 LockoutEnd = identityUserDataModel.LockoutEnd
             };
 
-            listIdentityUserDisplayViewModels.Add( identityUserDisplayViewModel );
-        } );
+            listIdentityUserDisplayViewModels.Add (identityUserDisplayViewModel);
+        });
 
-        return View ( listIdentityUserDisplayViewModels );
+        return View (listIdentityUserDisplayViewModels);
     }
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UnlockUser ( string userId )
+    public async Task<IActionResult> UnlockUser (string userId)
     {
         bool success = await _accountService.UnlockUser ( userId );
 
-        if (!success)
+        if ( !success )
         {
             TempData["ErrorMessage"] = $"Failed to unlock account for user with ID {userId}.";
         }
@@ -60,6 +60,6 @@ public class AdminController: Controller
 
         TempData["SuccessMessage"] = $"Unlocked and notified {userName}.";
 
-        return RedirectToAction ( nameof ( UserDashboard ) );
+        return RedirectToAction (nameof (UserDashboard));
     }
 }

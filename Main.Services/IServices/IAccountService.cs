@@ -1,20 +1,16 @@
 ﻿using DataTransferModel;
 
-using Domain.Model;
-
 using Main.Common;
 
 using Microsoft.AspNetCore.Identity;
-
-using System.Security.Claims;
 
 namespace Main.Services;
 
 public interface IAccountService
 {
-    Task<IdentityResult> CreateIdentityUserAccount (UserAccountDataModel userAccountDataModel);
+    Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel);
 
-    Task<ApplicationUser?> GetIdentityUser (string email);
+    Task<ApplicationUserDataModel?> GetApplicationUser (string email);
 
     Task<SignInResult> AuthenticateUser (string email,string password);
 
@@ -22,12 +18,25 @@ public interface IAccountService
 
     Task<bool> UnlockUser (string userId);
 
-    Task<List<IdentityUserDataModel>?> Users ();
+    Task<List<ApplicationUserDataModel>?> Users ();
 
     Task<string?> GetEmailVerifyToken (string email);
 
     Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel);
 
-    Task<ClaimsIdentity?> GetUserRole (string email,string tenantId);
+    Task GetUserClaims (string email,string tenantId);
+
+    Task<ApplicationUserDataModel?> FindByEmailAsync (string email);
+
+    Task<bool> IsEmailConfirmedAsync (string email);
+
+    Task<bool> PasswordSignInAsync
+    (string userName,string password,bool isPersistent,bool lockoutOnFailure);
+
+    Task SignOutAsync ();
+
+    Task<string> GeneratePasswordResetTokenAsync (string email);
+
+    Task<bool> ResetPasswordAsync (string email,string token,string confirmPassword);
 
 }
