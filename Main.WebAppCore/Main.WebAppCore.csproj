@@ -37,8 +37,8 @@
 		<Content Remove="Views\Shared\ProductTemplates\**" />
 
 		<!-- Individual Code Exclusions -->
-		<Compile Remove="Controllers\SecureController.cs" />
-		<Compile Remove="Controllers\UserSessionLogController.cs" />
+		<Compile Remove="Tenant\SecureController.cs" />
+		<Compile Remove="Tenant\UserSessionLogController.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

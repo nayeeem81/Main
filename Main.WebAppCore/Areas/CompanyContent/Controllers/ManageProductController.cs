@@ -21,12 +21,12 @@ public class ManageProductController: BaseController
 
     private readonly IProductService _productService;
     private readonly ILogger<ManageProductController> _logger;
-    private readonly IUserContext _userContext;
+    private readonly ITenantContext _userContext;
     private readonly ITenantSetter _tenantSetter;
 
     public ManageProductController (IProductService productService,
         ILogger<ManageProductController> logger,
-        IUserContext userContext,
+        ITenantContext userContext,
         ITenantSetter tenantSetter)
     {
         _productService = productService;

@@ -2,7 +2,6 @@
 using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +15,13 @@ namespace Main.WebAppCore;
 public class AuthController: BaseController
 {
     private readonly ITenantSetter _tenantSetter;
-    private readonly IUserContext _userContext;
+    private readonly ITenantContext _userContext;
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
 
     public AuthController (
         IAccountService userAccountService,
-        IUserContext userContext,
+        ITenantContext userContext,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter
        )

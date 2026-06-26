@@ -1,9 +1,8 @@
 using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.Tenant;
 using Microsoft.AspNetCore.Authorization;
-
 using ResourceLibrary.Resources;
-
 using WebAppCore.Helper;
 public class Program
 {
@@ -11,7 +10,7 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddScoped<IUserContext,UserContext> ();
+        _ = builder.Services.AddScoped<ITenantContext,UserContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
         _ = builder.Services.AddDatabase (builder.Configuration);
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")

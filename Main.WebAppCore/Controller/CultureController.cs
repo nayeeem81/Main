@@ -5,17 +5,18 @@ using ResourceLibrary.Resources;
 
 namespace Main.WebAppCore;
 
-public class CultureController : BaseController
+public class CultureController: BaseController
 {
     private readonly IStringLocalizer<SharedResource> _localizer;
-    public CultureController(IStringLocalizer<SharedResource> localizer) {
+    public CultureController (IStringLocalizer<SharedResource> localizer)
+    {
         _localizer = localizer;
     }
 
     [HttpGet]
-    public JsonResult Change(string? languageAbbrevation)
+    public JsonResult Change (string? languageAbbrevation)
     {
-        
+
         string cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture: languageAbbrevation ?? "en"));
 
 
@@ -24,13 +25,13 @@ public class CultureController : BaseController
             cookieValue,
             new CookieOptions
             {
-                Expires = DateTimeOffset.UtcNow.AddYears ( 1 ),
+                Expires = DateTimeOffset.UtcNow.AddYears (1),
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.Lax
             }
         );
 
-        return Json(true);
+        return Json (true);
     }
 }

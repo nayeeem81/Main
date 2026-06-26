@@ -1,25 +1,7 @@
-﻿using Main.Common;
-using Main.Infrastructure;
+﻿using Main.Infrastructure;
 using Main.Services;
-namespace WebAppCore.Helper;
+namespace Main.WebAppCore.Tenant;
 
-public class TenantSetter: ITenantSetter
-{
-    public string CurrentTenantId
-    {
-        get; set;
-    }
-
-    public EnumStoreType TenantStore
-    {
-        get; set;
-    }
-
-    public string TenantName
-    {
-        get; set;
-    }
-}
 
 public class TenantResolverMiddleware
 {

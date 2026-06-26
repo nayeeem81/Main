@@ -1,5 +1,5 @@
-﻿using Main.Services;
-
+﻿using Main.Infrastructure;
+using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -15,12 +15,12 @@ public class HomeController: BaseController
 
     private readonly IStringLocalizer<SharedResource> _localizer;
     private readonly IPageService _pageService;
-    private readonly IUserContext _userContext;
+    private readonly ITenantContext _userContext;
 
     public HomeController (
         IStringLocalizer<SharedResource> localizer,
         IPageService pageService,
-        IUserContext userContext
+        ITenantContext userContext
         )
     {
         _localizer = localizer;
@@ -30,13 +30,13 @@ public class HomeController: BaseController
 
     //[ResponseCache(CacheProfileName = "Cache1dayServerNBrowser")]
     [AllowAnonymous]
-    public async Task<IActionResult> Index ( )
+    public async Task<IActionResult> Index ()
     {
         //var pageDataModel = await _pageService.GetPageDataModel((int)EnumPublicPage.Home);
 
-        HomeViewModel homeViewModel = new HomeViewModel("Home Page");
+        HomeViewModel homeViewModel = new("Home Page");
 
-        return View ( homeViewModel );
+        return View (homeViewModel);
     }
 
     //public async Task<ActionResult> Notice()

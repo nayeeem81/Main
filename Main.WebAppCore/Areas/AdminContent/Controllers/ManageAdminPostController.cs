@@ -19,7 +19,7 @@ namespace Main.WebAppCore;
 public class ManageAdminPostController: BaseController
 {
     private readonly IAdminPostService _adminPostService;
-    private readonly IUserContext _userContext;
+    private readonly ITenantContext _userContext;
     private readonly ILogger<ManageAdminPostController> _logger;
     private readonly ITenantSetter _tenantSetter;
 
@@ -27,7 +27,7 @@ public class ManageAdminPostController: BaseController
         IAdminPostService adminPostService,
         IMemoryCache cache,
         ILogger<ManageAdminPostController> logger,
-        IUserContext userContext,
+        ITenantContext userContext,
         ITenantSetter tenantSetter)
     {
         _adminPostService = adminPostService;

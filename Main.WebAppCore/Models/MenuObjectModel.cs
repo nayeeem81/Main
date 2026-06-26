@@ -1,11 +1,9 @@
-﻿
-using Main.Common;
-
+﻿using Main.Common;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using WebAppCore.Helper;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Models;
 
 public class MenuObjectModel
 {

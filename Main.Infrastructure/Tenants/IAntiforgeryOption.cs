@@ -1,6 +1,7 @@
-﻿using Main.Infrastructure;
-using Microsoft.AspNetCore.Antiforgery;
+﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
+
+namespace Main.Infrastructure;
 
 public class ConfigureAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions>
 {

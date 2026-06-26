@@ -1,7 +1,7 @@
 ﻿using Main.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
-namespace WebAppCore.Helper;
+namespace Main.WebAppCore.Tenant;
 
 public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
 {

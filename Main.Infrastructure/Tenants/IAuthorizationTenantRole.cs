@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+
 namespace Main.Infrastructure;
 
 public class TenantRoleRequirement: IAuthorizationRequirement

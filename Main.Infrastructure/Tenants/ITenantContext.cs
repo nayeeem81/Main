@@ -1,9 +1,9 @@
 ﻿using Main.Common;
-
 using System.Security.Claims;
-namespace Main.Services;
 
-public interface IUserContext
+namespace Main.Infrastructure;
+
+public interface ITenantContext
 {
     ClaimsPrincipal? User
     {
@@ -15,16 +15,15 @@ public interface IUserContext
         get;
     }
 
-    EnumCurrency EnumCurrency
+    string TenantId
     {
         get;
     }
 
-    EnumCountry EnumCountry
+    string CurrentUserClainText
     {
         get;
     }
-
 
     DateTime GetLocalNow ();
 

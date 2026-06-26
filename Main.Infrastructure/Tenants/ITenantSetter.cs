@@ -1,4 +1,5 @@
 ﻿using Main.Common;
+
 namespace Main.Infrastructure;
 
 public interface ITenantSetter

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Main.WebAppCore.Models;
+using Microsoft.AspNetCore.Mvc;
 namespace Main.WebAppCore;
 
 public class BottomHeaderPanelViewComponent: ViewComponent

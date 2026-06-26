@@ -1,16 +1,17 @@
 ﻿using Main.Common;
-using Main.Services;
-
+using Main.Infrastructure;
 using System.Security.Claims;
-namespace WebAppCore.Helper;
 
-public class UserContext: IUserContext
+namespace Main.WebAppCore.Tenant;
+
+public class UserContext: ITenantContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public UserContext (IHttpContextAccessor httpContextAccessor)
+    private readonly ITenantSetter _tenantSetter;
+    public UserContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
     {
         _httpContextAccessor = httpContextAccessor;
+        _tenantSetter = tenantSetter;
     }
 
     public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
@@ -18,16 +19,14 @@ public class UserContext: IUserContext
     public string IdentityId
                   => User?.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
-    public EnumCurrency EnumCurrency => AppSettings.Current.EnumCurrency;
-
-    public EnumCountry EnumCountry => AppSettings.Current.EnumCountry;
-
-    public int PostImageSize => AppSettings.Current.PostImageSize;
-
-    ClaimsPrincipal? IUserContext.User
+    ClaimsPrincipal? ITenantContext.User
     {
         get => User;
     }
+
+    public string TenantId => _tenantSetter.CurrentTenantId;
+
+    public string CurrentUserClainText => User?.FindFirst ("TenantRole")?.Value ?? string.Empty;
 
     public DateTime GetLocalNow ()
     {
@@ -42,8 +41,8 @@ public class UserContext: IUserContext
         {
             ModifiedDate = GetLocalNow ( ),
             CreatedDate = GetLocalNow ( ),
-            HostCountry = EnumCountry,
-            Currency = EnumCurrency,
+            HostCountry = AppSettings.Current.EnumCountry,
+            Currency = AppSettings.Current.EnumCurrency,
             CreatedBy = IdentityId,
             ModifiedBy = IdentityId,
             Id = IdentityId
@@ -57,8 +56,8 @@ public class UserContext: IUserContext
         BaseDataModel baseDataModel = new ()
         {
             ModifiedDate = GetLocalNow ( ),
-            HostCountry = EnumCountry,
-            Currency = EnumCurrency,
+            HostCountry = AppSettings.Current.EnumCountry,
+            Currency = AppSettings.Current.EnumCurrency,
             ModifiedBy = IdentityId
         };
 

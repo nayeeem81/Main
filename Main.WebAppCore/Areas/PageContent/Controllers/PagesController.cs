@@ -17,13 +17,13 @@ namespace Main.WebAppCore;
 public class PagesController: BaseController
 {
     private readonly IPageService _pageService;
-    private readonly IUserContext _userContext;
+    private readonly ITenantContext _userContext;
     private readonly ILogger<PagesController> _logger;
     private readonly ITenantSetter _tenantSetter;
 
     public PagesController (
       IPageService pageDataService,
-      IUserContext userContext,
+      ITenantContext userContext,
       ITenantSetter tenantSetter,
       ILogger<PagesController> logger
     )
@@ -67,7 +67,7 @@ public class PagesController: BaseController
         pagePanelViewModel.ListSelectPosts =
             PageMapping.MapSelectPostViewModel (listSelectProductsDataModel
                                                 ,_tenantSetter.TenantStore
-                                                ,_userContext.EnumCurrency);
+                                                ,AppSettings.Current.EnumCurrency);
         pagePanelViewModel.PageID = id;
         pagePanelViewModel.PanelTitle = "";
         pagePanelViewModel.PanelTemplate = EnumPanelTemplate.ProductQuard;
