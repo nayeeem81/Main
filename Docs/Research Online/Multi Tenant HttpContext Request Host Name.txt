@@ -259,14 +259,14 @@ Web browsers are designed to automatically convert shorthand entries into valid,
 Browser Behavior: The browser automatically prepends the default protocol (https://).
 Result: It resolves to 
 https://khai.com/tenant1-local.
-https://khai.com/tenant1-localBrowser 
+https://khai.com/tenant1-local
 
-Behavior: This is already a fully formed absolute URL.
+Browser Behavior: This is already a fully formed absolute URL.
 
 Result: The browser navigates directly to it.
-www.khai.com/tenant1-localBrowser 
+www.khai.com/tenant1-local
 
-Behavior: The browser prepends the protocol (https://www.khai.com/...).
+Browser Behavior: The browser prepends the protocol (https://www.khai.com/...).
 Result: It treats www as a subdomain.
 
 How Your ASP.NET Core Code Sees Them
@@ -300,7 +300,8 @@ As shown in the table, www.khai.com changes your Request.Host.Host. If your code
 The Fix: 
 Configure a URL rewrite rule in your web server (like IIS, Nginx, or via ASP.NET Core Middleware) to permanently redirect all www.khai.com traffic to khai.com before it reaches your routing logic.
 
-2. Enforce HTTPSIf a user forces http:// instead of https://, you should upgrade their connection immediately.
+2. Enforce HTTPS
+If a user forces http:// instead of https://, you should upgrade their connection immediately.
 
 The Fix: Ensure you have app.UseHttpsRedirection(); placed early in your Program.cs file pipeline.
 

@@ -12,11 +12,51 @@ public class TenantResolverMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync (HttpContext context,ITenantSetter tenantSetter,
+    public async Task InvokeAsync (
+    HttpContext context,
+    ITenantContext tenantContext,
+    ITenantSetter tenantSetter,
     ITenancyService tenancyService)
     {
+
         string host = context.Request.Host.Host ?? string.Empty;
 
+        string? tenantId = tenantContext!.TenantId;
+
+        // try from cache or session if user is logged in
+        if ( !string.IsNullOrEmpty (tenantId) )
+        {
+            // get from cache
+            // match with userid
+            // match with tenantid (cache or database)
+            // match with tenant name
+        }
+
+
+        // tenants with sub directory type or te root website
+        if ( ( !string.IsNullOrEmpty (host) && host == "localhost" ) || host == "tenators" )
+        {
+            string path = context.Request.Path.Value ?? "";
+            var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+            if ( segments.Length > 0 )
+            {
+                string tenantName = segments[0];
+                await tenancyService.FindTenantAsync (tenantName);
+                if ( tenancyService.TenancyFound )
+                {
+                    tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
+                    tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
+                    tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
+                }
+            }
+
+            tenantSetter.CurrentTenantId = "root";
+            tenantSetter.TenantName = host;
+        }
+
+
+        // with domain or sub domain tenants
         if ( !string.IsNullOrWhiteSpace (host) )
         {
             string[] segments = host.Split('.');
@@ -26,33 +66,39 @@ public class TenantResolverMiddleware
                 segments = segments.Skip (1).ToArray ();
                 host = string.Join (".",segments);
             }
-            else if ( segments.Length > 2 )
+
+            // sub domain
+            if ( segments.Length > 2 )
             {
                 string subdomain = segments[0];
                 await tenancyService.FindTenantAsync (subdomain);
+
+                if ( tenancyService.TenancyFound )
+                {
+                    tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
+                    tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
+                    tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
+                }
             }
-            else if ( segments.Length > 1 )
+
+            // domain
+            if ( segments.Length > 1 )
             {
                 string domain = segments[0];
                 await tenancyService.FindTenantAsync (domain);
-            }
-            else if ( host.Length > 0 )
-            {
-                await tenancyService.FindTenantAsync (host);
+                if ( tenancyService.TenancyFound )
+                {
+                    tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
+                    tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
+                    tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
+                }
             }
         }
 
-        if ( tenancyService.TenancyFound )
+        if ( string.IsNullOrEmpty (tenantSetter.TenantName) )
         {
-            tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
-            tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
-            tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
+            throw new Exception ("Website is failing, please try later!");
         }
-        else
-        {
-            throw new Exception ("We are facing challenges and under maintenance.");
-        }
-
 
         await _next (context);
     }
