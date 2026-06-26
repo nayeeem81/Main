@@ -148,6 +148,8 @@ public class AccountService: IAccountService
             return;
         }
 
+        string userId = user.Id;
+
         List<string>? listRoles = await _userRepository.GetRolesAsync (email,tenantId);
 
         if ( listRoles == null )
@@ -165,7 +167,7 @@ public class AccountService: IAccountService
             Claim claim1 = new(ClaimTypes.Role,"User");
             await _userRepository.AddClaimAsync (user,claim1);
 
-            var expectedClaimValue = $"{tenantId}:{listRoles[0]}";
+            var expectedClaimValue = $"{userId}:{tenantId}:{listRoles[0]}";
 
             Claim claim2 = new("TenantRole",expectedClaimValue);
             await _userRepository.AddClaimAsync (user,claim2);

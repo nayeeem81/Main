@@ -46,10 +46,6 @@ public static class RegisterDatabase
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
 
-
-
-
-
         return services;
     }
 }

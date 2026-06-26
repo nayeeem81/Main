@@ -1,14 +1,17 @@
 ﻿using Main.Infrastructure;
+using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Main.WebAppCore.Tenant;
 
 public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
 {
+    private readonly ITenantContext _tenantContext;
     private readonly ITenantSetter _tenantSetter;
-    public TenantRoleHandler (IHttpContextAccessor httpContextAccessor,
-        ITenantSetter tenantSetter)
+
+    public TenantRoleHandler (ITenantContext tenantContext,ITenantSetter tenantSetter)
     {
+        _tenantContext = tenantContext;
         _tenantSetter = tenantSetter;
     }
 
@@ -21,16 +24,18 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
         }
 
         var currentTenantId = _tenantSetter.CurrentTenantId;
+        var currentUserId = _tenantContext.IdentityId;
 
         if ( string.IsNullOrEmpty (currentTenantId) )
         {
-            return Task.CompletedTask; // No tenant context found in URL
+            return Task.CompletedTask;
         }
 
-        // 3. Validate against the formatted "TenantId:RoleName" claim we made earlier
-        var expectedClaimValue = $"{currentTenantId}:{requirement.AllowedRole}";
+        // 3. Validate against the formatted "IdentityId:TenantId:RoleName" claim we made earlier
+        var expectedClaimValue = $"{currentUserId}:{currentTenantId}:{requirement.AllowedRole}";
 
-        if ( context.User.HasClaim (c => c.Type == "TenantRole" && c.Value == expectedClaimValue) )
+        if ( context.User.IsInRole ("User") &&
+        context.User.HasClaim (c => c.Type == "TenantRole" && c.Value == expectedClaimValue) )
         {
             context.Succeed (requirement);
         }

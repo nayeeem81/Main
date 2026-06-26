@@ -1,14 +1,15 @@
 ﻿using Main.Common;
 using Main.Infrastructure;
+using Main.Services;
 using System.Security.Claims;
 
 namespace Main.WebAppCore.Tenant;
 
-public class UserContext: ITenantContext
+public class TenantHttpContext: ITenantContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITenantSetter _tenantSetter;
-    public UserContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
+    public TenantHttpContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
     {
         _httpContextAccessor = httpContextAccessor;
         _tenantSetter = tenantSetter;

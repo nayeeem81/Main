@@ -1,7 +1,6 @@
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.Tenant;
-using Microsoft.AspNetCore.Authorization;
 using ResourceLibrary.Resources;
 using WebAppCore.Helper;
 public class Program
@@ -14,22 +13,18 @@ public class Program
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
         _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddScoped<ITenantContext,UserContext> ();
+        _ = builder.Services.AddScoped<ITenantContext,TenantHttpContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
+        _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
-        _ = builder.Services.AddAuthorization (options =>
-        {
-            options.AddPolicy ("TenantAdmin",policy => policy.Requirements.Add (new TenantRoleRequirement ("Admin")));
-            options.AddPolicy ("TenantContentManager",policy => policy.Requirements.Add (new TenantRoleRequirement ("ContentManager")));
-            options.AddPolicy ("TenantMember",policy => policy.Requirements.Add (new TenantRoleRequirement ("Member")));
-        });
+        _ = builder.Services.AddAuthorization (builder.Configuration);
 
-        _ = builder.Services.AddTransient<IAuthorizationHandler,TenantRoleHandler> ();
-        _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryOptions> ();
+
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
         _ = builder.Logging.ClearProviders ();
         _ = builder.Logging.AddConsole ();

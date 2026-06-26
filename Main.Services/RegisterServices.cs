@@ -22,7 +22,7 @@ public static class RegisterServices
             options.Cookie.IsEssential = true;
         });
 
-        _ = services.AddEmailService (configuration);
+
         _ = services.AddScoped<ITenancyService,TenancyService> ();
         _ = services.AddScoped<IAccountService,AccountService> ();
         _ = services.AddScoped<IAdminPostService,AdminPostService> ();

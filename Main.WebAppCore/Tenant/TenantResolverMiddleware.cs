@@ -1,12 +1,11 @@
 ﻿using Main.Infrastructure;
 using Main.Services;
-namespace Main.WebAppCore.Tenant;
 
+namespace Main.WebAppCore.Tenant;
 
 public class TenantResolverMiddleware
 {
     private readonly RequestDelegate _next;
-
 
     public TenantResolverMiddleware (RequestDelegate next)
     {
@@ -14,7 +13,7 @@ public class TenantResolverMiddleware
     }
 
     public async Task InvokeAsync (HttpContext context,ITenantSetter tenantSetter,
-        ITenancyService tenancyService)
+    ITenancyService tenancyService)
     {
         string host = context.Request.Host.Host ?? string.Empty;
 
@@ -30,9 +29,7 @@ public class TenantResolverMiddleware
             else if ( segments.Length > 2 )
             {
                 string subdomain = segments[0];
-
                 await tenancyService.FindTenantAsync (subdomain);
-
             }
             else if ( segments.Length > 1 )
             {
