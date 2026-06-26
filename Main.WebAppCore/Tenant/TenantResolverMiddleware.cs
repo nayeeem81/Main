@@ -45,6 +45,7 @@ public class TenantResolverMiddleware
                 await tenancyService.FindTenantAsync (tenantName);
                 if ( tenancyService.TenancyFound )
                 {
+                    tenantContext.TenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
                     tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
@@ -75,6 +76,7 @@ public class TenantResolverMiddleware
 
                 if ( tenancyService.TenancyFound )
                 {
+                    tenantContext.TenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
                     tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;
@@ -88,6 +90,7 @@ public class TenantResolverMiddleware
                 await tenancyService.FindTenantAsync (domain);
                 if ( tenancyService.TenancyFound )
                 {
+                    tenantContext.TenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.CurrentTenantId = tenancyService.CurrentTenant!.TenantId;
                     tenantSetter.TenantName = tenancyService.CurrentTenant!.Name;
                     tenantSetter.TenantStore = tenancyService.CurrentTenant!.ShopType;

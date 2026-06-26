@@ -18,6 +18,7 @@ public interface ITenantContext
     string TenantId
     {
         get;
+        set;
     }
 
     string CurrentUserClainText

@@ -1,6 +1,5 @@
 ﻿using Main.Common;
 using Main.Infrastructure;
-using Main.Services;
 using System.Security.Claims;
 
 namespace Main.WebAppCore.Tenant;
@@ -25,9 +24,13 @@ public class TenantHttpContext: ITenantContext
         get => User;
     }
 
-    public string TenantId => _tenantSetter.CurrentTenantId;
-
     public string CurrentUserClainText => User?.FindFirst ("TenantRole")?.Value ?? string.Empty;
+
+    public string TenantId
+    {
+        get;
+        set;
+    }
 
     public DateTime GetLocalNow ()
     {
