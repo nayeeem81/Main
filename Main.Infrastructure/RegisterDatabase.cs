@@ -46,12 +46,7 @@ public static class RegisterDatabase
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
 
-        _ = services.AddAuthorization (options =>
-        {
-            options.AddPolicy ("TenantAdmin",policy => policy.Requirements.Add (new TenantRoleRequirement ("Admin")));
-            options.AddPolicy ("TenantContentManager",policy => policy.Requirements.Add (new TenantRoleRequirement ("ContentManager")));
-            options.AddPolicy ("TenantMember",policy => policy.Requirements.Add (new TenantRoleRequirement ("Member")));
-        });
+
 
 
 

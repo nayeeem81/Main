@@ -9,16 +9,25 @@ public class Program
     private static async Task Main (string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
+        .Get<MyConfigSettings> () ?? new MyConfigSettings ();
+
         _ = builder.Services.AddHttpContextAccessor ();
         _ = builder.Services.AddScoped<ITenantContext,UserContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
         _ = builder.Services.AddDatabase (builder.Configuration);
-        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-                              .Get<MyConfigSettings> () ?? new MyConfigSettings ();
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
+        _ = builder.Services.AddAuthorization (options =>
+        {
+            options.AddPolicy ("TenantAdmin",policy => policy.Requirements.Add (new TenantRoleRequirement ("Admin")));
+            options.AddPolicy ("TenantContentManager",policy => policy.Requirements.Add (new TenantRoleRequirement ("ContentManager")));
+            options.AddPolicy ("TenantMember",policy => policy.Requirements.Add (new TenantRoleRequirement ("Member")));
+        });
+
         _ = builder.Services.AddTransient<IAuthorizationHandler,TenantRoleHandler> ();
         _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryOptions> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
@@ -53,6 +62,7 @@ public class Program
         _ = app.UseAuthorization ();
         _ = app.MapControllers ();
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
         await DataSeeder.SeedDataAsync (app.Services);
         await app.RunAsync ();
     }

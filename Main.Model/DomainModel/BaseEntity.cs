@@ -69,7 +69,14 @@ public class BaseEntity: IMustHaveTenant
         get; set;
     }
 
+
     public string TenantId
+    {
+        get;
+        set;
+    }
+
+    public BaseDataModel BaseData
     {
         get;
         set;

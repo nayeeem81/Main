@@ -9,12 +9,14 @@ namespace Main.Infrastructure;
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
     public readonly ITenantSetter _tenantSetter;
+    public readonly ITenantContext _tenantContext;
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
 
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,ITenantSetter tenantSetter) : base (options)
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
     {
         _tenantSetter = tenantSetter;
+        _tenantContext = tenantContext;
     }
 
     public DbSet<TenantInfo> Tenants
@@ -159,6 +161,17 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         foreach ( var entry in entries )
         {
             ( ( IMustHaveTenant ) entry.Entity ).TenantId = _tenantSetter.CurrentTenantId;
+
+            ( ( IMustHaveTenant ) entry.Entity ).CreateBaseData (_tenantContext.GetCreateBaseDataModel ());
         }
+
+        entries = ChangeTracker.Entries ()
+            .Where (e => e.State == EntityState.Modified && e.Entity is IMustHaveTenant);
+
+        foreach ( var entry in entries )
+        {
+            ( ( IMustHaveTenant ) entry.Entity ).CreateBaseData (_tenantContext.GetUpdateBaseDataModel ());
+        }
+
     }
 }

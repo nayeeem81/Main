@@ -1,4 +1,6 @@
-﻿namespace Domain.Model;
+﻿using Main.Common;
+
+namespace Domain.Model;
 
 public interface IMustHaveTenant
 {
@@ -6,4 +8,24 @@ public interface IMustHaveTenant
     {
         get; set;
     }
+
+    EnumCountry HostCountry
+    {
+        get; set;
+    }
+
+    public BaseDataModel BaseData
+    {
+        get; set;
+    }
+
+    public bool IsActive
+    {
+        get; set;
+    }
+
+    void ModifyBaseData (BaseDataModel modelBase);
+
+    void CreateBaseData (BaseDataModel modelBase);
+
 }
