@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAppCore.ViewModel;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 [Authorize (Roles = "Admin")]
 public class AdminController: Controller

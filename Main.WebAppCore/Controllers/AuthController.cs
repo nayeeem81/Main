@@ -10,7 +10,7 @@ using System.Security.Claims;
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 public class AuthController: BaseController
 {

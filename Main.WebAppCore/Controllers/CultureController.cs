@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using ResourceLibrary.Resources;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 public class CultureController: BaseController
 {

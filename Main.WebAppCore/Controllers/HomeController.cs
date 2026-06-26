@@ -8,7 +8,7 @@ using ResourceLibrary.Resources;
 
 using WebAppCore.ViewModel;
 
-namespace Main.WebAppCore;
+namespace Main.WebAppCore.Controllers;
 
 public class HomeController: BaseController
 {

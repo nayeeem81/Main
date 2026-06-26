@@ -192,3 +192,136 @@ public string StripProtocol(string rawUrl)
     // Optional: Remove any trailing paths if they exist (e.g., ://sample.com -> sample.com)
     return rawUrl.Split('/')[0]; 
 }
+
+HttpContext?.Request.Host.Host extracts the domain name or IP address of the incoming request, while HttpContext?.Request.Path identifies the specific resource route being accessed.
+
+They represent completely separate segments of a complete URL. For example, in the URL https://example.com, Host.Host returns example.com and Path returns /api/users.
+Detailed Comparison
+
+Property
+HttpContext?.Request.Host.Host
+HttpContext?.Request.Path
+
+Component
+
+Domain/Host segment of the URL.Resource routing path segment. 
+
+Includes Port?No (ignores :8080, :5001, etc.).
+No (only extracts the path).
+
+Includes Query?
+No (ignores parameters after ?).
+No (ignores parameters after ?).
+
+Data Type
+stringMicrosoft.AspNetCore.Http.PathString
+
+Example Output
+"example.com" or "localhost"
+
+"/api/products/search"
+
+Understanding HttpContext?.Request.Host.Host
+The Request.Host property returns a HostString object containing both the domain and the port (e.g., example.com:8080). Appending the second .Host targets the underlying string property, filtering out the port entirely.
+
+Use Case: Domain-based multi-tenant routing, setting secure cookie domains, or restricting API access to specific origins.
+
+Important Nuance: If your application sits behind a reverse proxy (like Nginx, IIS, or Cloudflare), this might return localhost unless you configure Forwarded Headers Middleware in ASP.NET Core.
+
+Understanding HttpContext?.Request.Path
+The Request.Path property retrieves the request path relative to your application root. It always starts with a forward slash (/).
+
+Use Case: Custom logging middleware, URL rewriting, or checking if a user is trying to access an anonymous route like /login.
+
+Important Nuance: It does not include PathBase (the virtual directory subfolder if your app is hosted under something like ://example.com). It also completely excludes the query string (e.g., ?id=12). To get the query parameters, use Request.QueryString.URL Breakdown 
+
+Example
+If a client sends an HTTP request to:https://visualstudio.com 
+The HttpContext.Request properties split the URL like this:Request.
+
+Scheme: "https"Request.
+Host.Value: "://visualstudio.com"
+Request.Host.Host: "://visualstudio.com"
+Request.Path: "/v1/checkout/summary"
+Request.QueryString: "?discount=true"
+
+Defensive Code Tip
+
+The conditional access operator (?.) prevents NullReferenceException errors if HttpContext or Request are null. Because Path returns a PathString object rather than a pure string, use .Value or .ToString() when performing standard string manipulations:csharp
+
+// Returns string type safely
+string currentPath = HttpContext?.Request.Path.Value ?? string.Empty; 
+
+For multi tenant sub directry for tenants, if my domin is: khai.com and tenant is: tenant1-local; then, tenant will type: khai.com/tenant1-local or he/she will type; https://khai.com/tenant1-local or www.khai.com/tenant1-local.Your tenants can type any of those three variations into their browser address bar. 
+
+Web browsers are designed to automatically convert shorthand entries into valid, full web addresses.Here is exactly what happens when they type each variation and how your application will see it.How Browsers Process the Inputkhai.com/tenant1-local
+
+Browser Behavior: The browser automatically prepends the default protocol (https://).
+Result: It resolves to 
+https://khai.com/tenant1-local.
+https://khai.com/tenant1-localBrowser 
+
+Behavior: This is already a fully formed absolute URL.
+
+Result: The browser navigates directly to it.
+www.khai.com/tenant1-localBrowser 
+
+Behavior: The browser prepends the protocol (https://www.khai.com/...).
+Result: It treats www as a subdomain.
+
+How Your ASP.NET Core Code Sees Them
+
+Once the request hits your server, HttpContext.Request breaks down these three entries differently. This is crucial for your multi-tenant routing logic.
+
+What the user typed
+
+khai.com/tenant1-local
+Request.Host.Host : "khai.com"
+Request.Path : "/tenant1-local"
+
+https://khai.com/tenant1-local
+
+"khai.com"
+"/tenant1-local"
+
+www.khai.com/tenant1-local
+
+"www.khai.com"
+"/tenant1-local"
+
+Notice that the Request.Path remains exactly the same (/tenant1-local) for all three inputs. This makes sub-directory tenant routing very reliable.Critical Settings for Your Multi-Tenant App
+
+Because users can type these variations, you must handle two specific scenarios in your application configuration or hosting environment:
+
+1. Handle the www vs non-www difference
+
+As shown in the table, www.khai.com changes your Request.Host.Host. If your code checks for an exact match on "khai.com", requests coming from www might fail.
+
+The Fix: 
+Configure a URL rewrite rule in your web server (like IIS, Nginx, or via ASP.NET Core Middleware) to permanently redirect all www.khai.com traffic to khai.com before it reaches your routing logic.
+
+2. Enforce HTTPSIf a user forces http:// instead of https://, you should upgrade their connection immediately.
+
+The Fix: Ensure you have app.UseHttpsRedirection(); placed early in your Program.cs file pipeline.
+
+Quick Code Example to Extract the Tenant Path
+
+In a sub-directory multi-tenant architecture, you can extract the tenant identifier from the Request.Path inside a custom middleware like this:csharp
+
+string path = HttpContext.Request.Path.Value ?? "";
+
+// Split path segments (e.g., "/tenant1-local/products" -> ["", "tenant1-local", "products"])
+var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+if (segments.Length > 0)
+{
+    string tenantName = segments[0]; // Returns "tenant1-local"
+    // TODO: Look up tenantName in database or cache
+}
+
+If you want, I can:
+Show how to write a complete custom Middleware to resolve tenants from paths
+
+How?
+1. Explain how to setup route constraints for /{tenant}/[controller] in ASP.NET Core
+2. Show how to strip www automatically using ASP.NET Rewrite Middleware.
