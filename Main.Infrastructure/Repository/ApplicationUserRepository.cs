@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Main.Infrastructure;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,39 @@ public class ApplicationUserRepository: IApplicationUserRepository
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ApplicationDbContext _context;
 
     public ApplicationUserRepository (UserManager<ApplicationUser> userManager,
-    SignInManager<ApplicationUser> signInManager)
+    SignInManager<ApplicationUser> signInManager,ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _context = context;
     }
 
-    public async Task AddToRoleAsync (ApplicationUser applicationUser,string roleName)
+    public async Task<bool> AddToRoleAsync (string email,string roleName)
     {
-        _ = await _userManager.AddToRoleAsync (applicationUser,"User");
+        ApplicationUser? applicationUser = await FindByEmailAsync (email);
+
+        var result = await _userManager.AddToRoleAsync (applicationUser!,roleName);
+
+        return result.Succeeded == true;
+    }
+
+    public async Task<bool> AddToTenantRoleAsync (string email,string tenantId,string roleName)
+    {
+        ApplicationUser? applicationUser = await FindByEmailAsync (email);
+
+        UserTenant userTenant = new ()
+        {
+            TenantId = tenantId,
+            UserId = applicationUser!.Id,
+            TenantRole = roleName
+        };
+
+        _ = _context.UserTenants.Add (userTenant);
+        var result = await _context.SaveChangesAsync ();
+        return result > 0;
     }
 
     public async Task<ApplicationUser?> FindByEmailAsync (string email)
@@ -39,9 +62,20 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return applicationUser;
     }
 
-    public async Task<bool> PasswordSignInAsync (ApplicationUser applicationUser,string password,bool isPersistent,bool lockoutFailure)
+    public async Task<bool> PasswordSignInAsync (string email,string password,bool isPersistent,bool lockoutFailure)
     {
-        var result = await _signInManager.PasswordSignInAsync ( applicationUser, password, isPersistent, lockoutOnFailure: lockoutFailure);
+        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+
+        if ( applicationUser == null )
+        {
+            return false;
+        }
+
+        var result = await _signInManager.PasswordSignInAsync (
+            applicationUser!,
+            password,
+            isPersistent,
+            lockoutOnFailure: lockoutFailure);
 
         if ( result.Succeeded )
         {
@@ -73,87 +107,125 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
-    public async Task<string?> GenerateEmailConfirmationTokenAsync (ApplicationUser user)
+    public async Task<string?> GenerateEmailConfirmationTokenAsync (string email)
     {
-        string? code = await _userManager.GenerateEmailConfirmationTokenAsync (user);
+        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+
+        if ( applicationUser == null )
+        {
+            return "";
+        }
+
+        string? code = await _userManager.GenerateEmailConfirmationTokenAsync (applicationUser);
 
         return code;
     }
 
-    public async Task<bool> ConfirmEmailAsync (ApplicationUser userIdentity,string token)
+    public async Task<bool> ConfirmEmailAsync (string email,string token)
     {
-        var result = await _userManager.ConfirmEmailAsync (userIdentity,token);
+        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+
+        if ( applicationUser == null )
+        {
+            return false;
+        }
+
+        var result = await _userManager.ConfirmEmailAsync (applicationUser,token);
 
         return result.Succeeded == true;
     }
 
-    public async Task<List<string>?> GetRolesAsync (string email,string tenantId)
+    public async Task<List<string>> GetRolesAsync (string email)
     {
         ApplicationUser? user = await FindByEmailAsync(email);
 
         if ( user == null )
         {
-            return null;
+            return new List<string> ();
         }
 
         var roles = await _userManager.GetRolesAsync (user);
 
         if ( roles == null )
         {
-            return null;
+            return new List<string> ();
         }
 
-        List<string>? listRoles = [];
+        List<string> listRoles = [];
 
-        if ( roles != null && roles.Any () && roles[0] == "GlobalAdmin" )
+        if ( roles != null && roles.Any () )
         {
             listRoles.Add (roles[0]);
             return listRoles;
         }
 
-        List<UserTenant> userTenants = user.UserTenants.ToList<UserTenant>();
+        return new List<string> ();
+    }
+
+    public async Task<List<string>> GetTenantRolesAsync (string email,string tenantId)
+    {
+        ApplicationUser? user = await FindByEmailAsync(email);
+
+        if ( user == null )
+        {
+            return new List<string> ();
+        }
+
+        List<UserTenant> userTenants = _context.UserTenants.Where<UserTenant>
+        (a => a.TenantId == tenantId && a.UserId == user.Id).ToList();
 
         if ( userTenants == null )
         {
-            return null;
+            return new List<string> ();
         }
+
+        var listTenantRoles = new List<string> ();
 
         if ( userTenants.Any () )
         {
-            List<UserTenant> currentUserRoles = userTenants.Where<UserTenant>
-            (a => a.TenantId == tenantId).ToList ();
-
-            if ( currentUserRoles != null && currentUserRoles.Any ()
-            && currentUserRoles.Count > 0 )
+            userTenants.ForEach (tenantUserRole =>
             {
-                currentUserRoles.ForEach (tenantUserRole =>
+                if ( !string.IsNullOrEmpty (tenantUserRole.TenantRole) )
                 {
-                    if ( !string.IsNullOrEmpty (tenantUserRole.TenantRole) )
-                    {
-                        listRoles.Add (tenantUserRole.TenantRole);
-                    }
-                });
-            }
+                    listTenantRoles.Add (tenantUserRole.TenantRole);
+                }
+            });
+            return listTenantRoles.ToList ();
         }
-        return listRoles;
+        return new List<string> ();
     }
 
-    public async Task<bool> SetLockoutEndDateAsync (ApplicationUser user)
+    public async Task<bool> SetLockoutEndDateAsync (string email)
     {
-        IdentityResult result = await _userManager.SetLockoutEndDateAsync(user, null);
+        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync (email);
+
+        if ( applicationUser == null )
+        {
+            return false;
+        }
+
+        IdentityResult result = await _userManager.SetLockoutEndDateAsync(applicationUser, null);
 
         return result.Succeeded == true;
     }
 
-    public async Task<bool> ResetAccessFailedCountAsync (ApplicationUser user)
+    public async Task<bool> ResetAccessFailedCountAsync (string email)
     {
-        IdentityResult result = await _userManager.ResetAccessFailedCountAsync(user);
+        ApplicationUser? applicationUser = await _userManager.FindByEmailAsync (email);
+
+        if ( applicationUser == null )
+        {
+            return false;
+        }
+
+        IdentityResult result = await _userManager.ResetAccessFailedCountAsync(applicationUser);
 
         return result.Succeeded == true;
     }
 
     public async Task<List<ApplicationUser>?> ApplicationUsers ()
     {
+
         List<ApplicationUser> identityUsers = await _userManager.Users.ToListAsync<ApplicationUser>();
 
         return identityUsers.ToList ();
@@ -172,17 +244,14 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return false;
     }
 
-    public async Task<bool> PasswordSignInAsync
-    (string userName,string password,bool isPersistent,bool lockoutOnFailure)
+    public async Task AddClaimAsync (string email,Claim claimType)
     {
-        var result = await _signInManager.PasswordSignInAsync (userName,password,isPersistent,lockoutOnFailure);
+        ApplicationUser? user = await _userManager.FindByEmailAsync (email);
 
-        return result.Succeeded == true;
-    }
-
-    public async Task AddClaimAsync (ApplicationUser applicationUser,Claim claimType)
-    {
-        _ = await _userManager.AddClaimAsync (applicationUser,claimType);
+        if ( user != null )
+        {
+            _ = await _userManager.AddClaimAsync (user,claimType);
+        }
     }
 
     public async Task SignOutAsync ()

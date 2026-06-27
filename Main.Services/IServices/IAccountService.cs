@@ -1,7 +1,5 @@
 ﻿using DataTransferModel;
 
-using Main.Common;
-
 using Microsoft.AspNetCore.Identity;
 
 namespace Main.Services;
@@ -22,7 +20,7 @@ public interface IAccountService
 
     Task<string?> GetEmailVerifyToken (string email);
 
-    Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel);
+    Task<bool> CreateApplicationUser (string email,string token);
 
     Task GetUserClaims (string email,string tenantId);
 

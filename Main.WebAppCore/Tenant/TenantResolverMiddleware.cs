@@ -18,18 +18,18 @@ public class TenantResolverMiddleware
     ITenantSetter tenantSetter,
     ITenancyService tenancyService)
     {
-        string? resolvedId = null;
+        string? resolvedTenantId = null;
+        string? tenantName = null;
 
         // 1. Try to read the header
-        bool headerValues = context.Request.Headers.TryGetValue("X-Tenant-ID", out var tenantIdHeader);
+        bool headerTenentIdValues = context.Request.Headers.TryGetValue("X-Tenant-ID", out var tenantIdHeader);
 
-        if ( headerValues )
+        if ( headerTenentIdValues )
         {
             // Header exists. Extract the first value safely.
-            resolvedId = tenantIdHeader.FirstOrDefault ();
+            resolvedTenantId = tenantIdHeader.FirstOrDefault ();
         }
 
-        string? tenantName = null;
 
         // check sessin data
         string? cachedTenantId = context.Session.GetString("CurrentTenantId");
@@ -39,12 +39,12 @@ public class TenantResolverMiddleware
         // validaton in server session apped here (not cache)
         if ( !string.IsNullOrEmpty (cachedTenantId) &&
             !string.IsNullOrEmpty (cachedCustomTenantId) &&
-            headerValues )
+            headerTenentIdValues )
         {
             // Cache Hit: Skip Prseing 
             if ( cachedTenantId == cachedCustomTenantId )
             {
-                if ( cachedTenantId == resolvedId )
+                if ( cachedTenantId == resolvedTenantId )
                 {
                     // set scoped service (di)
                     tenantSetter.CurrentTenantId = cachedTenantId!;
@@ -91,38 +91,38 @@ public class TenantResolverMiddleware
                     if ( tenancyService.TenancyFound )
                     {
                         // set header "X-Tenant-ID"
-                        resolvedId = tenancyService.CurrentTenant!.TenantId;
+                        resolvedTenantId = tenancyService.CurrentTenant!.TenantId;
                         // used by tenant setter scoped service
                         tenantName = tenancyService.CurrentTenant!.Name;
                         // .net context
-                        tenantContext.TenantId = resolvedId;
+                        tenantContext.TenantId = resolvedTenantId;
                         // scoped service
-                        tenantSetter.CurrentTenantId = resolvedId;
+                        tenantSetter.CurrentTenantId = resolvedTenantId;
                         tenantSetter.TenantName = tenantName;
                         // 2. Save to Session so future calls bypass validation
-                        context.Session.SetString ("CurrentTenantId",resolvedId);
+                        context.Session.SetString ("CurrentTenantId",resolvedTenantId);
                         // 3. Custom tracking session key if needed for audit/other systems
-                        string customSessionKey = $"XTenantID:{resolvedId}";
-                        context.Session.SetString (customSessionKey,resolvedId);
+                        string customSessionKey = $"XTenantID:{resolvedTenantId}";
+                        context.Session.SetString (customSessionKey,resolvedTenantId);
                         // create and set header
-                        context.Request.Headers["X-Tenant-ID"] = resolvedId;
+                        context.Request.Headers["X-Tenant-ID"] = resolvedTenantId;
                     }
                     else
                     {
                         // when our root website, no tenant is acessing
                         // set header "X-Tenant-ID"
-                        resolvedId = "root";
+                        resolvedTenantId = "root";
                         // scoped service
                         tenantSetter.CurrentTenantId = "root";
                         // used by tenant setter scoped service
                         tenantSetter.TenantName = host;
                         // 2. Save to Session so future calls bypass validation
-                        context.Session.SetString ("CurrentTenantId",resolvedId);
+                        context.Session.SetString ("CurrentTenantId",resolvedTenantId);
                         // 3. Custom tracking session key if needed for audit/other systems
-                        string customSessionKey = $"XTenantID:{resolvedId}";
-                        context.Session.SetString (customSessionKey,resolvedId);
+                        string customSessionKey = $"XTenantID:{resolvedTenantId}";
+                        context.Session.SetString (customSessionKey,resolvedTenantId);
                         // create and set header
-                        context.Request.Headers["X-Tenant-ID"] = resolvedId;
+                        context.Request.Headers["X-Tenant-ID"] = resolvedTenantId;
                     }
                 }
             }
@@ -149,21 +149,21 @@ public class TenantResolverMiddleware
                         if ( tenancyService.TenancyFound )
                         {
                             // set header "X-Tenant-ID"
-                            resolvedId = tenancyService.CurrentTenant!.TenantId;
+                            resolvedTenantId = tenancyService.CurrentTenant!.TenantId;
                             // used by tenant setter service
                             tenantName = tenancyService.CurrentTenant!.Name;
                             // .net context
-                            tenantContext.TenantId = resolvedId;
+                            tenantContext.TenantId = resolvedTenantId;
                             // scoped service
-                            tenantSetter.CurrentTenantId = resolvedId;
+                            tenantSetter.CurrentTenantId = resolvedTenantId;
                             tenantSetter.TenantName = tenantName;
                             // 2. Save to Session so future calls bypass validation
-                            context.Session.SetString ("CurrentTenantId",resolvedId);
+                            context.Session.SetString ("CurrentTenantId",resolvedTenantId);
                             // 3. Create your custom tracking session key if needed for audit/other systems
-                            string customSessionKey = $"XTenantID:{resolvedId}";
-                            context.Session.SetString (customSessionKey,resolvedId);
+                            string customSessionKey = $"XTenantID:{resolvedTenantId}";
+                            context.Session.SetString (customSessionKey,resolvedTenantId);
                             // create and set header
-                            context.Request.Headers["X-Tenant-ID"] = resolvedId;
+                            context.Request.Headers["X-Tenant-ID"] = resolvedTenantId;
                         }
                     }
                     // 3. check database for tenants who are using domain
@@ -175,32 +175,64 @@ public class TenantResolverMiddleware
                         if ( tenancyService.TenancyFound )
                         {
                             // set header "X-Tenant-ID"
-                            resolvedId = tenancyService.CurrentTenant!.TenantId;
+                            resolvedTenantId = tenancyService.CurrentTenant!.TenantId;
                             // used by tenant setter service
                             tenantName = tenancyService.CurrentTenant!.Name;
                             // .net context
-                            tenantContext.TenantId = resolvedId;
+                            tenantContext.TenantId = resolvedTenantId;
                             // scoped service
-                            tenantSetter.CurrentTenantId = resolvedId;
+                            tenantSetter.CurrentTenantId = resolvedTenantId;
                             tenantSetter.TenantName = tenantName;
                             // 2. Save to Session so future calls bypass validation
-                            context.Session.SetString ("CurrentTenantId",resolvedId);
+                            context.Session.SetString ("CurrentTenantId",resolvedTenantId);
                             // 3. Create your custom tracking session key if needed for audit/other systems
-                            string customSessionKey = $"XTenantID:{resolvedId}";
-                            context.Session.SetString (customSessionKey,resolvedId);
+                            string customSessionKey = $"XTenantID:{resolvedTenantId}";
+                            context.Session.SetString (customSessionKey,resolvedTenantId);
                             // create and set header
-                            context.Request.Headers["X-Tenant-ID"] = resolvedId;
+                            context.Request.Headers["X-Tenant-ID"] = resolvedTenantId;
                         }
                     }
                 }
             }
         }
 
-        if ( string.IsNullOrEmpty (resolvedId) )
+        if ( string.IsNullOrEmpty (resolvedTenantId) )
         {
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync ("Invald request!");
             return;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CHECKING THE IDENTITY ID OF THE REQUEST WITH CURRENT SESSION IDENTITY ID  WHEN LOGGED IN USER
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        string? headerIdentityId = "";
+        // 1. Try to read the header (keep Identityd in session for later authorzatin role assignment)
+        bool headerUserIdValues = context.Request.Headers.TryGetValue("X-Identity-ID", out var identityIdHeader);
+
+        if ( !headerTenentIdValues )
+        {
+            context.Request.Headers["X-Identity-ID"] = "";
+        }
+
+        string? loginUserId = context.Session.GetString ($"userid:{resolvedTenantId}:{headerIdentityId}");
+
+        if ( headerUserIdValues && headerTenentIdValues && !string.IsNullOrEmpty (loginUserId) )
+        {
+            string keyIdentityId = $"{resolvedTenantId}:{headerIdentityId}";
+            // Header exists. Extract the first value safely.
+            headerIdentityId = identityIdHeader.FirstOrDefault ();
+            string? currentIdentityId = context.Session.GetString(keyIdentityId);
+
+            if ( currentIdentityId != null )
+            {
+                context.Request.Headers["X-Identity-ID"] = currentIdentityId;
+                context.Session.SetString (keyIdentityId,currentIdentityId);
+
+            }
+
+            // matching for User in browser ad from sessin whichwe set from the authenticaton (login).
         }
 
         await _next (context);

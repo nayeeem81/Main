@@ -1,8 +1,6 @@
 ﻿using DataTransferModel;
 
 using Domain.Model;
-
-using Main.Common;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
 
@@ -27,7 +25,7 @@ public class AccountService: IAccountService
 
         if ( resultCreateIdentityUser )
         {
-            await _userRepository.AddToRoleAsync (userIdentityEntity,"User");
+            _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!,"User");
             return IdentityResult.Success;
         }
         else
@@ -62,28 +60,13 @@ public class AccountService: IAccountService
 
     public async Task<SignInResult> AuthenticateUser (string email,string password)
     {
-        var applicationUser = await _userRepository.FindByEmailAsync(email.Trim());
-
-        if ( applicationUser == null )
-        {
-            return SignInResult.Failed;
-        }
-
-        bool result = await _userRepository.PasswordSignInAsync (applicationUser, password, true, false);
+        bool result = await _userRepository.PasswordSignInAsync (email, password, true, false);
 
         return result ? SignInResult.Success : SignInResult.Failed;
     }
 
-    public async Task<bool> ChangePasswordAsync (string email,string password,
-        string rePassword)
+    public async Task<bool> ChangePasswordAsync (string email,string password,string rePassword)
     {
-        ApplicationUserDataModel? applicationUser = await GetApplicationUser ( email );
-
-        if ( applicationUser == null )
-        {
-            return false;
-        }
-
         bool result = await _userRepository.ChangePasswordAsync(email, password, rePassword);
 
         return result;
@@ -91,15 +74,7 @@ public class AccountService: IAccountService
 
     public async Task<string?> GetEmailVerifyToken (string email)
     {
-        ApplicationUser? user = await _userRepository.FindByEmailAsync ( email );
-
-        if ( user == null )
-        {
-            return null;
-        }
-
-        string? code = await _userRepository.GenerateEmailConfirmationTokenAsync (user);
-
+        string? code = await _userRepository.GenerateEmailConfirmationTokenAsync (email);
         return code;
     }
 
@@ -113,24 +88,24 @@ public class AccountService: IAccountService
             return null;
         }
 
-        ApplicationUserDataModel? applicationUserDataModel = new
-()
+        ApplicationUserDataModel? applicationUserDataModel = new ()
         {
             Id = applicationUser.Id,
             UserName = applicationUser.UserName,
             Email = applicationUser.Email
         };
+
         return applicationUserDataModel;
     }
 
 
-    public async Task<bool> CreateApplicationUser (string email,string token,BaseDataModel baseDataModel)
+    public async Task<bool> CreateApplicationUser (string email,string token)
     {
         var userIdentity = await _userRepository.FindByEmailAsync (email);
 
         if ( userIdentity != null )
         {
-            bool result = await _userRepository.ConfirmEmailAsync (userIdentity,token);
+            bool result = await _userRepository.ConfirmEmailAsync (email,token);
 
             return result;
         }
@@ -140,46 +115,35 @@ public class AccountService: IAccountService
 
     public async Task GetUserClaims (string email,string tenantId)
     {
-        ApplicationUser? user =
-            await _userRepository.FindByEmailAsync(email);
 
-        if ( user == null )
+        List<string> listIdentityRoles = await _userRepository.GetRolesAsync (email);
+
+        listIdentityRoles.ForEach (async identityRole =>
         {
-            return;
-        }
+            Claim claim = new(ClaimTypes.Role, identityRole.ToString());
+            await _userRepository.AddClaimAsync (email,claim);
+        });
 
-        string userId = user.Id;
+        var identityUser = await _userRepository.FindByEmailAsync(email);
+        string userId = identityUser!.Id;
 
-        List<string>? listRoles = await _userRepository.GetRolesAsync (email,tenantId);
 
-        if ( listRoles == null )
+        List<string> listTenantRoles = await _userRepository.GetTenantRolesAsync (email, tenantId);
+
+        listTenantRoles.ForEach (async tenantRole =>
         {
-            return;
-        }
+            var expectedClaimValue = $"{userId}:{tenantId}:{tenantRole.ToString()}";
+            Claim claim = new("TenantRole",  expectedClaimValue);
+            await _userRepository.AddClaimAsync (email,claim);
+        });
 
-        if ( listRoles[0] == "GlobalAdmin" )
-        {
-            Claim claim = new(ClaimTypes.Role,"GlobalAdmin");
-            await _userRepository.AddClaimAsync (user,claim);
-        }
-        else
-        {
-            Claim claim1 = new(ClaimTypes.Role,"User");
-            await _userRepository.AddClaimAsync (user,claim1);
+        await _userRepository.AddClaimAsync (email,new (ClaimTypes.Email,identityUser.Email!));
 
-            var expectedClaimValue = $"{userId}:{tenantId}:{listRoles[0]}";
+        await _userRepository.AddClaimAsync (email,new (ClaimTypes.Name,identityUser.UserName!));
 
-            Claim claim2 = new("TenantRole",expectedClaimValue);
-            await _userRepository.AddClaimAsync (user,claim2);
-        }
+        await _userRepository.AddClaimAsync (email,new (ClaimTypes.NameIdentifier,identityUser.Id.ToString ()));
 
-        await _userRepository.AddClaimAsync (user,new (ClaimTypes.Email,user.Email!));
-
-        await _userRepository.AddClaimAsync (user,new (ClaimTypes.Name,user.UserName!));
-
-        await _userRepository.AddClaimAsync (user,new (ClaimTypes.NameIdentifier,user.Id.ToString ()));
-
-        await _userRepository.AddClaimAsync (user,new ("TenantId",tenantId));
+        await _userRepository.AddClaimAsync (email,new ("TenantId",tenantId));
 
     }
 
@@ -205,14 +169,14 @@ public class AccountService: IAccountService
             return false;
         }
 
-        var result = await _userRepository.SetLockoutEndDateAsync(user);
+        var result = await _userRepository.SetLockoutEndDateAsync(user!.Email!);
 
         if ( result )
         {
             return true;
         }
 
-        bool resetResult = await _userRepository.ResetAccessFailedCountAsync(user);
+        bool resetResult = await _userRepository.ResetAccessFailedCountAsync(user!.Email!);
 
         return resetResult;
     }

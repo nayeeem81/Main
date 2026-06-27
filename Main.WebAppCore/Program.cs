@@ -13,7 +13,7 @@ public class Program
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
         _ = builder.Services.AddHttpContextAccessor ();
-        _ = builder.Services.AddScoped<ITenantContext,TenantHttpContext> ();
+        _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();

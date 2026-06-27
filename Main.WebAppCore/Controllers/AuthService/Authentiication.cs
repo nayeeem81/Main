@@ -1,6 +1,7 @@
 ﻿namespace Main.WebAppCore.Controllers.AuthService;
 
-public class Authentiication
+public static class Authentiication
 {
+
 
 }

@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Microsoft.AspNetCore.Identity;
@@ -108,9 +107,9 @@ public class AuthController: BaseController
             return BadRequest ("Invalid verification request parameters.");
         }
 
-        BaseDataModel baseDataModel = _userContext.GetCreateBaseDataModel ( );
+        _ = _userContext.GetCreateBaseDataModel ();
 
-        _ = await _userAccountService.CreateApplicationUser (email,token,baseDataModel);
+        _ = await _userAccountService.CreateApplicationUser (email,token);
 
         return RedirectToAction ("VerifyComplete");
     }
@@ -147,37 +146,28 @@ public class AuthController: BaseController
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
 
-            return View (loginDisplayViewModel);
+            return View ("Login",loginDisplayViewModel);
         }
 
-        ApplicationUserDataModel? userIdentity = await _userAccountService
+        ApplicationUserDataModel? applicationIdentityUserDataModel = await _userAccountService
             .FindByEmailAsync(loginDisplayViewModel.Email);
 
-
-        if ( userIdentity == null )
+        if ( InvalidApplicationUser (applicationIdentityUserDataModel,loginDisplayViewModel) )
         {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
-
-            return View (loginDisplayViewModel);
+            return View ("Login",loginDisplayViewModel);
         }
 
-
-        if ( !await _userAccountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email) )
+        if ( !await IsEmailConfirmed (loginDisplayViewModel) )
         {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
-
-            await SendVerifyEmail (loginDisplayViewModel.Email);
-
             return RedirectToAction ("Login");
         }
 
-
         // OWASP Mitigation: Use secure password verification and do not reveal if the password is incorrect or the account is locked
         bool result = await _userAccountService.PasswordSignInAsync (
-                                      userIdentity.UserName!,
-                                        loginDisplayViewModel.Password,
-                                        isPersistent: false,
-                                        lockoutOnFailure: false );
+                            applicationIdentityUserDataModel!.UserName!,
+                            loginDisplayViewModel.Password,
+                            isPersistent: false,
+                            lockoutOnFailure: false );
 
         if ( result )
         {
@@ -189,6 +179,39 @@ public class AuthController: BaseController
 
         // OWASP Mitigation: Do not reveal if the password is incorrect or the account is locked, show a generic error message
         return View (loginDisplayViewModel);
+    }
+
+    public async Task<IActionResult> ValidateUser (ApplicationUserDataModel? applicationIdentityUserDataModel,LoginViewModel loginDisplayViewModel)
+    {
+
+
+        return View (loginDisplayViewModel);
+    }
+
+    private async Task<bool> IsEmailConfirmed (LoginViewModel loginDisplayViewModel)
+    {
+        bool result = await _userAccountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email);
+
+        if ( !result )
+        {
+            loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
+
+            await SendVerifyEmail (loginDisplayViewModel.Email);
+        }
+
+        return result;
+    }
+
+    private bool InvalidApplicationUser (ApplicationUserDataModel? applicationIdentityUserDataModel,
+    LoginViewModel loginDisplayViewModel)
+    {
+        if ( applicationIdentityUserDataModel == null )
+        {
+            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
+
+            return true;
+        }
+        return false;
     }
 
 

@@ -4,11 +4,11 @@ using System.Security.Claims;
 
 namespace Main.WebAppCore.Tenant;
 
-public class TenantHttpContext: ITenantContext
+public class TenantContext: ITenantContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ITenantSetter _tenantSetter;
-    public TenantHttpContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
+    public TenantContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
     {
         _httpContextAccessor = httpContextAccessor;
         _tenantSetter = tenantSetter;
