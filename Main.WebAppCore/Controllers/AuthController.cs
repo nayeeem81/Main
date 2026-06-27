@@ -171,20 +171,17 @@ public class AuthController: BaseController
 
         if ( result )
         {
+            // loggedin user id
+            SetSessionXIdentityId (applicationIdentityUserDataModel.Id);
+
             await _userAccountService.GetUserClaims (loginDisplayViewModel.Email,_tenantSetter.CurrentTenantId);
+
 
             // Successful login, redirect to home page or dashboard
             return RedirectToAction ("Index","Home");
         }
 
         // OWASP Mitigation: Do not reveal if the password is incorrect or the account is locked, show a generic error message
-        return View (loginDisplayViewModel);
-    }
-
-    public async Task<IActionResult> ValidateUser (ApplicationUserDataModel? applicationIdentityUserDataModel,LoginViewModel loginDisplayViewModel)
-    {
-
-
         return View (loginDisplayViewModel);
     }
 
