@@ -1,5 +1,4 @@
 ﻿using Main.Infrastructure;
-using Main.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Main.WebAppCore.Tenant;
@@ -15,7 +14,8 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
         _tenantSetter = tenantSetter;
     }
 
-    protected override Task HandleRequirementAsync (AuthorizationHandlerContext context,TenantRoleRequirement requirement)
+    protected override Task HandleRequirementAsync (AuthorizationHandlerContext context,
+    TenantRoleRequirement requirement)
     {
         if ( context.User.IsInRole ("GlobalAdmin") )
         {
@@ -31,13 +31,31 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
             return Task.CompletedTask;
         }
 
-        // 3. Validate against the formatted "IdentityId:TenantId:RoleName" claim we made earlier
+        // Validate against the formatted "IdentityId:TenantId:RoleName" claim we made after Login success
         var expectedClaimValue = $"{currentUserId}:{currentTenantId}:{requirement.AllowedRole}";
 
-        if ( context.User.IsInRole ("User") &&
-        context.User.HasClaim (c => c.Type == "TenantRole" && c.Value == expectedClaimValue) )
+        if ( context.User.IsInRole ("User") )
         {
-            context.Succeed (requirement);
+            bool result = false;
+
+            context.User.Claims.ToList ().ForEach (tenantClaim =>
+            {
+                if ( tenantClaim.Type == "TenantRole" && tenantClaim.Value == expectedClaimValue )
+                {
+                    result = true;
+                }
+                else
+                {
+                    result = false;
+                }
+
+            });
+
+            if ( result )
+            {
+                context.Succeed (requirement);
+                return Task.CompletedTask;
+            }
         }
 
         return Task.CompletedTask;

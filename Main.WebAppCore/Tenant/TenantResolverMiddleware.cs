@@ -196,44 +196,41 @@ public class TenantResolverMiddleware
             }
         }
 
-        if ( string.IsNullOrEmpty (resolvedTenantId) )
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CHECKING THE IDENTITY ID OF THE REQUEST WITH CURRENT SESSION IDENTITY ID  WHEN LOGGED IN USER
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        string? tenantContextIdentityId = tenantContext.IdentityId;
+        string? sessionIdentityId = context.Session.GetString ("X-Identity-ID");
+        bool passme = true;
+
+        if ( tenantContextIdentityId != null && sessionIdentityId != null )
+        {
+            if ( tenantContextIdentityId != sessionIdentityId )
+            {
+                passme = false;
+            }
+        }
+        else if ( tenantContextIdentityId != null )
+        {
+            context.Session.SetString ("X-Identity-ID",tenantContextIdentityId);
+            passme = true;
+        }
+
+
+
+
+        // failed to resolve or userid mismatch for logged in user
+        if ( string.IsNullOrEmpty (resolvedTenantId) && !passme )
         {
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync ("Invald request!");
             return;
         }
 
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////CHECKING THE IDENTITY ID OF THE REQUEST WITH CURRENT SESSION IDENTITY ID  WHEN LOGGED IN USER
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        string? headerIdentityId = "";
-        // 1. Try to read the header (keep Identityd in session for later authorzatin role assignment)
-        bool headerUserIdValues = context.Request.Headers.TryGetValue("X-Identity-ID", out var identityIdHeader);
-
-        if ( !headerTenentIdValues )
-        {
-            context.Request.Headers["X-Identity-ID"] = "";
-        }
-
-        string? loginUserId = context.Session.GetString ($"userid:{resolvedTenantId}:{headerIdentityId}");
-
-        if ( headerUserIdValues && headerTenentIdValues && !string.IsNullOrEmpty (loginUserId) )
-        {
-            string keyIdentityId = $"{resolvedTenantId}:{headerIdentityId}";
-            // Header exists. Extract the first value safely.
-            headerIdentityId = identityIdHeader.FirstOrDefault ();
-            string? currentIdentityId = context.Session.GetString(keyIdentityId);
-
-            if ( currentIdentityId != null )
-            {
-                context.Request.Headers["X-Identity-ID"] = currentIdentityId;
-                context.Session.SetString (keyIdentityId,currentIdentityId);
-
-            }
-
-            // matching for User in browser ad from sessin whichwe set from the authenticaton (login).
-        }
 
         await _next (context);
     }
