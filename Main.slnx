@@ -50,6 +50,7 @@
     <File Path="Help Lazy Loading.txt" />
     <File Path="Multi Tenant Cookie Cors and Forgery.txt" />
     <File Path="Multi Tenant Cors Options.txt" />
+    <File Path="Multi Tenant Resolver Cacheing.txt" />
     <File Path="Multi Tenant Risks in Authorization.txt" />
     <File Path="Multi Tenant Routeing.txt" />
     <File Path="Security Krestel Server.txt" />
