@@ -19,10 +19,16 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _tenantContext = tenantContext;
     }
 
+    public DbSet<ApplicationUser> ApplicationUsers
+    {
+        get; set;
+    }
+
     public DbSet<TenantInfo> Tenants
     {
         get; set;
     }
+
     public DbSet<UserTenant> UserTenants
     {
         get; set;

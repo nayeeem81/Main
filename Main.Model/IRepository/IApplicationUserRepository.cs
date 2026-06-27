@@ -10,7 +10,7 @@ public interface IApplicationUserRepository
 
     Task<ApplicationUser?> FindByEmailAsync (string email);
 
-    Task<bool> PasswordSignInAsync (string email,string password,bool isPersistent,bool lockoutFailure);
+    Task<bool> PasswordSignInAsync (string userName,string password,bool isPersistent,bool lockoutFailure);
 
     Task<bool> CreateAsync (ApplicationUser userIdentityEntity,string password);
 

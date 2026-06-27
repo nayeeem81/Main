@@ -62,9 +62,10 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return applicationUser;
     }
 
-    public async Task<bool> PasswordSignInAsync (string email,string password,bool isPersistent,bool lockoutFailure)
+    public async Task<bool> PasswordSignInAsync (string userName,string password,bool isPersistent,bool lockoutFailure)
     {
-        ApplicationUser?  applicationUser = await _userManager.FindByEmailAsync ( email );
+        ApplicationUser? applicationUser = _context.ApplicationUsers.FirstOrDefault<ApplicationUser> (a => a.UserName == userName);
+
 
         if ( applicationUser == null )
         {
