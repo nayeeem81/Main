@@ -18,24 +18,43 @@ public class TenantResolverMiddleware
     ITenantSetter tenantSetter,
     ITenancyService tenancyService)
     {
-        string? tenantName = null;
         string? resolvedId = null;
+
+        // 1. Try to read the header
+        bool headerValues = context.Request.Headers.TryGetValue("X-Tenant-ID", out var tenantIdHeader);
+
+        if ( headerValues )
+        {
+            // Header exists. Extract the first value safely.
+            resolvedId = tenantIdHeader.FirstOrDefault ();
+        }
+
+        string? tenantName = null;
+
         // check sessin data
         string? cachedTenantId = context.Session.GetString("CurrentTenantId");
         string? cachedCustomTenantId = context.Session.GetString($"XTenantID:{cachedTenantId}");
 
         // 1. try from cache or (session) if already resolved 
         // validaton in server session apped here (not cache)
-        if ( !string.IsNullOrEmpty (cachedTenantId) || !string.IsNullOrEmpty (cachedCustomTenantId) )
+        if ( !string.IsNullOrEmpty (cachedTenantId) &&
+            !string.IsNullOrEmpty (cachedCustomTenantId) &&
+            headerValues )
         {
             // Cache Hit: Skip Prseing 
             if ( cachedTenantId == cachedCustomTenantId )
             {
-                // set scoped service (di)
-                tenantSetter.CurrentTenantId = cachedTenantId!;
+                if ( cachedTenantId == resolvedId )
+                {
+                    // set scoped service (di)
+                    tenantSetter.CurrentTenantId = cachedTenantId!;
 
-                // set .Net IHttpAcessior (ITenantContext)
-                tenantContext!.TenantId = cachedTenantId!;
+                    // set .Net IHttpAcessior (ITenantContext)
+                    tenantContext!.TenantId = cachedTenantId!;
+
+                    // reset tenantId
+                    context.Request.Headers["X-Tenant-ID"] = cachedTenantId!;
+                }
             }
         }
         else
@@ -48,12 +67,6 @@ public class TenantResolverMiddleware
             string path = context.Request.Path.Value ?? "";
             // 2. domain, sub domain tenants (used for parse 2, 3)
             string host = context.Request.Host.Host ?? string.Empty;
-
-            // get now and later set request header (for setting), for both (1, 2 & 3 for api)
-            _ = context.Request.Headers.TryGetValue ("X-Tenant-ID",out var tenantIdHeader);
-
-            resolvedId = tenantIdHeader.ToString ();
-
 
             // validate against database
             // tenants with sub directory type or te root website
@@ -91,6 +104,8 @@ public class TenantResolverMiddleware
                         // 3. Custom tracking session key if needed for audit/other systems
                         string customSessionKey = $"XTenantID:{resolvedId}";
                         context.Session.SetString (customSessionKey,resolvedId);
+                        // create and set header
+                        context.Request.Headers["X-Tenant-ID"] = resolvedId;
                     }
                     else
                     {
@@ -106,6 +121,8 @@ public class TenantResolverMiddleware
                         // 3. Custom tracking session key if needed for audit/other systems
                         string customSessionKey = $"XTenantID:{resolvedId}";
                         context.Session.SetString (customSessionKey,resolvedId);
+                        // create and set header
+                        context.Request.Headers["X-Tenant-ID"] = resolvedId;
                     }
                 }
             }
@@ -145,6 +162,8 @@ public class TenantResolverMiddleware
                             // 3. Create your custom tracking session key if needed for audit/other systems
                             string customSessionKey = $"XTenantID:{resolvedId}";
                             context.Session.SetString (customSessionKey,resolvedId);
+                            // create and set header
+                            context.Request.Headers["X-Tenant-ID"] = resolvedId;
                         }
                     }
                     // 3. check database for tenants who are using domain
@@ -169,6 +188,8 @@ public class TenantResolverMiddleware
                             // 3. Create your custom tracking session key if needed for audit/other systems
                             string customSessionKey = $"XTenantID:{resolvedId}";
                             context.Session.SetString (customSessionKey,resolvedId);
+                            // create and set header
+                            context.Request.Headers["X-Tenant-ID"] = resolvedId;
                         }
                     }
                 }
