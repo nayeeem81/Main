@@ -18,153 +18,164 @@ public class TenantResolverMiddleware
     ITenantSetter tenantSetter,
     ITenancyService tenancyService)
     {
+        string? tenantName = null;
+        string? resolvedId = null;
+        // check sessin data
         string? cachedTenantId = context.Session.GetString("CurrentTenantId");
+        string? cachedCustomTenantId = context.Session.GetString($"XTenantID:{cachedTenantId}");
 
-        // try from cache or session. If already resolved or not
-        if ( !string.IsNullOrEmpty (cachedTenantId) )
+        // 1. try from cache or (session) if already resolved 
+        // validaton in server session apped here (not cache)
+        if ( !string.IsNullOrEmpty (cachedTenantId) || !string.IsNullOrEmpty (cachedCustomTenantId) )
         {
-            // Cache Hit: Skip header parsing and validation
-            // alidaton inserver session apped here
-            tenantSetter.CurrentTenantId = cachedTenantId;
-            // .Net IHttpAcessior (ITenantContext)
-            tenantContext!.TenantId = cachedTenantId;
+            // Cache Hit: Skip Prseing 
+            if ( cachedTenantId == cachedCustomTenantId )
+            {
+                // set scoped service (di)
+                tenantSetter.CurrentTenantId = cachedTenantId!;
+
+                // set .Net IHttpAcessior (ITenantContext)
+                tenantContext!.TenantId = cachedTenantId!;
+            }
         }
-        else  // first time resolve
+        else
         {
+            // Cache/Session Miss: This is the "First Time Resolve"    
+            // header parsing and validation (we set it here but do not parse from)
+            // We parse Sub dictory, domain, sub domain (parsing) (In our case)
+
+            // 1. sub directory tenants (used for parse 1)
+            string path = context.Request.Path.Value ?? "";
+            // 2. domain, sub domain tenants (used for parse 2, 3)
             string host = context.Request.Host.Host ?? string.Empty;
 
-            // Cache Miss: This is the "First Time Resolve"
-            if ( context.Request.Headers.TryGetValue ("X-Tenant-ID",out var tenantIdHeader) )
+            // get now and later set request header (for setting), for both (1, 2 & 3 for api)
+            _ = context.Request.Headers.TryGetValue ("X-Tenant-ID",out var tenantIdHeader);
+
+            resolvedId = tenantIdHeader.ToString ();
+
+
+            // validate against database
+            // tenants with sub directory type or te root website
+            // Checking if te tenant is subdirectore based from database
+
+            // Parse 1 (sub directoryor our own website when there is no tenant the website loads)
+            if ( (
+            !string.IsNullOrEmpty (host) &&
+            host == "localhost" ) ||
+            host == "tenators" )
             {
-                _ = tenantIdHeader.ToString ();
-                string tenantName;
+                // by path slt to fnd tenant name and later find fro database the tenantid
+                var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-
-                string resolvedId;
-                // validate gainst database                                 
-                // tenants with sub directory type or te root website
-                // Checking if te tenant is subdirectore based from database
-                if ( (
-                !string.IsNullOrEmpty (host) &&
-                host == "localhost" ) ||
-                host == "tenators" )
+                // this is when tanent present
+                if ( segments.Length > 0 )
                 {
-                    string path = context.Request.Path.Value ?? "";
-                    var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    string tenantHost = segments[0];
+                    // check in data base
+                    await tenancyService.FindTenantAsync (tenantHost);
 
-                    if ( segments.Length > 0 )
+                    if ( tenancyService.TenancyFound )
                     {
-                        string tenantHost = segments[0];
-                        await tenancyService.FindTenantAsync (tenantHost);
-
-                        if ( tenancyService.TenancyFound )
-                        {
-                            // set header "X-Tenant-ID"
-                            resolvedId = tenancyService.CurrentTenant!.TenantId;
-
-                            // used by tenant setter service
-                            tenantName = tenancyService.CurrentTenant!.Name;
-
-                            // .net context
-                            tenantContext.TenantId = resolvedId;
-                            // scoped service
-                            tenantSetter.CurrentTenantId = resolvedId;
-                            tenantSetter.TenantName = tenantName;
-
-                            // 2. Save to Session so future calls bypass validation
-                            context.Session.SetString ("CurrentTenantId",resolvedId);
-                            // 3. Create your custom tracking session key if needed for audit/other systems
-                            string customSessionKey = $"XTenantID:{resolvedId}";
-                            context.Session.SetString (customSessionKey,resolvedId);
-
-                        }
-                        else
-                        {
-                            resolvedId = "root";
-                            tenantSetter.CurrentTenantId = "root";
-                            tenantSetter.TenantName = host;
-
-                            // 2. Save to Session so future calls bypass validation
-                            context.Session.SetString ("CurrentTenantId",resolvedId);
-                            // 3. Create your custom tracking session key if needed for audit/other systems
-                            string customSessionKey = $"XTenantID:{resolvedId}";
-                            context.Session.SetString (customSessionKey,resolvedId);
-                        }
+                        // set header "X-Tenant-ID"
+                        resolvedId = tenancyService.CurrentTenant!.TenantId;
+                        // used by tenant setter scoped service
+                        tenantName = tenancyService.CurrentTenant!.Name;
+                        // .net context
+                        tenantContext.TenantId = resolvedId;
+                        // scoped service
+                        tenantSetter.CurrentTenantId = resolvedId;
+                        tenantSetter.TenantName = tenantName;
+                        // 2. Save to Session so future calls bypass validation
+                        context.Session.SetString ("CurrentTenantId",resolvedId);
+                        // 3. Custom tracking session key if needed for audit/other systems
+                        string customSessionKey = $"XTenantID:{resolvedId}";
+                        context.Session.SetString (customSessionKey,resolvedId);
+                    }
+                    else
+                    {
+                        // when our root website, no tenant is acessing
+                        // set header "X-Tenant-ID"
+                        resolvedId = "root";
+                        // scoped service
+                        tenantSetter.CurrentTenantId = "root";
+                        // used by tenant setter scoped service
+                        tenantSetter.TenantName = host;
+                        // 2. Save to Session so future calls bypass validation
+                        context.Session.SetString ("CurrentTenantId",resolvedId);
+                        // 3. Custom tracking session key if needed for audit/other systems
+                        string customSessionKey = $"XTenantID:{resolvedId}";
+                        context.Session.SetString (customSessionKey,resolvedId);
                     }
                 }
-
-                // with domain or sub domain tenants
+            }
+            else
+            {
+                // tenants with domain or sub domain tenants
+                // parseing by host (domain or sub domain)
                 if ( !string.IsNullOrWhiteSpace (host) )
                 {
                     string[] segments = host.Split('.');
-
+                    // www is a reserved keyword, we donot consider this as a sub domain
                     if ( segments.Length > 0 && segments[0] == "www" )
                     {
                         segments = segments.Skip (1).ToArray ();
                         _ = string.Join (".",segments);
                     }
 
-                    // sub domain
+                    // 2. check database for tenants who are using sub domain
                     if ( segments.Length > 2 )
                     {
                         string subdomain = segments[0];
+                        // search in database
                         await tenancyService.FindTenantAsync (subdomain);
-
                         if ( tenancyService.TenancyFound )
                         {
                             // set header "X-Tenant-ID"
                             resolvedId = tenancyService.CurrentTenant!.TenantId;
-
                             // used by tenant setter service
                             tenantName = tenancyService.CurrentTenant!.Name;
-
                             // .net context
                             tenantContext.TenantId = resolvedId;
                             // scoped service
                             tenantSetter.CurrentTenantId = resolvedId;
                             tenantSetter.TenantName = tenantName;
-
                             // 2. Save to Session so future calls bypass validation
                             context.Session.SetString ("CurrentTenantId",resolvedId);
                             // 3. Create your custom tracking session key if needed for audit/other systems
                             string customSessionKey = $"XTenantID:{resolvedId}";
                             context.Session.SetString (customSessionKey,resolvedId);
-
                         }
                     }
-
-                    // domain
+                    // 3. check database for tenants who are using domain
                     if ( segments.Length > 1 )
                     {
                         string domain = segments[0];
+                        // search in database
                         await tenancyService.FindTenantAsync (domain);
                         if ( tenancyService.TenancyFound )
                         {
                             // set header "X-Tenant-ID"
                             resolvedId = tenancyService.CurrentTenant!.TenantId;
-
                             // used by tenant setter service
                             tenantName = tenancyService.CurrentTenant!.Name;
-
                             // .net context
                             tenantContext.TenantId = resolvedId;
                             // scoped service
                             tenantSetter.CurrentTenantId = resolvedId;
                             tenantSetter.TenantName = tenantName;
-
                             // 2. Save to Session so future calls bypass validation
                             context.Session.SetString ("CurrentTenantId",resolvedId);
                             // 3. Create your custom tracking session key if needed for audit/other systems
                             string customSessionKey = $"XTenantID:{resolvedId}";
                             context.Session.SetString (customSessionKey,resolvedId);
-
                         }
                     }
                 }
             }
         }
 
-        if ( string.IsNullOrEmpty (tenantSetter.TenantName) )
+        if ( string.IsNullOrEmpty (resolvedId) )
         {
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync ("Invald request!");
