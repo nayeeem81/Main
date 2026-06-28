@@ -546,4 +546,4 @@ Would you like to continue setting up the rest of the application?
 Let me know if you want to:See how to read this synchronized header inside an Action Filter for loggingLearn how to map this to separate Database Connection Strings based on the finalized header value
 
 
-
+Configuring ASP.NET Core Data Protection with a centralized, shared key storage allows separate MVC and API projects to securely share authentication cookies. Both projects must register identical cookie authentication settings, and the API project must be configured to authorize via the shared cookie scheme. For the full configuration guide, visit Microsoft Learn.

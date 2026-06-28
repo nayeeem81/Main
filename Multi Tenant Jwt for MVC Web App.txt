@@ -1,0 +1,44 @@
+Yes, you can generate a JWT token, but it is not standard practice for a traditional MVC app.
+
+In a traditional MVC app, you typically use Cookie Authentication (.AspNetCore.Cookies) instead of JWTs.
+
+The Two Approaches for MVCOption 
+
+A: Traditional MVC Cookie Auth (Recommended)
+Instead of generating a JWT string and manually stuffing it into a cookie, you use ASP.NET Core’s built-in ClaimsPrincipal system. The framework encrypts the user data, signs it, manages expiration, and handles cookie storage for you automatically.
+
+csharp// Inside your MVC Login Method (No JWT generated!)
+
+var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.NameIdentifier, model.Username),
+    new Claim("tenantId", resolvedTenantId)
+};
+
+var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+// This automatically signs the user in and drops a highly secure HttpOnly cookie
+await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+Use code with caution.
+
+Option B: 
+Using JWTs in MVC (If you are building a Hybrid App)
+
+If your MVC app shares the backend with a Mobile App or a separate Single Page Application (SPA) that requires JWT validation, then your code remains the same.
+
+You will manually build the JWT string and manually append it to the cookie using Response.Cookies.Append("X-Auth-Token", tokenString, cookieOptions), exactly as shown in the previous API example.What remains exactly the same for MVC?
+
+Regardless of whether you choose 
+Option A or Option B, the following elements remain identical:
+
+The Login Workflow Logic: 
+You still check credentials against the specific tenant context.
+The Server Session Storage: 
+You still call HttpContext.Session.SetString("TenantId", resolvedTenantId) to lock down the session state.
+The Tenant Resolver Middleware: The middleware logic that matches your URL/Subdomain against your session configuration stays exactly the same.
+
+If you want, I can:
+
+1. Show you how to set up Traditional Cookie Authentication in Program.cs for MVC
+2. Show how your TenantResolver Middleware adjusts to read from the native ASP.NET Auth Cookie instead of a JWT

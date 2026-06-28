@@ -1,0 +1,379 @@
+Yes, you can absolutely move that logic into an extension method in a static class. 
+
+This is an excellent way to clean up your middleware and improve readability.
+
+The Solution
+
+You can create an extension method on HttpContext to handle the tenant resolution logic. 
+
+This keeps your InvokeAsync method incredibly clean and focused only on the middleware pipeline flow.
+
+Implementation 
+
+Example1. 
+Create the Static Extension Class
+
+Move your heavy logic into a dedicated static class. Pass the required services as parameters to the extension method.csharp
+
+
+public static class TenantResolutionExtensions
+{
+    public static async Task ResolveTenantAsync (
+        this HttpContext context,
+        ITenantContext tenantContext,
+        ITenantSetter tenantSetter,
+        ITenancyService tenancyService)
+    {
+        // 1. Extract tenant identifier (e.g., from header, host, or query)
+        var tenantKey = context.Request.Headers["X-Tenant-Id"].ToString();
+
+        if (string.IsNullOrEmpty(tenantKey))
+        {
+            // Handle missing tenant scenario
+            return;
+        }
+
+        // 2. Fetch tenant details using your service
+        var tenant = await tenancyService.GetTenantByKeyAsync(tenantKey);
+
+        if (tenant != null)
+        {
+            // 3. Set the tenant context for the current request
+            tenantSetter.SetTenant(tenant);
+        }
+    }
+}
+
+Use code with caution.
+
+2. Refactor the Middleware Class
+
+Now, your middleware class becomes highly readable, delegation-focused, and easy to maintain.csharp
+
+public class TenantResolverMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public TenantResolverMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(
+        HttpContext context, 
+        ITenantContext tenantContext, 
+        ITenantSetter tenantSetter, 
+        ITenancyService tenancyService)
+    {
+        // Call your new extension method
+        await context.ResolveTenantAsync(tenantContext, tenantSetter, tenancyService);
+
+        // Continue the pipeline
+        await _next(context);
+    }
+}
+
+Use code with caution.
+
+## Key Benefits
+
+### Readability: 
+Your middleware's InvokeAsync goes from dozens of lines to a single, descriptive method call.
+
+### Maintainability: 
+Tenant parsing logic is isolated from the ASP.NET Core middleware plumbing.
+
+### Testability: 
+You can now unit test the static extension method independently by mocking the HTTP context and services.
+
+If you want, I can help you refactor further. 
+Let me know:
+
+1. How you currently extract the tenant identifier (e.g., subdomains, custom request headers, or query parameters).
+2. What should happen if a tenant is not found (e.g., return a 404 error, redirect, or fall back to a default host tenant).
+
+I can tailor the exact extension method code to match your business logic.
+
+My Rquest:
+I am resolveing : 1. domain 2. subdomains, 3. Path: custom request headers, or query parameters. I want to refator each block of code in separate method. If failed to resolve from database or session, I want the resolver send to the root (domain) whichis my website. Currently, I am throwing error.
+
+To clean up your middleware, you can break down each detection mechanism into its own isolated method within your static extension class. Instead of throwing an error when resolution fails, you can directly update the HttpContext.Response to redirect the user to your root domain and short-circuit the pipeline.
+
+## Refactored Extension Class
+Here is how to structure your static class to isolate each strategy and handle the root domain redirection:csharp
+
+public static class TenantResolutionExtensions
+{
+    private const string RootDomain = "https://yourwebsite.com"; // Replace with your main site URL
+
+    public static async Task<bool> TryResolveTenantAsync(
+        this HttpContext context,
+        ITenantContext tenantContext,
+        ITenantSetter tenantSetter,
+        ITenancyService tenancyService)
+    {
+        // 1. Try finding a tenant identifier using various strategies
+        string? tenantKey = context.ResolveFromHeader() 
+                            ?? context.ResolveFromQuery() 
+                            ?? context.ResolveFromPath() 
+                            ?? context.ResolveFromSubdomain() 
+                            ?? context.ResolveFromDomain();
+
+        // 2. If an identifier was found, try loading it from the database/session
+        if (!string.IsNullOrEmpty(tenantKey))
+        {
+            var tenant = await tenancyService.GetTenantByKeyAsync(tenantKey);
+            if (tenant != null)
+            {
+                tenantSetter.SetTenant(tenant);
+                return true; // Successfully resolved
+            }
+        }
+
+        // 3. Fallback: Redirect failed resolutions to the root domain
+        context.Response.Redirect(RootDomain);
+        return false; // Short-circuit the middleware pipeline
+    }
+
+    private static string? ResolveFromHeader(this HttpContext context)
+    {
+        return context.Request.Headers["X-Tenant-Id"].FirstOrDefault();
+    }
+
+    private static string? ResolveFromQuery(this HttpContext context)
+    {
+        return context.Request.Query["tenant"].FirstOrDefault();
+    }
+
+    private static string? ResolveFromPath(this HttpContext context)
+    {
+        var pathSegments = context.Request.Path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        // Assumes path structure like: /tenant-name/products
+        return pathSegments?.Length > 0 ? pathSegments[0] : null; 
+    }
+
+    private static string? ResolveFromSubdomain(this HttpContext context)
+    {
+        var hostParts = context.Request.Host.Host.Split('.');
+        // Assumes subdomain structure like: ://yourwebsite.com
+        return hostParts.Length > 2 ? hostParts[0] : null;
+    }
+
+    private static string? ResolveFromDomain(this HttpContext context)
+    {
+        // For dedicated custom domains mapped to a tenant (e.g., tenantcustomdomain.com)
+        return context.Request.Host.Host;
+    }
+}
+
+Use code with caution.
+
+Updated Middleware Implementation
+
+Because a redirection requires you to stop processing the rest of the request, you must check the return value of your extension method. If it returns false, you skip calling _next(context).csharp
+
+public class TenantResolverMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public TenantResolverMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(
+        HttpContext context, 
+        ITenantContext tenantContext, 
+        ITenantSetter tenantSetter, 
+        ITenancyService tenancyService)
+    {
+        // Try resolving the tenant
+        bool isResolved = await context.TryResolveTenantAsync(tenantContext, tenantSetter, tenancyService);
+
+        // Only move to the next middleware if resolution succeeded
+        if (isResolved)
+        {
+            await _next(context);
+        }
+    }
+}
+
+Use code with caution.
+
+Key Improvements
+
+Chain of Responsibility: 
+The strategies run in order. If headers find a tenant, it skips checking queries, paths, domains, etc.
+
+No More Exceptions: Replacing thrown errors with context.Response.Redirect offers a smoother user experience.
+
+Pipeline Short-circuiting: Returning false prevents downstream middleware or controllers from running accidentally without a tenant.
+
+1. Would you like to see how to adjust this setup to support caching/session storage so you don't hit the database on every single HTTP request?
+
+To avoid hitting your database on every single HTTP request, you can introduce a hybrid caching layer. This approach checks HttpContext.Session first (for fast, user-specific resolution), falls back to IMemoryCache (for shared application-wide speed), and only queries the Database as a last resort.
+
+1. Register Services in Program.cs:
+Ensure both, 
+1) Distributed Memory Cache (required for sessions) and 
+2) Session middleware are registered and configured.
+
+In your application startup.csharp:
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add caching and session services
+builder.Services.AddMemoryCache();
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20); // Adjust as needed
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+var app = builder.Build();
+
+// Session middleware MUST come before your TenantResolverMiddleware
+app.UseSession(); 
+app.UseMiddleware<TenantResolverMiddleware>();
+
+Use code with caution.
+
+2. Update the Extension Class with Caching Logic:
+1) Inject IMemoryCache into your resolution pipeline. 
+2) The method will now look for the tenant object in (Session, then Memory Cache, and finally the DB).
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
+using System.Text.Json;
+
+public static class TenantResolutionExtensions
+{
+    private const string RootDomain = "https://yourwebsite.com";
+    private const string SessionKey = "ResolvedTenant";
+
+    public static async Task<bool> TryResolveTenantAsync(
+        this HttpContext context,
+        ITenantContext tenantContext,
+        ITenantSetter tenantSetter,
+        ITenancyService tenancyService,
+        IMemoryCache memoryCache) // Added Memory Cache
+    {
+
+        // 1. Fast Path: Check if tenant is already cached in this User's Session
+
+        var cachedTenant = GetTenantFromSession(context);
+
+        if (cachedTenant != null)
+        {
+            tenantSetter.SetTenant(cachedTenant);
+            return true;
+        }
+
+        // 2. Resolve the incoming key string using your strategies
+
+        string? tenantKey = context.ResolveFromHeader() 
+                            ?? context.ResolveFromQuery() 
+                            ?? context.ResolveFromPath() 
+                            ?? context.ResolveFromSubdomain() 
+                            ?? context.ResolveFromDomain();
+
+        if (!string.IsNullOrEmpty(tenantKey))
+        {
+            // 3. Middle Path: Look in Application Memory Cache, fall back to DB if missing
+
+            var tenant = await memoryCache.GetOrCreateAsync($"tenant_{tenantKey}", async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30); 
+                // Cache in app for 30 mins
+                return await tenancyService.GetTenantByKeyAsync(tenantKey);
+            });
+
+            if (tenant != null)
+            {
+                // 4. Save to Session for subsequent user requests and apply context
+
+                SaveTenantToSession(context, tenant);
+                tenantSetter.SetTenant(tenant);
+                return true; 
+            }
+        }
+
+        // 5. Fallback: Short-circuit and redirect to root domain
+        context.Response.Redirect(RootDomain);
+        return false; 
+    }
+
+    // Helper to extract Tenant from Session
+    private static TenantModel? GetTenantFromSession(HttpContext context)
+    {
+        var sessionData = context.Session.GetString(SessionKey);
+        return sessionData == null ? null : JsonSerializer.Deserialize<TenantModel>(sessionData);
+    }
+
+    // Helper to store Tenant in Session
+    private static void SaveTenantToSession(HttpContext context, TenantModel tenant)
+    {
+        var sessionData = JsonSerializer.Serialize(tenant);
+        context.Session.SetString(SessionKey, sessionData);
+    }
+
+    // Keep your strategy methods (ResolveFromHeader, ResolveFromQuery, etc.) down here...
+}
+
+Use code with caution.
+
+(Note: Replace TenantModel with your actual tenant class or entity name).
+
+3. Update the Middleware Class:
+Inject IMemoryCache into your InvokeAsync method so it can be automatically resolved via ASP.NET Core Dependency Injection and passed into the extension method.csharp
+
+using Microsoft.Extensions.Caching.Memory;
+
+public class TenantResolverMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public TenantResolverMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(
+        HttpContext context, 
+        ITenantContext tenantContext, 
+        ITenantSetter tenantSetter, 
+        ITenancyService tenancyService,
+        IMemoryCache memoryCache) // Injected here
+    {
+        // Pass the memory cache to the updated extension method
+
+        bool isResolved = await context.TryResolveTenantAsync(tenantContext, tenantSetter, tenancyService, memoryCache);
+
+        if (isResolved)
+        {
+            await _next(context);
+        }
+    }
+}
+
+Use code with caution.
+
+## Key Performance Benefits:
+
+### Sub-millisecond validation: 
+For an active user session, the resolution logic runs instantly without parsing host strings or querying Redis/SQL databases.
+
+### Reduced DB pressure: If 10,000 distinct users from the same tenant visit your site, the database is queried exactly once to populate the application-wide IMemoryCache.
+
+### Zero serialization bottlenecks: Memory cache holds the live C# object reference, completely eliminating parsing overhead for subsequent cache hits.
+
+If you want, I can help you with additional multi-tenancy requirements. 
+
+Would you like to:
+
+1. See how to implement cache eviction / invalidation when tenant details change in the 
+DBConfigure Distributed Caching (like Redis) instead of Memory Cache for multi-server environments.
+
