@@ -55,6 +55,7 @@
     <File Path="Multi Tenant Routeing.txt" />
     <File Path="Security Krestel Server.txt" />
     <File Path="Security.txt" />
+    <File Path="TextFile1.txt" />
   </Folder>
   <Folder Name="/Docs/Website/">
     <File Path="Docs/Website/learning.html" />
