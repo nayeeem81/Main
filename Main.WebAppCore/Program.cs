@@ -22,8 +22,6 @@ public class Program
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
         _ = builder.Services.AddAuthorization (builder.Configuration);
-
-
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
         _ = builder.Logging.ClearProviders ();

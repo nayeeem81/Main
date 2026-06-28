@@ -1,6 +1,9 @@
 ﻿@if ( User != null && User.Identity != null && User.Identity.IsAuthenticated )
 {
-    @if ( User.IsInRole ( "Admin" ) )
+    // Evaluate the policy on the current user
+    var isTenantAdmin = await AuthorizationService.AuthorizeAsync(User, "TenantAdmin");
+
+    @if ( isTenantAdmin.Succeeded )
     {
         <div class="dropdown">
             <a class="dropdown-toggle text-truncate"
