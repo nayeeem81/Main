@@ -41,9 +41,9 @@ The custom authorization handler reads the claim combination from the user's pri
 
 # Shop Example Modues (Uses Identity Default)
 ## Note: 
-1. It is extended to uses Tenants (IdentityUser is now: ApplicationUser inherited from IdentityUser)
+1. It is extended to uses tenants (IdentityUser is now: ApplicationUser inherited from IdentityUser)
 2. Aithenticaton didn't change.
-3. Authorizatin is updatedfor multi tena,nt environment.
+3. Authorization is updated for multi tenant environment.
 
 ## User Login & Registration (Identity Role is : User)   
   - Anyone can create an account to purchase products.  
