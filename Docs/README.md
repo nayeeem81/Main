@@ -39,10 +39,9 @@ The custom authorization handler reads the claim combination from the user's pri
 7. Subdirectory Handling: Routes are rewritten for subdirectory-based tenants, allowing the browser and server to manage authentication cookies natively. (Removes code complexity)
 3. Request Security: Unsafe requests are protected by the default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
 
-# Shop Example Modues (Uses Identity Default)
-## Note: 
-1. It is extended to uses tenants (IdentityUser is now: ApplicationUser inherited from IdentityUser)
-2. Aithenticaton didn't change.
+## Previous Shop Example (Identity Default)
+1. It is extended to use tenants (IdentityUser is now: ApplicationUser inherited from IdentityUser)
+2. Authentication didn't change.
 3. Authorization is updated for multi tenant environment.
 
 ## User Login & Registration (Identity Role is : User)   
@@ -64,8 +63,79 @@ The custom authorization handler reads the claim combination from the user's pri
 
 In short: the page outlines a **strict email verification policy** to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. 
 
-# Story
-## Shop Example: 
+## Solution Design & Architecture (.Net 8.0)
+
+### Background: 
+
+I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
+
+I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets. 
+
+## The Best Practices by Research 
+**I din't consider the scaleing of the instances. It ispossible with the entire instance multipe deploy in same vps)**
+**for scaleing , the application needs multiple instances**
+1. I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
+2. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution. Another objective was to make sure; it is Linux deployable using containers and keeping the services completely separated from the presentation code (Web Project).  
+3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab). 
+4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
+
+## Solution Design 
+1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.  
+2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.  
+3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.  
+4. Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  
+5. The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model). We can hopefully keep them in a container on the server (Linux). 
+6. They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers. 
+7. Rrowsers are not displayed with the model which the service projects send. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation). 
+8. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API. 
+9. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters are provided from the appsettigs.json from the web project. 
+
+Note: More information on the best practices, and my research; please check the Docs folder in the Main Code Repository. 
+
+## The Best Practices (Web Project): 
+1. I used View Components to make the code modular and readble in the layout page.
+2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
+3. Zero use of EF core packages and references in the web project.
+
+## Security Feature (Web Project) using Identity 
+These: Signin, Signout, Email veirficaton, Acoount lock, Roles based authorizaton are the pages where these security features are applied. For auntication, we are using te .Net 8.0 Identity with default configuratin. The tables are IdentityUser and IdentityRole. Authorization is Role based. 
+
+## Currently the roles are: (Admin, Company & User) 
+**It has changed for multi tenant: Global Admin and User**
+**Now, we have tenant specific roles too.**
+
+### Following Security Features are integrated in this solution: 
+**These are for registratin and authenticatin and for some other areas**
+**antiforgery, cros will have changes**
+
+### Broken Access Control & Enumeration (OWASP A01:2021):
+The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing.
+Mitigation: (Anti-Enumeration Logic, The controller uses an identity-blind diversion step)
+
+1. we will check if user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat don't know if the user or email already in exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
+ 
+### Cryptographic Failures & Session Hijacking (OWASP A02:2021)
+The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
+
+Mitigation: 
+1. Cryptographic Token Lifecycles & Security Stamp Invalidation
+The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timesttamp. The mail link is no more usable.
+
+### Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
+The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
+Mitigation: 
+1. Token Integrity Checks: The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built intothe views.
+2. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signin a user reduced therisk of password injection.
+
+### Identification and Authentication Failures (OWASP A07:2021)
+The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
+Mitigation: 
+1. State Enforcement Policies: 
+The system explicitly requires email verification before allowing a password reset flow (IsEmailConfirmedAsync) and login. 
+
+
+## Story
+### Shop Example: 
 
 The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products/services. He/she is the owner of the shop and the website. The shop owner will have his own domain and hosting.  
 
@@ -84,7 +154,7 @@ Shop Admin User can configure & display other companies or business advertisemen
 
 In short, this is a very small size CMS for small businesses. 
 
-# Shop Example (Business Concept): 
+## Shop Example (Business Concept): 
 
 ### 1. The business will give the shop two things. A domain and a hosting plan. 
 
@@ -151,69 +221,6 @@ Width = Height × 1.618
 1. When Shop Admin will configure the Pages of the website, he/she can select template for the panel (a row in a page) to select from the Products. This module will setup the products to display on the pages.  
 2. Templates are designed for these products. These templates only show products with links to view details of the product or to add to cart. Remember that there are other templates for Products (shop admin configure) which include the add to the cart button only without viewing details of the product. 
 
-# Solution Design & Architecture (.Net 8.0)
-### Background: 
-
-I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
-
-I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets. 
-
- 
-
-### The Best Practices in Mind & by Research: 
-1. I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
-2. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution. Another objective was to make sure; it is Linux deployable using containers and keeping the services completely separated from the presentation code (Web Project).  
-3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab). 
-4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
-
-### Solution Design 
-1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.  
-2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.  
-3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.  
-4. Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  
-5. The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model). We can hopefully keep them in a container on the server (Linux). 
-6. They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers. 
-7. Rrowsers are not displayed with the model which the service projects send. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation). 
-8. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API. 
-9. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters are provided from the appsettigs.json from the web project. 
-
-Note: More information on the best practices, and my research; please check the Docs folder in the Main Code Repository. 
-
-### The Best Practices (Web Project): 
-1. I used View Components to make the code modular and readble in the layout page.
-2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
-3. Zero use of EF core packages and references in the web project.
-
-### Security Feature (Web Project) using Identity 
-These: Signin, Signout, Email veirficaton, Acoount lock, Roles based authorizaton are the pages where these security features are applied. For auntication, we are using te .Net 8.0 Identity with default configuratin. The tables are IdentityUser and IdentityRole. Authorization is Role based. 
-
-### Currently the roles are: Admin, Company & User
-
-Following Security Features are integrated in this solution:
-
-### Broken Access Control & Enumeration (OWASP A01:2021):
-The Threat: Attackers input various email addresses into a forgot password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing.
-Mitigation: (Anti-Enumeration Logic, The controller uses an identity-blind diversion step)
-
-1. we will check if user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat don't know if the user or email already in exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
- 
-### Cryptographic Failures & Session Hijacking (OWASP A02:2021)
-The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
-Mitigation: 
-1. Cryptographic Token Lifecycles & Security Stamp Invalidation
-The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timesttamp. The mail link is no more usable.
-
-### Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)
-The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs.
-Mitigation: 
-1. Token Integrity Checks: The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built intothe views.
-2. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signin a user reduced therisk of password injection.
-
-### Identification and Authentication Failures (OWASP A07:2021)
-The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. 
-Mitigation: 
-1. State Enforcement Policies: 
-The system explicitly requires email verification before allowing a password reset flow (IsEmailConfirmedAsync) and login. 
 
 ### Nuget Packages
 ### Main.Infrastructure Project (Data Infrastructure):
