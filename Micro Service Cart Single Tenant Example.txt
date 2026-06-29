@@ -1,0 +1,364 @@
+Here is a complete, lightweight implementation of a Shopping Cart Web API using .NET 8.0 and Entity Framework Core. [1] 
+## 1. Entities
+
+namespace ShoppingCartApi.Entities;
+public class Cart
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string UserId { get; set; } = string.Empty;
+    public List<CartItem> Items { get; set; } = new();
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+public class CartItem
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid CartId { get; set; }
+    public string ProductId { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
+    public decimal UnitPrice { get; set; }
+    public int Quantity { get; set; }
+    public string ImageUrl { get; set; } = string.Empty;
+}
+
+## 2. Data Context
+
+using Microsoft.EntityFrameworkCore;using ShoppingCartApi.Entities;
+namespace ShoppingCartApi.Data;
+public class CartDbContext : DbContext
+{
+    public CartDbContext(DbContextOptions<CartDbContext> options) : base(options) { }
+
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Cart>()
+            .HasIndex(c => c.UserId)
+            .IsUnique();
+
+        modelBuilder.Entity<Cart>()
+            .HasMany(c => c.Items)
+            .WithOne()
+            .HasForeignKey(i => i.CartId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+## 3. Data Transfer Objects (DTOs)
+
+namespace ShoppingCartApi.DTOs;
+public record CartDto(Guid Id, string UserId, List<CartItemDto> Items, decimal TotalPrice);
+public record CartItemDto(Guid Id, string ProductId, string ProductName, decimal UnitPrice, int Quantity, string ImageUrl, decimal TotalPrice);
+public record AddToCartDto(string ProductId, string ProductName, decimal UnitPrice, int Quantity, string ImageUrl);
+public record UpdateQuantityDto(int Quantity);
+
+## 4. Repository Pattern
+
+using Microsoft.EntityFrameworkCore;using ShoppingCartApi.Data;using ShoppingCartApi.Entities;
+namespace ShoppingCartApi.Repositories;
+public interface ICartRepository
+{
+    Task<Cart?> GetByUserIdAsync(string userId);
+    Task CreateAsync(Cart cart);
+    Task UpdateAsync(Cart cart);
+    Task DeleteAsync(Cart cart);
+    Task SaveChangesAsync();
+}
+public class CartRepository : ICartRepository
+{
+    private readonly CartDbContext _context;
+
+    public CartRepository(CartDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<Cart?> GetByUserIdAsync(string userId)
+    {
+        return await _context.Carts
+            .Include(c => c.Items)
+            .FirstOrDefaultAsync(c => c.UserId == userId);
+    }
+
+    public async Task CreateAsync(Cart cart)
+    {
+        await _context.Carts.AddAsync(cart);
+    }
+
+    public async Task UpdateAsync(Cart cart)
+    {
+        _context.Carts.Update(cart);
+        await Task.CompletedTask;
+    }
+
+    public async Task DeleteAsync(Cart cart)
+    {
+        _context.Carts.Remove(cart);
+        await Task.CompletedTask;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
+}
+
+## 5. Service Layer
+
+using ShoppingCartApi.DTOs;using ShoppingCartApi.Entities;using ShoppingCartApi.Repositories;
+namespace ShoppingCartApi.Services;
+public interface ICartService
+{
+    Task<CartDto> GetCartByUserIdAsync(string userId);
+    Task<CartDto> AddItemToCartAsync(string userId, AddToCartDto dto);
+    Task<CartDto> UpdateItemQuantityAsync(string userId, Guid itemId, int quantity);
+    Task<CartDto> RemoveItemFromCartAsync(string userId, Guid itemId);
+    Task ClearCartAsync(string userId);
+}
+public class CartService : ICartService
+{
+    private readonly ICartRepository _repository;
+
+    public CartService(ICartRepository repository)
+    {
+        _repository = repository;
+    }
+
+    public async Task<CartDto> GetCartByUserIdAsync(string userId)
+    {
+        var cart = await _repository.GetByUserIdAsync(userId);
+        if (cart == null)
+        {
+            cart = new Cart { UserId = userId };
+            await _repository.CreateAsync(cart);
+            await _repository.SaveChangesAsync();
+        }
+        return MapToDto(cart);
+    }
+
+    public async Task<CartDto> AddItemToCartAsync(string userId, AddToCartDto dto)
+    {
+        var cart = await _repository.GetByUserIdAsync(userId);
+        if (cart == null)
+        {
+            cart = new Cart { UserId = userId };
+            await _repository.CreateAsync(cart);
+        }
+
+        var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == dto.ProductId);
+        if (existingItem != null)
+        {
+            existingItem.Quantity += dto.Quantity;
+        }
+        else
+        {
+            cart.Items.Add(new CartItem
+            {
+                ProductId = dto.ProductId,
+                ProductName = dto.ProductName,
+                UnitPrice = dto.UnitPrice,
+                Quantity = dto.Quantity,
+                ImageUrl = dto.ImageUrl
+            });
+        }
+
+        cart.UpdatedAt = DateTime.UtcNow;
+        await _repository.SaveChangesAsync();
+        return MapToDto(cart);
+    }
+
+    public async Task<CartDto> UpdateItemQuantityAsync(string userId, Guid itemId, int quantity)
+    {
+        var cart = await _repository.GetByUserIdAsync(userId) ?? throw new KeyNotFoundException("Cart not found");
+        var item = cart.Items.FirstOrDefault(i => i.Id == itemId) ?? throw new KeyNotFoundException("Item not found");
+
+        if (quantity <= 0)
+        {
+            cart.Items.Remove(item);
+        }
+        else
+        {
+            item.Quantity = quantity;
+        }
+
+        cart.UpdatedAt = DateTime.UtcNow;
+        await _repository.SaveChangesAsync();
+        return MapToDto(cart);
+    }
+
+    public async Task<CartDto> RemoveItemFromCartAsync(string userId, Guid itemId)
+    {
+        var cart = await _repository.GetByUserIdAsync(userId) ?? throw new KeyNotFoundException("Cart not found");
+        var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+        
+        if (item != null)
+        {
+            cart.Items.Remove(item);
+            cart.UpdatedAt = DateTime.UtcNow;
+            await _repository.SaveChangesAsync();
+        }
+
+        return MapToDto(cart);
+    }
+
+    public async Task ClearCartAsync(string userId)
+    {
+        var cart = await _repository.GetByUserIdAsync(userId);
+        if (cart != null)
+        {
+            await _repository.DeleteAsync(cart);
+            await _repository.SaveChangesAsync();
+        }
+    }
+
+    private static CartDto MapToDto(Cart cart)
+    {
+        var itemsDto = cart.Items.Select(i => new CartItemDto(
+            i.Id, i.ProductId, i.ProductName, i.UnitPrice, i.Quantity, i.ImageUrl, i.UnitPrice * i.Quantity
+        )).ToList();
+
+        return new CartDto(cart.Id, cart.UserId, itemsDto, itemsDto.Sum(i => i.TotalPrice));
+    }
+}
+
+## 6. Controller
+
+using Microsoft.AspNetCore.Mvc;using ShoppingCartApi.DTOs;using ShoppingCartApi.Services;
+namespace ShoppingCartApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]public class CartController : ControllerBase
+{
+    private readonly ICartService _cartService;
+
+    public CartController(ICartService cartService)
+    {
+        _cartService = cartService;
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<CartDto>> GetCart(string userId)
+    {
+        var cart = await _cartService.GetCartByUserIdAsync(userId);
+        return Ok(cart);
+    }
+
+    [HttpPost("{userId}/items")]
+    public async Task<ActionResult<CartDto>> AddItem(string userId, [FromBody] AddToCartDto dto)
+    {
+        var cart = await _cartService.AddItemToCartAsync(userId, dto);
+        return Ok(cart);
+    }
+
+    [HttpPut("{userId}/items/{itemId}")]
+    public async Task<ActionResult<CartDto>> UpdateQuantity(string userId, Guid itemId, [FromBody] UpdateQuantityDto dto)
+    {
+        try
+        {
+            var cart = await _cartService.UpdateItemQuantityAsync(userId, itemId, dto.Quantity);
+            return Ok(cart);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{userId}/items/{itemId}")]
+    public async Task<ActionResult<CartDto>> RemoveItem(string userId, Guid itemId)
+    {
+        try
+        {
+            var cart = await _cartService.RemoveItemFromCartAsync(userId, itemId);
+            return Ok(cart);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> ClearCart(string userId)
+    {
+        await _cartService.ClearCartAsync(userId);
+        return NoContent();
+    }
+}
+
+## 7. Program.cs Configuration
+
+using Microsoft.EntityFrameworkCore;using ShoppingCartApi.Data;using ShoppingCartApi.Repositories;using ShoppingCartApi.Services;
+var builder = WebApplication.CreateBuilder(args);
+// Add Database Context (Change connection string as needed)
+builder.Services.AddDbContext<CartDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Dependency Injection
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+------------------------------
+## 🔗 Integrating with your existing ASP.NET Core MVC App
+To consume this API from your MVC app, you can use IHttpClientFactory. [2] 
+
+   1. Register the HTTP Client in your MVC project's Program.cs:
+   
+   builder.Services.AddHttpClient("CartApi", client =>
+   {
+       client.BaseAddress = new Uri("http://localhost:your_api_port_here/");
+   });
+   
+   2. Call the API from your MVC Controller:
+   
+   public class CartController : Controller
+   {
+       private readonly IHttpClientFactory _clientFactory;
+   
+       public CartController(IHttpClientFactory clientFactory)
+       {
+           _clientFactory = clientFactory;
+       }
+   
+       public async Task<IActionResult> Index()
+       {
+           var userId = User.Identity?.Name ?? "guest-session-id"; // Handle tracking users
+           var client = _clientFactory.CreateClient("CartApi");
+   
+           var response = await client.GetAsync($"api/cart/{userId}");
+           if (response.IsSuccessStatusCode)
+           {
+               var cart = await response.Content.ReadFromJsonAsync<CartDto>();
+               return View(cart);
+           }
+           return View(new CartDto(Guid.Empty, userId, new(), 0));
+       }
+   }
+   
+   
+If you need help building out this integration layer, let me know:
+
+* Which database provider do you plan to use for the API (SQL Server, PostgreSQL, SQLite)?
+* How are you handling User Authentication (Identity cookies, JWT tokens) or guest users in your MVC application?
+* Would you like an implementation example for an API Client class / Wrapper to easily fetch data in your MVC views?
+
+
+[1] [https://blog.nashtechglobal.com](https://blog.nashtechglobal.com/build-duende-identity-server-net-8-with-react/)
+[2] [https://www.youtube.com](https://www.youtube.com/shorts/6eRnuN-bs_s)
