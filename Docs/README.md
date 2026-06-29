@@ -1,4 +1,5 @@
-# Current Task (Multi Tenant Architecture) 🔄(70%) 🟥(30%)
+# Multi Tenant Architecture 🔄(70%) 🟥(30%)
+
 ## SaaS Cross-Cutting Concerns 
 In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns represent technical functionalities that span your entire system and must execute across various endpoints, layers, or microservices without altering the core business rules. In a multi-tenant SaaS application, these concerns become highly critical because they must almost always be evaluated in the context of a specific tenant.Core 
 
