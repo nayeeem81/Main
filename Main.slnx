@@ -5,7 +5,7 @@
     <File Path="Docs/README.md" />
     <File Path="Docs/SECURITY.md" />
   </Folder>
-  <Folder Name="/Docs/Research/">
+  <Folder Name="/Docs/Research Online/">
     <File Path="Docs/Research Online/Best Practices Branching Convention Help.txt" />
     <File Path="Docs/Research Online/Best Practices Service Layer .txt" />
     <File Path="Docs/Research Online/Best Practices Solution For DTO Mapping.txt" />
@@ -77,26 +77,8 @@
   <Folder Name="/Docs/Website/">
     <File Path="Docs/Website/learning.html" />
     <File Path="Docs/Website/site-github.css" />
-    <File Path="Docs/Website/Text Current Me .txt" />
-    <File Path="Docs/Website/Text Header CSS.txt" />
-    <File Path="Docs/Website/Text Project Goals.txt" />
     <File Path="index.html" />
   </Folder>
-  <Folder Name="/Docs/Website/Research JS HTML/">
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Code Example for Image Gallary.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Crop Image.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Global Reset.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Image.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Link Tag.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Meta Tag.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Nev Bar.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Product Details Guidelines.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Transition Rule.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTML Z Index.txt" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/HTMLPageImageGalarry.html" />
-    <File Path="../../../../OneDrive/Desktop/root/website papa/indexBulb.html" />
-  </Folder>
-  <Folder Name="/Docs/Website/Research JS HTML/images/" />
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>

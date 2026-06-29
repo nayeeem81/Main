@@ -1,0 +1,218 @@
+Here is a modern, responsive product gallery using plain HTML, CSS, and Vanilla JavaScript.It features a main hero image with a smooth zoom effect, interactive thumbnails, and variant swatches that automatically update the gallery.
+
+HTMLhtml
+
+
+<div class="product-container">
+    <!-- Left Side: Image Gallery -->
+    <div class="gallery-container">
+        <div class="main-image-wrapper" id="zoom-container">
+            <img src="https://unsplash.com" id="main-product-img" alt="Product Image">
+        </div>
+
+        <div class="thumbnail-list" id="thumb-list">
+            <img src="https://unsplash.com" class="thumb active" data-full="https://unsplash.com" alt="Red Sneaker Main">
+            <img src="https://unsplash.com" class="thumb" data-full="https://unsplash.com" alt="Red Sneaker Side">
+            <img src="https://unsplash.com" class="thumb" data-full="https://unsplash.com" alt="Red Sneaker Angle">
+        </div>
+    </div>
+
+    <!-- Right Side: Product Info & Swatches -->
+    <div class="product-details">
+        <h1>Modern Athletic Shoes</h1>
+        <p class="price">$120.00</p>
+
+        <div class="swatch-section">
+            <p>Color: <span id="color-name">Crimson Red</span></p>
+            <div class="swatches">
+                <button class="swatch color-red active" data-color="Crimson Red" data-images='[
+          "https://unsplash.com",
+          "https://unsplash.com",
+          "https://unsplash.com"
+        ]'></button>
+                <button class="swatch color-blue" data-color="Ocean Blue" data-images='[
+          "https://unsplash.com",
+          "https://unsplash.com"
+        ]'></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+Use code with caution.CSScss:
+
+.root {
+  --primary-color: #333;
+  --accent-color: #ff4757;
+  --border-color: #ddd;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+  background: #f9f9f9;
+}
+
+.product-container {
+  display: flex;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Gallery Layout */
+.gallery-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Hover-to-Zoom Hero Window */
+.main-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: zoom-in;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+}
+
+.main-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.1s ease-out;
+  transform-origin: center center;
+}
+
+/* Thumbnails */
+.thumbnail-list {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.thumb {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.thumb:hover, .thumb.active {
+  opacity: 1;
+  border-color: var(--accent-color);
+}
+
+/* Product Info & Swatches */
+.product-details {
+  flex: 1;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin: 0.5rem 0 1.5rem 0;
+}
+
+.swatches {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  outline: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.swatch.active {
+  outline: 2px solid var(--primary-color);
+}
+
+.color-red { background-color: #ff4757; }
+.color-blue { background-color: #1e90ff; }
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .product-container {
+    flex-direction: column;
+  }
+}
+Use code with caution.JavaScriptjavascriptdocument.addEventListener("DOMContentLoaded", () => {
+  const mainImg = document.getElementById("main-product-img");
+  const zoomContainer = document.getElementById("zoom-container");
+  const thumbList = document.getElementById("thumb-list");
+  const swatches = document.querySelectorAll(".swatch");
+  const colorNameText = document.getElementById("color-name");
+
+  // 1. Thumbnail Click Functionality
+  thumbList.addEventListener("click", (e) => {
+    if (e.target.classList.contains("thumb")) {
+      document.querySelectorAll(".thumb").forEach(t => t.classList.remove("active"));
+      e.target.classList.add("active");
+      mainImg.src = e.target.dataset.full;
+    }
+  });
+
+  // 2. Modern Desktop Hover-to-Zoom Effect
+  zoomContainer.addEventListener("mousemove", (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    mainImg.style.transformOrigin = `${x}% ${y}%`;
+    mainImg.style.transform = "scale(2)";
+  });
+
+  zoomContainer.addEventListener("mouseleave", () => {
+    mainImg.style.transform = "scale(1)";
+    mainImg.style.transformOrigin = "center center";
+  });
+
+  // 3. Dynamic Variant Swatches (Updates Images and Thumbnails)
+  swatches.forEach(swatch => {
+    swatch.addEventListener("click", (e) => {
+      // Toggle Active Swatch
+      swatches.forEach(s => s.classList.remove("active"));
+      e.target.classList.add("active");
+
+      // Update color label text
+      colorNameText.textContent = e.target.dataset.color;
+
+      // Parse variant images array
+      const newImages = JSON.parse(e.target.dataset.images);
+
+      // Set main product image to first item
+      mainImg.src = newImages[0];
+
+      // Rebuild thumbnails dynamically
+      thumbList.innerHTML = newImages.map((imgUrl, index) => `
+<img src="${imgUrl}"
+     class="thumb ${index === 0 ? 'active' : ''}"
+     data-full="${imgUrl}"
+     alt="Product Variant ${index + 1}">
+      `).join('');
+    });
+  });
+});
+
+Use code with caution.Why this approach is modern:Event Delegation: The thumbnail click logic uses a single event listener on the parent container (#thumb-list), optimizing memory usage.Inline Data Attributes: Product images for different colors are kept inside the dataset strings (data-images), mimicking how real backends deliver variant payload data.CSS Scale Transition: No secondary layout shift happens during zoom. It simply scales up the main node container gracefully using GPU acceleration via CSS transforms.Would you like to build upon this example by:Adding touch swipe support for mobile users?Implementing a full-screen modal lightbox when clicking the main image?Integrating a loading skeleton effect while high-res images load?
+
+
+

@@ -1,0 +1,15 @@
+No, changing the z-index will not clip the image or force it to stay inside the div's boundaries. The image will still physically overflow and spill out of the div.Here is exactly why this happens and how to fix it:Why z-index Doesn't Keep the Image Insidez-index is for layering, not sizing: It only controls which element sits on top of another along the 3D depth axis. It does not alter the physical width or height of an element.The "Parent-Child" Rule: The div is the parent and the img is the child. A child element cannot step "behind" its own parent using z-index. Therefore, the img will simply render right through the boundaries of the div.How to Fix It (Choose One)Depending on what you want your layout to look like, you have two options:Option 1: Hide the overflowing parts (Clip the image)If you want the image to keep its large size but want the div to act like a strict mask/window that hides anything cutting outside of it, add overflow: hidden; to the div:css.parent-div {
+  width: 300px;
+  height: 300px;
+  overflow: hidden; /* This chops off the leaking image parts */
+}
+Use code with caution.Option 2: Shrink the image to fit perfectly insideIf you want the entire image to scale down so that it fits completely inside the dimensions of your fixed div, add layout constraints to the img:css.parent-div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Keeps the aspect ratio from stretching ugly */
+}
+Use code with caution.
+
+If you are trying to build a specific design effect, tell me 
+
+1. if you want the image to scale down completely to fit, or if you want it to crop like a thumnail.
