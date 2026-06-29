@@ -1,5 +1,44 @@
 <img width="901" height="487" alt="GithubSocialImag1" src="https://github.com/user-attachments/assets/96d62ec1-4457-4c2f-914c-10e41e301e66" />
 
+
+# Multi-Tenant Implementation
+
+## Monolithic Application & Shared Database
+
+## Supported Tenant Strategies
+
+The system supports flexible tenant identification through:
+1. Domain,
+2. Subdomain,
+3. Subdirectory
+
+## Tenant Resolution (Middleware)
+### Resolution Process: 
+The TenantResolver middleware identifies the tenant from the request (using routing or headers) and leverages Session and Memory Cache for quick lookups.Caching. The resolved tenant is cached in the active session. For unresolved requests, the system searches the database, stores the result in Session, and bypasses subsequent DB lookups. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant.
+
+## Authentication 
+**Default Identity:** Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base.
+
+## Authorization
+### Step 1: Claim Construction
+1. The middleware retrieves the TenantId from ITenantSetter and matches it with the CurrentTenantId stored in the session.The system fetches the user's combined roles (global Identity Roles + Tenant-specific Roles).
+2. A unique user claim is created containing the UserId, TenantId, and TenantRole.These newly combined claims are then attached to the authenticated user's principal.
+
+### Step 2: Authorization Handler Execution
+The custom authorization handler reads the claim combination from the user's principal. If the claims are valid, it assigns the appropriate tenant-level policy authorization.
+
+## Tenant & (Tenant User Role) Isolation
+1. Policy based Tenant Role (authorization)
+2. Roles: Operates on the default Identity Roles (GlobalAdmin, User).
+3. TenantRole: Policy-based, driven by tenant-specific roles.
+4. Tenant Scoping: Once a user is authenticated, the system generates custom claims that isolate the user to the specific tenant they are accessing.
+5. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters.
+6. Keeping the code structure clean and memorable.
+7. Subdirectory Handling: Routes are rewritten for subdirectory-based tenants, allowing the browser and server to manage authentication cookies natively. (Removes code complexity)
+3. Request Security: Unsafe requests are protected by the default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
+
+
+
 # Story
 ## Shop Example: 
 
