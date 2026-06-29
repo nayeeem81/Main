@@ -48,6 +48,7 @@
     <File Path="Docs/Research Online/MultiTenant Tenant Role .txt" />
     <File Path="Docs/Research Online/Muti Tenant Top Level Domain.txt" />
     <File Path="Help Lazy Loading.txt" />
+    <File Path="Help Redis Memory Tutorial.txt" />
     <File Path="Multi Tenant .Net8.0 Scaling .txt" />
     <File Path="Multi Tenant Api Strategy Micro Service.txt" />
     <File Path="Multi Tenant Auth Cookie and Jwt Validation.txt" />
