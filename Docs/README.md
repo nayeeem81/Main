@@ -9,30 +9,65 @@ The system supports flexible tenant identification through:
 2. Subdomain, 
 3. Subdirectory 
 
-## Tenant Resolution (Middleware) 
+## Tenant Resolve (Middleware) 
+Cache-aside pattern: (useig session)
+
 1. Resolution Process: The Tenant Resolver middleware identifies the tenant from the request (using routing or headers) and leverages Session and Memory Cache for quick lookups. 
 2. Caching: The resolved tenant is cached in the active session. For unresolved requests, the system searches the database, stores the result in Session, and bypasses subsequent DB lookups. 
-3. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant. 
 
 ## Authentication 
-Default Identity: Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base. 
+Default Identity Authentication: Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base. 
 
 ## Authorization 
-1. Step 1: Claim Construction 
+1. **Step 1: Claim Construction** 
 - The middleware retrieves the TenantId from ITenantSetter and matches it with the CurrentTenantId stored in the session. The system fetches the user's combined roles (global Identity Roles + Tenant-specific Roles). 
 - A unique user claim is created containing the UserId, TenantId, and TenantRole. These newly combined claims are then attached to the authenticated user's principal. 
-2. Step 2: Authorization Handler Execution 
+2. **Step 2: Authorization Handler Execution** 
 - The custom authorization handler reads the claim combination from the user's principal. If the claims are valid, it assigns the appropriate tenant-level policy authorization. 
 
-## Tenant & (Tenant User Role) Isolation 
+## Tenant Isolation 
 1. Policy based Tenant Role (authorization) 
-2. Roles: Operates on the default Identity Roles (GlobalAdmin, User). 
+2. Global Roles: Operates on the default Identity Roles (GlobalAdmin, User). 
 3. TenantRole: Policy-based, driven by tenant-specific roles. 
-4. Tenant Scoping: Once a user is authenticated, the system generates custom claims that isolate the user to the specific tenant they are accessing. 
-5. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters. 
-6. Keeping the code structure clean and memorable. 
+4. Tenant Scoping: Once a user is authenticated, the system generates custom claims that isolate the user to the specific tenant they are accessing. Aithenticated user uses the default Identity Auth Cookie.
+5. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant. 
+6. Keeping the code structure clean and memorable. Authorization code is mostly in one place, manageable and maintainable for more roles and policies.
 7. Subdirectory Handling: Routes are rewritten for subdirectory-based tenants, allowing the browser and server to manage authentication of cookies natively. (Removes code complexity) 
-8. Request Security: Unsafe requests are protected by the default Ant forgery mechanisms. Fetch and AJAX requests require an explicit header attachment. 
+8. Request Security: Unsafe requests are protected by the Identity default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
+
+## Solution Design & Architecture (.NET 8.0) 
+### Background: 
+I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.  
+
+### The Best Practices by Research 
+Note: Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret design. I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
+1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
+2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
+3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
+4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
+
+## Solution Design 
+
+1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.
+2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.
+3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.
+4. Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  (But currently, we are keeping the connetin string in web app project)
+5. The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model).
+6. They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers.
+7. Browsers are not displayed with the model which the service project sends. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation).
+8. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters (connection string) are provided from the appsettigs.json from the web project.  
+
+### Future Work: 
+1. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API.
+2. Because of the saperatin and breaking the code modular, we can convert the solution into micro service based deployment and scale the heavy traffic api services.
+
+## Security Features
+(Default Identity Flow)
+
+1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
+2. **Cryptographic Failures & Session Hijacking (OWASP A02:2021)** Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides. Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable.
+3. **Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)** Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection.
+4. **Identification and Authentication Failures (OWASP A07:2021)** Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
 
 ## Previous Shop Example (Identity Default) 
 It is extended to use tenants (IdentityUser is now: 
@@ -40,242 +75,39 @@ It is extended to use tenants (IdentityUser is now:
 2. Authentication didn't change. 
 3. Authorization is updated for multi-tenant environment. 
 
-Spec of the Shop Example:
-1. User Login & Registration (Identity Role is : User) 
-- Anyone can create an account to purchase products.  
-- Registration requires email verification before login is allowed. 
-- Email Verification Process 
-- A verification email is sent after registration.  
-- The link is valid for 2 hours; after that, it expires.  
-- Without verification, users cannot log in. 
-- Getting a New Verification Link 
+## The Best Practices (Web Project): 
+1. I used View Components to make the code modular and readable on the layout page.
+2. In program.cs, most configuration code is moved to Data Infrastructure and Service project.
+3. Zero use of EF core packages and references in the web project. 
 
-1. Option 1: Try logging in with your registered email and password; a new verification email will be sent.  
-2. Option 2: Use the “Forgot Password” link, enter your email, and receive a fresh verification link. 
+**Note: These are no more valid. We are now migrating to Multi Tenant architecture.**
+1. Security Feature (Web Project) using Identity
+2. These: Sign in, Signout, Email verification, Account lock, Roles based authorization are the pages where these security features are applied. For authentication, we are using te .Net 8.0 Identity with the default configuration. The tables are IdentityUser and IdentityRole. Authorization is Role based. Currently the roles are: (Admin, Company & User)
+3. It has changed for multi-tenant: Global Admin and User. Now, we have tenant specific roles too. 
 
-## Security Policy 
-1. No user can log in until their email is confirmed.  
-2. Password reset and account recovery options are built in. 
+Story of Shop Example: 
+The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products/services. He/she is the owner of the shop and the website. The shop owner will have his own domain and hosting. The shop owner will have a company account to upload products. The shop will have one more account which is for shop admin. The purpose of the admin account is to organize the uploaded products in different templates on the home page and market page. The home page will display products based on selected templates and products. Visitors of the products can browse through the products and add to cart and checkout for purchase. Visitors can see the details of the product with multiple photos and information. Shop Admin User can configure & display other companies or business advertisements on the shop website. He can be an affiliate of other websites. The website will provide a few more pages: contact us,  about us, FAQ  and  Set a logo for the website. In short, this is a very small-size CMS for small businesses.  
 
-In short: the page outlines a strict email verification policy to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed.  
+## Software Scope:
+1. **Module: Login & Registration (Identity Role is : User)** Anyone can create an account to purchase products, Registration requires email verification before login is allowed. Email Verification Process, A verification email is sent after registration, The link is valid for 2 hours; after that, it expires, Without verification, users cannot log in. Getting a New Verification Link, Try logging in with your registered email and password; a new verification email will be sent, Use the “Forgot Password” link, enter your email, and receive a fresh verification link, Security Policy: No user can log in until their email is confirmed, Password reset and account recovery options are built in. In short: the page outlines a strict email verification policy to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed.
+2. **Module: Manage Contents:** Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give messages to the visitors about a business or advertisement. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video. Admin User: He/she can add, update and delete content and see the list of contents for the shop; he is the Admin. A Content has few fields: Poster Name, Poster Contact Number, Post Title, Type of Post: (Ad Space, Short Note, YouTube Video), Website: The link of the advertainment (company) or YouTube link, Search Tag, Images (any number). **Use of these Contents** When you configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates are only for showing advertisement with or without a link to navigate to the ad website or video. Remember that there are other templates for Products (shop owners) which includes the add to cart button.
+3. **Module: Manage Products:** Here in this shop example, we are considering Product (Name, Price, Description, Images) which are the shop owner's items to sell. These are to be sold to online users. Users can add the products to the shopping cart and order them from the store. Company User: He/she can add, update and delete a product and see the list of products for the shop. The purpose of this module is: Add a Product, Update an existing Product, Delete a product, See the list of all products. Each Products can have as many images as he/she (shop owners) wants. Until now, no validation has been provided to restrict users from entering a limited number of product images. A Product has few fields: Product Name, Description, Category, Subcategory, Price, Discount, Sale Commission (If the shop wants to sell by any third-party shop), Search Tag, Images (any number)
+4. **Module: Page Settings:** When Shop Admin will configure the Pages of the website, he/she can select template for the panel (a row in a page) to select from the Products. This module will setup the products to display on the pages. Templates are designed for these products. These templates only show products with links to view details of the product or to add to cart. Remember that there are other templates for Products (shop admin configure) which include the add to the cart button only without viewing details of the product.
 
-## Solution Design & Architecture (.NET 8.0) 
-### Background: 
-I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.  
-
-### The Best Practices by Research 
-Note: Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret desig.
-I don't consider scaling instances. It is possible with the entire instance multiple deploy in same VPS) for scaling , the application needs multiple instances 
-
-I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
-
-The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution. Another objective was to make sure it is Linux deployable using containers and keeping the services completely separated from the presentation code (Web Project).  
-
-My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).  
-
-Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
-
-Solution Design 
-
-In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.  
-
-Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.  
-
-While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.  
-
-Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  
-
-The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model). We can hopefully keep them in a container on the server (Linux).  
-
-They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers.  
-
-Browsers are not displayed with the model which the service projects send. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation).  
-
-The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API.  
-
-The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters are provided from the appsettigs.json from the web project. 
-
-Note: More information on the best practices, and my research; please check the Docs folder in the Main Code Repository.  
-
-The Best Practices (Web Project): 
-
-I used View Components to make the code modular and readable on the layout page. 
-
-In program.cs, most configuration code is moved to Data Infrastructure and Service project. 
-
-Zero use of EF core packages and references in the web project. 
-
-Security Feature (Web Project) using Identity 
-
-These: Sign in, Signout, Email verification, Account lock, Roles based authorization are the pages where these security features are applied. For authentication, we are using te .Net 8.0 Identity with the default configuration. The tables are IdentityUser and IdentityRole. Authorization is Role based.  
-
-Currently the roles are: (Admin, Company & User) 
-
-It has changed for multi-tenant: Global Admin and User. Now, we have tenant specific roles too. 
-
-Following Security Features are integrated in this solution: 
-
-These are for registration and authenticating and for some other areas antyforgery, cross will have changes 
-
-Broken Access Control & Enumeration (OWASP A01:2021): 
-
-The Threat: Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) 
-
-We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
-
-Cryptographic Failures & Session Hijacking (OWASP A02:2021) 
-
-The Threat: Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides. 
-
-Mitigation:  
-
-Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable. 
-
-Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021) 
-
-The Threat: Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. Mitigation:  
-
-Token Integrity Checks: The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views. 
-
-Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection. 
-
-Identification and Authentication Failures (OWASP A07:2021) 
-
-The Threat: Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. Mitigation:  
-
-State Enforcement Policies: The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
-
-Story 
-
-Shop Example: 
-
-The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products/services. He/she is the owner of the shop and the website. The shop owner will have his own domain and hosting.  
-
-The shop owner will have a company account to upload products. The shop will have one more account which is for shop admin. The purpose of the admin account is to organize the uploaded products in different templates on the home page and market page. The home page will display products based on selected templates and products.  
-
-Visitors of the products can browse through the products and add to cart and checkout for purchase. Visitors can see the details of the product with multiple photos and information.  
-
-Shop Admin User can configure & display other companies or business advertisements on the shop website. He can be an affiliate of other websites.  
-
-The website will provide a few more pages: 
-
-contact us,  
-
-about us,  
-
-FAQ  
-
-Set a logo for the website. 
-
-In short, this is a very small-size CMS for small businesses.  
-
-Shop Example (Business Concept): 
-
+**Shop Example (Business Concept):**
 1. The business will give the shop two things. A domain and a hosting plan. 
-
 2. As a subscriber, the shop will give us a monthly subscription fee. The fee will cover the hosting of the website. The domain for the shop will have a one-time fee every three years. 
-
 3. For new enhancement for the shop’s ow requirements, a one-time fee can be introduced. 
 
-Manage Contents 
-
-Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give messages to the visitors about a business or advertisement. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video. 
-
-Admin User: He/she can add, update and delete content and see the list of contents for the shop; he is the Admin. 
-
-A Content has few fields: 
-
-Poster Name 
-
-Poster Contact Number 
-
-Post Title 
-
-Type of Post: (Ad Space, Short Note, YouTube Video) 
-
-Website: The link of the advertainment (company) or YouTube link 
-
-Search Tag  
-
-Images (any number) 
-
-Use of these Contents 
-
-When you configure the Pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates are only for showing advertisement with or without a link to navigate to the ad website or video. 
-
-Remember that there are other templates for Products (shop owners) which includes the add to cart button. 
-
-Manage Products 
-
-Here in this shop example, we are considering Product (Name, Price, Description, Images) which are the shop owner's items to sell. These are to be sold to online users. Users can add the products to the shopping cart and order them from the store.  
-
-Company User: He/she can add, update and delete a product and see the list of products for the shop. 
-
-The purpose of this module is: 
-
-Add a Product  
-
-Update an existing Product  
-
-Delete a product  
-
-See the list of all products 
-
-Each Products can have as many images as he/she (shop owners) wants. Until now, no validation has been provided to restrict users from entering a limited number of product images. 
-
-A Product has few fields: 
-
-Product Name  
-
-Description  
-
-Category  
-
-Subcategory  
-
-Price  
-
-Discount  
-
-Sale Commission (If the shop wants to sell by any third-party shop)  
-
-Search Tag  
-
-Images (any number) 
-
-Note: It is recommended to enter product images in the golden ratio for a nice display on the web page. 
-
-Formula: 
-
-Height = 
-Width = Height × 1.618  
-
-Use of these Contents 
-
-When Shop Admin will configure the Pages of the website, he/she can select template for the panel (a row in a page) to select from the Products. This module will setup the products to display on the pages.  
-
-Templates are designed for these products. These templates only show products with links to view details of the product or to add to cart. Remember that there are other templates for Products (shop admin configure) which include the add to the cart button only without viewing details of the product. 
-
-NuGet Packages 
-
-Main. Infrastructure Project (Data Infrastructure): 
-
+### NuGet Packages 
+1. Main. Infrastructure Project (Data Infrastructure): 
 Install-Package Microsoft.EntityFrameworkCore.SqlServer -Version 8.0.0 Install-Package Microsoft.EntityFrameworkCore.Tools -Version 8.0.0 Install-Package Microsoft.AspNetCore.Identity.EntityFrameworkCore -Version 8.0.0 
 
-Main.Migrator Project: 
-
+2. Main.Migrator Project:
 When we create the console project (Auto): Install-Package Microsoft.VisualStudio.Azure.Containers.Tools.Targets -Version 1.23.0 Install-Package Microsoft.Extensions.Hosting -Version 8.0.0 Install-Package Microsoft.Extensions.Configuration.Json -Version 8.0.0 Install-Package Microsoft.EntityFrameworkCore.Design -Version 8.0.0 
 
-GitHub Action (Release.yml) & Docker file (Continuous Integration) 
-
-Workflow Test - Automated Build & Release 
-
-✅ This repository is now configured with automated CI/CD workflows: 
-
+GitHub Action (Continuous Integration) 
+✅ This repository is now configured with automated CI workflows: 
 dotnet.yml: Tests on every push/PR to master 
-
-release.yml: Builds Docker image, creates releases, and deploys to VPS (when available) 
-
-Test merge was completed successfully! 
 
  
