@@ -38,7 +38,6 @@
 
 		<!-- Individual Code Exclusions -->
 		<Compile Remove="Tenant\SecureController.cs" />
-		<Compile Remove="Tenant\TenantResolutionExtensions.cs" />
 		<Compile Remove="Tenant\UserSessionLogController.cs" />
 	</ItemGroup>
 

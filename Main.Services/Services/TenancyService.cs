@@ -10,7 +10,7 @@ public class TenancyService: ITenancyService
 {
     public readonly ITenantRepository _tenantRepository;
 
-    public TenancyService ( ITenantRepository tenantRepository )
+    public TenancyService (ITenantRepository tenantRepository)
     {
         TenancyFound = false;
         _tenantRepository = tenantRepository;
@@ -27,9 +27,9 @@ public class TenancyService: ITenancyService
         get; set;
     }
 
-    public async Task FindTenantAsync ( string? hostName )
+    public async Task<TenantDisplayDataModel?> FindTenantAsync (string? hostName)
     {
-        await _tenantRepository.FindCurrentTenantAsync ( hostName );
+        await _tenantRepository.FindCurrentTenantAsync (hostName);
 
         TenantInfo? tenant = _tenantRepository.CurrentTenant;
 
@@ -37,13 +37,18 @@ public class TenancyService: ITenancyService
         {
             CurrentTenant = null;
             TenancyFound = false;
+
+            return null;
         }
         else
         {
-            CurrentTenant = new TenantDisplayDataModel ( tenant.TenantId,tenant.Name,
-                tenant.Domain,tenant.Store );
+            CurrentTenant =
+                new TenantDisplayDataModel (tenant.TenantId,tenant.Name,
+                tenant.Domain,tenant.Store);
 
             TenancyFound = true;
         }
+
+        return CurrentTenant;
     }
 }

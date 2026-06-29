@@ -1,4 +1,5 @@
-﻿using Main.Infrastructure;
+﻿using DataTransferModel;
+using Main.Infrastructure;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
@@ -7,7 +8,7 @@ namespace Main.WebAppCore.Tenant;
 
 public static class TenantResolutionExtensions
 {
-    private const string RootDomain = "https://yourwebsite.com";
+    private const string RootDomain = "localhost";
     private const string SessionKey = "CurrentTenantId";
 
     public static async Task<bool> TryResolveTenantAsync (
@@ -15,10 +16,8 @@ public static class TenantResolutionExtensions
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
-        IMemoryCache memoryCache) // Added Memory Cache
+        IMemoryCache memoryCache)
     {
-
-        // 1. Fast Path: Check if tenant is already cached in this User's Session
         var cachedTenant = GetTenantFromSession(context);
 
         if ( cachedTenant != null )
@@ -27,37 +26,36 @@ public static class TenantResolutionExtensions
             return true;
         }
 
-        // 2. Resolve the incoming key string using your strategies
-        string? tenantKey = context.ResolveFromHeader()
-                            ?? context.ResolveFromQuery()
-                            ?? context.ResolveFromPath()
+        string? tenantHost = context.ResolveFromPath()
                             ?? context.ResolveFromSubdomain()
                             ?? context.ResolveFromDomain();
 
-        if ( !string.IsNullOrEmpty (tenantKey) )
-        {
-            // 3. Middle Path: Look in Application Memory Cache, fall back to DB if missing
 
-            var tenant = await memoryCache.GetOrCreateAsync($"tenant_{tenantKey}", async entry =>
+        if ( !string.IsNullOrEmpty (tenantHost) )
+        {
+            TenantDisplayDataModel? tenantDisplayDataModel = await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30); 
-                // Cache in app for 30 mins
-                return await tenancyService.GetTenantByKeyAsync(tenantKey);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+                return await tenancyService.FindTenantAsync(tenantHost);
             });
 
-            if ( tenant != null )
+            if ( tenantDisplayDataModel != null )
             {
-                // 4. Save to Session for subsequent user requests and apply context
-
-                SaveTenantToSession (context,tenant);
-                SetTenantSetter (tenant,tenantSetter);
+                SaveTenantToSession (context,tenantDisplayDataModel);
+                SetTenantSetter (tenantSetter,tenantDisplayDataModel);
                 return true;
             }
         }
 
-        // 5. Fallback: Short-circuit and redirect to root domain
         context.Response.Redirect (RootDomain);
         return false;
+    }
+
+    private static void SetTenantSetter (ITenantSetter tenantSetter,TenantDisplayDataModel tenantDisplayDataModel)
+    {
+        tenantSetter.CurrentTenantId = tenantDisplayDataModel.TenantId;
+        tenantSetter.TenantStore = tenantDisplayDataModel.StoreType;
+        tenantSetter.TenantName = tenantDisplayDataModel.Name;
     }
 
     // Helper Method for ITenantSetter Set 
@@ -75,17 +73,59 @@ public static class TenantResolutionExtensions
     }
 
     // Helper to store Tenant in Session
-    private static void SaveTenantToSession (HttpContext context,TenantModel tenant)
+    private static void SaveTenantToSession (HttpContext context,TenantDisplayDataModel tenantDisplayDataModel)
     {
-        var sessionData = JsonSerializer.Serialize(tenant);
+        var sessionData = JsonSerializer.Serialize(tenantDisplayDataModel);
         context.Session.SetString (SessionKey,sessionData);
     }
 
-    // Keep your strategy methods (ResolveFromHeader, ResolveFromQuery, etc.) down here...
+    // Keep your strategy methods (ResolveFromPath, ResolveFromSubdomain, ResolveFromDomain)
     private static string? ResolveFromPath (this HttpContext context)
     {
-        var pathSegments = context.Request.Path.Value?.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        // Assumes path structure like: /tenant-name/products
+        string pathRequest = context.Request.Path.Value ?? "";
+        var pathSegments = pathRequest?.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
         return pathSegments?.Length > 0 ? pathSegments[0] : null;
     }
+
+    private static string ResolveFromSubdomain (this HttpContext context)
+    {
+        string host = context.Request.Host.Host ?? "";
+        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        segments = RemoveResevedWord (segments.Length > 0 ? segments : null);
+
+        if ( segments!.Length > 2 )
+        {
+            return segments[0];
+        }
+
+        return "";
+    }
+
+    private static string? ResolveFromDomain (this HttpContext context)
+    {
+        string host = context.Request.Host.Host ?? "";
+        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
+
+        if ( segments!.Length > 1 )
+        {
+            return segments[0];
+        }
+
+        return "";
+    }
+
+    private static string[]? RemoveResevedWord (string[]? segments)
+    {
+        if ( segments!.Length > 0 && segments[0] == "www" )
+        {
+            segments = segments.Skip (1).ToArray ();
+        }
+
+        return segments;
+    }
+
 }

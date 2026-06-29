@@ -4,16 +4,16 @@ namespace DataTransferModel;
 
 public class TenantDisplayDataModel
 {
-    public TenantDisplayDataModel ( )
+    public TenantDisplayDataModel ()
     {
     }
 
-    public TenantDisplayDataModel ( string tenantId,string name,string domain,EnumStoreType shopType )
+    public TenantDisplayDataModel (string tenantId,string name,string domain,EnumStoreType shopType)
     {
         TenantId = tenantId;
         Name = name;
         Domain = domain;
-        ShopType = shopType;
+        StoreType = shopType;
     }
 
     public string TenantId
@@ -31,7 +31,7 @@ public class TenantDisplayDataModel
         get; set;
     }
 
-    public EnumStoreType ShopType
+    public EnumStoreType StoreType
     {
         get; set;
     }
