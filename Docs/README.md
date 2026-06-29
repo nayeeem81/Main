@@ -13,8 +13,10 @@ The system supports flexible tenant identification through:
 3. Subdirectory
 
 ## Tenant Resolution (Middleware)
-### Resolution Process: 
-The TenantResolver middleware identifies the tenant from the request (using routing or headers) and leverages Session and Memory Cache for quick lookups.Caching. The resolved tenant is cached in the active session. For unresolved requests, the system searches the database, stores the result in Session, and bypasses subsequent DB lookups. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant.
+### Resolution Process 
+1. The TenantResolver middleware identifies the tenant from the request (using routing or headers) and leverages Session and Memory Cache for quick lookups.
+2. Caching: The resolved tenant is cached in the active session. For unresolved requests, the system searches the database, stores the result in Session, and bypasses subsequent DB lookups.
+3. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant.
 
 ## Authentication 
 **Default Identity:** Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base.
@@ -37,7 +39,30 @@ The custom authorization handler reads the claim combination from the user's pri
 7. Subdirectory Handling: Routes are rewritten for subdirectory-based tenants, allowing the browser and server to manage authentication cookies natively. (Removes code complexity)
 3. Request Security: Unsafe requests are protected by the default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
 
+# Shop Example Modues (Uses Identity Default)
+## Note: 
+1. It is extended to uses Tenants (IdentityUser is now: ApplicationUser inherited from IdentityUser)
+2. Aithenticaton didn't change.
+3. Authorizatin is updatedfor multi tena,nt environment.
 
+## User Login & Registration (Identity Role is : User)   
+  - Anyone can create an account to purchase products.  
+  - Registration requires email verification before login is allowed.
+    
+### Email Verification Process  
+  - A verification email is sent after registration.  
+  - The link is valid for **2 hours**; after that, it expires.  
+  - Without verification, users cannot log in.
+    
+### Getting a New Verification Link  
+  - Option 1: Try logging in with your registered email and password; a new verification email will be sent.  
+  - Option 2: Use the “Forgot Password” link, enter your email, and receive a fresh verification link.
+    
+### Security Policy  
+  - No user can log in until their email is confirmed.  
+  - Password reset and account recovery options are built in.  
+
+In short: the page outlines a **strict email verification policy** to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. 
 
 # Story
 ## Shop Example: 
@@ -67,26 +92,7 @@ In short, this is a very small size CMS for small businesses.
 
 ### 3. For new enhancement for the shop’s ow requirements, a one-time fee can be introduced. 
 
-# Shop Example Modues
 
-## User Registration  
-  - Anyone can create an account to purchase products.  
-  - Registration requires email verification before login is allowed.
-    
-### Email Verification Process  
-  - A verification email is sent after registration.  
-  - The link is valid for **2 hours**; after that, it expires.  
-  - Without verification, users cannot log in.
-    
-### Getting a New Verification Link  
-  - Option 1: Try logging in with your registered email and password; a new verification email will be sent.  
-  - Option 2: Use the “Forgot Password” link, enter your email, and receive a fresh verification link.
-    
-### Security Policy  
-  - No user can log in until their email is confirmed.  
-  - Password reset and account recovery options are built in.  
-
-In short: the page outlines a **strict email verification policy** to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. 
 
 ## Manage Contents
 Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give message to the visitors about a business or advertisements. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video.
