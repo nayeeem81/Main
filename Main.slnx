@@ -56,6 +56,7 @@
     <File Path="Multi Tenant Auth Cookie and Jwt Validation.txt" />
     <File Path="Multi Tenant Cookie Cors and Forgery.txt" />
     <File Path="Multi Tenant Cors Options.txt" />
+    <File Path="Multi Tenant Global Exception Handeling.txt" />
     <File Path="Multi Tenant Jwt for MVC Web App.txt" />
     <File Path="Multi Tenant Jwt for Tenant.txt" />
     <File Path="Multi Tenant Logging.txt" />
