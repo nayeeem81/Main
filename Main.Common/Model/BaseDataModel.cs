@@ -1,19 +1,33 @@
-﻿
-
-namespace Main.Common;
+﻿namespace Main.Common;
 
 public class BaseDataModel
 {
     public BaseDataModel ()
     {
+        IsActive = true;
     }
 
-    public EnumCurrency Currency
+    public bool IsActive
     {
         get; set;
     }
 
-    public EnumCountry HostCountry
+    public string? TenantUserId
+    {
+        get; set;
+    }
+
+    public string ApplicationUserId
+    {
+        get; set;
+    }
+
+    public EnumCurrency TenantCurrency
+    {
+        get; set;
+    }
+
+    public EnumCountry TenantCountry
     {
         get; set;
     }
@@ -23,7 +37,12 @@ public class BaseDataModel
         get; set;
     }
 
-    public DateTime ModifiedDate
+    public DateTime? ModifiedDate
+    {
+        get; set;
+    }
+
+    public DateTime? DeletedDate
     {
         get; set;
     }
@@ -33,11 +52,13 @@ public class BaseDataModel
         get; set;
     }
 
-    public string ModifiedBy
+    public string? ModifiedBy
     {
         get; set;
     }
 
-    public string Id;
-
+    public string? DeletedBy
+    {
+        get; set;
+    }
 }

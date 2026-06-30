@@ -31,4 +31,6 @@ public interface ITenantContext
     BaseDataModel GetCreateBaseDataModel ();
 
     BaseDataModel GetUpdateBaseDataModel ();
+
+    BaseDataModel GetDeleteBaseDataModel ();
 }

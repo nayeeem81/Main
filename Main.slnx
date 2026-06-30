@@ -58,6 +58,7 @@
     <File Path="Multi Tenant Cors Options.txt" />
     <File Path="Multi Tenant Jwt for MVC Web App.txt" />
     <File Path="Multi Tenant Jwt for Tenant.txt" />
+    <File Path="Multi Tenant Logging.txt" />
     <File Path="Multi Tenant Query Based Parse to Resolve Tenant.txt" />
     <File Path="Multi Tenant Razor View Tenant Role.txt" />
     <File Path="Multi Tenant Refactor Tenant Resolver Middleware.txt" />

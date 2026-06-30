@@ -168,16 +168,19 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         {
             ( ( IMustHaveTenant ) entry.Entity ).TenantId = _tenantSetter.CurrentTenantId;
 
-            ( ( IMustHaveTenant ) entry.Entity ).CreateBaseData (_tenantContext.GetCreateBaseDataModel ());
+            var entryState = entry.State;
+            if ( entryState == EntityState.Added )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetCreateBaseDataModel ());
+            }
+            else if ( entryState == EntityState.Modified )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetUpdateBaseDataModel ());
+            }
+            else if ( entryState == EntityState.Deleted )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetDeleteBaseDataModel ());
+            }
         }
-
-        entries = ChangeTracker.Entries ()
-            .Where (e => e.State == EntityState.Modified && e.Entity is IMustHaveTenant);
-
-        foreach ( var entry in entries )
-        {
-            ( ( IMustHaveTenant ) entry.Entity ).CreateBaseData (_tenantContext.GetUpdateBaseDataModel ());
-        }
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Main.Common;
-
 namespace Domain.Model;
 
 public class BaseEntity: IMustHaveTenant
@@ -11,30 +10,61 @@ public class BaseEntity: IMustHaveTenant
 
     public void CreateBaseData (BaseDataModel modelBase)
     {
-        IdentityUserId = modelBase.Id.Trim ();
+        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
+        TenantUserId = modelBase.TenantUserId?.Trim ();
 
-        CreatedDate = modelBase.CreatedDate;
+        TenantCountry = modelBase.TenantCountry;
+        TenantCurrency = modelBase.TenantCurrency;
+
         CreatedBy = modelBase.CreatedBy;
+        CreatedDate = modelBase.CreatedDate;
 
-        HostCountry = modelBase.HostCountry;
+        ModifiedBy = null;
+        ModifiedDate = null;
 
-        ModifiedBy = modelBase.ModifiedBy;
-        ModifiedDate = modelBase.ModifiedDate;
+        DeletedBy = null;
+        DeletedDate = null;
 
-        IsActive = true;
+        IsActive = modelBase.IsActive;
     }
 
     public void ModifyBaseData (BaseDataModel modelBase)
     {
+        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
+        TenantUserId = modelBase.TenantUserId?.Trim ();
+
+        ModifiedBy = modelBase.TenantUserId?.Trim ();
         ModifiedDate = modelBase.ModifiedDate;
-        ModifiedBy = modelBase.ModifiedBy;
 
-        HostCountry = modelBase.HostCountry;
+        DeletedDate = null;
+        DeletedBy = null;
 
-        IsActive = true;
+        IsActive = modelBase.IsActive;
+    }
+
+    public void DeleteBaseData (BaseDataModel modelBase)
+    {
+        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
+        TenantUserId = modelBase.TenantUserId?.Trim ();
+
+        DeletedBy = modelBase.TenantUserId?.Trim ();
+        DeletedDate = modelBase.DeletedDate?.Date;
+
+        IsActive = modelBase.IsActive;
     }
 
     public string CreatedBy
+    {
+        get; set;
+    }
+
+    public string? ModifiedBy
+
+    {
+        get; set;
+    }
+
+    public string? DeletedBy
     {
         get; set;
     }
@@ -44,17 +74,17 @@ public class BaseEntity: IMustHaveTenant
         get; set;
     }
 
-    public string ModifiedBy
+    public DateTime? ModifiedDate
     {
         get; set;
     }
 
-    public DateTime ModifiedDate
+    public DateTime? DeletedDate
     {
         get; set;
     }
 
-    public EnumCountry HostCountry
+    public EnumCountry? TenantCountry
     {
         get; set;
     }
@@ -64,11 +94,10 @@ public class BaseEntity: IMustHaveTenant
         get; set;
     }
 
-    public string IdentityUserId
+    public string? IdentityUserId
     {
         get; set;
     }
-
 
     public string TenantId
     {
@@ -77,6 +106,23 @@ public class BaseEntity: IMustHaveTenant
     }
 
     public BaseDataModel BaseData
+    {
+        get;
+        set;
+    }
+    public string? Continent
+    {
+        get;
+        set;
+    }
+
+    public string? TenantUserId
+    {
+        get;
+        set;
+    }
+
+    public EnumCurrency? TenantCurrency
     {
         get;
         set;

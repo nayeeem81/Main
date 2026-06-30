@@ -43,13 +43,13 @@ public class TenantContext: ITenantContext
     {
         BaseDataModel baseDataModel = new ()
         {
-            ModifiedDate = GetLocalNow ( ),
             CreatedDate = GetLocalNow ( ),
-            HostCountry = AppSettings.Current.EnumCountry,
-            Currency = AppSettings.Current.EnumCurrency,
             CreatedBy = IdentityId,
-            ModifiedBy = IdentityId,
-            Id = IdentityId
+            TenantCountry = AppSettings.Current.EnumCountry,
+            TenantCurrency = AppSettings.Current.EnumCurrency,
+            TenantUserId = IdentityId,
+            ApplicationUserId = IdentityId,
+            IsActive = true
         };
 
         return baseDataModel;
@@ -60,11 +60,28 @@ public class TenantContext: ITenantContext
         BaseDataModel baseDataModel = new ()
         {
             ModifiedDate = GetLocalNow ( ),
-            HostCountry = AppSettings.Current.EnumCountry,
-            Currency = AppSettings.Current.EnumCurrency,
-            ModifiedBy = IdentityId
+            ModifiedBy = IdentityId,
+            TenantCountry = AppSettings.Current.EnumCountry,
+            TenantCurrency = AppSettings.Current.EnumCurrency,
+            ApplicationUserId = IdentityId,
+            TenantUserId = IdentityId,
+            IsActive = true
         };
+        return baseDataModel;
+    }
 
+    public BaseDataModel GetDeleteBaseDataModel ()
+    {
+        BaseDataModel baseDataModel = new ()
+        {
+            DeletedDate = GetLocalNow ( ),
+            DeletedBy = IdentityId,
+            TenantCountry = AppSettings.Current.EnumCountry,
+            TenantCurrency = AppSettings.Current.EnumCurrency,
+            ApplicationUserId = IdentityId,
+            TenantUserId = IdentityId,
+            IsActive = false
+        };
         return baseDataModel;
     }
 }
