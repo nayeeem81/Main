@@ -1,0 +1,355 @@
+Here is the comprehensive workflow and clean architecture implementation for a Multi-Tenant TenantAdmin user registration and TenantContentManager invitation flow in .NET 8.0 MVC.
+
+
+## Workflow Architecture
+
+[TenantAdmin] -> Invites User (Email) -> [Generates Secure Token] -> [Sends Email Link]
+                                                                            │
+[TenantContentManager] <- Clicks Link <- [Validates Token & Tenant ID] ◄────┘
+         │
+         └──> Displays Pre-filled Registration View -> Submits -> [Account Created + Role Assigned]
+
+## 1. Domain Entities & DTOs
+
+## Tenant.cs (Domain)
+
+public class Tenant
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+## ApplicationUser.cs (Domain)
+
+using Microsoft.AspNetCore.Identity;
+public class ApplicationUser : IdentityUser<Guid>
+{
+    public Guid TenantId { get; set; }
+}
+
+## TenantInvite.cs (Domain)
+
+public class TenantInvite
+{
+    public Guid Id { get; set; }
+    public Guid TenantId { get; set; }
+    public string Email { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+    public string Token { get; set; } = string.Empty;
+    public DateTime ExpiryDate { get; set; }
+    public bool IsUsed { get; set; }
+}
+
+## InviteUserDto.cs (Application layer)
+
+public record InviteUserDto(string Email, string Role, Guid TenantId);
+
+## RegisterInvitedUserDto.cs (Application layer)
+
+public record RegisterInvitedUserDto(string Token, string Email, string Password, Guid TenantId, string Role);
+
+## 2. ViewModels
+
+## InviteViewModel.cs
+
+using System.ComponentModel.DataAnnotations;
+public class InviteViewModel
+{
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+
+## RegisterInvitedViewModel.cs
+
+using System.ComponentModel.DataAnnotations;
+public class RegisterInvitedViewModel
+{
+    public string Token { get; set; } = string.Empty;
+    public Guid TenantId { get; set; }
+    public string Role { get; set; } = string.Empty;
+
+    [Required, EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required, DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    [Required, DataType(DataType.Password), Compare("Password")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+}
+
+## 3. Repository Layer
+
+## ITenantInviteRepository.cs
+
+public interface ITenantInviteRepository
+{
+    Task AddAsync(TenantInvite invite);
+    Task<TenantInvite?> GetByTokenAsync(string token);
+    Task UpdateAsync(TenantInvite invite);
+}
+
+## TenantInviteRepository.cs (Infrastructure layer)
+
+using Microsoft.EntityFrameworkCore;
+public class TenantInviteRepository : ITenantInviteRepository
+{
+    private readonly DbContext _context; // Replace with ApplicationDbContext
+
+    public TenantInviteRepository(DbContext context) => _context = context;
+
+    public async Task AddAsync(TenantInvite invite)
+    {
+        await _context.Set<TenantInvite>().AddAsync(invite);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<TenantInvite?> GetByTokenAsync(string token)
+    {
+        return await _context.Set<TenantInvite>()
+            .FirstOrDefaultAsync(x => x.Token == token && !x.IsUsed);
+    }
+
+    public async Task UpdateAsync(TenantInvite invite)
+    {
+        _context.Set<TenantInvite>().Update(invite);
+        await _context.SaveChangesAsync();
+    }
+}
+
+## 4. Service Layer
+
+## ITenantInviteService.cs
+
+public interface ITenantInviteService
+{
+    Task<string> CreateInviteAsync(InviteUserDto dto);
+    Task<TenantInvite?> ValidateInviteAsync(string token);
+    Task<bool> AcceptInviteAsync(RegisterInvitedUserDto dto);
+}
+
+## TenantInviteService.cs (Application layer)
+
+using Microsoft.AspNetCore.Identity;using System.Security.Cryptography;
+public class TenantInviteService : ITenantInviteService
+{
+    private readonly ITenantInviteRepository _inviteRepository;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public TenantInviteService(ITenantInviteRepository inviteRepository, UserManager<ApplicationUser> userManager)
+    {
+        _inviteRepository = inviteRepository;
+        _userManager = userManager;
+    }
+
+    public async Task<string> CreateInviteAsync(InviteUserDto dto)
+    {
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+        var invite = new TenantInvite
+        {
+            Id = Guid.NewGuid(),
+            TenantId = dto.TenantId,
+            Email = dto.Email,
+            Role = dto.Role,
+            Token = token,
+            ExpiryDate = DateTime.UtcNow.AddDays(7),
+            IsUsed = false
+        };
+
+        await _inviteRepository.AddAsync(invite);
+        return token;
+    }
+
+    public async Task<TenantInvite?> ValidateInviteAsync(string token)
+    {
+        var invite = await _inviteRepository.GetByTokenAsync(token);
+        if (invite == null || invite.ExpiryDate < DateTime.UtcNow) return null;
+        return invite;
+    }
+
+    public async Task<bool> AcceptInviteAsync(RegisterInvitedUserDto dto)
+    {
+        var invite = await _inviteRepository.GetByTokenAsync(dto.Token);
+        if (invite == null || invite.ExpiryDate < DateTime.UtcNow) return false;
+
+        var user = new ApplicationUser 
+        { 
+            UserName = dto.Email, 
+            Email = dto.Email, 
+            TenantId = dto.TenantId 
+        };
+
+        var result = await _userManager.CreateAsync(user, dto.Password);
+        if (!result.Succeeded) return false;
+
+        // Custom extension or claims manager to store role under Tenant-specific boundary if required
+        await _userManager.AddToRoleAsync(user, dto.Role);
+
+        invite.IsUsed = true;
+        await _inviteRepository.UpdateAsync(invite);
+
+        return true;
+    }
+}
+
+## 5. Controller Layer
+## AccountController.cs (Presentation layer) [1] 
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+public class AccountController : Controller
+{
+    private readonly ITenantInviteService _inviteService;
+
+    public AccountController(ITenantInviteService inviteService) => _inviteService = inviteService;
+
+    [Authorize(Roles = "TenantAdmin")]
+    [HttpGet]
+    public IActionResult Invite() => View();
+
+    [Authorize(Roles = "TenantAdmin")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Invite(InviteViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        // Extract tenant ID from current logged-in user claims
+
+        var tenantIdClaim = User.FindFirstValue("TenantId"); 
+
+        if (string.IsNullOrEmpty(tenantIdClaim)) 
+            return BadRequest("Tenant not found.");
+
+        var dto = new InviteUserDto(model.Email, "TenantContentManager", Guid.Parse(tenantIdClaim));
+
+        var token = await _inviteService.CreateInviteAsync(dto);
+
+        var callbackUrl = Url.Action("RegisterInvited", "Account", new { token }, Request.Scheme);
+        
+        // TODO: Send callbackUrl via EmailService to user
+        TempData["Message"] = $"Invite link generated (Simulated Email): {callbackUrl}";
+
+        return RedirectToAction(nameof(Invite));
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> RegisterInvited(string token)
+    {
+        var invite = await _inviteService.ValidateInviteAsync(token);
+        if (invite == null) return RedirectToAction("Error", "Home");
+
+        var model = new RegisterInvitedViewModel
+        {
+            Token = token,
+            Email = invite.Email,
+            TenantId = invite.TenantId,
+            Role = invite.Role
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RegisterInvited(RegisterInvitedViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var dto = new RegisterInvitedUserDto(model.Token, model.Email, model.Password, model.TenantId, model.Role);
+        var success = await _inviteService.AcceptInviteAsync(dto);
+
+        if (!success)
+        {
+            ModelState.AddModelError("", "Registration failed or link expired.");
+            return View(model);
+        }
+
+        return RedirectToAction("Login");
+    }
+}
+
+## 6. View Layer (.cshtml)
+
+## Invite.cshtml (For TenantAdmin)
+
+@model InviteViewModel
+@{ ViewData["Title"] = "Invite Content Manager"; }
+
+<h2>Invite New User</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<form asp-action="Invite" method="post">
+    <div class="form-group mb-3">
+        <label asp-for="Email" class="form-label">User Email Address</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Invitation</button>
+</form>
+
+
+## RegisterInvited.cshtml (For Invited Content Manager)
+
+@model RegisterInvitedViewModel
+@{ ViewData["Title"] = "Complete Registration"; }
+
+<h2>Join Tenant Team</h2>
+
+<form asp-action="RegisterInvited" method="post">
+    <input type="hidden" asp-for="Token" />
+    <input type="hidden" asp-for="TenantId" />
+    <input type="hidden" asp-for="Role" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Password" class="form-label">Password</label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Complete Registration</button>
+</form>
+
+
+
+## 7. Identity Configuration
+
+To ensure the user's TenantId is accessible via cookie-based authentication, add it during user login: [2, 3] 
+
+// Inside custom IUserClaimsPrincipalFactory<ApplicationUser>
+
+protected override async Task GenerateClaimsAsync(ApplicationUser user)
+{
+    var identity = await base.GenerateClaimsAsync(user);
+    identity.AddClaim(new Claim("TenantId", user.TenantId.ToString()));
+    return identity;
+}
+
+If you want, I can help you with the setup details if you tell me:
+
+* Do you use a shared database with a discriminator column (TenantId), or a database-per-tenant strategy?
+* Show me how to register the Custom Claims Principal Factory in Program.cs
+* Provide an example of an EF Core Query Filter for automatic multi-tenancy isolation
+
+
+[1] [https://github.com](https://github.com/azure-samples/active-directory-aspnetcore-webapp-openidconnect-v2/blob/master/5-WebApp-AuthZ/5-1-Roles/README.md)
+[2] [https://medium.com](https://medium.com/sharpassembly/step-by-step-guide-to-implementing-multi-tenancy-in-webapi-using-asp-net-core-identity-f11b3bf88c56)
+[3] [https://aspnano.com](https://aspnano.com/build-multi-tenant-application-core-asp-net/)
