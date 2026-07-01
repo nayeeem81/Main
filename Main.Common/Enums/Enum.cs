@@ -2,6 +2,21 @@
 
 namespace Main.Common;
 
+public enum HostType
+{
+    Domain = 1,
+    SubDomain = 2,
+    SubDirectory = 3
+}
+
+public enum InvitationStatus
+{
+    Pending = 1,
+    Accepted = 2,
+    Expired = 3,
+    Revoked = 4
+}
+
 public enum EnumShowOrHide
 {
     Yes = 1,
@@ -87,7 +102,7 @@ public enum EnumPostType
     Product = 4
 }
 
-public enum EnumStoreType
+public enum StoreType
 {
     LifeStyles = 1,
     FineArts = 2,
@@ -193,7 +208,7 @@ public enum EnumIsValidTemplate
     Invalid = 3
 }
 
-public enum EnumCountry
+public enum Country
 {
     Bangladesh = 1
 }
@@ -293,7 +308,7 @@ public enum EnumSpecialMarket
     MusicBooksGames = 1010005
 }
 
-public enum EnumCurrency
+public enum Currency
 {
     [Description("Taka")]
     BDT = 2

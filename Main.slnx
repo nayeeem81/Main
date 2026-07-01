@@ -6,6 +6,9 @@
     <File Path="Docs/SECURITY.md" />
   </Folder>
   <Folder Name="/Docs/Research Online/">
+    <File Path="AI Co Pilot Tenant Invitation Code.txt" />
+    <File Path="Best Practices Email Service Layers and Design.txt" />
+    <File Path="Best Practices for Backgrond Process for Email sending.txt" />
     <File Path="Docs/Research Online/Best Practices Branching Convention Help.txt" />
     <File Path="Docs/Research Online/Best Practices Service Layer .txt" />
     <File Path="Docs/Research Online/Best Practices Solution For DTO Mapping.txt" />
@@ -84,6 +87,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="../../../tenant-invite-demo/tenant-invite-demo.csproj" />
   <Project Path="Main.Common/Main.Common.csproj" Id="9ec1bd43-fe89-42bc-b5eb-2cc7212b86ce" />
   <Project Path="Main.Infrastructure/Main.Infrastructure.csproj" Id="58cc4f58-1b5c-48a1-a7fc-c07e576d1ebf" />
   <Project Path="Main.Migrator/Main.Migrator.csproj" Id="ce01ed80-30ff-48d5-946f-ec42382468fb" />

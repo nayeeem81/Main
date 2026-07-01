@@ -27,7 +27,7 @@ public class TenantVariableModel
         get; set;
     }
 
-    public EnumStoreType TenantStore
+    public StoreType TenantStore
     {
         get; set;
     }

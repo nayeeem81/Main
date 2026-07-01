@@ -96,12 +96,12 @@ public class PageService: IPageService
             return listPanelIds.Contains (panel.PanelID);
         }).ToList ().ForEach (updatePanel =>
         {
-            updatePanel.ModifyBaseData (baseDataModel);
+            updatePanel.ModifyParameters (baseDataModel);
             updatePanel.PanelPosition = listPanelPositionDataModel.First (a => a.PanelID == updatePanel.PanelID).PanelPosition;
 
         });
 
-        page.ModifyBaseData (baseDataModel);
+        page.ModifyParameters (baseDataModel);
         bool result = await _pageRepository.UpdatePage ( page, listPanels );
         return result;
     }

@@ -4,10 +4,14 @@ public class BaseDataModel
 {
     public BaseDataModel ()
     {
-        IsActive = true;
     }
 
     public bool IsActive
+    {
+        get; set;
+    }
+
+    public string? SessionUserId
     {
         get; set;
     }
@@ -17,17 +21,22 @@ public class BaseDataModel
         get; set;
     }
 
-    public string ApplicationUserId
+    public string GlobalUserRole
     {
         get; set;
     }
 
-    public EnumCurrency TenantCurrency
+    public string? TenantUserRole
     {
         get; set;
     }
 
-    public EnumCountry TenantCountry
+    public Country? TenantCountry
+    {
+        get; set;
+    }
+
+    public string? TenantContinent
     {
         get; set;
     }

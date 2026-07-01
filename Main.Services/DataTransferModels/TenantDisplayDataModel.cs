@@ -8,7 +8,7 @@ public class TenantDisplayDataModel
     {
     }
 
-    public TenantDisplayDataModel (string tenantId,string name,string domain,EnumStoreType shopType)
+    public TenantDisplayDataModel (string tenantId,string name,string domain,StoreType shopType)
     {
         TenantId = tenantId;
         Name = name;
@@ -31,7 +31,7 @@ public class TenantDisplayDataModel
         get; set;
     }
 
-    public EnumStoreType StoreType
+    public StoreType StoreType
     {
         get; set;
     }

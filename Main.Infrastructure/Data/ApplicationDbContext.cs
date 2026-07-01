@@ -1,7 +1,8 @@
 ﻿using Domain.Model;
+using Main.Common;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System.Data;
 
 namespace Main.Infrastructure;
@@ -11,9 +12,13 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public readonly ITenantSetter _tenantSetter;
     public readonly ITenantContext _tenantContext;
 
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) :
+    base (options)
+    {
+    }
 
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
+    ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
     {
         _tenantSetter = tenantSetter;
         _tenantContext = tenantContext;
@@ -24,12 +29,27 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
-    public DbSet<TenantInfo> Tenants
+    public DbSet<Tenant> Tenants
     {
         get; set;
     }
 
-    public DbSet<UserTenant> UserTenants
+    public DbSet<EmailSmtp> EmailSmtps
+    {
+        get; set;
+    }
+
+    public DbSet<TenantUser> TenantUsers
+    {
+        get; set;
+    }
+
+    public DbSet<TenantInvitation> TenantInvitations
+    {
+        get; set;
+    }
+
+    public DbSet<EmailOutboxMessage> EmailOutboxMessages
     {
         get; set;
     }
@@ -79,50 +99,109 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
+    public DbSet<AValue> AValues
+    {
+        get; set;
+    }
+
     protected override void OnModelCreating (ModelBuilder builder)
     {
         base.OnModelCreating (builder);
 
-        _ = builder.Entity<TenantInfo> ()
-           .Property (t => t.TenantId)
-           .HasValueGenerator
-           <Microsoft.EntityFrameworkCore.ValueGeneration.GuidValueGenerator> ();
+        FluentApiConfiguration (builder);
 
-        _ = builder.Entity<UserTenant> ()
-            .HasKey (ut => new { ut.UserId,ut.TenantId,ut.TenantRole });
+        TenantGlobalQueryFilter (builder);
+    }
 
+    private void FluentApiConfiguration (ModelBuilder builder)
+    {
+        // Tenant 
+        _ = builder.Entity<Tenant> (static entity =>
+        {
+            _ = entity.HasKey (t => t.TenantId);
+            _ = entity.Property (t => t.TenantId)
+                  .HasValueGenerator<SequentialGuidValueGenerator> ();
+
+        });
+
+        // Tenant User
+        _ = builder.Entity<TenantUser> ()
+                   .HasKey (ut => new { ut.UserId,ut.TenantId,ut.TenantRole });
+        _ = builder.Entity<TenantUser> ()
+           .HasOne (ut => ut.User)
+           .WithMany (au => au.TenantUsers)
+           .HasForeignKey (ut => ut.UserId);
+
+        // Tenant Invitation
+        _ = builder.Entity<TenantInvitation> (static entity =>
+        {
+            _ = entity.HasKey (t => t.InviteId);
+            _ = entity.Property (t => t.InviteId)
+                  .HasValueGenerator<SequentialGuidValueGenerator> ();
+            _ = entity.Property (t => t.Email)
+                  .IsRequired ();
+            _ = entity.Property (t => t.Token)
+                  .IsRequired ();
+            _ = entity.Property (t => t.Status)
+                  .HasDefaultValue (InvitationStatus.Pending)
+                  .IsRequired ();
+            _ = entity.Property (t => t.CreatedOn)
+                  .HasDefaultValueSql ("GETUTCDATE()")
+                  .IsRequired ();
+            _ = entity.Property (t => t.ExpiresOn)
+                  .HasDefaultValueSql ("DATEADD(day, 5, GETUTCDATE())")
+                  .IsRequired ();
+        });
+
+        // Application User
         _ = builder.Entity<ApplicationUser> ()
             .HasIndex (u => u.Email)
             .IsUnique ();
 
-        _ = builder.Entity<UserTenant> ()
-            .HasOne (ut => ut.User)
-            .WithMany (au => au.UserTenants)
-            .HasForeignKey (ut => ut.UserId);
-
+        // Post
         _ = builder.Entity<Post> ()
             .Property (p => p.Price)
             .HasColumnType ("decimal(18,2)")
             .IsRequired ();
 
+        // Product
         _ = builder.Entity<Product> ()
            .Property (p => p.Discount)
            .HasColumnType ("decimal(18,2)");
-
         _ = builder.Entity<Product> ()
             .Property (p => p.SaleCommission)
             .HasColumnType ("decimal(18,2)");
 
-        TenantQueryFilter (builder);
+
+        // Email Outbox Message
+        _ = builder.Entity<EmailOutboxMessage> (static entity =>
+        {
+            _ = entity.HasKey (t => t.Id);
+            _ = entity.Property (t => t.ReceiverEmail)
+                      .IsRequired ();
+            _ = entity.Property (t => t.Subject)
+                      .IsRequired ();
+            _ = entity.Property (t => t.Body)
+                      .IsRequired ();
+            _ = entity.Property (t => t.CreatedOnUtc)
+                      .HasDefaultValueSql ("GETUTCDATE()")
+                      .IsRequired ();
+            _ = entity.Property (t => t.RetryCount)
+                      .IsRequired ();
+        });
     }
 
-    private void TenantQueryFilter (ModelBuilder builder)
+    // TenantId based Query filters (comes from ITenantSetter.CurrentTenantId)
+    // Initially, the CurrentTenantId is set in the TenantMiddleware, which is executed before the DbContext is created.
+    private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
         string currentTenant = _tenantSetter.CurrentTenantId;
 
-        _ = builder.Entity<TenantInfo> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
-        _ = builder.Entity<UserTenant> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.TenantId == currentTenant);
+
+        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
         _ = builder.Entity<Product> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
@@ -145,42 +224,51 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<AValue> ().HasQueryFilter (p => p.TenantId == currentTenant);
     }
 
+    // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
+    private void ApplyBaseDataTenantId ()
+    {
+        string currentTenantId = _tenantSetter.CurrentTenantId;
+
+        BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
+        BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
+        BaseDataModel deleteDataModel = _tenantContext.GetDeleteBaseDataModel ();
+
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Added && e.Entity is IMustHaveTenant);
+
+        foreach ( var entry in entries )
+        {
+            ( ( IMustHaveTenant ) entry.Entity ).TenantId = currentTenantId;
+
+            var entryState = entry.State;
+
+            if ( entryState == EntityState.Added )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).CreateParameters (createDataModel);
+            }
+            else if ( entryState == EntityState.Modified )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).ModifyParameters (updateDataModel);
+            }
+            else if ( entryState == EntityState.Deleted )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).ModifyParameters (deleteDataModel);
+            }
+        }
+    }
+
     public override int SaveChanges (bool acceptAllChangesOnSuccess)
     {
-        ApplyTenantId ();
+        ApplyBaseDataTenantId ();
 
         return base.SaveChanges (acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync (bool acceptAllChangesOnSuccess,CancellationToken cancellationToken = default)
     {
-        ApplyTenantId ();
+        ApplyBaseDataTenantId ();
 
         return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
     }
 
-    private void ApplyTenantId ()
-    {
-        var entries = ChangeTracker.Entries()
-            .Where(e => e.State == EntityState.Added && e.Entity is IMustHaveTenant);
-
-        foreach ( var entry in entries )
-        {
-            ( ( IMustHaveTenant ) entry.Entity ).TenantId = _tenantSetter.CurrentTenantId;
-
-            var entryState = entry.State;
-            if ( entryState == EntityState.Added )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetCreateBaseDataModel ());
-            }
-            else if ( entryState == EntityState.Modified )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetUpdateBaseDataModel ());
-            }
-            else if ( entryState == EntityState.Deleted )
-            {
-                ( ( IMustHaveTenant ) entry.Entity ).ModifyBaseData (_tenantContext.GetDeleteBaseDataModel ());
-            }
-        }
-    }
 }

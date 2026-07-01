@@ -13,7 +13,7 @@ public static class PageServiceMapping
         Panel panelEntity = new( panelDataModel.PageID, panelDataModel.PanelTemplate,
             panelDataModel.PanelTitle );
 
-        panelEntity.CreateBaseData (panelDataModel.BaseDataModel);
+        panelEntity.CreateParameters (panelDataModel.BaseDataModel);
 
         return panelEntity;
     }
@@ -33,7 +33,7 @@ public static class PageServiceMapping
                 Order = order
             };
 
-            post.CreateBaseData (panelDataModel.BaseDataModel);
+            post.CreateParameters (panelDataModel.BaseDataModel);
             listPosts.Add (post);
 
             order += 1;

@@ -7,39 +7,23 @@ public interface IMustHaveTenant
     {
         get; set;
     }
-    EnumCountry? TenantCountry
+
+    Country? TenantCountry
     {
         get; set;
     }
 
-    EnumCurrency? TenantCurrency
+    string? TenantContinent
     {
         get; set;
     }
 
-    string? Continent
-    {
-        get; set;
-    }
-    BaseDataModel BaseData
-    {
-        get; set;
-    }
-    bool IsActive
-    {
-        get; set;
-    }
+    void ModifyParameters (BaseDataModel modelBase);
 
-    string? TenantUserId
-    {
-        get;
-        set;
-    }
+    void CreateParameters (BaseDataModel modelBase);
 
-    void ModifyBaseData (BaseDataModel modelBase);
+    void DeleteParameters (BaseDataModel modelBase);
 
-    void CreateBaseData (BaseDataModel modelBase);
-
-    void DeleteBaseData (BaseDataModel modelBase);
+    void AddSessionParameters (BaseDataModel modelBase);
 }
 

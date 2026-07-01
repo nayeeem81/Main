@@ -4,12 +4,12 @@ namespace WebAppCore.Helper;
 
 public class MyConfigSettings
 {
-    public EnumCountry EnumCountry
+    public Country EnumCountry
     {
         get; set;
     }
 
-    public EnumCurrency EnumCurrency
+    public Currency EnumCurrency
     {
         get; set;
     }

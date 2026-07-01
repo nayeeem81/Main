@@ -9,7 +9,7 @@ public class AValue: BaseEntity
     {
     }
 
-    public AValue (EnumCountry country,string text,EnumTenantVariable variable)
+    public AValue (Country country,string text,EnumTenantVariable variable)
     {
         if ( string.IsNullOrEmpty (text) )
         {

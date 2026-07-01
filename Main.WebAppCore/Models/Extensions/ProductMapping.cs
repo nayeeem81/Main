@@ -25,7 +25,7 @@ public static class ProductMapping
         };
     }
 
-    public static ProductViewModel MapProductViewModel ( ProductDataModel productDataModel,EnumStoreType enumShopType )
+    public static ProductViewModel MapProductViewModel ( ProductDataModel productDataModel,StoreType enumShopType )
     {
         ProductViewModel productViewModel = new ProductViewModel(enumShopType);
 
@@ -77,7 +77,7 @@ public static class ProductMapping
         return productDataModel;
     }
 
-    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels,EnumStoreType EnumShopType )
+    public static List<ProductDisplayViewModel> MapDisplayProductViewModel ( List<ProductDisplayModel> productDataModels,StoreType EnumShopType )
     {
         List<ProductDisplayViewModel> dispayProductViewModels = new List<ProductDisplayViewModel>();
 

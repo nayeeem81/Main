@@ -5,30 +5,30 @@ namespace Main.Common;
 
 public class ListEnum
 {
-    private static readonly Dictionary<EnumCountry, EnumCurrency> objCountryCurrencyList = new Dictionary<EnumCountry, EnumCurrency>()
+    private static readonly Dictionary<Country, Currency> objCountryCurrencyList = new Dictionary<Country, Currency>()
     {
-        { EnumCountry.Bangladesh, EnumCurrency.BDT}
+        { Country.Bangladesh, Currency.BDT}
     };
 
-    public static EnumCurrency GetCountryCurrency (EnumCountry countryName)
+    public static Currency GetCountryCurrency (Country countryName)
     {
         var item = objCountryCurrencyList[countryName];
         return item;
     }
 
-    public static string GetCountryCurrencyDescription (EnumCountry countryName)
+    public static string GetCountryCurrencyDescription (Country countryName)
     {
         var currency = GetCountryCurrency(countryName);
 
         return GetCurrencyDescription (currency);
     }
 
-    public static string GetCurrencyDescription (EnumCurrency currencyEnum)
+    public static string GetCurrencyDescription (Currency currencyEnum)
     {
-        Type enumType = typeof(EnumCurrency);
+        Type enumType = typeof(Currency);
         var enumValues = enumType.GetEnumValues();
 
-        foreach ( EnumCurrency value in enumValues )
+        foreach ( Currency value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
@@ -50,12 +50,12 @@ public class ListEnum
         return "";
     }
 
-    public static string GetCountryDescription (EnumCountry countryEnum)
+    public static string GetCountryDescription (Country countryEnum)
     {
-        Type enumType = typeof(EnumCountry);
+        Type enumType = typeof(Country);
         var enumValues = enumType.GetEnumValues();
 
-        foreach ( EnumCountry value in enumValues )
+        foreach ( Country value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
@@ -81,10 +81,10 @@ public class ListEnum
     {
         List<TenantVariableModel> objCountryList = new List<TenantVariableModel>();
 
-        Type enumType = typeof(EnumCountry);
+        Type enumType = typeof(Country);
         var enumValues = enumType.GetEnumValues();
 
-        foreach ( EnumCountry value in enumValues )
+        foreach ( Country value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();
@@ -115,10 +115,10 @@ public class ListEnum
     {
         List<TenantVariableModel> objCurrencyList = new List<TenantVariableModel>();
 
-        Type enumType = typeof(EnumCurrency);
+        Type enumType = typeof(Currency);
         var enumValues = enumType.GetEnumValues();
 
-        foreach ( EnumCurrency value in enumValues )
+        foreach ( Currency value in enumValues )
         {
             MemberInfo memberInfo =
                 enumType.GetMember(value.ToString()).First();

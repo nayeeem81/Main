@@ -12,7 +12,7 @@ namespace WebAppCore.ViewModel;
 
 public class ProductViewModel: BaseViewModel
 {
-    public ProductViewModel ( EnumStoreType enumShopType )
+    public ProductViewModel ( StoreType enumShopType )
     {
         AV_Category = DropDownListItems.GetCategoryList
                 ( enumShopType );
@@ -117,7 +117,7 @@ public class ProductViewModel: BaseViewModel
         get; set;
     }
 
-    public void SetDisplaytext ( EnumStoreType EnumShopType )
+    public void SetDisplaytext ( StoreType EnumShopType )
     {
         CategoryText = DropDownListItems.GetCategoryText ( EnumShopType,CategoryID );
 

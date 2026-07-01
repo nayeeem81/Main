@@ -46,10 +46,13 @@ public class TenantContext: ITenantContext
             CreatedDate = GetLocalNow ( ),
             CreatedBy = IdentityId,
             TenantCountry = AppSettings.Current.EnumCountry,
-            TenantCurrency = AppSettings.Current.EnumCurrency,
             TenantUserId = IdentityId,
-            ApplicationUserId = IdentityId,
-            IsActive = true
+            SessionUserId = IdentityId,
+            IsActive = true ,
+            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
+                            ? null
+                            : CurrentUserClainText,
+            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
         };
 
         return baseDataModel;
@@ -62,10 +65,14 @@ public class TenantContext: ITenantContext
             ModifiedDate = GetLocalNow ( ),
             ModifiedBy = IdentityId,
             TenantCountry = AppSettings.Current.EnumCountry,
-            TenantCurrency = AppSettings.Current.EnumCurrency,
-            ApplicationUserId = IdentityId,
+            SessionUserId = IdentityId,
             TenantUserId = IdentityId,
-            IsActive = true
+            IsActive = true,
+            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
+                            ? null
+                            : CurrentUserClainText,
+            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
+
         };
         return baseDataModel;
     }
@@ -77,10 +84,13 @@ public class TenantContext: ITenantContext
             DeletedDate = GetLocalNow ( ),
             DeletedBy = IdentityId,
             TenantCountry = AppSettings.Current.EnumCountry,
-            TenantCurrency = AppSettings.Current.EnumCurrency,
-            ApplicationUserId = IdentityId,
+            SessionUserId = IdentityId,
             TenantUserId = IdentityId,
-            IsActive = false
+            IsActive = false,
+            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
+                            ? null
+                            : CurrentUserClainText,
+            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
         };
         return baseDataModel;
     }

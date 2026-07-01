@@ -3,12 +3,12 @@ namespace Domain.Model;
 
 public class ApplicationUser: IdentityUser
 {
-    public ApplicationUser ( )
+    public ApplicationUser ()
     {
     }
 
-    public virtual ICollection<UserTenant> UserTenants
+    public virtual ICollection<TenantUser> TenantUsers
     {
         get; set;
-    } = new HashSet<UserTenant> ( );
+    } = new HashSet<TenantUser> ();
 }

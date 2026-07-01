@@ -30,7 +30,7 @@ public static class PageMapping
         return listPageDisplayViewModels;
     }
 
-    public static List<PostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,EnumStoreType categoryFor,EnumCurrency currency )
+    public static List<PostSelectViewModel> MapSelectPostViewModel ( List<PostDataModel> listSelectProductsDataModels,StoreType categoryFor,Currency currency )
     {
         if ( listSelectProductsDataModels == null )
         {

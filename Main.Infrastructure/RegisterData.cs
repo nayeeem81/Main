@@ -7,9 +7,13 @@ namespace Main.Infrastructure;
 public static class RegisterData
 {
     public static IServiceCollection AddRepository (
-                  this IServiceCollection services,IConfiguration configuration)
+    this IServiceCollection services,IConfiguration configuration)
     {
         _ = services.AddScoped<ITenantRepository,TenantRepository> ();
+
+        _ = services.AddScoped<ITenantInvitationRepository,TenantInvitationRepository> ();
+
+        _ = services.AddScoped<ITenantUserRepository,TenantUserRepository> ();
 
         _ = services.AddScoped<IAdminPostRepository,AdminPostRepository> ();
 

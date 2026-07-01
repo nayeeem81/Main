@@ -1,0 +1,69 @@
+In a .NET 8.0 ASP.NET Core MVC monolithic Clean Architecture application, the best practice is to separate the business intent (what the email says) from the infrastructure implementation (how the email is sent).
+
+Here is the ideal project structure and placement for your email components.
+## 🏢 Architecture Layer Breakdown## 
+
+1. Core / Domain Project
+This layer should remain completely isolated from databases, file systems, and external APIs. [1, 2] 
+
+* What stays here: The IEmailService interface.
+* Why: The rest of your application code interacts only with this interface, making it easy to swap email providers (e.g., SMTP to SendGrid) later.
+
+
+## 2. Application Project
+This layer handles your business logic and orchestrates workflows. [3, 4] 
+
+* What stays here:
+* Email DTOs (e.g., SendEmailCommand).
+   * Email Content Models (strongly-typed classes representing data needed for specific templates, like WelcomeEmailModel).
+   * Email Templates: Store your .cshtml or .html template files here inside an EmailTemplates folder. [5] 
+
+## 3. Infrastructure Project
+This layer handles external concerns like databases, network calls, and file systems. [6, 7, 8, 9] 
+
+* What stays here:
+* Email Sending Code: The concrete implementation of IEmailService (e.g., SmtpEmailService or SendGridEmailService).
+
+   * Template Rendering Code: The logic that reads the template file, injects the model data, and turns it into a string of HTML.
+   * Tenant Resolution: Code that fetches the current tenant's SMTP credentials from the database to ensure tenant isolation. [10, 11] 
+
+## 4. Web / Presentation Project (MVC)
+This is your entry point.
+
+* What stays here:
+* Dependency Injection registration (builder.Services.AddTransient<IEmailService, SmtpEmailService>()).
+   * Configuration bindings in appsettings.json (or tenant-specific configuration stores). [12] 
+
+------------------------------
+## 🚀 Best Practices for Multi-Tenant Emails
+
+* Tenant-Isolated Credentials: Do not hardcode SMTP settings. Fetch the SMTP server, port, username, password, and "From" address dynamically from your Tenant database record at runtime based on the current tenant ID.
+
+* Asynchronous Processing: Do not send emails synchronously during a web request. It slows down the user interface. Save the email to an Outbox table in the database and use a background worker (like Quartz.NET, Hangfire, or BackgroundService) to send them. [13] 
+
+* FluentEmail Library: Consider using the popular FluentEmail NuGet package. It includes built-in support for Razor templates and handles multi-provider rendering beautifully. [14, 15] 
+
+* Template Customization: If tenants need to customize their own email layouts, store the raw HTML templates in the database per tenant instead of keeping static .cshtml files in the Application layer.
+
+------------------------------
+If you want, I can provide a code example for a specific part of this setup. Would you like to see:
+
+1. How to build the Tenant-aware IEmailService implementation? 
+2. How to render Razor templates to HTML strings inside the Infrastructure layer?
+3. How to set up an Outbox pattern for background email sending?
+
+[1] [https://medium.com](https://medium.com/@mub.raihan7/architecting-scalable-asp-net-core-applications-with-clean-architecture-cqrs-and-mediatr-6765617be031)
+[2] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/how-to-build-a-clean-architecture-web-api-with-net-core-8/)
+[3] [https://medium.com](https://medium.com/@cizu64/how-to-structure-your-clean-architecture-project-in-asp-net-core-8557c4322e89)
+[4] [https://dev.to](https://dev.to/dotnetfullstackdev/layered-n-tier-architecture-in-net-core-51ic)
+[5] [https://docs.aspnetzero.com](https://docs.aspnetzero.com/aspnet-core-mvc/latest/Infrastructure-Core-Mvc-Sending-Emails)
+[6] [https://www.cmarix.com](https://www.cmarix.com/blog/clean-architecture-net-core/)
+[7] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/how-to-build-a-clean-architecture-web-api-with-net-core-8/)
+[8] [https://cheatsheets.davidveksler.com](https://cheatsheets.davidveksler.com/clean-architecture-dotnet.html)
+[9] [https://akashjwork.medium.com](https://akashjwork.medium.com/clean-architecture-275181cab655)
+[10] [https://kumarshivam-66534.medium.com](https://kumarshivam-66534.medium.com/building-a-production-ready-notification-service-with-net-8-and-azure-service-bus-e895d81c94e9)
+[11] [https://www.nitorinfotech.com](https://www.nitorinfotech.com/blog/exploring-multi-tenancy-in-asp-net-core/)
+[12] [https://medium.com](https://medium.com/@nirmalichristy/from-sending-emails-to-building-a-passwordless-login-system-in-net-8-c13857d56493)
+[13] [https://www.socketlabs.com](https://www.socketlabs.com/blog/web-api-send-email-async/)
+[14] [https://code-maze.com](https://code-maze.com/dotnet-sending-email-with-fluentemail/)
+[15] [https://ironpdf.com](https://ironpdf.com/blog/net-help/fluentemail-csharp/)

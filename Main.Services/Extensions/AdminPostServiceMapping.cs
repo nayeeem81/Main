@@ -131,7 +131,7 @@ public static class AdminPostServiceMappings
             PosterContactNumber = adminPostDataModel.PosterContactNumber
         };
 
-        adminPost.CreateBaseData (adminPostDataModel.BaseDataModel);
+        adminPost.CreateParameters (adminPostDataModel.BaseDataModel);
 
         return adminPost;
     }
@@ -147,7 +147,7 @@ public static class AdminPostServiceMappings
         {
             adminFileEntity = new AdminImageFile (fileDataModel.ImageFileContent);
 
-            adminFileEntity.CreateBaseData (fileDataModel.BaseDataModel);
+            adminFileEntity.CreateParameters (fileDataModel.BaseDataModel);
 
             objListFileEntity.Add (adminFileEntity);
 
@@ -158,7 +158,7 @@ public static class AdminPostServiceMappings
 
     public static AdminPost UpdateAdminPostEntityMapping (AdminPost adminPostEntity,AdminPostDataModel adminPostDataModel)
     {
-        adminPostEntity.ModifyBaseData (adminPostDataModel.BaseDataModel);
+        adminPostEntity.ModifyParameters (adminPostDataModel.BaseDataModel);
 
         List<AdminImageFile> newListFileEntities = new();
         newListFileEntities.AddRange (adminPostEntity.ListAdminImageFiles);
@@ -169,7 +169,7 @@ public static class AdminPostServiceMappings
             AdminImageFile adminImageFile = new(fileDataModel.ImageFileContent);
             adminImageFile.AdminPostID = adminPostDataModel.AdminPostID;
 
-            adminImageFile.CreateBaseData (fileDataModel.BaseDataModel);
+            adminImageFile.CreateParameters (fileDataModel.BaseDataModel);
 
             newListFileEntities.Add (adminImageFile);
         });
@@ -183,7 +183,7 @@ public static class AdminPostServiceMappings
             adminPostComment.AdminPostID = adminPostDataModel.AdminPostID;
             adminPostComment.Comment = commentDataModel.Comment;
 
-            adminPostComment.CreateBaseData (commentDataModel.BaseDataModel);
+            adminPostComment.CreateParameters (commentDataModel.BaseDataModel);
 
             newListcommentEntities.Add (adminPostComment);
 

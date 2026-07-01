@@ -1,8 +1,8 @@
 ﻿namespace Domain.Model;
 
-public class UserTenant
+public class TenantUser
 {
-    public UserTenant ( )
+    public TenantUser ()
     {
     }
 
@@ -12,7 +12,7 @@ public class UserTenant
 
     public string TenantId { get; set; } = string.Empty;
 
-    public virtual TenantInfo Tenant { get; set; } = null!;
+    public virtual Tenant Tenant { get; set; } = null!;
 
     public string TenantRole { get; set; } = string.Empty;
 }

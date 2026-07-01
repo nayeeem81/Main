@@ -31,15 +31,15 @@ public static class DataSeeder
 
 
         // TENANT 1
-        TenantInfo? tenant1 = context.Tenants.FirstOrDefault <TenantInfo> ( a => a.Domain == "lifestyle-local" );
+        Tenant? tenant1 = context.Tenants.FirstOrDefault <Tenant> ( a => a.HostName == "lifestyle-local" );
 
         if ( tenant1 == null )
         {
-            TenantInfo tenantNew1 = new TenantInfo ( )
+            Tenant tenantNew1 = new Tenant ( )
             {
                 Name = "LifeStyle Store",
-                Domain = "lifestyle-local",
-                Store = EnumStoreType.LifeStyles
+                HostName = "lifestyle-local",
+                Store = StoreType.LifeStyles
             };
 
             context.Tenants.Add ( tenantNew1 );
@@ -52,15 +52,15 @@ public static class DataSeeder
 
 
         // TENANT 2
-        TenantInfo? tenant2 = context.Tenants.FirstOrDefault <TenantInfo> ( a => a.Domain == "fanarts-local" );
+        Tenant? tenant2 = context.Tenants.FirstOrDefault <Tenant> ( a => a.HostName == "fanarts-local" );
 
         if ( tenant2 == null )
         {
-            TenantInfo tenantNew2 =  new TenantInfo ( seedTenancyId2 )
+            Tenant tenantNew2 =  new Tenant ( seedTenancyId2 )
             {
                 Name = "Fine Arts Store",
-                Domain = "fanarts-local",
-                Store = EnumStoreType.FineArts
+                HostName = "fanarts-local",
+                Store = StoreType.FineArts
             };
 
             context.Tenants.Add ( tenantNew2 );
@@ -144,14 +144,14 @@ public static class DataSeeder
                     await userManager.AddToRoleAsync ( newUser,"User" );
 
                     // Link the user to their specific tenant and custom tenant role
-                    var tenantMapping = new UserTenant
+                    var tenantMapping = new TenantUser
                     {
                         UserId = newUser.Id,
                         TenantId = config.TenantId,
                         TenantRole = config.TenantRole
                     };
 
-                    context.UserTenants.Add ( tenantMapping );
+                    context.TenantUsers.Add ( tenantMapping );
                 }
             }
         }

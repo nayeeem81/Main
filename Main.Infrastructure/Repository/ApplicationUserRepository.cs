@@ -34,14 +34,14 @@ public class ApplicationUserRepository: IApplicationUserRepository
     {
         ApplicationUser? applicationUser = await FindByEmailAsync (email);
 
-        UserTenant userTenant = new ()
+        TenantUser userTenant = new ()
         {
             TenantId = tenantId,
             UserId = applicationUser!.Id,
             TenantRole = roleName
         };
 
-        _ = _context.UserTenants.Add (userTenant);
+        _ = _context.TenantUsers.Add (userTenant);
         var result = await _context.SaveChangesAsync ();
         return result > 0;
     }
@@ -172,7 +172,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
             return new List<string> ();
         }
 
-        List<UserTenant> userTenants = _context.UserTenants.Where<UserTenant>
+        List<TenantUser> userTenants = _context.TenantUsers.Where<TenantUser>
         (a => a.TenantId == tenantId && a.UserId == user.Id).ToList();
 
         if ( userTenants == null )

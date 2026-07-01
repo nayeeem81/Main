@@ -10,7 +10,7 @@ public class TenantSetter: ITenantSetter
         get; set;
     }
 
-    public EnumStoreType TenantStore
+    public StoreType TenantStore
     {
         get; set;
     }

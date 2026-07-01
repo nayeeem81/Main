@@ -1,17 +1,17 @@
 ﻿using Main.Common;
-
 using System.ComponentModel.DataAnnotations;
+
 namespace Domain.Model;
 
-public class TenantInfo
+public class Tenant
 {
     // seed
-    public TenantInfo (string key)
+    public Tenant (string key)
     {
         TenantId = key;
     }
 
-    public TenantInfo ()
+    public Tenant ()
     {
     }
 
@@ -28,13 +28,29 @@ public class TenantInfo
     }
 
     [Required]
-    public string Domain
+    public HostType TenantHostType
     {
         get; set;
     }
 
     [Required]
-    public EnumStoreType Store
+    public string HostName
+    {
+        get; set;
+    }
+
+    [Required]
+    public StoreType Store
+    {
+        get; set;
+    }
+
+    public int? SmtpId
+    {
+        get; set;
+    }
+
+    public virtual EmailSmtp? EmaiSmtp
     {
         get; set;
     }

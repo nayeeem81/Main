@@ -40,7 +40,7 @@ public static class ProductServiceMapping
     {
         Product productEntity = CreateProductEntity(productDataModel);
 
-        productEntity.CreateBaseData (productDataModel.BaseDataModel);
+        productEntity.CreateParameters (productDataModel.BaseDataModel);
 
         List <ProductImageFile> objListFileEntity
             = MapProductFileEntity(productDataModel);
@@ -90,7 +90,7 @@ public static class ProductServiceMapping
         {
             productImageFile = new ProductImageFile (fileDataModel.ImageFileContent);
             productImageFile.ProductID = fileDataModel.ProductID;
-            productImageFile.CreateBaseData (fileDataModel.BaseDataModel);
+            productImageFile.CreateParameters (fileDataModel.BaseDataModel);
             listProductFileEntity.Add (productImageFile);
         });
 
@@ -178,7 +178,7 @@ public static class ProductServiceMapping
         {
             fileEntity = new ProductImageFile (fileDataModel.ImageFileContent);
 
-            fileEntity.CreateBaseData (fileDataModel.BaseDataModel);
+            fileEntity.CreateParameters (fileDataModel.BaseDataModel);
 
             fileEntity.ProductID = productEntity.ProductID;
 
@@ -215,7 +215,7 @@ public static class ProductServiceMapping
         productEntity.ListComments = listProductCommentsEntity;
         productEntity.ListImageFiles = listProductImageFileEntity;
 
-        productEntity.ModifyBaseData (productDataModel.BaseDataModel);
+        productEntity.ModifyParameters (productDataModel.BaseDataModel);
 
         return productEntity;
     }

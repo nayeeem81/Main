@@ -1,21 +1,16 @@
 ﻿using Main.Common;
+using Main.Model.DomainModel;
 namespace Domain.Model;
 
-public class BaseEntity: IMustHaveTenant
+public class BaseEntity: RootBaseEntity, IMustHaveTenant
 {
     public BaseEntity ()
     {
         IsActive = true;
     }
 
-    public void CreateBaseData (BaseDataModel modelBase)
+    public void CreateParameters (BaseDataModel modelBase)
     {
-        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
-        TenantUserId = modelBase.TenantUserId?.Trim ();
-
-        TenantCountry = modelBase.TenantCountry;
-        TenantCurrency = modelBase.TenantCurrency;
-
         CreatedBy = modelBase.CreatedBy;
         CreatedDate = modelBase.CreatedDate;
 
@@ -26,91 +21,43 @@ public class BaseEntity: IMustHaveTenant
         DeletedDate = null;
 
         IsActive = modelBase.IsActive;
+
+        AddSessionParameters (modelBase);
     }
 
-    public void ModifyBaseData (BaseDataModel modelBase)
+    public void ModifyParameters (BaseDataModel modelBase)
     {
-        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
-        TenantUserId = modelBase.TenantUserId?.Trim ();
-
         ModifiedBy = modelBase.TenantUserId?.Trim ();
         ModifiedDate = modelBase.ModifiedDate;
-
         DeletedDate = null;
         DeletedBy = null;
-
         IsActive = modelBase.IsActive;
+
+        AddSessionParameters (modelBase);
     }
 
-    public void DeleteBaseData (BaseDataModel modelBase)
+    public void DeleteParameters (BaseDataModel modelBase)
     {
-        IdentityUserId = modelBase.ApplicationUserId?.Trim ();
-        TenantUserId = modelBase.TenantUserId?.Trim ();
-
         DeletedBy = modelBase.TenantUserId?.Trim ();
         DeletedDate = modelBase.DeletedDate?.Date;
-
         IsActive = modelBase.IsActive;
+
+        AddSessionParameters (modelBase);
     }
 
-    public string CreatedBy
+    public void AddSessionParameters (BaseDataModel modelBase)
     {
-        get; set;
-    }
+        TenantUserId = modelBase.TenantUserId?.Trim ();
+        SessionUserId = modelBase.SessionUserId?.Trim ();
 
-    public string? ModifiedBy
+        TenantUserRole = modelBase.TenantUserRole?.Trim ();
+        GlobalUserRole = modelBase.GlobalUserRole?.Trim ();
 
-    {
-        get; set;
-    }
-
-    public string? DeletedBy
-    {
-        get; set;
-    }
-
-    public DateTime CreatedDate
-    {
-        get; set;
-    }
-
-    public DateTime? ModifiedDate
-    {
-        get; set;
-    }
-
-    public DateTime? DeletedDate
-    {
-        get; set;
-    }
-
-    public EnumCountry? TenantCountry
-    {
-        get; set;
-    }
-
-    public bool IsActive
-    {
-        get; set;
-    }
-
-    public string? IdentityUserId
-    {
-        get; set;
+        TenantCountry = modelBase.TenantCountry;
+        TenantContinent = modelBase.TenantContinent?.Trim ();
     }
 
     public string TenantId
-    {
-        get;
-        set;
-    }
-
-    public BaseDataModel BaseData
-    {
-        get;
-        set;
-    }
-    public string? Continent
     {
         get;
         set;
@@ -122,7 +69,18 @@ public class BaseEntity: IMustHaveTenant
         set;
     }
 
-    public EnumCurrency? TenantCurrency
+    public string? TenantUserRole
+    {
+        get;
+        set;
+    }
+
+    public Country? TenantCountry
+    {
+        get; set;
+    }
+
+    public string? TenantContinent
     {
         get;
         set;

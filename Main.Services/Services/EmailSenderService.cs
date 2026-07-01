@@ -18,7 +18,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
     public EmailSenderService (
         IFluentEmailFactory emailFactory,
-        UserManager<ApplicationUser> userManager )
+        UserManager<ApplicationUser> userManager)
     {
         _emailFactory = emailFactory;
         _userManager = userManager;
@@ -26,7 +26,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
 
 
-    public async Task<string> SendEmailAsync ( string userId )
+    public async Task<string> SendEmailAsync (string userId)
     {
         ApplicationUser? identityUser = await _userManager.FindByIdAsync ( userId );
 
@@ -41,7 +41,7 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
 
 
-    public async Task SendEmailAsync ( string email,string subject,string htmlMessage )
+    public async Task SendEmailAsync (string email,string subject,string htmlMessage)
     {
         var response = await _emailFactory
                 .Create()
@@ -52,13 +52,13 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
         if ( !response.Successful )
         {
-            throw new Exception ( $"Email delivery failed: {string.Join ( ", ",response.ErrorMessages )}" );
+            throw new Exception ($"Email delivery failed: {string.Join (", ",response.ErrorMessages)}");
         }
     }
 
 
 
-    public async Task SendEmailVerificationAsync ( VerifyDataModel verifyEmailDataModel )
+    public async Task SendEmailVerificationAsync (VerifyDataModel verifyEmailDataModel)
     {
         string template
             = @"
@@ -81,11 +81,11 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
         await SendEmailAsync (
             verifyEmailDataModel.Email,
             verifyEmailDataModel.Subject,
-            populatedTemplate );
+            populatedTemplate);
     }
 
 
-    public async Task SendResetPasswordEmailAsync ( ResetDataModel resetEmailDataModel )
+    public async Task SendResetPasswordEmailAsync (ResetDataModel resetEmailDataModel)
     {
         string template
             = @"
@@ -108,6 +108,12 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
         await SendEmailAsync (
             resetEmailDataModel.Email,
             resetEmailDataModel.Subject,
-            populatedTemplate );
+            populatedTemplate);
+    }
+
+    public async Task SendEmailAsync (string to,
+    string subject,string body,CancellationToken ct = default)
+    {
+        await SendEmailAsync (to,subject,body);
     }
 }

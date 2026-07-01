@@ -2,7 +2,7 @@
 
 public static class TenantStoreHelper
 {
-    public static List<TenantVariableModel> GetCategoryList (EnumStoreType store)
+    public static List<TenantVariableModel> GetCategoryList (StoreType store)
     {
         List<TenantVariableModel>  listCategory = new  List<TenantVariableModel> ();
 
@@ -17,7 +17,7 @@ public static class TenantStoreHelper
         return listCategory.ToList ();
     }
 
-    public static List<TenantVariableModel> GetSubCategoryList (EnumStoreType store)
+    public static List<TenantVariableModel> GetSubCategoryList (StoreType store)
     {
         List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
 
@@ -32,7 +32,7 @@ public static class TenantStoreHelper
     }
 
     public static List<TenantVariableModel>
-    GetSubCategoryListByID (int categoryId,EnumStoreType store)
+    GetSubCategoryListByID (int categoryId,StoreType store)
     {
         List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
         listSubCategory =
@@ -46,7 +46,7 @@ public static class TenantStoreHelper
     }
 
     public static string GetTextForCategoryId
-    (int categoryId,EnumStoreType store)
+    (int categoryId,StoreType store)
     {
         List<TenantVariableModel> listCategory = GetCategoryList ( store );
 
@@ -57,7 +57,7 @@ public static class TenantStoreHelper
         return tenantVariableModel!.Text;
     }
 
-    public static string GetTextForSubCategoryId (int subCategoryId,EnumStoreType store)
+    public static string GetTextForSubCategoryId (int subCategoryId,StoreType store)
     {
         List<TenantVariableModel>  listSubCategory = new  List<TenantVariableModel> ();
         listSubCategory = GetSubCategoryList (store);

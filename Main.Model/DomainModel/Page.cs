@@ -25,10 +25,10 @@ public class Page: BaseEntity
         CreatedDate = DateTime.MinValue;
         ModifiedDate = DateTime.MinValue;
 
-        TenantCountry = EnumCountry.Bangladesh;
+        TenantCountry = Country.Bangladesh;
         IsActive = true;
 
-        IdentityUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
+        SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
     }
 
 

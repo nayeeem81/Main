@@ -139,7 +139,7 @@ public class DropDownListItems
     }
 
     // [ResponseCache(CacheProfileName = "Cache30Mins")]
-    public static IEnumerable<SelectListItem> GetSubCategoryList (EnumStoreType store)
+    public static IEnumerable<SelectListItem> GetSubCategoryList (StoreType store)
     {
         _ = new List<TenantVariableModel> ();
 
@@ -148,7 +148,7 @@ public class DropDownListItems
 
     //[ResponseCache ( CacheProfileName = "Cache30Mins" )]
     public static IEnumerable<SelectListItem> GetSubCategories
-    (EnumStoreType store,int categoryId)
+    (StoreType store,int categoryId)
     {
         return GetSelectList
         (TenantStoreHelper.GetSubCategoryListByID (categoryId,store),"");
@@ -224,17 +224,17 @@ public class DropDownListItems
     }
 
     //[ResponseCache ( CacheProfileName = "Cache1dayServerNBrowser" )]
-    public static IEnumerable<SelectListItem> GetCategoryList (EnumStoreType store)
+    public static IEnumerable<SelectListItem> GetCategoryList (StoreType store)
     {
         return GetSelectList (TenantStoreHelper.GetCategoryList (store));
     }
 
-    public static string GetCategoryText (EnumStoreType store,int categoryId)
+    public static string GetCategoryText (StoreType store,int categoryId)
     {
         return TenantStoreHelper.GetTextForCategoryId (categoryId,store);
     }
 
-    public static string GetSubCategoryText (EnumStoreType store,int subCategoryId)
+    public static string GetSubCategoryText (StoreType store,int subCategoryId)
     {
         return TenantStoreHelper.GetTextForSubCategoryId (subCategoryId,store);
     }
