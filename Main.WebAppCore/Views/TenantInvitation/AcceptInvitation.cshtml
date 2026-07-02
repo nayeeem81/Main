@@ -1,0 +1,14 @@
+@model Main.WebAppCore.ViewModels.AcceptInvitationViewModel
+
+<h2>Accept Invitation</h2>
+
+<form asp-action="AcceptInvitation" method="post">
+    <input asp-for="Token" type="hidden" />
+
+    <div class="form-group">
+        <label asp-for="FullName">Full Name</label>
+        <input asp-for="FullName" class="form-control" />
+    </div>
+
+    <button class="btn btn-success">Accept Invitation</button>
+</form>

@@ -1,34 +1,33 @@
-﻿using DataTransferModel;
-
-using Domain.Model;
-
+﻿using Domain.Model;
 using FluentEmail.Core;
-
-using Microsoft.AspNetCore.Identity;
+using Main.Common;
+using Main.IRepository;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace Main.Services;
+namespace Main.Infrastructure;
 
 public class EmailSenderService: IEmailSender, IEmailSenderService
 {
     private readonly IFluentEmailFactory _emailFactory;
+    private readonly IApplicationUserRepository _userRepositry;
 
-    private readonly UserManager<ApplicationUser> _userManager;
-
+    public EmailSenderService ()
+    {
+    }
 
     public EmailSenderService (
         IFluentEmailFactory emailFactory,
-        UserManager<ApplicationUser> userManager)
+        IApplicationUserRepository userRepositry)
     {
         _emailFactory = emailFactory;
-        _userManager = userManager;
+        _userRepositry = userRepositry;
     }
 
 
 
     public async Task<string> SendEmailAsync (string userId)
     {
-        ApplicationUser? identityUser = await _userManager.FindByIdAsync ( userId );
+        ApplicationUser? identityUser = await _userRepositry.FindByNameIdAsync ( userId );
 
         await SendEmailAsync (
             identityUser?.Email != null ? identityUser.Email : "",
@@ -40,23 +39,20 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
     }
 
 
-
     public async Task SendEmailAsync (string email,string subject,string htmlMessage)
     {
         var response = await _emailFactory
-                .Create()
-                .To(email)
-                .Subject(subject)
-                .Body(htmlMessage, isHtml: true)
-                .SendAsync();
+                            .Create()
+                            .To(email)
+                            .Subject(subject)
+                            .Body(htmlMessage, isHtml: true)
+                            .SendAsync();
 
         if ( !response.Successful )
         {
             throw new Exception ($"Email delivery failed: {string.Join (", ",response.ErrorMessages)}");
         }
     }
-
-
 
     public async Task SendEmailVerificationAsync (VerifyDataModel verifyEmailDataModel)
     {

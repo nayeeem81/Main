@@ -1,0 +1,25 @@
+@model Main.WebAppCore.ViewModels.InviteUserViewModel
+
+<h2>Invite User</h2>
+
+@if (TempData["Message"] is string msg)
+{
+    <div class="alert alert-info">@msg</div>
+}
+
+<form asp-action="Invite" method="post">
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TenantRole"></label>
+        <select asp-for="TenantRole" class="form-control">
+            <option value="Admin">Admin</option>
+            <option value="ContentManager">ContentManager</option>
+        </select>
+    </div>
+
+    <button class="btn btn-primary">Send Invitation</button>
+</form>

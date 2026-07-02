@@ -28,7 +28,6 @@ public static class RegisterServices
         _ = services.AddScoped<IAdminPostService,AdminPostService> ();
         _ = services.AddScoped<IProductService,ProductService> ();
         _ = services.AddScoped<IPageService,PageService> ();
-        _ = services.AddScoped<IEmailSenderService,EmailSenderService> ();
 
         return services;
     }

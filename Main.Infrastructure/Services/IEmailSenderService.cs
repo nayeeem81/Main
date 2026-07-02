@@ -1,6 +1,6 @@
-﻿using DataTransferModel;
+﻿using Main.Common;
 
-namespace Main.Services;
+namespace Main.Infrastructure;
 
 public interface IEmailSenderService
 {

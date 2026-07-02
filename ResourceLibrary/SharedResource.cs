@@ -2,8 +2,7 @@
 
 public class SharedResources
 {
-    public SharedResources ( )
+    public SharedResources ()
     {
     }
 }
-                                  

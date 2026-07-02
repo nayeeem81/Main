@@ -1,9 +1,9 @@
 ﻿
-namespace DataTransferModel;
+namespace Main.Common;
 
 public class ResetDataModel
 {
-    public ResetDataModel ( )                          
+    public ResetDataModel ()
     {
         Subject = "Please, reset your password with this link.";
     }
@@ -13,19 +13,28 @@ public class ResetDataModel
         get; set;
     }
 
-    public string Email { get; set; }
+    public string Email
+    {
+        get; set;
+    }
 
 
     public string Subject
     {
         get; set;
-    }   
+    }
 
 
-    public string Token { get; set; }
+    public string Token
+    {
+        get; set;
+    }
 
 
-    public string Message { get; set; }
+    public string Message
+    {
+        get; set;
+    }
 
 
     public string ResetLink
