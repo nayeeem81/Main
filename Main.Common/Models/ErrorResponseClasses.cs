@@ -5,6 +5,11 @@ namespace Main.Common;
 /// </summary>
 public class ErrorResponse
 {
+
+    public ErrorResponse ()
+    {
+    }
+
     /// <summary>
     /// Unique error code for this error type
     /// </summary>
@@ -66,21 +71,31 @@ public class ErrorResponse
 /// </summary>
 public class ExceptionLogViewModel
 {
+    public ExceptionLogViewModel ()
+    {
+    }
+
     public long Id
     {
         get; set;
     }
+
     public string ExceptionType { get; set; } = string.Empty;
+
     public int StatusCode
     {
         get; set;
     }
+
     public string ErrorCode { get; set; } = string.Empty;
+
     public string DetailedMessage { get; set; } = string.Empty;
+
     public string? StackTrace
     {
         get; set;
     }
+
     public string? InnerException
     {
         get; set;
@@ -132,22 +147,30 @@ public class ExceptionLogViewModel
 /// </summary>
 public class ExceptionLogFilterRequest
 {
+    public ExceptionLogFilterRequest ()
+    {
+    }
+
     public string? ExceptionType
     {
         get; set;
     }
+
     public string? ErrorCode
     {
         get; set;
     }
+
     public int? StatusCode
     {
         get; set;
     }
+
     public DateTime? StartDate
     {
         get; set;
     }
+
     public DateTime? EndDate
     {
         get; set;
@@ -164,8 +187,11 @@ public class ExceptionLogFilterRequest
     {
         get; set;
     }
+
     public int PageNumber { get; set; } = 1;
+
     public int PageSize { get; set; } = 20;
+
 }
 
 /// <summary>
@@ -173,7 +199,12 @@ public class ExceptionLogFilterRequest
 /// </summary>
 public class PaginatedResponse<T>
 {
+    public PaginatedResponse ()
+    {
+    }
+
     public List<T> Items { get; set; } = new ();
+
     public int TotalCount
     {
         get; set;
@@ -196,6 +227,10 @@ public class PaginatedResponse<T>
 /// </summary>
 public class ExceptionSummary
 {
+    public ExceptionSummary ()
+    {
+    }
+
     public int TotalExceptions
     {
         get; set;
@@ -218,6 +253,10 @@ public class ExceptionSummary
 /// </summary>
 public class ExceptionTrend
 {
+    public ExceptionTrend ()
+    {
+    }
+
     public DateTime Date
     {
         get; set;

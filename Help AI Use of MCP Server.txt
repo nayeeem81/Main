@@ -1,0 +1,37 @@
+# Model Context Protocol (MCP)
+The Model Context Protocol (MCP) is an open-source standard that acts like a "USB-C port" for AI. It provides a universal, standardized way for AI models and agents to connect to external data sources, environments, and tools, eliminating the need to write custom integrations for every single API.
+
+## How to Use MCP?
+MCP uses a client-server architecture:
+1. MCP Client: Built into your AI application or IDE (like Claude Desktop, Cursor, or Windsurf).
+2. MCP Server: A lightweight, local, or remote program that connects the AI to a specific tool or data source (e.g., GitHub, a local SQLite database, Google Drive, or Slack).
+
+## Configuration: 
+You simply add the MCP server details to your AI application's configuration file (e.g., specifying the server name, command, and connection strings). The AI will then automatically detect and use the tools.
+
+## Why Use MCP?
+
+### Eliminates Custom "Glue Code": 
+Before MCP, integrating an AI with 10 different tools required writing 10 different custom adapters. With MCP, tool providers build once, and it works with any MCP-compatible AI.
+
+### Dynamic Discovery: 
+Unlike traditional APIs, an MCP server advertises its capabilities (what tools it has and what inputs it needs) directly to the AI, allowing the model to reason about what tools to use.
+
+### Security & Control: 
+You can run MCP servers locally, keeping your sensitive company data on your own machines while allowing the AI to query it.
+
+## When & Where is it Needed?
+You need MCP whenever you want your AI assistant to move beyond chatting and actually do work within your specific ecosystem. Common scenarios include:
+
+1. Software Development: 
+AI IDEs (like Cursor) or coding assistants use MCP to read local file systems, search project documentation, execute git commands, or query local databases directly from the chat window.
+2. Knowledge Retrieval: 
+Integrating AI with company tools (e.g., Notion, Confluence, or local PDFs) to give it real-time context without overloading its primary memory (often acting as a structured RAG alternative).
+3. Task Automation: 
+Giving AI access to your communication or workspace tools (e.g., Slack, Google Calendar, or GitHub Issues) so it can perform actions like sending messages or creating calendar events.
+
+### If you want, let me know:
+1. What AI app or IDE you are currently using (e.g., Claude Desktop, Cursor, Zed)?
+2. What external tools or data you are trying to connect your AI to (e.g., local files, a specific database, a web API).
+
+I can give you the exact setup steps or recommend existing MCP servers for your specific needs.

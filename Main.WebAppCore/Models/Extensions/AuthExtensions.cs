@@ -27,9 +27,10 @@ public static class AuthExtensions
         {
             Email = accountDisplayViewModel?.Email!,
             PhoneNumber = accountDisplayViewModel?.Phone!,
-            UserName =StringRelated.GetUserNameFromEmail (accountDisplayViewModel?.UserName!),
-            NormalizedUserName =
-            StringRelated.GetUserNameFromEmail (accountDisplayViewModel?.UserName!).ToUpper (),
+            UserName =StringRelated.GetTrimmedRemovedSpaseString(accountDisplayViewModel?.UserName!),
+
+            NormalizedUserName = StringRelated.GetTrimmedRemovedSpaseString(accountDisplayViewModel?.UserName!).ToUpper (),
+
             Password = accountDisplayViewModel?.Password!,
             ClientName = accountDisplayViewModel?.ClientName!
         };

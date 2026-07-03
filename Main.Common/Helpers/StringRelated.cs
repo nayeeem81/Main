@@ -25,4 +25,12 @@ public static class StringRelated
 
         return result;
     }
+
+    public static string GetTrimmedRemovedSpaseString (string input)
+    {
+        input = input.Trim ();
+        input = input.Replace (" ","");
+
+        return input;
+    }
 }
