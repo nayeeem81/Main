@@ -1,0 +1,85 @@
+Sharding is a database architecture pattern that breaks up a single large database into smaller, faster, and more manageable pieces called shards. [1, 2, 3] 
+Unlike replication (which makes exact copies of a database), sharding splits the actual data rows across entirely different server instances. [4, 5, 6] 
+------------------------------
+## 🗺️ Horizontal vs. Vertical Partitioning
+To understand sharding, it helps to look at how data can be split: [7, 8] 
+
+* Vertical Partitioning (Not Sharding): Splitting a table by columns. For example, keeping user account details in one table and user profile pictures in another. [9, 10] 
+* Horizontal Partitioning (Sharding): Splitting a table by rows. For example, storing users with IDs 1–10,000 on Server A, and users with IDs 10,001–20,000 on Server B. [11, 12, 13, 14] 
+
+------------------------------
+## ⚙️ Common Sharding Strategies
+How a database decides which shard gets which row depends on the Shard Key. [15, 16] 
+
+* Key-Based (Hash) Sharding:
+The database takes the shard key (like UserId), applies a mathematical hash function, and uses the result to choose a server. This distributes data very evenly but makes scanning ranges of data difficult. [17, 18, 19, 20, 21] 
+* Range-Based Sharding:
+Data is split based on ranges of a value (e.g., storing customers by postal code ranges, or by the first letter of their last name). This is easy to implement but can create "hotspots" if one range gets way more data than others. [22, 23, 24, 25, 26] 
+* Directory-Based Sharding:
+A centralized lookup service or routing table tracks exactly which shard holds which data. This is highly flexible but creates a single point of failure if the lookup directory goes down. [27, 28, 29, 30, 31] 
+
+------------------------------
+## ⚖️ Trade-offs: Why Use It (and Why Avoid It)
+Sharding is a powerful scaling technique, but it comes with a massive cost in system complexity. [32, 33] 
+## 🟢 Advantages
+
+* Infinite Horizontal Scaling: You can keep adding more cheap commodity servers instead of buying a single, massive, expensive server.
+* Smaller Blast Radius: If one shard crashes, only the users on that specific shard are affected. The rest of the application keeps working.
+* Faster Queries: Individual servers hold smaller datasets, making index lookups and scans significantly faster. [34, 35, 36, 37, 38] 
+
+## 🔴 Disadvantages
+
+* No Easy Joins: Joining tables that live on two different physical servers is extremely slow and difficult. [39, 40, 41] 
+* Data Unbalance: If one shard becomes vastly more popular than the others (a "hot shard"), it will slow down, requiring complex re-sharding. [42, 43, 44, 45] 
+* Application Complexity: Your software code or middleware must become smart enough to safely route read and write requests to the correct server. [46, 47] 
+
+------------------------------
+Are you considering sharding for a relational database (like PostgreSQL or SQL Server) or a NoSQL database (like MongoDB), or are you exploring how to manage database connections dynamically in C# / .NET?
+
+[1] [https://www.techtarget.com](https://www.techtarget.com/searchoracle/definition/sharding)
+[2] [https://lab.scub.net](https://lab.scub.net/architecture-patterns-sharding-09f759150d3d)
+[3] [https://www.linkedin.com](https://www.linkedin.com/pulse/sharding-mastering-data-distribution-scalable-system-design-n-otntc)
+[4] [https://softteco.com](https://softteco.com/blog/what-is-sharding)
+[5] [https://planetscale.com](https://planetscale.com/blog/what-is-database-sharding-and-how-does-it-work)
+[6] [https://dev.to](https://dev.to/wallacefreitas/database-sharding-in-mysql-a-comprehensive-guide-2hag)
+[7] [https://planetscale.com](https://planetscale.com/blog/what-is-database-sharding-and-how-does-it-work)
+[8] [https://milvus.io](https://milvus.io/ai-quick-reference/what-is-the-role-of-sharding-strategies-in-distributed-database-systems)
+[9] [https://daminibansal.medium.com](https://daminibansal.medium.com/sharding-and-partitioning-in-databases-concepts-differences-and-visual-representations-6daf91f695ef)
+[10] [https://medium.com](https://medium.com/@suresh.sk1691/database-partitioning-and-sharding-5950394ced1a)
+[11] [https://www.sciencedirect.com](https://www.sciencedirect.com/topics/computer-science/sharding)
+[12] [https://daminibansal.medium.com](https://daminibansal.medium.com/sharding-and-partitioning-in-databases-concepts-differences-and-visual-representations-6daf91f695ef)
+[13] [https://www.instagram.com](https://www.instagram.com/reel/DTS43-pEieg/)
+[14] [https://dagster.io](https://dagster.io/glossary/data-sharding)
+[15] [https://dzone.com](https://dzone.com/articles/a-comprehensive-guide-to-database-sharding)
+[16] [https://intellipaat.com](https://intellipaat.com/blog/tutorial/mongodb-tutorial/sharding/)
+[17] [https://softteco.com](https://softteco.com/blog/what-is-sharding)
+[18] [https://redisson.pro](https://redisson.pro/glossary/sharding.html)
+[19] [https://cloud.google.com](https://cloud.google.com/discover/what-is-database-sharding)
+[20] [https://aerospike.com](https://aerospike.com/blog/what-is-sharding/)
+[21] [https://dzone.com](https://dzone.com/articles/a-comprehensive-guide-to-database-sharding)
+[22] [https://redisson.pro](https://redisson.pro/glossary/sharding.html)
+[23] [https://aerospike.com](https://aerospike.com/blog/what-is-sharding/)
+[24] [https://www.pubnub.com](https://www.pubnub.com/guides/sharding/)
+[25] [https://www.couchbase.com](https://www.couchbase.com/resources/concepts/what-is-database-sharding/)
+[26] [https://javarevisited.substack.com](https://javarevisited.substack.com/p/the-complete-guide-of-database-sharding)
+[27] [https://cloud.google.com](https://cloud.google.com/discover/what-is-database-sharding)
+[28] [https://www.pubnub.com](https://www.pubnub.com/guides/sharding/)
+[29] [https://www.analyticsvidhya.com](https://www.analyticsvidhya.com/blog/2022/04/a-comprehensive-guide-to-sharding-in-data-engineering-for-beginners/)
+[30] [https://proxysql.com](https://proxysql.com/blog/database-sharding/)
+[31] [https://www.techtarget.com](https://www.techtarget.com/searchoracle/definition/sharding)
+[32] [https://lab.scub.net](https://lab.scub.net/architecture-patterns-sharding-09f759150d3d)
+[33] [https://www.linkedin.com](https://www.linkedin.com/pulse/sharding-mastering-data-distribution-scalable-system-design-n-otntc)
+[34] [https://medium.com](https://medium.com/@rachoork/database-sharding-the-secret-weapon-behind-every-scalable-application-1780004a2d90)
+[35] [https://thwack.solarwinds.com](https://thwack.solarwinds.com/discussion/149641/an-introduction-to-database-sharding-with-sql-server)
+[36] [https://cloud.google.com](https://cloud.google.com/discover/what-is-database-sharding)
+[37] [https://aerospike.com](https://aerospike.com/blog/what-is-sharding/)
+[38] [https://cloud.google.com](https://cloud.google.com/discover/what-is-database-sharding)
+[39] [https://planetscale.com](https://planetscale.com/blog/what-is-database-sharding-and-how-does-it-work)
+[40] [https://milvus.io](https://milvus.io/ai-quick-reference/what-is-sharding-in-a-distributed-database)
+[41] [https://systemdesignschool.io](https://systemdesignschool.io/blog/sharding-vs-partitioning)
+[42] [https://www.hellointerview.com](https://www.hellointerview.com/learn/system-design/core-concepts/sharding)
+[43] [https://nadermedhatthoughts.medium.com](https://nadermedhatthoughts.medium.com/understand-database-sharding-the-good-and-ugly-868aa1cbc94c)
+[44] [https://www.linkedin.com](https://www.linkedin.com/pulse/universal-algorithm-choosing-sharding-key-david-shergilashvili-7wjcf)
+[45] [https://www.itpro.com](https://www.itpro.com/technology/big-data/what-is-database-sharding-how-benefit-enterprise-it)
+[46] [https://www.linkedin.com](https://www.linkedin.com/pulse/universal-algorithm-choosing-sharding-key-david-shergilashvili-7wjcf)
+[47] [https://link.springer.com](https://link.springer.com/chapter/10.1007/978-1-4842-1329-2_3)
