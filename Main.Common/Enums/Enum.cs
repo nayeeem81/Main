@@ -106,7 +106,8 @@ public enum StoreType
 {
     LifeStyles = 1,
     FineArts = 2,
-    Sports = 3
+    Sports = 3,
+    Defaut = 4
 }
 
 public enum EnumTenantVariable

@@ -2979,13 +2979,16 @@
     <value>আপডেট করুন</value>
   </data>
   <data name="ClientName" xml:space="preserve">
-    <value>আপনার নাম</value>
+    <value>দোকানের নাম</value>
   </data>
   <data name="ClientNameRequired" xml:space="preserve">
-    <value>অনুগ্রহ করে আপনার নাম লিখুন!</value>
+    <value>অনুগ্রহ করে আপনার দোকানের নাম লিখুন!</value>
   </data>
   <data name="ClientNamePlaceholder" xml:space="preserve">
-    <value>আপনার নাম লিখুন...</value>
+    <value>আপনার দোকানের নাম লিখুন...</value>
+  </data>
+  <data name="ClientNamePlaceholder1" xml:space="preserve">
+    <value>আপনার দোকানের নাম লিখুন...</value>
   </data>
   <data name="RegisterTitle" xml:space="preserve">
     <value>নিবন্ধনের জন্য ফর্মটি পূরণ করুন:</value>

@@ -44,4 +44,15 @@ public class TenantRepository: ITenantRepository
 
         return tenant;
     }
+
+    public async Task<Tenant?> CreateTenantAsync (Tenant tenant)
+    {
+        if ( tenant != null )
+        {
+            _ = _context.Tenants.Add (tenant);
+            _ = await _context.SaveChangesAsync ();
+        }
+
+        return tenant;
+    }
 }

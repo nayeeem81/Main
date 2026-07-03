@@ -21,22 +21,18 @@ public static class AuthExtensions
         return string.Compare (password,rePassword,StringComparison.Ordinal) == 0;
     }
 
-    public static UserAccountDataModel MapToDataModel (RegistrationViewModel accountDisplayViewModel)
+    public static UserAccountDataModel MapToDataModel (RegistrationViewModel? accountDisplayViewModel)
     {
-        UserAccountDataModel userAccountDataModel
-            = new();
-
-        userAccountDataModel.Email = accountDisplayViewModel.Email;
-
-        userAccountDataModel.PhoneNumber = accountDisplayViewModel.Phone;
-
-        userAccountDataModel.UserName =
-            StringRelated.GetUserNameFromEmail (accountDisplayViewModel.Email);
-
-        userAccountDataModel.NormalizedUserName
-            = accountDisplayViewModel.Email.ToUpper ();
-
-        userAccountDataModel.Password = accountDisplayViewModel.Password;
+        UserAccountDataModel userAccountDataModel = new ()
+        {
+            Email = accountDisplayViewModel?.Email!,
+            PhoneNumber = accountDisplayViewModel?.Phone!,
+            UserName =StringRelated.GetUserNameFromEmail (accountDisplayViewModel?.UserName!),
+            NormalizedUserName =
+            StringRelated.GetUserNameFromEmail (accountDisplayViewModel?.UserName!).ToUpper (),
+            Password = accountDisplayViewModel?.Password!,
+            ClientName = accountDisplayViewModel?.ClientName!
+        };
 
         return userAccountDataModel;
     }

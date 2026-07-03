@@ -3025,13 +3025,16 @@
     <value>UPDATE</value>
   </data>
   <data name="ClientName" xml:space="preserve">
-    <value>Your Name</value>
+    <value>Store Name</value>
   </data>
   <data name="ClientNameRequired" xml:space="preserve">
-    <value>Please enter your name!</value>
+    <value>Please enter your store name!</value>
   </data>
   <data name="ClientNamePlaceholder" xml:space="preserve">
-    <value>Enter your name...</value>
+    <value>Enter your store name...</value>
+  </data>
+  <data name="ClientNamePlaceholder1" xml:space="preserve">
+    <value>Enter your store name...</value>
   </data>
   <data name="RegisterTitle" xml:space="preserve">
     <value>Register Account Here!</value>

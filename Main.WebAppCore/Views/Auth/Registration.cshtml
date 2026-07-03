@@ -52,11 +52,11 @@
                                 col-md-12 
                                 col-lg-12">
 
-                        @Html.LabelFor( a => a.Phone )
+                        @Html.LabelFor( a => a.UserName )
 
-                        @Html.EditorFor(a => a.Phone, new { htmlAttributes = new { @class = "fff", @autocomplete = "on"} })
+                        @Html.EditorFor(a => a.UserName, new { htmlAttributes = new { @class = "fff", @autocomplete = "on"} })
 
-                        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "inline-field-error text-danger" })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "inline-field-error text-danger" })
 
                     </div>
                 </div>

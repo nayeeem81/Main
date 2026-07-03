@@ -1,6 +1,7 @@
 ﻿using DataTransferModel;
 
 using Domain.Model;
+using Main.Common;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
 
@@ -10,10 +11,14 @@ namespace Main.Services;
 public class AccountService: IAccountService
 {
     private readonly IApplicationUserRepository _userRepository;
+    private readonly ITenantRepository _tenantRepository;
+    private readonly ITenantUserRepository _tenantUserRepository;
 
-    public AccountService (IApplicationUserRepository userRepository)
+    public AccountService (IApplicationUserRepository userRepository,ITenantRepository tenantRepository,ITenantUserRepository tenantUserRepository)
     {
         _userRepository = userRepository;
+        _tenantRepository = tenantRepository;
+        _tenantUserRepository = tenantUserRepository;
     }
 
     public async Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel)
@@ -26,6 +31,36 @@ public class AccountService: IAccountService
         if ( resultCreateIdentityUser )
         {
             _ = await _userRepository.AddToRoleAsync (userIdentityEntity.Email!,"User");
+
+            Tenant? tenant = new ()
+            {
+                Name = userAccountDataModel.ClientName,
+                TenantHostType = HostType.SubDomain,
+                HostName = userAccountDataModel.ClientName.Replace(" ", "-").ToLower(),
+                Store = StoreType.Defaut
+            };
+
+
+            tenant = await _tenantRepository.CreateTenantAsync (tenant);
+
+            if ( tenant == null )
+            {
+                IdentityError[] errors = [];
+                IdentityResult result = IdentityResult
+                    .Failed( errors );
+                return result;
+            }
+
+
+            TenantUser tenantUser = new ()
+            {
+                TenantId = tenant?.TenantId!,
+                UserId =  userIdentityEntity.Id ,
+                TenantRole = "Admin"
+            };
+
+            await _tenantUserRepository.AddAsync (tenantUser);
+
             return IdentityResult.Success;
         }
         else

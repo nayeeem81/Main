@@ -13,4 +13,6 @@ public interface ITenantRepository
 
     Task<Tenant?> GetTenantByIdAsync (string tenantId);
 
+    Task<Tenant?> CreateTenantAsync (Tenant tenant);
+
 }

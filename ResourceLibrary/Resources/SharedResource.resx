@@ -3040,6 +3040,9 @@
   <data name="ClientNamePlaceholder" xml:space="preserve">
     <value>ClientNamePlaceholder</value>
   </data>
+  <data name="ClientNamePlaceholder1" xml:space="preserve">
+    <value>ClientNamePlaceholder</value>
+  </data>
   <data name="RegisterTitle" xml:space="preserve">
     <value>Register Account Here!</value>
   </data>

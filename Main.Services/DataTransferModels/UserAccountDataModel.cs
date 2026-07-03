@@ -2,21 +2,36 @@
 
 namespace Main.Services
 {
-    public class UserAccountDataModel : DataModel
+    public class UserAccountDataModel: DataModel
     {
-        public UserAccountDataModel() { }
+        public UserAccountDataModel ()
+        {
+        }
 
-        public string Email { get; set; }
+        public string Email
+        {
+            get; set;
+        }
 
-        public string UserName { get; set; }
+        public string UserName
+        {
+            get; set;
+        }
 
         public string PhoneNumber
         {
             get; set;
         }
 
+        public string ClientName
+        {
+            get; set;
+        }
+
         public string NormalizedUserName
-        { get; set; }
+        {
+            get; set;
+        }
 
         public string Password
         {

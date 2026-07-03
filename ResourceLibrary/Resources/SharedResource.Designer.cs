@@ -1213,6 +1213,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ClientNamePlaceholder.
+        /// </summary>
+        public static string ClientNamePlaceholder1 {
+            get {
+                return ResourceManager.GetString("ClientNamePlaceholder1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ClientNameRequired.
         /// </summary>
         public static string ClientNameRequired {
