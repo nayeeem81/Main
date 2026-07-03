@@ -2,13 +2,13 @@
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.Middleware;
 
-public class TenantResolverMiddleware
+public class TenantResolverHandlingMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public TenantResolverMiddleware (RequestDelegate next)
+    public TenantResolverHandlingMiddleware (RequestDelegate next)
     {
         _next = next;
     }

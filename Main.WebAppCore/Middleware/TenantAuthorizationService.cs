@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Main.WebAppCore.Middleware;
+using Main.WebAppCore.Tenant;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.Middleware;
 
 public static class TenantAuthorizationService
 {

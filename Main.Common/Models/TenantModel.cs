@@ -1,4 +1,4 @@
-﻿namespace Main.WebAppCore.Tenant;
+﻿namespace Main.Common;
 
 public class TenantModel
 {

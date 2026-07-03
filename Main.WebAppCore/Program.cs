@@ -1,5 +1,6 @@
 using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
 using ResourceLibrary.Resources;
 using WebAppCore.Helper;
@@ -8,6 +9,9 @@ public class Program
     private static async Task Main (string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        // Configure Serilog for global logging
+        _ = builder.AddSerilogConfiguration ();
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
@@ -24,8 +28,10 @@ public class Program
         _ = builder.Services.AddAuthorization (builder.Configuration);
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
-        _ = builder.Logging.ClearProviders ();
-        _ = builder.Logging.AddConsole ();
+
+        // Add exception logging service
+        _ = builder.Services.AddExceptionLogging ();
+
         _ = builder.Services.AddControllersWithViews ();
 
         var app = builder.Build();
@@ -40,6 +46,9 @@ public class Program
             _ = app.UseHsts ();
         }
 
+        // Add global exception handling middleware - should be early in the pipeline
+        _ = app.UseGlobalExceptionHandling ();
+
         _ = app.UseHttpsRedirection ();
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
@@ -48,7 +57,7 @@ public class Program
         _ = app.UseSession ();
         _ = app.UseResponseCaching ();
         _ = app.UseCustomLocalization ();
-        _ = app.UseMiddleware<TenantResolverMiddleware> ();
+        _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
         _ = app.UseCors ();
         _ = app.UseAntiforgery ();
         _ = app.UseAuthentication ();

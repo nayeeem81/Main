@@ -1,10 +1,11 @@
 ﻿using DataTransferModel;
+using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.Middleware;
 
 public static class TenantResolutionExtensions
 {

@@ -1,9 +1,8 @@
 ﻿using Main.Infrastructure;
-using Main.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.Middleware;
 
 public class TenantAntiforgeryConfiguration: IConfigureNamedOptions<AntiforgeryOptions>
 {

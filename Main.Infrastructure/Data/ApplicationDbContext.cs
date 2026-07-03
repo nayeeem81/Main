@@ -9,7 +9,7 @@ namespace Main.Infrastructure;
 
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
-    public readonly ITenantSetter _tenantSetter;
+    public readonly string tenantId;
     public readonly ITenantContext _tenantContext;
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) :
@@ -20,7 +20,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
     {
-        _tenantSetter = tenantSetter;
+        tenantId = tenantSetter.CurrentTenantId;
         _tenantContext = tenantContext;
     }
 
@@ -100,6 +100,11 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<AValue> AValues
+    {
+        get; set;
+    }
+
+    public DbSet<ExceptionLog> ExceptionLogs
     {
         get; set;
     }
@@ -195,7 +200,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     // Initially, the CurrentTenantId is set in the TenantMiddleware, which is executed before the DbContext is created.
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
-        string currentTenant = _tenantSetter.CurrentTenantId;
+        string currentTenant = tenantId;
 
         _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
@@ -222,12 +227,14 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<Page> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
         _ = builder.Entity<AValue> ().HasQueryFilter (p => p.TenantId == currentTenant);
+
+        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.TenantId == currentTenant);
     }
 
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
     private void ApplyBaseDataTenantId ()
     {
-        string currentTenantId = _tenantSetter.CurrentTenantId;
+        string currentTenantId = tenantId;
 
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
