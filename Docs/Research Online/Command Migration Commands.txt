@@ -1,8 +1,0 @@
-﻿
-
-Add-Migration InitialIdentity1 -Context ApplicationDbContext -Project Main.Infrastructure -StartupProject Main.WebAppCore
-Update-Database  -Context ApplicationDbContext -Project Main.Infrastructure -StartupProject Main.WebAppCore
-
-
-Add-Migration InitialApplication15 -Context WebBusinessEntityContext -Project Main.Model -StartupProject Main.WebAppCore
-Update-Database  -Context WebBusinessEntityContext -Project Model -StartupProject Main.WebAppCore
