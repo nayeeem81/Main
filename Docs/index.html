@@ -52,6 +52,7 @@
 
     <main>
 
+        <!--   Container Layout: (contains: 1 cloumn, it overflow to direction y )    -->
         <div class="main-content">
 
             <h1>🚀 Multi-tenant Example (Scope of the Software) </h1>
@@ -66,30 +67,39 @@
                 The website sells products/services. He/she is the owner of the shop (tenant) and the website.
 
                 <br />
+
                 <br />
 
                 1. The shop owner/tenant will have his own domain and hosting (pointing to our website).
+
                 <br />
+
                 2.  Or the shop owner/tenant will have his subdomain or subdirectory (pointing to our website).
 
 
                 The shop owner/tenant will have a company account to upload products (Tenant Admin). The shop will have one or more accounts for his  managers (Content Manager).
 
                 <br />
+
                 <br />
 
                 The purpose of the (content manager) account is to upload produucts and organize the uploaded products in different templates on the home page and market pages.
+
                 <br />
                 <br />
 
                 The home page will display products based on selected templates and products. Visitors of the products can browse through the products and add to shopping cart and checkout for purchase.
+
                 <br />
                 <br />
+
                 Visitors can see the details of the product with multiple photos and information & ads. Tenant Content Manager User can configure & display other companies or business advertisements on the his personal website (tenent website). He can be an affiliate of other websites. The website will provide a few more pages: contact us, about us, FAQ and Set a logo for the tenant website.
                 <br />
+
                 <br />
                 In short, this is a very small-size CMS for small businesses with multi tenancy model with the SaaS arcitecture (multi tenancy) using .Net 8.0.
                 <br />
+
                 <br />
 
 
@@ -133,6 +143,7 @@
 
         </div>
 
+        <!--   Container Layout: (contains: 1 cloumn, it overflow to direction y )    -->
         <div class="main-content">
 
             <h1>🚀 Architecture</h1>
@@ -153,17 +164,20 @@
                 <b>Scale the Monolithic Application </b>: To scale a monolithic architecture for a multi-tenant store using a shared database, must optimize, how the single application handle resources and how the database separates tenant data. Scaling a monolith involves two distinct paths: vertical scaling (making the single server stronger) and horizontal scaling (cloning the entire monolith across multiple servers). For a multi-tenant store, horizontal scaling is often more effective, as it allows for better load distribution and fault tolerance. However, it requires careful management of shared resources (distributed cache redis) and tenant data isolation.
 
                 <br />
+
                 <br />
 
                 <b>Clean Architecture</b>: Clean architecture is a software design pattern that organizes code into independent, concentric layers centered around business logic. The primary goal is to separate your core application logic from external concerns like databases, user interfaces, frameworks, and tools.
 
                 <br />
+
                 <br />
 
             </p>
 
         </div>
 
+        <!--   Container Layout: (contains: 1 cloumn, it overflow to direction y )    -->
         <div class="main-content">
 
             <h1>🚀 Multi-tenant applications in .NET 8.0</h1>
@@ -172,7 +186,9 @@
 
             <p>
                 <b class="color-profile-naim">  Asked Google AI: </b>
+
                 <br />
+
                 <br />
 
                 <b>Monolithic Architecture: Clean Architecture - One Application - Shared Database </b>:
@@ -184,27 +200,30 @@
                 Instead of scaling the entire web project, developers scale specific high-traffic services horizontally, such as background jobs, database queries, and microservices.
 
                 <br />
+
                 <br />
 
-                <b>How .NET 8.0 Multi-Tenancy Scales</b>
+                <b>How .NET 8.0 Multi-Tenancy Scales </b>
 
                 Instead of scaling the entire monolith, you scale only the stressed components. This selective scaling is achieved through specific methods:
 
                 <br />
                 <br />
 
-                <b>Horizontal Compute Scaling:</b>
+                <b>Horizontal Compute Scaling: </b>
 
                 You can deploy multiple instances of your .NET 8.0 Web API behind a load balancer. When a heavy-traffic tenant creates a massive spike in requests, you simply add more server instances to the pool (scale-out). Because the infrastructure is shared, this absorbs the traffic without provisioning new servers from scratch.
 
                 <br />
+
                 <br />
 
-                <b>Asynchronous Background Processing:</b>
+                <b>Asynchronous Background Processing: </b>
 
                 For high-traffic operations (like generating reports or processing tenant-specific invoices), .NET 8.0 uses message queues (e.g., RabbitMQ, Azure Queue Storage). The web project offloads these heavy jobs to background workers, preventing the primary web project from crashing or slowing down.
 
                 <br />
+
                 <br />
 
                 <b>Database Partitioning (Sharding):</b>
@@ -212,6 +231,7 @@
                 As your tenant base grows, the database becomes the primary bottleneck. .NET 8.0 (often using Entity Framework Core) can utilize global query filters to automatically append a TenantId to every query, or route traffic to different databases based on the active tenant. If a specific tenant is very high-traffic, their specific database or table is moved to a dedicated, high-performance server (vertical scaling).
 
                 <br />
+
                 <br />
 
                 <b>Tenant-Aware Caching:</b>
@@ -219,13 +239,15 @@
                 To handle read-heavy traffic, .NET 8.0 applications rely on distributed caches (like Redis). Data is cached at the tenant level, so heavy requests for one tenant's inventory or dashboard are served directly from the cache without hitting the database.
 
                 <br />
+
                 <br />
 
-                <b>The Web Project vs. High-Traffic Components</b>
+                <b>The Web Project vs. High-Traffic Components </b>
 
                 In a multi-tenant environment, you almost always scale the compute instances and background workers, not the isolated "web project" file itself.
 
                 <br />
+
                 <br />
 
                 <b>The Web Project (The Entry Point):</b>
@@ -435,6 +457,7 @@
                 3. [ VPS Instance 3 ] :(Port: 5000)
 
                 <br />
+
                 <br />
 
                 <b>The Entry Point:</b>
@@ -442,6 +465,7 @@
                 Your domain name points directly to the single IP address of the Nginx server.
 
                 <br />
+
                 <br />
 
                 <b> The Routing Rules:</b>
@@ -449,11 +473,13 @@
                 You configure Nginx with the private IP addresses of your .NET 8.0 VPS instances.
 
                 <br />
+
                 <br />
 
                 <b>Load Balancing Algorithms:</b>
 
                 <br />
+
                 <br />
 
                 Nginx passes the traffic using specific rules:
@@ -466,6 +492,7 @@
 
 
                 <br />
+
                 <br />
 
                 <b>2. Least Connections:</b>
@@ -482,7 +509,7 @@
 
         </div>
 
-        <!-- 2 cloumn Main Content -->
+        <!--   Container Layout: (contains: 2 cloumn, type is a grid, uses section as column )    -->
         <div class="container">
 
             <div class="main-content">
@@ -500,6 +527,7 @@
                         Volunteering your time is one of the best examples of giving back to the community. While this can be one of the more time-consuming ways to give back, it can also be the most fulfilling and hands-on.
 
                         <br />
+
                         <br />
 
                     </p>
@@ -515,7 +543,7 @@
                     <br />
 
 
-                   
+
 
 
 
@@ -590,13 +618,13 @@
 
                 </section>
 
-
             </div>
 
         </div>
-       
 
+        <!--   Container Layout: (contains: 1 cloumn, it overflow to direction y )    -->
         <div class="main-content">
+
             <b>Deliver code & build community</b>
 
             <br />
@@ -675,7 +703,7 @@
                         <b>[ON GOING]</b>
 
                     </p>
-          </section>
+                </section>
 
             </div>
 
@@ -755,8 +783,8 @@
 
         </div>
 
-        <div class="container">
-
+        <!--   Container Layout: (contains: 2 cloumn, type is a grid, uses div as column )    -->
+        <div class="container-profile">
 
             <div class="col-box">
 
@@ -780,9 +808,7 @@
 
                 </p>
 
-
             </div>
-
 
             <div class="col-box">
 
@@ -819,7 +845,6 @@
             </div>
 
         </div>
-
 
     </main>
 
