@@ -21,12 +21,12 @@ public class BaseDataModel
         get; set;
     }
 
-    public string GlobalUserRole
+    public string IentityRole
     {
         get; set;
     }
 
-    public string? TenantUserRole
+    public string TenantUserRole
     {
         get; set;
     }

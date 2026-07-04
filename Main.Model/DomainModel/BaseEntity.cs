@@ -51,7 +51,7 @@ public class BaseEntity: RootBaseEntity, IMustHaveTenant
         SessionUserId = modelBase.SessionUserId?.Trim ();
 
         TenantUserRole = modelBase.TenantUserRole?.Trim ();
-        GlobalUserRole = modelBase.GlobalUserRole?.Trim ();
+        GlobalUserRole = modelBase.IentityRole?.Trim ();
 
         TenantCountry = modelBase.TenantCountry;
         TenantContinent = modelBase.TenantContinent?.Trim ();

@@ -1,0 +1,115 @@
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; /* Allows clicking elements underneath container */
+}
+
+/* Individual Notification Toast */
+.toast {
+  pointer-events: auto; /* Re-enable clicks for the toast itself */
+  min-width: 300px;
+  max-width: 450px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+  opacity: 0;
+}
+
+/* State modifiers */
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast.success { background-color: var(--success-bg); }
+.toast.error { background-color: var(--error-bg); }
+.toast.warning { background-color: var(--warning-bg); }
+
+/* Close Button */
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.6;
+  padding-left: 15px;
+  transition: opacity 0.2s;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+Use code with caution.JavaScript ImplementationThis script handles the API requests, extracts the exact HTTP status codes or structural errors, and builds the notification UI dynamically.javascript// 1. Core Toast Notification Engine
+function showNotification(message, type = 'error', duration = 4000) {
+  const container = document.getElementById('notification-container');
+  if (!container) return;
+
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  // Structure internal content
+  toast.innerHTML = `
+    <span class="toast-message">${message}</span>
+    <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+  `;
+
+  // Append to DOM
+  container.appendChild(toast);
+
+  // Trigger CSS entry transition
+  setTimeout(() => toast.classList.add('show'), 10);
+
+  // Auto-dismiss logic
+  setTimeout(() => {
+    toast.classList.remove('show');
+    // Wait for transition to finish before removing from DOM
+    toast.addEventListener('transitionend', () => toast.remove());
+  }, duration);
+}
+
+// 2. Network Request Handler & Error Extractor
+async function makeRequest(url) {
+  try {
+    const response = await fetch(url);
+
+    // Check if the HTTP status code is NOT in the 200-299 range
+    if (!response.ok) {
+      // Client errors (400-499) vs Server errors (500+)
+      const notificationType = response.status >= 500 ? 'error' : 'warning';
+      showNotification(`Error ${response.status}: ${response.statusText}`, notificationType);
+      return;
+    }
+
+    // If successful (200-299)
+    showNotification(`Success! Status code: ${response.status}`, 'success');
+    const data = await response.json().catch(() => ({}));
+    return data;
+
+  } catch (error) {
+    // Catches network failures, CORS issues, or broken URLs where no response is received
+    showNotification(`Network Error: ${error.message}`, 'error');
+  }
+}
+
+Use code with caution.
+
+Features Built Into This CodeCategorized Types: Automatically applies warning styles for 4xx user errors, error styles for 5xx server faults/network collapses, and success styles for valid 2xx statuses.Non-Blocking Containers: The container ignores clicks (pointer-events: none), ensuring notifications never freeze your web application's underlying layout.Dynamic Stack: Multiple alerts will smoothly stack vertically if triggered simultaneously.To fine-tune this for your platform, could you share if you are using Fetch API or Axios, or if you want to automatically intercept all global app errors instead of manual try/catch blocks?

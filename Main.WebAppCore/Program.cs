@@ -26,6 +26,10 @@ public class Program
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
         _ = builder.Services.AddAuthorization (builder.Configuration);
+        // 2. Add standard Antiforgery services
+        _ = builder.Services.AddAntiforgery ();
+
+        // 3. Register the dynamic, request-scoped configuration hook 
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
 
@@ -53,15 +57,22 @@ public class Program
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
         _ = app.UseStaticFiles ();
+
         _ = app.UseRouting ();
+
         _ = app.UseSession ();
         _ = app.UseResponseCaching ();
         _ = app.UseCustomLocalization ();
+
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
+
         _ = app.UseCors ();
+
         _ = app.UseAntiforgery ();
+
         _ = app.UseAuthentication ();
         _ = app.UseAuthorization ();
+
         _ = app.MapControllers ();
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 

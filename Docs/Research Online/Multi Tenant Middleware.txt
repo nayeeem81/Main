@@ -307,7 +307,7 @@ Both architectures are widely used in the real world, but they solve completely 
 
 Here is a direct comparison of real-world practices and performance traits.
 
-Shared Database (Multi-Tenant)All tenants share the same database tables and are separated by a TenantId column (using the EF Core query filters we built earlier).
+Shared Database (Multi-Tenant) All tenants share the same database tables and are separated by a TenantId column (using the EF Core query filters we built earlier).
 
 Real-World Practice: This is the most common pattern for standard B2B SaaS apps (e.g., Slack, Trello, Shopify). It keeps operational overhead and infrastructure costs minimal when starting out or managing thousands of small clients.
 

@@ -10,7 +10,7 @@ public interface ITenantContext
         get;
     }
 
-    string IdentityId
+    string ApplicationUserId
     {
         get;
     }
@@ -18,13 +18,9 @@ public interface ITenantContext
     string TenantId
     {
         get;
-        set;
     }
 
-    string CurrentUserClainText
-    {
-        get;
-    }
+    string? GetCurrentTenantRole ();
 
     DateTime GetLocalNow ();
 

@@ -25,7 +25,7 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
         }
 
         var currentTenantId = _tenantSetter.CurrentTenantId;
-        var currentUserId = _tenantContext.IdentityId;
+        var currentUserId = _tenantContext.ApplicationUserId;
 
         if ( string.IsNullOrEmpty (currentTenantId) )
         {

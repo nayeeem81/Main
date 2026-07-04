@@ -7,30 +7,30 @@ namespace Main.WebAppCore.Tenant;
 public class TenantContext: ITenantContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ITenantSetter _tenantSetter;
-    public TenantContext (IHttpContextAccessor httpContextAccessor,ITenantSetter tenantSetter)
+    private readonly string _tenantId;
+
+    public TenantContext (IHttpContextAccessor httpContextAccessor,
+    ITenantSetter tenantSetter)
     {
         _httpContextAccessor = httpContextAccessor;
-        _tenantSetter = tenantSetter;
+        _tenantId = tenantSetter.CurrentTenantId;
     }
 
     public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
-
-    public string IdentityId
-                  => User?.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
 
     ClaimsPrincipal? ITenantContext.User
     {
         get => User;
     }
 
-    public string CurrentUserClainText => User?.FindFirst ("TenantRole")?.Value ?? string.Empty;
-
-    public string TenantId
+    public string GetCurrentTenantRole ()
     {
-        get;
-        set;
+        return User?.FindFirst ("TenantRole")?.Value ?? "";
     }
+
+    public string TenantId => GetTenantId ();
+
+    public string ApplicationUserId => GetCurrentUserId ();
 
     public DateTime GetLocalNow ()
     {
@@ -44,36 +44,40 @@ public class TenantContext: ITenantContext
         BaseDataModel baseDataModel = new ()
         {
             CreatedDate = GetLocalNow ( ),
-            CreatedBy = IdentityId,
+
+            CreatedBy = GetCurrentUserId (),
+            TenantUserId = GetCurrentUserId (),
+            SessionUserId = GetCurrentUserId (),
+
+            TenantUserRole = GetCurrentTenantRole (),
+            IentityRole = GetIdentityRole() ,
+
             TenantCountry = AppSettings.Current.EnumCountry,
-            TenantUserId = IdentityId,
-            SessionUserId = IdentityId,
-            IsActive = true ,
-            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
-                            ? null
-                            : CurrentUserClainText,
-            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
+            IsActive = true
         };
 
         return baseDataModel;
     }
 
+
+
     public BaseDataModel GetUpdateBaseDataModel ()
     {
         BaseDataModel baseDataModel = new ()
         {
-            ModifiedDate = GetLocalNow ( ),
-            ModifiedBy = IdentityId,
-            TenantCountry = AppSettings.Current.EnumCountry,
-            SessionUserId = IdentityId,
-            TenantUserId = IdentityId,
-            IsActive = true,
-            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
-                            ? null
-                            : CurrentUserClainText,
-            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
+            ModifiedDate = GetLocalNow ( ) ,
 
+            ModifiedBy = GetCurrentUserId (),
+            SessionUserId = GetCurrentUserId (),
+            TenantUserId = GetCurrentUserId (),
+
+            TenantUserRole = GetCurrentTenantRole (),
+            IentityRole = GetIdentityRole (),
+
+            IsActive = true,
+            TenantCountry = AppSettings.Current.EnumCountry
         };
+
         return baseDataModel;
     }
 
@@ -82,16 +86,33 @@ public class TenantContext: ITenantContext
         BaseDataModel baseDataModel = new ()
         {
             DeletedDate = GetLocalNow ( ),
-            DeletedBy = IdentityId,
+
+            DeletedBy = GetCurrentUserId (),
+            SessionUserId = GetCurrentUserId (),
+            TenantUserId = GetCurrentUserId (),
+
             TenantCountry = AppSettings.Current.EnumCountry,
-            SessionUserId = IdentityId,
-            TenantUserId = IdentityId,
             IsActive = false,
-            TenantUserRole = string.IsNullOrEmpty (CurrentUserClainText)
-                            ? null
-                            : CurrentUserClainText,
-            GlobalUserRole = User?.IsInRole("User") != null ? "User" : "GlobalAdmin"
+
+            TenantUserRole = GetCurrentTenantRole (),
+            IentityRole = GetIdentityRole ()
         };
+
         return baseDataModel;
+    }
+
+    private string GetTenantId ()
+    {
+        return _tenantId;
+    }
+
+    private string GetCurrentUserId ()
+    {
+        return User?.FindFirst (ClaimTypes.NameIdentifier)?.Value ?? "";
+    }
+
+    private string GetIdentityRole ()
+    {
+        return User?.IsInRole ("User") != null ? "User" : "GlobalAdmin";
     }
 }
