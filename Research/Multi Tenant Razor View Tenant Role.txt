@@ -1,0 +1,65 @@
+To validate tenant-specific roles in a Razor view, you should extend your ApplicationUser model with a custom TenantId property, inject the IAuthorizationService, and define policy-based authorization to avoid hardcoding role logic.
+
+Here is how to implement and validate it step-by-step:
+
+1. Extend the User Model
+Add a TenantId property to your ApplicationUser class. This allows you to differentiate roles by tenant in the database.csharp
+
+public class ApplicationUser : IdentityUser
+{
+    public string TenantId { get; set; }
+}
+
+Use code with caution.
+
+2. Register the Authorization Policy
+In your Program.cs (or Startup.cs), create a policy that checks if a user has the required role and belongs to the active tenant.csharp
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TenantAdminPolicy", policy =>
+        policy.RequireAssertion(context =>
+            context.User.IsInRole("Admin") && 
+            context.User.HasClaim(c => c.Type == "TenantId" && c.Value == "YOUR_TENANT_ID_HERE")
+        )
+    );
+});
+
+Use code with caution.
+
+3. Inject and Validate in the Razor ViewInject IAuthorizationService at the top of your .cshtml file to evaluate the policy dynamically.
+razor
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@{
+    // Evaluate the policy on the current user
+    var isTenantAdmin = await AuthorizationService.AuthorizeAsync(User, "TenantAdminPolicy");
+}
+
+@if (isTenantAdmin.Succeeded)
+{
+    <div class="admin-panel">
+        <h3>Tenant Admin Dashboard</h3>
+        <!-- Admin-specific view elements here -->
+    </div>
+}
+
+Use code with caution.
+
+4. Optional: Assign the Claim upon Login
+Ensure that the TenantId claim is added to the user's identity when they log in (typically in your Login POST action/handler).csharp
+
+var claims = new List<Claim> { new Claim("TenantId", user.TenantId) };
+var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+
+
+Use code with caution.
+
+Would you like help with:
+1. Dynamically retrieving the Tenant ID from the URL or User context instead of hardcoding it?
+2. Implementing a custom Tag Helper to make checking tenant roles cleaner in the view?
+3. Configuring the Controller/Page-level authorization to restrict access before the view renders?

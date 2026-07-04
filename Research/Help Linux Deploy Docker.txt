@@ -1,0 +1,155 @@
+﻿Deploying an ASP.NET Core MVC .NET 8.0 multi-tenant web app to Linux involves setting up your server, configuring the app for multi-tenancy (via host headers or route segments), and using Nginx as a reverse proxy. Here is a step-by-step guide to get your multi-tenant app live on a Linux (Ubuntu) server.
+
+### Prerequisites
+ 
+1. A Linux server (Ubuntu 22.04+ recommended) with root/sudo access.
+2. Your published .NET 8.0 app (e.g., published via dotnet publish -c Release).
+3. A registered domain name for your app (and wildcard domains or separate domains for tenants).
+
+### Step 1:
+
+** Prepare the Linux Server: **
+
+Connect to your server via SSH and update the package lists to ensure you have the latest security patches and software repositories.
+
+sudo apt update && sudo apt upgrade -y
+
+### Step 2: 
+
+** Install the .NET 8.0 Runtime **
+
+You do not need the full SDK on the server, just the runtime to host the application. Register the Microsoft package repository and install the ASP.NET Core 
+
+** Runtime: **
+
+sudo apt install wget apt-transport-https -y
+wget https://microsoft.com -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt update
+sudo apt install aspnetcore-runtime-8.0 -y
+
+### Step 3: 
+
+** Configure Multi-Tenancy in ASP.NET  **
+
+While you can build multi-tenancy from scratch using middleware to inspect the HttpContext.Request.Host, the most robust way in a production environment is using the popular Finbuckle.MultiTenant library. 
+
+** Add the NuGet package to your project: **
+
+dotnet add package Finbuckle.MultiTenant
+
+** Configure it in your Program.cs to identify tenants by host (e.g., ://yourdomain.com): **
+
+using Finbuckle.MultiTenant;
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+builder.Services.AddMultiTenant<TenantInfo>()
+    .WithHostStrategy() // Identifies tenant by the domain/host
+    .WithInMemoryStore(); // Stores tenant data (use EF Core for production)
+
+var app = builder.Build();
+app.UseRouting();
+app.UseMultiTenant(); // Must be placed between UseRouting() and UseAuthorization()
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+### Step 4: 
+
+** Transfer and Setup the App on Linux **
+
+** Create a dedicated directory for your application: **
+
+sudo mkdir -p /var/www/my-multitenant-app
+Transfer your published files from your local machine to this directory using scp or rsync. 
+
+** Set the correct ownership so the web server can read the files: **
+
+sudo chown -R www-data:www-data /var/www/my-multitenant-app
+
+Step 5: Create a Systemd ServiceTo keep your ASP.NET Core app running in the background and automatically restart if it crashes or the server reboots, create a systemd service file.
+
+sudo nano /etc/systemd/system/kestrel-multitenantapp.service
+
+Paste the following configuration (replace YOUR_USERNAME with your Linux user):
+
+[Unit]
+Description=ASP.NET Core Multi-Tenant App on Linux
+
+[Service]
+WorkingDirectory=/var/www/my-multitenant-app
+ExecStart=/usr/bin/dotnet /var/www/my-multitenant-app/YourAppName.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-multitenantapp
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://localhost:5000
+
+[Install]
+WantedBy=multi-user.target
+
+
+Save and exit (Ctrl+O, Enter, Ctrl+X).Reload systemd, start the service, and enable it to run on boot:
+
+sudo systemctl daemon-reload
+sudo systemctl start kestrel-multitenantapp.service
+sudo systemctl enable kestrel-multitenantapp.service
+
+Verify it is running properly:
+
+sudo systemctl status kestrel-multitenantapp.service
+
+Kestrel (the .NET web server) shouldn't be exposed directly to the public internet. We use Nginx to forward requests to it.Install Nginx
+
+sudo apt install nginx -y
+
+Create a new server block (virtual host) configuration:
+
+sudo nano /etc/nginx/sites-available/my-multitenant-app
+
+Paste the following configuration. Be sure to replace yourdomain.com with your actual root domain (and add tenant domains if necessary):
+
+server {
+    listen 80;
+    server_name yourdomain.com *.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+
+Enable the configuration and test the Nginx syntax:
+
+sudo ln -s /etc/nginx/sites-available/my-multitenant-app /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+Step 7: Secure with SSL (HTTPS)You should secure your main domain and wildcard tenants using Let's Encrypt.
+
+sudo apt install certbot python3-certbot-nginx -y
+
+Run Certbot to obtain SSL certificates
+
+sudo certbot --nginx -d yourdomain.com -d *.yourdomain.com
+
+Follow the prompts. Certbot will automatically configure Nginx to use SSL and set up auto-renewal.
+
+If you'd like, let me know:How you are handling the database for your tenants (Shared database with tenant ID, or Database-per-tenant)?If you need help generating dynamic subdomains for tenants on the fly?I can provide the specific configurations or database architecture for your setup.
+
+
+
+

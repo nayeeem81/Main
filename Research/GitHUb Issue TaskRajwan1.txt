@@ -1,0 +1,72 @@
+### Rajwan Tasks: 17 Jun 2026
+
+1. Go to Google Drive.
+2. Create folder name: FINEARTS (Root Folder)
+3. Inside the FINEARTS (root folder) folder create following folders:
+   -- ARTS (folder)
+   -- CRAFTS (folder)
+   -- COLLECTIBLES (folder)	
+4. Inside the ARTS (folder) create following folders:	
+	-- Painting (folder)
+	-- Sculpture (folder)
+	-- Drawing (folder)
+	-- Water Color (folder)
+	-- Photography (folder)
+5. Inside the CRAFTS (folder) create following folders:	
+   -- Jute (folder)
+   -- Handicrafts (folder)
+   -- Metal (folder)
+6. Inside the COLLECTIBLES (folder) create following folders: 
+	-- Stationery (folder)
+	-- Coins & Currency (folder)
+    --  Stamps (folder)
+	
+### Folder Structure:
+Root: FINEARTS
+
+FINEARTS (Parent)
+			> ARTS (Child)
+				
+				> Painting (Grand Chiild)
+				> Sculpture (Grand Chiild)
+				> Drawing (Grand Chiild)
+				> Water Color (Grand Chiild)
+				> Photography (Grand Chiild)
+			
+			>  CRAFTS (Child)
+				
+				> Jute (Grand Chiild)
+				> Handicrafts (Grand Chiild)
+				> Metal (Grand Chiild)
+
+			>  COLLECTIBLES (Child)
+				
+				> Stationery (Grand Chiild)
+				> Coins & Currency (Grand Chiild)
+				> Stamps (Grand Chiild)
+
+### Google Drive:
+
+Google Drive:  (Parent) / (Child) / (Grand Chiild)
+
+### Note: 
+1. Remeber the folder structure and name should be exact same.
+2. Image should be less in size, and in golden ratio size.
+3. In the grand child folders for each folder add 4 images. 
+4. Download image and resize and reduce the image size.
+
+
+### Image Resize: 
+Golden Ratio Image look good in our website.
+
+### Golder Ratio 
+
+**Rule:**
+**Height (px) = Width (px) X 1.618**
+
+
+### Golder Ratio Example:
+
+**Width = 300 px**
+**Height = 300  X 1.618**
+**Height = 485 px**

@@ -1,0 +1,112 @@
+﻿
+To deploy a multi-container CMS to a Linux server, you need a workflow 
+using GitHub Actions, Docker, and Docker Compose. This automates the 
+build and deployment process, preventing you from having to manually 
+build images and transfer files every time you update your code. 
+
+github.com
+
+For your setup, the most efficient workflow requires Git Feature 
+Branching, Automated CI/CD Build, and Automated SSH Deployment. 
+
+1. Do You Need a Workflow?
+
+Yes. While you are working alone, a CI/CD (Continuous 
+Integration/Continuous Deployment) workflow on GitHub is highly 
+recommended because it:
+
+Saves Time: Automatically builds your Docker images in the cloud.
+
+Keeps Server Stable: Prevents your Linux server from freezing up while trying to compile your project code.
+
+Simplifies Multi-Container Management: Lets you push one command, and GitHub handles building your app, the database, and any backend services together. 
+
+medium.com
+·Yogesh Kolhatkar
+
+2. The Recommended GitHub & Docker Workflow
+
+This 4-step pipeline keeps your solo development process organized 
+and automated:
+
+Step 1: 
+
+Branching Strategy
+
+Even as a solo developer, avoid doing all your work in the main branch.
+Create a branch like feature/inventory-module for new updates. Test it 
+locally in Visual Studio. Merge it into main only when it works.
+
+Step 2: 
+
+The Multi-Container Setup (Docker Compose)
+
+Because you want to run multiple containers, create a docker-compose
+.yml file in your Visual Studio project root. This file manages how 
+your CMS, database (e.g., PostgreSQL or MySQL), and web server 
+(e.g., Nginx) interact.
+
+Visual Studio Tooling: 
+
+Right-click your project in Visual Studio -> Add -> Container 
+Orchestrator Support -> choose Docker Compose. 
+This automatically generates the necessary configs. 
+
+Step 3: 
+
+CI/CD Workflow (GitHub Actions)
+
+You can set up GitHub Actions to automatically build your Docker images
+every time you push to the main branch. 
+
+medium.com
+·Yogesh Kolhatkar
+
+Create a file at .github/workflows/deploy.yml in your GitHub repository.
+Configure this script to log into Docker Hub (or GitHub Container 
+Registry), build the images from your Dockerfiles, and push them. 
+
+YouTube
+·Rishab in Cloud
+
+Step 4: 
+
+Automated Deployment
+
+After the images are pushed to the registry, GitHub Actions can use 
+SSH to log into your Linux server and run a command. 
+
+medium.com
+·Yogesh Kolhatkar
+
+Your Linux server only needs to run docker-compose pull and 
+docker-compose up -d. 
+
+
+
+
+# Step-by-Step Implementation Guide
+
+To get started with your project, follow this exact sequence:
+
+Setup Git and GitHub: 
+
+Initialize Git in Visual Studio and create a remote repository on 
+GitHub.
+
+Containerize in Visual Studio: 
+
+Use the built-in Docker support by checking "Enable Docker" when 
+creating your project, or add the files manually.
+
+Write your Compose File: 
+
+Combine your app containers using the Docker Compose Overview to 
+define networks, volumes, and environment variables.
+
+Automate the Deploy: 
+
+Use the official Docker Build and Push Actions to automatically 
+package and ship your CMS. Combine this with a marketplace tool 
+like the appleboy/ssh-action to remotely trigger docker-compose up 
+on your server.

@@ -1,0 +1,40 @@
+﻿In GitHub, "Create New Pull" (often referred to as creating a Pull 
+Request or PR) is a proposal to merge changes from one branch (the 
+source) into another branch (the target or base).
+
+To merge your code into the master (or main) branch, you can initiate 
+this from any branch that contains your new code; it does not strictly 
+have to be "the latest branch" by creation date. However, the branch 
+must have unique commits that the target branch does not yet have.
+
+# How Pull Requests Work?
+
+A Pull Request acts as a formal collaboration tool where team members 
+can review, discuss, and test your code before it officially becomes 
+part of the main codebase.
+
+Source Branch (Compare): The branch containing the new code you want 
+to add.
+
+Target Branch (Base): The branch you want to update (commonly master 
+or main).
+
+# Merge Requirement: 
+
+You can merge into any branch as long as there is no conflict. If the 
+target branch has changed since you started your work, you may need to
+pull the latest changes into your branch first to resolve conflicts 
+before the PR can be completed.
+
+# Branching Flexibility: 
+
+While most PRs target the primary branch, you are not limited to this 
+workflow.
+
+1. Branch to Branch: You can create a PR to merge code from a feature 
+branch into a development branch (dev) before it ever touches master.
+
+2. Any Source: Any branch with code changes can be used as a source for 
+a PR. To finalize these changes, you can follow the steps for merging 
+a pull request on GitHub, which allows you to formally incorporate the 
+code into your chosen base branch.

@@ -1,0 +1,199 @@
+# You can and often should keep your localization resources in a 
+separate class library project in .NET 8.0. This is considered a 
+best practice for modularity, especially in larger applications 
+where multiple projects (Web API, Background Services, or multiple 
+Web apps) need to share the same localized strings.
+
+
+# Benefits:
+
+1. Reusability: Shared across different UI projects or even unit test projects.
+2. Separation of Concerns: Keeps the Web project focused on UI logic while 
+   the class library handles data and resources.
+3. Scalability: Easier to manage as the number of supported languages 
+   and localized strings grows.
+
+
+# This solution:
+# Usage: 
+
+Inject IStringLocalizer<T> into your controllers or services, 
+where T is the class name of your resource file in the library.
+
+Project Name: ResourceLibrary
+Class Name: SharedResource
+Resource File: SharedResource.cs
+
+To use shared resources in your Views, you inject the localizer 
+directly into the Razor file using the marker class from your class 
+library. Here is exactly how to set it up:
+
+1. Add Namespace to View Imports:
+Open your _ViewImports.cshtml file. Add the namespace of your class 
+library so you do not have to type the full path in every View.
+@using YourClassLibraryNamespace
+
+2. Inject the Localizer into the View:
+At the top of your specific View file (e.g., Index.cshtml), inject 
+IHtmlLocalizer using your shared marker class.
+
+@inject Microsoft.AspNetCore.Mvc.Localization.IHtmlLocalizer
+<SharedResource> SharedLocalizer
+<h1>@SharedLocalizer["WelcomeMessage"]</h1>
+
+3. Register Portable Object Services (Alternative):
+If your resource files are named after folders or have deeply nested 
+namespaces, ensure your web application's Program.cs knows how to look 
+them up.
+
+builder.Services.AddLocalization(options => 
+options.ResourcesPath = "Resources");
+
+builder.Services.AddControllersWithViews()
+                .AddViewLocalization();
+
+
+
+# Why Use IHtmlLocalizer Over IStringLocalizer?
+
+HTML Safety: IHtmlLocalizer automatically encodes arguments formatted 
+into the string.
+
+HTML Strings: If your resource file contains actual HTML tags 
+(e.g., Welcome <b>User</b>), it renders them as HTML instead of displaying raw text.
+
+
+### 
+You want to know how to handle DataAnnotations localization 
+(like [Required(ErrorMessage = ...)]) on your ViewModels using 
+this shared library, or if you need help configuring culture 
+switching middleware, let me know! Implementing DataAnnotations 
+Localization:
+
+1. DataAnnotations Localization (Using Shared Library):
+
+With a shared class library and configuring culture switching 
+middleware requires a highly precise setup in .NET 8.0. Here is the 
+exact implementation detail followed by architectural best practices.
+
+By default, ASP.NET Core expects validation resource files to live 
+in the same project as the ViewModels. To override this and pull 
+validation messages directly from your shared class library, you must 
+instruct the AddDataAnnotationsLocalization framework to route all 
+string lookups to a central marker class.
+
+# File: Program.cs (Web Project)
+
+using Infrastructure.Localization;
+builder.Services.AddControllersWithViews()
+    .AddDataAnnotationsLocalization(options =>
+    {
+        // Force DataAnnotations validation to use the SharedResource .resx file
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    });
+
+
+# The View Model Implementation: You can now write clean properties 
+without hardcoding resource namespaces directly into attributes.
+
+# Code for View Model: Your Shared Resource File Configuration Key 
+Match. Inside your SharedResource.resx file, create keys matching 
+exactly what you put in the attribute (RequiredField, InvalidEmail,
+EmailLabel).
+
+#Dynamic placeholders: For attributes like StringLength, ASP.NET Core 
+automatically passes parameters. If your key is MaxLengthError and 
+value is Must be under {1} characters, it will map automatically.
+
+public class RegisterViewModel
+{
+    [Required(ErrorMessage = "RequiredField")]
+    [EmailAddress(ErrorMessage = "InvalidEmail")]
+    [Display(Name = "EmailLabel")]
+    public string Email { get; set; }
+}
+
+# Culture Switching Middleware: 
+The RequestLocalizationMiddleware intercepts every incoming HTTP 
+request and sets the application's runtime culture 
+(CultureInfo.CurrentCulture and CultureInfo.CurrentUICulture).
+
+# File: Program.cs (Web App)
+
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
+var supportedCultures = new[]
+{
+    new CultureInfo("en-US"),
+    new CultureInfo("fr-FR"),
+    new CultureInfo("es-ES")
+};
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+localizationOptions.RequestCultureProviders = 
+new List<IRequestCultureProvider>
+{
+    new QueryStringRequestCultureProvider(), 
+    new CookieRequestCultureProvider(), 
+    new AcceptLanguageHeaderRequestCultureProvider() 
+};
+
+var app = builder.Build();
+
+app.UseRequestLocalization(localizationOptions);
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.MapDefaultControllerRoute();
+
+#######################################################################
+#######################################################################
+
+#Question: Is there any way to reduce Program.cs code to place in 
+any extention or in infrastructure project?
+
+#Google: Moving this setup out of Program.cs is an excellent 
+architecture practice. It follows the Clean Architecture pattern by 
+keeping your web entry point clean and moving infrastructure concerns 
+to your Infrastructure project.
+
+#Steps:
+You can achieve this by creating an Extension Method on IServiceCollection 
+and IApplicationBuilder. The Infrastructure Project ImplementationCreate 
+a new static class inside your Infrastructure Project (in a folder named 
+DependencyInjection or Localization).
+
+File Name: LocalizationConfigurationExtensions.cs (Main.Infrastructure)
+Folder Name: Localization
+
+File Name: Program.cs (Web App)
+
+Now, add a project reference from your Web project to the Infrastructure 
+project. Your Program.cs simplifies down to just two highly descriptive 
+lines.
+
+
+File Name: Program.cs (Web App Project)
+
+builder.Services.AddCustomLocalization ( );
+app.UseCustomLocalization ( );
+
+
+
+
+
+
+
+
+
+
+
+

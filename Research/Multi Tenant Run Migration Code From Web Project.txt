@@ -1,0 +1,40 @@
+﻿## Program.cs
+## .Net 8.0
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Your infrastructure service registration is called here
+builder.Services.AddInfrastructureServices(builder.Configuration); 
+
+var app = builder.Build();
+
+// Run migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        // Resolve your DataContext from the infrastructure layer
+        var context = services.GetRequiredService<YourDataContext>();
+        
+        // Applies any pending migrations and creates the DB if it does not exist
+        context.Database.Migrate(); 
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+        throw; // Prevent app startup if migration fails
+    }
+}
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();

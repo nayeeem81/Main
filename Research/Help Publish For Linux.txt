@@ -1,0 +1,17 @@
+﻿To publish your ASP.NET Core MVC .NET 8.0 application for Linux deployment, you need to compile it into a self-contained or framework-dependent package.
+
+You can do this using either your local terminal/command prompt or Visual Studio.
+
+Method 1: Using the Command Line (Recommended)Open your terminal or command prompt, navigate to your project's root directory (where your .csproj file is located), and run the following command:
+
+dotnet publish -c Release -r linux-x64 --self-contained false -o ./publish
+
+Detailed Breakdown of the Command:dotnet publish: The built-in .NET CLI command that compiles the application, reads its dependencies, and prepares the output assets for deployment.-c Release: Sets the build configuration to Release mode. This optimizes the code, strips out debugging information, and shrinks the file sizes for maximum performance on production.-r linux-x64: Specifies the Runtime Identifier (RID). This tells .NET to target 64-bit Linux environments (like Ubuntu, Debian, or CentOS).--self-contained false: Creates a framework-dependent deployment. This means the output folder will be very small because it relies on the .NET 8.0 runtime you installed on your Linux server in Step 2 of the previous guide. (If you want the app to run on a Linux server without installing any .NET runtime, change this to true, but your publish folder size will balloon to ~100MB+).-o ./publish: Directs the final, production-ready files into a local folder named publish inside your current directory.
+
+Method 2: Using Visual Studio 2022 If you prefer a graphical interface, you can generate the exact same files through Visual Studio:Right-click your main MVC project in the Solution Explorer and select Publish.In the wizard, select Folder as the target, then click Next.Choose Folder again for the specific target, set your preferred location (e.g., bin\Release\net8.0\publish), and click Finish.On the publish profile screen, click the pencil icon (Edit) next to Target Runtime.Change the settings to match your Linux server:Configuration: ReleaseTarget Framework: net8.0Deployment Mode: Framework-dependentTarget Runtime: linux-x64Click Save, and then click the large Publish button at the top right.
+
+What to do next?Once the process finishes, navigate to your newly created publish folder. You will see your project's compiled .dll files, appsettings.json, and the wwwroot folder (containing your CSS/JS assets).You must compress this folder (e.g., into a .zip file) and transfer its contents to the /var/www/my-multitenant-app directory on your Linux server using an SSH transfer tool like SCP, SFTP, or FileZilla.
+
+If you'd like, let me know:What operating system you are developing on locally (Windows, macOS, or Linux)?If you need the exact SCP command to transfer these files to your server from your terminal?
+
+I can give you the precise command or transfer instructions based on your local machine.

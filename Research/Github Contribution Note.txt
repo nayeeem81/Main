@@ -1,0 +1,42 @@
+Here is a customized GitHub pull request draft tailored for adding themes (like dark mode or brand variations) to an existing CSS file.
+
+## Pull Request Draft
+Title: Feature: Add themed variations to [Filename].css
+Description:
+This contribution introduces structured theme support to the main stylesheet. It enables easier switching between different visual styles (e.g., light and dark modes) without duplicating core layout styles.
+Changes proposed:
+
+* Extracted hardcoded color values into CSS custom properties (variables).
+* Created a default theme configuration under the :root selector.
+* Added a secondary theme class (e.g., .theme-dark or [data-theme='dark']) to override the variables.
+* Ensured text-to-background contrast ratios meet accessibility standards across both themes.
+
+Screenshots:
+
+* [Insert "Before/After" or "Light Mode/Dark Mode" screenshot here]
+
+Testing instructions:
+
+   1. Open the project locally and navigate to the pages using [Filename].css.
+   2. Toggle the theme by manually adding the theme class/attribute to the <body> or <html> tag in your browser developer tools.
+   3. Verify that all UI elements update their colors correctly and no layout breaks occur.
+
+Checklist:
+
+* My code follows the project's style guidelines.
+* I have performed a self-review of my own code.
+* Tested across multiple browsers for CSS variable compatibility.
+* All text remains readable in the new theme variations.
+
+------------------------------
+## Key CSS Best Practices to Double-Check
+
+* Use Variables: Ensure your themes rely on modern CSS variables (e.g., --bg-color: #ffffff;) rather than writing entirely separate blocks of duplicate CSS layout rules.
+* Keep Layouts Separate: Your theme should only change colors, borders, and shadows. Margins, padding, and flex/grid layouts should remain untouched by the theme switch.
+
+If you want, I can help you write the code for the CSS file itself if you tell me:
+
+* The names of the themes you are creating (e.g., Light/Dark, Cyberpunk, Minimalist)
+* A few key colors you want to use for the background and text
+
+

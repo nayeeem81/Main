@@ -1,0 +1,568 @@
+Setting up a route constraint for /{tenant}/[controller] ensures that ASP.NET Core only matches the route if the {tenant} segment exists in your database or configuration. 
+
+This prevents standard static paths (like /images or /api) from accidentally being treated as tenant names.
+
+Here is the step-by-step implementation guide using a custom route constraint.
+
+Step 1: Create the Custom Route Constraint
+Create a class that implements IRouteConstraint. This class checks if the requested tenant segment actually exists in your system.csharp
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+
+public class TenantRouteConstraint : IRouteConstraint
+{
+    // In real apps, inject a service or cache to validate against a database
+
+    private readonly HashSet<string> _validTenants = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "tenant1-local",
+        "tenant2-local",
+        "alpha-corp"
+    };
+
+    public bool Match(
+        HttpContext? httpContext, 
+        IRouter? route, 
+        string routeKey, 
+        RouteValueDictionary values, 
+        RouteDirection routeDirection)
+    {
+        // 1. Ensure the key we are checking is the 'tenant' key
+        if (!values.TryGetValue(routeKey, out var value) || value is not string tenantSegment)
+        {
+            return false;
+        }
+
+        // 2. Validate the tenant segment against your allowed list/database
+        return _validTenants.Contains(tenantSegment);
+    }
+}
+
+Use code with caution.
+
+Step 2: Register the Constraint and Set Up Routing
+
+Open your Program.cs file. You need to register your custom constraint with a short nickname (e.g., tenant) and then apply it to your controller routing map.csharp
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews(); // or AddControllers();
+
+// Register the custom constraint inline with the Routing options
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.ConstraintMap.Add("tenant", typeof(TenantRouteConstraint));
+});
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+
+// Map the multi-tenant route pattern using the ':tenant' constraint nickname
+app.MapControllerRoute(
+    name: "multitenant",
+    pattern: "{tenant:tenant}/{controller=Home}/{action=Index}/{id?}");
+
+// Default fallback route for landing pages (e.g., ://khai.com)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+Use code with caution.
+
+Step 3: Set up your Controllers
+Your controllers will automatically receive the {tenant} string as a parameter in their actions.csharp
+
+
+using Microsoft.AspNetCore.Mvc;
+
+public class HomeController : Controller
+{
+    // ASP.NET Core automatically binds the {tenant} route segment to this argument
+    public IActionResult Index(string tenant)
+    {
+        ViewData["TenantName"] = tenant;
+        return View();
+    }
+}
+Use code with caution.
+
+How this setup handles requests:
+
+//khai.com
+
+Matches the multitenant pattern. The constraint evaluates _validTenants.Contains("tenant1-local") as True. Routing succeeds.
+
+://khai.com
+Matches the pattern but the constraint returns False. ASP.NET Core skips this route map entirely and looks for the next match.
+
+://khai.com
+Skipped by routing because app.UseStaticFiles() intercepts it first. 
+
+
+############################################
+############################################
+Step 1: Register the Multi-Tenant Area Route
+
+In your Program.cs, you must map your multi-tenant Area route before your standard multi-tenant route.csharp
+
+// 1. Multi-tenant AREA route (Must come first)
+app.MapAreaControllerRoute(
+    name: "multitenant_area",
+    areaName: "admin", // Placeholder if you target one specific area, OR use the pattern below
+    pattern: "{tenant:tenant}/{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
+// 2. Standard Multi-tenant route (For non-area controllers)
+app.MapControllerRoute(
+    name: "multitenant",
+    pattern: "{tenant:tenant}/{controller=Home}/{action=Index}/{id?}");
+
+
+// 3. Fallback root route (e.g., landing page at ://khai.com)
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+Use code with caution.
+
+Note: The token {area:exists} is a built-in constraint that ensures the path segment matches an actual, physical Area folder in your project.
+
+Step 2: Structure Your Project FoldersYour project directory structure must look like this to match the routing system:textYourProject/
+
+│
+├── Areas/
+│   └── Admin/                  <-- The Area Name
+│       ├── Controllers/
+│       │   └── DashboardController.cs
+│       └── Views/
+│           └── Dashboard/
+│               └── Index.cshtml
+│
+├── Controllers/                <-- Non-Area Controllers
+│   └── HomeController.cs
+
+Use code with caution.
+
+Step 3: Decorate Area Controllers
+
+Every controller inside your Area must be explicitly decorated with the [Area] attribute. You can accept the tenant parameter directly inside your action methods.csharp
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace YourProject.Areas.Admin.Controllers;
+
+[Area("Admin")] // This matches the {area:exists} constraint
+public class DashboardController : Controller
+{
+    // URL: ://khai.com
+    public IActionResult Index(string tenant)
+    {
+        ViewData["Tenant"] = tenant; // Outputs: tenant1-local
+        return View();
+    }
+}
+
+Use code with caution.
+
+How Link Generation Works in Views
+
+When generating links (asp-action, asp-controller, asp-area) inside your Razor views, you must explicitly pass the current tenant. 
+
+If you forget to pass it, ASP.NET Core will not be able to generate the correct multi-tenant URL string.From a standard view to an Area page: html
+
+<a asp-area="Admin" 
+   asp-controller="Dashboard" 
+   asp-action="Index" 
+   asp-route-tenant="@ViewData["Tenant"]">
+   Go to Admin Dashboard
+</a>
+
+<!-- Generates: /tenant1-local/Admin/Dashboard -->
+Use code with caution.
+
+From an Area page back to the: 
+
+Main site:html
+
+<a asp-area="" 
+   asp-controller="Home" 
+   asp-action="Index" 
+   asp-route-tenant="@ViewData["Tenant"]">
+   Back to Main Site
+</a>
+<!-- Generates: /tenant1-local/Home/Index -->
+
+Use code with caution.
+
+If you want, 
+
+1. I can:Show how to make a Custom ActionFilter to automatically inject the tenant into all ViewDatas
+2. Show how to use Attribute Routing ([Route("{tenant}/[area]/[controller]")]) instead of centralized mapping
+
+If you want, I can:
+1. Show how to inject a Database Context into TenantRouteConstraint using HttpContext.RequestServices
+2. Show how to create a Base Controller so you don't have to add string tenant to every action method
+
+To avoid repeating string tenant as a parameter in every single action method, you can create a custom BaseController that intercepts the routing data automatically.
+
+By overriding the OnActionExecuting lifecycle method, the base controller can extract the tenant segment and store it in a globally accessible property or ViewData field for all inheriting controllers.
+
+Step 1: Create the Base Controller
+
+Create an abstract class named TenantBaseController that inherits from Controller.csharp
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+
+public abstract class TenantBaseController : Controller
+{
+    // Accessible by any controller inheriting from this base class
+    public string? CurrentTenant { get; private set; }
+
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        // Extract the {tenant} value calculated by the route mapping
+        if (context.RouteData.Values.TryGetValue("tenant", out var tenantObj) && tenantObj is string tenant)
+        {
+            CurrentTenant = tenant;
+            
+            // Automatically make it available to all Razor Views layout pages
+            ViewData["TenantName"] = tenant;
+        }
+        else
+        {
+            // Optional: Redirect to a global landing page if the tenant is missing
+            context.Result = new RedirectToActionResult("Index", "Home", new { area = "" });
+        }
+
+        base.OnActionExecuting(context);
+    }
+}
+Use code with caution.
+
+Step 2: Inherit from the Base Controller
+
+Now, swap out Controller for TenantBaseController on your actual application controllers. Notice how clean your action methods become:csharp
+
+using Microsoft.AspNetCore.Mvc;
+
+// Inherit from your new base controller instead of the default 'Controller'
+public class ProductsController : TenantBaseController
+{
+    // URL: ://khai.com
+    // No 'string tenant' argument required anymore!
+    public IActionResult List()
+    {
+        // You can use the property directly in your C# backend logic
+        string? activeTenant = CurrentTenant; 
+        
+        // Pass data to your view
+        return View();
+    }
+
+    // URL: ://khai.com
+    public IActionResult Details(int id)
+    {
+        // Database queries can safely use CurrentTenant
+        return View();
+    }
+}
+
+Use code with caution.
+
+Step 3: Accessing the Tenant in Razor Views
+Because the base controller drops the string into ViewData["TenantName"] inside the lifecycle method, your standard layouts or views can access it globally without any special parameters:html
+
+@* Views/Products/List.cshtml *@
+
+<h1>Product Catalog</h1>
+<p>Viewing catalog for corporation: <strong>@ViewData["TenantName"]</strong></p>
+
+<!-- When building links, pull the value directly from ViewData -->
+<a asp-controller="Products" 
+   asp-action="Details" 
+   asp-route-id="5" 
+   asp-route-tenant="@ViewData["TenantName"]">
+   View Product Details
+</a>
+
+Use code with caution.
+
+If you want, I can:
+
+1. Show how to do the same for API Controllers using ControllerBase instead of ControllerShow how to inject Scoped services into the base controller without breaking constructor inheritance
+
+To handle multi-tenancy seamlessly across an API layer, you can apply a similar architecture using ControllerBase.
+When injecting services into a base controller, using standard constructor injection forces every child controller to declare and pass that dependency up via base(...). To avoid this repetitive boilerplate code, you can use Property Injection via HttpContext inside an Action Filter or an override method. 
+
+This keeps your child controller constructors entirely clean.Here is the complete implementation for an API Base Controller using property-based dependency injection.
+
+Step 1: Create the API Tenant Base Controller
+This base class inherits from ControllerBase and targets the [ApiController] pipeline. It automatically resolves your scoped ITenantContext (which we created in the earlier step) directly out of the request's dependency container.csharp
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+
+[ApiController]
+[Route("{tenant}/api/[controller]")] // Global route prefix for all APIs
+public abstract class ApiTenantBaseController : ControllerBase, IActionFilter
+{
+    // Child controllers can access this property directly
+    protected string? CurrentTenant { get; private set; }
+
+    [NonAction]
+    public void OnActionExecuting(ActionExecutingContext context)
+    {
+        // 1. Extract tenant string from route
+        if (context.RouteData.Values.TryGetValue("tenant", out var tenantObj) && tenantObj is string tenant)
+        {
+            CurrentTenant = tenant;
+
+            // 2. Inject Scoped Service cleanly without constructor boilerplate
+            // This resolves the unique Scoped service instance allocated to this specific HTTP request
+            var tenantContext = context.HttpContext.RequestServices.GetRequiredService<ITenantContext>();
+            
+            // Hydrate the service state
+            tenantContext.TenantId = tenant;
+        }
+        else
+        {
+            // Short-circuit the request if the tenant route token is missing
+            context.Result = new BadRequestObjectResult(new { error = "Tenant context is missing from the request path." });
+        }
+    }
+
+    [NonAction]
+    public void OnActionExecuted(ActionExecutedContext context)
+    {
+        // No post-execution logic required, but interface implementation is mandatory
+    }
+}
+
+Use code with caution.
+
+Step 2: Implement Clean Child Controllers
+
+Because the base controller handles the routing attributes and service extraction behind the scenes, your actual API controllers don't need any route attributes, and they don't have to call base(...) in their constructors.
+
+Example A: 
+An API Controller with NO dependenciescsharp
+
+using Microsoft.AspNetCore.Mvc;
+
+// Inherits route pattern: /{tenant}/api/orders
+public class OrdersController : ApiTenantBaseController
+{
+    [HttpGet]
+    public IActionResult GetOrders()
+    {
+        // Easily read the current tenant string properties
+        return Ok(new { message = $"Fetching orders for tenant: {CurrentTenant}" });
+    }
+}
+
+Use code with caution.
+
+Example B: An API Controller 
+WITH its own dependencies
+If a child controller needs a database context or a specific business service, it only injects what it needs. It does not need to know about ITenantContext.csharp
+
+using Microsoft.AspNetCore.Mvc;
+
+public class InventoryController : ApiTenantBaseController
+{
+    private readonly IInventoryRepository _repository;
+
+    // Normal constructor injection works perfectly without breaking inheritance
+    public InventoryController(IInventoryRepository repository)
+    {
+        _repository = repository;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetStock(int id)
+    {
+        // The underlying repository can implicitly use ITenantContext 
+        // because it was already populated by our base class execution filter!
+        var item = await _repository.GetByIdAsync(id);
+        return Ok(item);
+    }
+}
+
+Use code with caution.
+
+Why this structure works efficiently
+
+HttpContext.RequestServices: 
+
+This acts as a safe gateway to the current request's Dependency Injection container. Resolving services here respects the Scoped lifecycle perfectly.
+
+[NonAction] Attribute: Tells the ASP.NET Core routing engine to ignore OnActionExecuting and OnActionExecuted so it doesn't mistakenly expose them as public API endpoints.
+
+IActionFilter Interface: Since ControllerBase does not natively include lifecycle filter overrides like the MVC Controller class does, explicitly declaring IActionFilter on the base class hooks it cleanly into the API pipeline execution flow. If you want, I can:Show how to write a Unit Test for this base controller to mock HttpContext.RequestServices
+
+1. Show how to implement a global ActionFilterAttribute to achieve the same result without an abstract base class
+
+3. Explain how to pass the resolved tenant into an async AsyncLocal/Scoped service for data isolation
+
+To pass the resolved tenant down to your data access layer (like EF Core) safely, you should inject it into a Scoped Service.In ASP.NET Core, a 
+
+Scoped service is created fresh for every single HTTP request. This makes it the cleanest and safest way to store the tenant context without risking data leaks between different users. While AsyncLocal<T> works well for background threads, a Scoped service natively leverages ASP.NET Core's architecture for dependency injection (DI).
+
+Here is how to set up an end-to-end data isolation pipeline.
+
+Step 1: Create a Tenant Context Container
+
+First, create a scoped service interface and implementation that holds the current tenant's identifier.csharp
+
+public interface ITenantContext
+{
+    string? TenantId { get; set; }
+}
+
+public class TenantContext : ITenantContext
+{
+    public string? TenantId { get; set; }
+}
+
+Use code with caution.
+
+Step 2: Extract the Tenant via Custom Middleware
+
+Create a middleware that runs right after routing executes. At this stage, ASP.NET Core has already validated the route using your TenantRouteConstraint and stored the value in the RouteData.csharp
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using System.Threading.Tasks;
+
+public class TenantResolverMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public TenantResolverMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context, ITenantContext tenantContext)
+    {
+        // Get the tenant string extracted from the /{tenant}/ route
+        var tenantRouteValue = context.GetRouteValue("tenant") as string;
+
+        if (!string.IsNullOrEmpty(tenantRouteValue))
+        {
+            // Inject the string into the scoped container for this request
+            tenantContext.TenantId = tenantRouteValue;
+        }
+
+        // Continue down the execution pipeline
+        await _next(context);
+    }
+}
+Use code with caution.
+
+Step 3: Register everything in Program.cs
+
+Register your ITenantContext as Scoped and plug your middleware into the application pipeline. It must be placed after app.UseRouting() so that context.GetRouteValue() can find the tenant segment.csharp
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+
+// Register the TenantContext container as Scoped
+builder.Services.AddScoped<ITenantContext, TenantContext>();
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseRouting(); // 1. Routing analyzes the URL patterns
+
+app.UseMiddleware<TenantResolverMiddleware>(); // 2. Middleware grabs the tenant string
+
+app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
+
+Use code with caution.
+
+Step 4: Enforce Data Isolation in EF Core DbContext
+
+Now you can inject ITenantContext directly into your Entity Framework Core DbContext. By overriding OnModelCreating, you can apply a global query filter that automatically filters out data belonging to other tenants.csharp
+
+using Microsoft.EntityFrameworkCore;
+
+public class ApplicationDbContext : DbContext
+{
+    private readonly ITenantContext _tenantContext;
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ITenantContext tenantContext)
+        : base(options)
+    {
+        _tenantContext = tenantContext;
+    }
+
+    public DbSet<Product> Products { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // Configure Query Filter so queries automatically attach: WHERE TenantId = currentTenant
+        modelBuilder.Entity<Product>()
+            .HasQueryFilter(p => p.TenantId == _tenantContext.TenantId);
+    }
+
+    // Automatically stamp the incoming Tenant ID on new records during database saves
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entry in ChangeTracker.Entries<ITenantEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.TenantId = _tenantContext.TenantId 
+                    ?? throw new InvalidOperationException("Tenant identity missing during save.");
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
+}
+
+// Marker interface for database tables that need tenant isolation
+public interface ITenantEntity
+{
+    string TenantId { get; set; }
+}
+
+public class Product : ITenantEntity
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string TenantId { get; set; } = string.Empty; // DB column
+}
+
+Use code with caution.
+
+Why this approach is highly secure
+By binding the tenant in middleware and filtering via EF Core, your controller code remains pure. When a developer writes _context.Products.ToList(), EF Core translates that under the hood into SELECT * FROM Products WHERE TenantId = 'tenant1-local'. 
+
+It becomes impossible for a developer to accidentally leak one tenant's data to another.If you want, I can:Show how to implement AsyncLocal<T> instead for background tasks/Queue Workers outside HTTP requestsShow how to configure Separate Databases per tenant instead of a shared database table
+
+When combining Areas with sub-directory multi-tenancy, the tenant segment {tenant:tenant} must always be placed at the very beginning of the route pattern. 
+
+This ensures that the tenant context is captured before ASP.NET Core attempts to route into a specific Area.Here is how to structure, register, and implement Area routing for your multi-tenant app.
+
+
+
+
+
+

@@ -1,0 +1,58 @@
+﻿To identify a subdomain for a multi-tenant application, you need to extract the clean host string using _request.Host.Host and split it by the dot (.) character. Here is the production-ready code and architecture pattern to handle this safely.
+
+Step 1: The Subdomain Extraction Code
+
+Add this method to your custom service. It handles edge cases like local development (localhost), missing domains, and stripping out the main domain.
+
+public string? GetSubdomain(IHttpContextAccessor httpContextAccessor)
+{
+    // 1. Get the clean host name (e.g., "://sample.com" or "localhost")
+    string host = httpContextAccessor.HttpContext?.Request.Host.Host ?? string.Empty;
+
+    if (string.IsNullOrWhiteSpace(host) || host == "localhost")
+    {
+        return null; 
+    }
+
+    // 2. Split the host by dots
+    string[] segments = host.Split('.');
+
+    // 3. Check if a subdomain exists 
+    // For "://sample.com", segments.Length is 3.
+    // For "sample.com", segments.Length is 2.
+    if (segments.Length > 2)
+    {
+        string subdomain = segments[0].ToLowerScope();
+
+        // 4. Ignore "www" if users type www.://sample.com
+        if (subdomain == "www" && segments.Length > 3)
+        {
+            return segments[1].ToLowerScope();
+        }
+
+        if (subdomain == "www")
+        {
+            return null; // It was just ://sample.com
+        }
+
+        return subdomain;
+    }
+
+    return null; // No subdomain found
+}
+
+Great!!! Thanks a lot. You included a check for www too.
+
+You are very welcome! 
+
+Catching the www edge case is critical because users will almost always try to type ://yourdomain.com or ://yourdomain.com out of habit. 
+
+If you don't filter it out, your system might accidentally look for a tenant named "www"!
+
+You now have a robust strategy for extracting and cleaning both domains and subdomains safely.
+
+If you want to take this further later, I can show you how to:
+
+1. Create a Middleware to look up tenants in a database
+2. Set up Localhost debugging for multiple subdomains
+3. Implement Tenant-safe global filters in EF Core

@@ -1,0 +1,75 @@
+﻿o 
+
+Question: Create a new branch from your latest code (or master) and 
+"label" that point in time while keeping all code in the same root, 
+you should use a Git Tag combined with a New Branch.
+
+Here are the step-by-step instructions:
+
+Step 1: 
+
+Create a "Label" (Git Tag) In Git, the official way to mark 
+or label a specific point in your code's history (without moving the 
+branch) is by creating a tag.
+ 
+> Via the GitHub Web Interface: (Permament Label insame branch)
+
+1. Go to your repository's main page. Click on the Releases tab 
+on the right side of the page. Click Draft a new release (or Create 
+a new release).
+
+2. In the Choose a tag dropdown, type a version number (e.g., v1.0.0).
+Click Create new tag: [tag_name]. 
+
+3. Write your title and description, 
+
+4. then click Publish release. This locks this exact code state as a 
+permanent label. 
+
+> Via the Terminal:
+
+Make sure you are on your latest branch/master:
+
+1. git checkout master. 
+2. Create the tag: git tag v1.0.0 
+3. Push the tag to GitHub: git push origin v1.0.0
+
+Step 2: 
+
+Create a New Branch To start coding from this exact latest 
+point (while staying rooted to master as your base repository), you 
+will create a new branch.
+
+> Via the GitHub Web Interface:
+
+1. On your repository page, click the Branch dropdown menu at the top 
+left.
+
+2. Type a unique name for your new branch (e.g., new-feature) in the text 
+field.
+
+3. Click Create branch.
+
+Via the Terminal:
+
+Ensure you are on the latest code and it's pulled: 
+
+1. git pull origin master.
+
+2. Create and switch to your new branch:
+git checkout -b new-featurePush 
+
+the new branch to GitHub:
+git push -u origin new-featureHow 
+
+
+This Achieves Your Goal, The "Label": 
+
+1. By creating a Release/Tag, you freeze a readable "Label" (like v1.0.0) 
+of your latest working code for safe keeping.
+
+2. Same Root: By branching off master (or the latest code), both your 
+new branch and the older tagged points share the exact same underlying 
+history and root directory. You can make edits in new-feature without 
+modifying your labeled code, allowing you to easily return to that 
+labeled point in GitHub at any time.

@@ -1,0 +1,68 @@
+﻿How do we use github project with incremental scrum methodology?
+
+Using GitHub Projects for incremental Scrum means mapping Scrum events 
+directly to GitHub’s Kanban views, issue tracking, and iteration 
+features. 
+
+It allows your team to plan sprints, track incremental software 
+increments (working code shipped after each sprint), and review 
+progress within the same platform that hosts your code.
+
+Set Up Your Scrum Workspace:
+
+> To start, create a central board for your development team.
+
+> Create an organization-level or repository-level Project Board to 
+serve as your Agile workspace.
+
+> Configure custom fields for your workflow: 
+  1. add a Number field for Story Points or Estimates 
+  2. and a Select field for Issue Type (e.g., User Story, Task, Bug).
+
+> Manage the Product Backlog (Refinement). The Product Backlog holds 
+all your user stories, ordered by business value.
+
+>  Create GitHub Issues for every feature, enhancement, or bug. 
+
+> Group them in a "Table" view and assign Milestones or create Labels 
+(e.g., Epic, Priority: High) to categorize work items. 
+
+> Ensure the Product Owner refines these issues by breaking down large 
+user stories into smaller, manageable tasks.
+
+
+1. Sprint Planning:
+Sprint planning dictates what your team will work on during the 
+upcoming sprint (usually 1–4 weeks). 
+
+2. In your Project settings, configure Iterations (Sprints) with explicit 
+start and end dates.
+
+3. Filter your board by the @current or @next iteration. Drag issues 
+from the top of the Product Backlog into the Sprint Backlog (Sprint 
+Backlog). until the team's capacity (total story points) is reached.
+
+4. Daily Scrum & Development: 
+> Your team can use the sprint board to track daily increments of work. 
+
+> Developers move cards across custom status columns like Todo, In 
+Progress, In Review, and Done.
+
+> Developers should link their code to specific GitHub issues by 
+typing Closes #123 in their commit messages or Pull Requests (PRs). 
+
+> This automates issue tracking and closes the task once merged. 
+Conduct a Daily Scrum to discuss blockers and adjust day-to-day 
+priorities.
+
+5. Sprint Review & Retrospective: 
+
+> At the end of the sprint, the team demonstrates the incremental product and evaluates processes. Use a 
+"Done" view to filter closed issues and evaluate the completed product 
+increment during your Sprint Review. 
+
+> Hold a Sprint Retrospective to discuss what went well and what can be 
+improved. 
+
+> Update your Project Board workflows and templates based on team 
+feedback. 
