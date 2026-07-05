@@ -130,70 +130,6 @@ Cache-aside pattern: (useig session)
 ✅ **Admin API** - Search, filter, export CSV, view stats, mark resolved, cleanup  
 ✅ **Multi-tenant** - Automatic tenant scoping via query filters  
 
----
-
-### 📁 **Source Code**
-- ExceptionLog.cs
-- ExceptionEnums.cs
-- ExceptionErrorCodes.cs
-- ErrorResponse.cs
-- RegisterSerilogConfiguration.cs
-- ExceptionLoggingService.cs
-- GlobalExceptionHandlingMiddleware.cs
-- ExceptionLogsController.cs
-- ExceptionDashboardController.cs
-- AddExceptionLogsTable.cs
-
-### **Configuration**
-- Program.cs (UPDATED with Serilog & middleware)
-- ApplicationDbContext.cs (UPDATED with ExceptionLog DbSet)
-- appsettings.json
-
-### **Documentation**
-
-- `README_EXCEPTION_HANDLING.md` - **Main reference guide**
-- `EXCEPTION_HANDLING_GUIDE.md` - **Detailed 500+ line guide**
-- `QUICK_REFERENCE.md` - **Quick lookup for developers**
-- IMPLEMENTATION_SUMMARY.md - **What was delivered**
-- IMPLEMENTATION_CHECKLIST.md - **Verification checklist (115+ items)**
-- DEPLOYMENT_GUIDE.md - **Production deployment steps**
-
-
-### 📝 **Log Files Created**
-
-Three daily log files (auto-rotating, 30-day retention):
-- `application-log-YYYY-MM-DD.txt` - All logs
-- `errors-log-YYYY-MM-DD.txt` - Errors only
-- `exceptions-log-YYYY-MM-DD.json` - Compact JSON format
-
----
-
-### 🔐 **Security Built-In**
-
-- ✅ Sensitive headers excluded (Authorization, Cookie, API Keys)
-- ✅ Generic user messages (no stack traces exposed)
-- ✅ Request body truncated (2000 chars max)
-- ✅ Multi-tenant isolation automatic
-- ✅ Admin role required for API access
-
----
-
-### 📚 **Documentation**
-
-1. **README_EXCEPTION_HANDLING.md** - Complete system overview
-2. **QUICK_REFERENCE.md** - Quick lookup for developers
-3. **DEPLOYMENT_GUIDE.md** - Production deployment
-4. **IMPLEMENTATION_CHECKLIST.md** - Verification steps
-
-### ✨ **What Makes It Production-Ready**
-
-✅ **Comprehensive** - 40+ error codes, 18 exception types, 6 API endpoints  
-✅ **Performant** - Async logging, database indexes, automatic deduplication  
-✅ **Secure** - Sensitive data excluded, generic messages, multi-tenant safe  
-✅ **Maintainable** - Clean code, interfaces, DI, extensible design  
-✅ **Observable** - Structured logging, dashboards, analytics  
-✅ **Documented** - 2000+ lines of guides with examples  
-
 ## Authentication 
 Default Identity Authentication: Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base. 
 
@@ -215,17 +151,32 @@ Default Identity Authentication: Keeps the default ASP.NET Core Identity setup. 
 8. Request Security: Unsafe requests are protected by the Identity default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
 
 ## Solution Design & Architecture (.NET 8.0) 
+
 ### Background: 
-I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.  
+I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. 
+
+When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
+
+### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.  
 
 ### The Best Practices by Research 
-Note: Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret design. I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. Based on the research on the internet, I started the migration and tried to keep and reuse some parts of the past work.  
+
+**Note:** 
+Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
+
+### Current Archiecture is:
+1. Monolithich
+2. Clean Architecture
+
+I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
+
+**This objective createdthe Clean Architecture:**
 1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
 2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
 3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
 4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
-## Solution Design 
+## Solution Design (Monolithic ad Clean Structure)
 
 1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.
 2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.
@@ -238,7 +189,7 @@ Note: Before planning for the multitenant aplicatin saas, I didn't consider or r
 
 ### Future Work: 
 1. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API.
-2. Because of the saperatin and breaking the code modular, we can convert the solution into micro service based deployment and scale the heavy traffic api services.
+2. Because of the saperatin and breaking the code modular, we can convert the solution into micro service based deployment and scale the heavy traffic api services. 
 
 ## Security Features
 (Default Identity Flow)
@@ -263,9 +214,6 @@ It is extended to use tenants (IdentityUser is now:
 1. Security Feature (Web Project) using Identity
 2. These: Sign in, Signout, Email verification, Account lock, Roles based authorization are the pages where these security features are applied. For authentication, we are using te .Net 8.0 Identity with the default configuration. The tables are IdentityUser and IdentityRole. Authorization is Role based. Currently the roles are: (Admin, Company & User)
 3. It has changed for multi-tenant: Global Admin and User. Now, we have tenant specific roles too. 
-
-Story of Shop Example: 
-The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people. The website sells products/services. He/she is the owner of the shop and the website. The shop owner will have his own domain and hosting. The shop owner will have a company account to upload products. The shop will have one more account which is for shop admin. The purpose of the admin account is to organize the uploaded products in different templates on the home page and market page. The home page will display products based on selected templates and products. Visitors of the products can browse through the products and add to cart and checkout for purchase. Visitors can see the details of the product with multiple photos and information. Shop Admin User can configure & display other companies or business advertisements on the shop website. He can be an affiliate of other websites. The website will provide a few more pages: contact us,  about us, FAQ  and  Set a logo for the website. In short, this is a very small-size CMS for small businesses.  
 
 ## Software Scope:
 1. **Module: Account Management (Multi Tenant Model)** Anyone can create an account to purchase products, registration requires email verification before login is allowed, email Verification process: a verification email is sent after registration, the link is valid for 2 hours; after that, it expires, Without verification, users cannot log in; getting a new verification link, try logging in with your registered email and password; a new verification email will be sent, use the “Forgot Password” link, enter your email, and receive a fresh verification link, Security Policy: No user can log in until their email is confirmed, Password reset and account recovery options are built in. In short: the page outlines a strict email verification policy to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. **For multi tenant integration, some new fetures are being added**
