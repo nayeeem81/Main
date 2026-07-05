@@ -1,8 +1,25 @@
-# Story of Multi-Tenant Stores: 
+**🎬📺 SaaS Business Model:** In SaaS business model users/tenants instead of (buying and installing software) locally, access tools (applicatin features) via web browsers or apps, eliminating upfront infrastructure and maintenance costs.  
 
-We are developing a multi-tenant store web application. The users are called tenants. A tenant is a shop or a store. The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. The registration is for the shop with an email address. 
+**🔑🏢 Multi-Tenant SaaS:** This is a specific underlying technical architecture where all customers share the exact same software instance and physical infrastructure for receiving the application features. 
 
-An email can be used with multiple tenants. Just like a single sign in. Consider scenarios:  
+**🏬🛍️🛒Multi-Tenant Web Application:** is one example of the underling multi-Tenant SaaS. In this Model, Tenant is a store/shop. 
+
+
+
+# 🏬🛍️🛒Multi-Tenant Stores (Multi-Tenant SaaS)
+
+We are developing a multi-tenant stores web application. 
+
+A store is called tenant ⇄ A tenant is a store. **(vice versa)** 
+
+**Store is a 🛍️Shop inside 🏬Shopping Mall**
+
+The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. 
+
+### The registration is for the shop with an email address from the portal. Example: www.tenators.com An email can be used with multiple tenants. Just like a single sign in across all tenants. 
+
+
+### Consider scenarios:  
 
 ## Scenario 1: 
 
@@ -12,16 +29,23 @@ You have staff in your business.  After registering at the shop, you can add sta
 
 ## Scenario 2:  
 
-The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he verifies the link in his email inbox, he can login with his email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop. 
+The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop. 
 
-## Tenant and User:  
+## Tenant🛍️ & User🔑  
 
 1. Tenants: Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
-2. Users: Initial tenant creation, this multi-tenant web application; assigns the user (email owner) as an admin. Then, he/she can add more users by invitation (email). 
+2. Users: Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. 
 
 A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address. 
 
 ## Tenant Shop Website (URL): 
+
+Tenant has ti's own work space. Users can uupload products, add ads (images, links) and arrange the pages by their choice.
+
+### Your Shop in a Shopping Mall: 
+
+**The way the owner and managers plan and design interior and arrange products of a shop in a shopping mall.**
+
 
 **1. Category A:** 
 After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features. 
