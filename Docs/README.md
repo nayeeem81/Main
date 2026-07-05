@@ -165,12 +165,12 @@ When I started looking at the code and searching on the internet, I found that M
 Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
 
 ### Current Archiecture is:
-1. Monolithich
-2. Clean Architecture
+1. Monolithich (one deployable unit, can be scaled horizontally and vertically)
+2. Clean Architecture (makes the code organnized and maintainable)
 
 I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
 
-**This objective createdthe Clean Architecture:**
+**This objective created the Clean Architecture:**
 1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
 2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
 3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
