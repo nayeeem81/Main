@@ -1,3 +1,78 @@
+# Story of Multi-Tenant Stores: 
+
+We are developing a multi-tenant store web application. The users are called tenants. A tenant is a shop or a store. The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. The registration is for the shop with an email address. 
+
+An email can be used with multiple tenants. Just like a single sign in. Consider a scenarios:  
+
+## Scenario 1: 
+
+You have a business with a valid trade license and do business professionally.  You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.  
+
+You have staff in your business.  After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager. 
+
+## Scenario 2:  
+
+The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he verifies the link in his email inbox, he can login with his email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop. 
+
+## Tenant and User:  
+
+1. Tenants: Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+2. Users: Initial tenant creation, this multi-tenant web application; assigns the user (email owner) as an admin. Then, he/she can add more users by invitation (email). 
+
+A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address. 
+
+## Tenant Shop Website (URL): 
+
+**1. Category A:** 
+After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features. 
+
+**www.rotikhai.com (domain)** 
+
+**2. Category B:** 
+After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features. 
+
+**www.rotikhai.tenantors.com  (subdomain)** 
+
+**3. Category C:** 
+After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features. 
+
+**www.tenantors.com/rotikhai/ (subdirectory)** 
+
+## Web Application Shopping Features: 
+
+1. Product Manager (manage shop products with admin dashboard)
+2. Advertisement Manager (create ads with images, texts, links)
+3. Page Manager (small CMS to organize the products and ads with different templates)
+4. Shopping Cart and Order Processing:
+5. Payment Manager: 
+
+## Concerns for Tenant (Isolation): 
+
+Multi-Tenant applications often suffer from data leaks, which is an error because of the problem of isolation from one tenant to another. This error was not addressed by the application until they realized that the data was leaking because of an isolation problem. 
+
+**The architecture of the multi-tenant model inside the application uses shared resources.**  
+
+The shared resources are: 
+1. The application who is serving all the tenants
+2. Sometimes the database as well. 
+
+So, it is very necessary to who are the users requesting access to the database for information and changing the database records. Here isolation comes into the play.  How we are allowing access to the user over the data of a tenant. It is not about the user if the user is authenticated in the system properly, rather the solution is with answer, if the user has the right to request and get access to the requested resource. 
+
+This isolation is a big concern for multi-tenant applications because of the shared database and application which is used by all tenants. How do we isolate them and their users from the shared application and database infrastructure is the point where the data leak happens, and it is because of the architecture lacking with few of the concerns that didn’t address inside the application architecture design. 
+
+1. The tenant id is the first security attribute.
+2. Second is the secret key for each tenant.
+3. Token is generated using key and tenant id. 
+
+Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key).  
+
+### **Isolation must be enforced at: Token Level, Middleware Level, Policy Lavel, Database Lavel, Encryption Lavel (Key)**: 
+
+1. Tenant Resolve Handler: Uses Token with Key for Server Validation.
+2. Authorization Role Handler: Uses Tenant Id, Tenant Role, User Id to identify the Policy assigned for user to access.
+3. Database Query Filter by Tenant Id and Encrypted Token (Tenant Id and Key) 
+
+
 # Multi Tenant Architecture 🔄(70%) 🟥(30%)
 
 ## SaaS Cross-Cutting Concerns 
