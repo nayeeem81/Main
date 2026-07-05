@@ -2,7 +2,7 @@
 
 We are developing a multi-tenant store web application. The users are called tenants. A tenant is a shop or a store. The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. The registration is for the shop with an email address. 
 
-An email can be used with multiple tenants. Just like a single sign in. Consider a scenarios:  
+An email can be used with multiple tenants. Just like a single sign in. Consider scenarios:  
 
 ## Scenario 1: 
 
