@@ -13,7 +13,10 @@
     <File Path="website/site.css" />
   </Folder>
   <Folder Name="/Research/">
+    <File Path="Cokkies to secure an application.txt" />
     <File Path="Generate Token.txt" />
+    <File Path="Jwt create, configure, for .net 8.0.txt" />
+    <File Path="Nginx Reverce Proxy.txt" />
     <File Path="Research/Best Practices Branching Convention Help.txt" />
     <File Path="Research/Best Practices Service Layer .txt" />
     <File Path="Research/Best Practices Solution For DTO Mapping.txt" />
@@ -101,6 +104,8 @@
     <File Path="Research/Site Text Current Me .txt" />
     <File Path="Research/Site Text Project Goals.txt" />
     <File Path="Research/TextForFoler.txt" />
+    <File Path="Tenant Resolver Token Flow.txt" />
+    <File Path="TextFile1.txt" />
     <File Path="Token Provider for Two Variables.txt" />
   </Folder>
   <Folder Name="/Solution Items/">
