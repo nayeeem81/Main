@@ -2,7 +2,7 @@
 
 We are developing a multi-tenant store web application. The users are called tenants. A tenant is a shop or a store. The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. The registration is for the shop with an email address. 
 
-An email can be used with multiple tenants. Just like a single sign in. Consider a scenarios:  
+An email can be used with multiple tenants. Just like a single sign in. Consider scenarios:  
 
 ## Scenario 1: 
 
@@ -64,7 +64,7 @@ This isolation is a big concern for multi-tenant applications because of the sha
 2. Second is the secret key for each tenant.
 3. Token is generated using key and tenant id. 
 
-Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key).  
+// Under work in code/token part only): Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key). Explain may not correct. // 
 
 ### **Isolation must be enforced at: Token Level, Middleware Level, Policy Lavel, Database Lavel, Encryption Lavel (Key)**: 
 
