@@ -43,8 +43,12 @@ public class TenancyService: ITenancyService
         else
         {
             CurrentTenant =
-                new TenantDisplayDataModel (tenant.TenantId,tenant.Name,
-                tenant.HostName,tenant.Store);
+                new TenantDisplayDataModel (
+                    tenant.TenantId,
+                    tenant.Name,
+                    tenant.HostName,
+                    tenant.Store,
+                    tenant.TenantKey);
 
             TenancyFound = true;
         }

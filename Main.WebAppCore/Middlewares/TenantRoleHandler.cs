@@ -33,7 +33,9 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
         }
 
         // Validate against the formatted "IdentityId:TenantId:RoleName" claim we made after Login success
-        var expectedClaimValue = $"{currentUserId}:{currentTenantId}:{requirement.AllowedRole}";
+
+        var expectedClaimValue =
+        $"{currentUserId}:{currentTenantId}:{requirement.AllowedRole}";
 
         if ( context.User.IsInRole ("User") )
         {

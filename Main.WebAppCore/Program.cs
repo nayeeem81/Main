@@ -10,6 +10,9 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        // Register engine as a reusable thread-safe stateless instance
+        _ = builder.Services.AddSingleton<TenantExpiringTokenEngine> ();
+
         // Configure Serilog for global logging
         _ = builder.AddSerilogConfiguration ();
 
@@ -26,6 +29,7 @@ public class Program
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
         _ = builder.Services.AddAuthorization (builder.Configuration);
+
         // 2. Add standard Antiforgery services
         _ = builder.Services.AddAntiforgery ();
 

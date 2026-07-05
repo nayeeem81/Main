@@ -13,6 +13,7 @@
     <File Path="website/site.css" />
   </Folder>
   <Folder Name="/Research/">
+    <File Path="Generate Token.txt" />
     <File Path="Research/Best Practices Branching Convention Help.txt" />
     <File Path="Research/Best Practices Service Layer .txt" />
     <File Path="Research/Best Practices Solution For DTO Mapping.txt" />
@@ -100,13 +101,14 @@
     <File Path="Research/Site Text Current Me .txt" />
     <File Path="Research/Site Text Project Goals.txt" />
     <File Path="Research/TextForFoler.txt" />
+    <File Path="Token Provider for Two Variables.txt" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/website/">
-    <File Path="Docs/index.html" />
-    <File Path="Docs/site.css" />
+    <File Path="index.html" />
+    <File Path="site.css" />
   </Folder>
   <Project Path="Main.Common/Main.Common.csproj" Id="9ec1bd43-fe89-42bc-b5eb-2cc7212b86ce" />
   <Project Path="Main.Infrastructure/Main.Infrastructure.csproj" Id="58cc4f58-1b5c-48a1-a7fc-c07e576d1ebf" />

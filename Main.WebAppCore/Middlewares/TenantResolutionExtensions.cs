@@ -17,7 +17,8 @@ public static class TenantResolutionExtensions
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        TenantExpiringTokenEngine tokenEngine)
     {
         var cachedTenant = GetTenantFromSession(context);
 
@@ -44,6 +45,7 @@ public static class TenantResolutionExtensions
             {
                 SaveTenantToSession (context,tenantDisplayDataModel);
                 SetTenantSetter (tenantSetter,tenantDisplayDataModel);
+
                 return true;
             }
         }
@@ -76,6 +78,7 @@ public static class TenantResolutionExtensions
     // Helper to store Tenant in Session
     private static void SaveTenantToSession (HttpContext context,TenantDisplayDataModel tenantDisplayDataModel)
     {
+
         var sessionData = JsonSerializer.Serialize(tenantDisplayDataModel);
         context.Session.SetString (SessionKey,sessionData);
     }

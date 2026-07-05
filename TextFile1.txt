@@ -1,0 +1,37 @@
+Story of Shop Example: The website is for small shops or sellers who want to own an online presence to sell products and reach a higher reach for people.
+
+The website sells products/services. He/she is the owner of the shop (tenant) and the website.
+
+1. The shop owner/tenant will have his own domain and hosting (pointing to our website).
+2.  Or the shop owner/tenant will have his subdomain or subdirectory (pointing to our website).
+
+
+The shop owner/tenant will have a company account to upload products (Tenant Admin). The shop will have one or more accounts for his  managers (Content Manager).
+
+The purpose of the (content manager) account is to upload produucts and organize the uploaded products in different templates on the home page and market pages.
+
+The home page will display products based on selected templates and products. Visitors of the products can browse through the products and add to shopping cart and checkout for purchase.
+
+Visitors can see the details of the product with multiple photos and information & ads. Tenant Content Manager User can configure & display other companies or business advertisements on the his personal website (tenent website). He can be an affiliate of other websites. The website will provide a few more pages: contact us, about us, FAQ and Set a logo for the tenant website.
+
+In short, this is a very small-size CMS for small businesses with multi tenancy model with the SaaS arcitecture (multi tenancy) using .Net 8.0.
+
+This solution architecture is based on the best practices for SaaS applications for multi tenancy model.
+
+1. The struture of the software architecture is designed for small bussiness owners. It is following the design principles which are required for implementing multi tenant SaaS implementation.
+
+2. With benefits of the such architecture, there are risks to leak data from teant web site because of software design and architecture (by hackers and own implementatin flaws).
+
+3. To mitigate the risks, and for the audit bodies, fetuares requied for isolation (database level isolation: by tenant is provided), secure authintication (identity), authorization (middleware: policy based with tenant roles) isimpemented.
+
+4. Tenant resolver middleware (domain, sub domain, sub directory), logging (tenant data, software database, internal data for maintenance and improving performnace) are isolated for distinct log audience. The logging is isolated from the software engineers and operation maintainers by design with architectural evidence.
+
+5. For software performance, global exception handeling with logging are seperately stored both in database and the server log files with time stamp and unique trace id and by tenant; required for performance of the SaaS solution.
+
+6. Measure of  isolation by the regulators standpoint and the guidelines from the software researchers related to data leak in such applications is is a required feature. For this all the cross cutting concerns are being added.
+
+7. Audit information (for  tenant isolation and data secuity), global exception handeling, logging, reguatory audit over the software architecture followed te best practices of SaaS Multi Tenant Apllication.
+
+8. Each record is isolated by (Tenant, user, tenant user role, tenant-country and tenant-continent) and they are not exposed to te hackers or malfunctioned code when we log or provide responce to the user or to the browser because of any exception.
+
+9. .NET 8.0 based Identity is used for membership management of tenants, users and used Identity provided default features, flows, and token based email links (with expire timestamp). Middlewares are designed for security of the unsafe requests: both from valid users and unidentifed users. Logging each requests for development, application security, performance and the data security perspective for tenants and their customers.

@@ -35,6 +35,7 @@
 1. Tenant Role Policy Based
 2. Tenant Claims ( Authorization for Tenant Roles)
 3. Claims:
+
 We chech the tenantId from the Middleware set ItenantSetter (TenantId).
 We use Session Key: CurrentTenantId and get the TeanantId 
 We match the ItenantSetter.TenantId with the session TenantId

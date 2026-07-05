@@ -19,10 +19,14 @@ Remaining all are User (role).
 In tenant, they are either: Admin, ContentManger , Member. 
 
 1. My questins are: Is it a good practise? 
+
 2. The entity mapping schema will be what? 
+
 3. authrize attribiute (then use original identity role or not), dbcontext (Dbset properties) will be what?  
 
-Your approach of separating global roles from tenant-specific permissions is common and functional, but mapping them using raw IdentityRole can become messy. Below are the answers to your specific questions, designed for ASP.NET Core MVC and .NET 8.0.
+Your approach of separating global roles from tenant-specific permissions is common and functional, but mapping them using raw IdentityRole can become messy. 
+
+Below are the answers to your specific questions, designed for ASP.NET Core MVC and .NET 8.0.
 
 1. Is this a good practice?  Yes, conceptually. However, using the standard IdentityRole for both global and tenant roles is not recommended. It mixes global system roles with dynamic tenant roles, forcing you to write complex LINQ queries every time you check if a user is an Admin in a specific tenant.
 
@@ -64,6 +68,7 @@ public class TenantUser
 3. The Authorize Attribute
 
 Do not use [Authorize(Roles = "Admin")] alone, because a tenant Admin's ID will conflict with another tenant's Admin.
+
 
 Instead, use Policy-Based Authorization or evaluate a custom TenantId claim in a middleware/handler.
 

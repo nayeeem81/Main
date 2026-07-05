@@ -1,0 +1,598 @@
+Yes. If you switch to a custom provider or standard cryptography (like HMAC), you can easily combine two variables to generate a token that works both ways (generation and verification). [1, 2] 
+
+Because the default DataProtectorTokenProvider forces a timestamp into the token, you cannot use it to regenerate a perfectly identical string down the road.
+
+## Recommended Architecture: 
+
+HMAC-SHA256 Provider
+
+An HMAC (Hash-based Message Authentication Code) provider perfectly satisfies your requirement. It cryptographically binds your variables together and creates a deterministic token. If you pass the exact same input later, it returns the exact same string. '
+
+[3, 4, 5] 
+
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class DeterministicTokenEngine
+{
+    // Keep this safe in your configuration appsettings.json
+
+    private readonly byte[] _secretServerKey;
+
+    public DeterministicTokenEngine(string secretKey)
+    {
+        _secretServerKey = Encoding.UTF8.GetBytes(secretKey);
+    }
+
+    /// <summary>
+    /// Generates a unique, reproducible token from a key and tenantId combination.
+    /// </summary>
+
+    public string GenerateToken(string key, string tenantId)
+    {
+        // 1. Combine the variables deterministically 
+        // Using a clear delimiter prevents value-bleeding structural bugs
+
+        string combinedInput = $"{tenantId.ToLowerInvariant()}:{key.ToLowerInvariant()}";
+
+        byte[] inputBytes = Encoding.UTF8.GetBytes(combinedInput);
+
+        // 2. Hash using your secure server secret
+
+        using var hmac = new HMACSHA256(_secretServerKey);
+
+        byte[] hashBytes = hmac.ComputeHash(inputBytes);
+
+        // 3. Return a clean, URL-safe string
+
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Validates the token by regenerating it and checking for a exact match.
+    /// </summary>
+
+    public bool ValidateToken(string key, string tenantId, string suppliedToken)
+    {
+        string expectedToken = GenerateToken(key, tenantId);
+        
+        // Use a time-constant comparison to protect against timing attacks
+
+        return CryptographicOperations.FixedTimeEquals(
+            Encoding.UTF8.GetBytes(expectedToken), 
+            Encoding.UTF8.GetBytes(suppliedToken)
+        );
+    }
+}
+
+## Essential Security Precautions
+
+If you build your provider this way, keep these two limitations in mind:
+
+* No Natural Expiration: 
+
+Because this process is completely stateless and lacks a timestamp, tokens never expire. If you need an expiration window, you must alter the combination string to include a time bucket (for example, combining tenantId + key + DateTime.UtcNow.ToString("yyyy-MM-dd") creates a token that naturally cycles and expires every 24 hours). 
+[6, 7, 8] 
+
+* Information Exposure Risk: Anyone holding a valid token can run offline brute-force attacks to guess your key or tenantId if your master secretKey is weak. Keep your master server secret long and randomly generated.
+
+[9, 10, 11] 
+
+## Next Steps
+
+If you want to tailor this implementation, tell me:
+
+* Do these tokens need to expire automatically, or should they remain valid forever?
+
+* Will this token be passed over public URLs (like an email activation link)? [12] 
+
+
+[1] [https://en.wikipedia.org](https://en.wikipedia.org/wiki/Tokenization_%28data_security%29)
+[2] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/validate-multiple-tokens-with-different-providers-in-asp-net-8-api/)
+[3] [https://www.linkedin.com](https://www.linkedin.com/pulse/why-i-moved-beyond-jwt-building-security-model-fits-my-luigi-c-filho-vlezf)
+[4] [https://blog.isecauditors.com](https://blog.isecauditors.com/en/tokenization-in-environments-with-pci-dss-compliance-requirements)
+[5] [https://www.trmlabs.com](https://www.trmlabs.com/trm-tech-blog/cross-chain-swap-traceability-seven-models-one-engineering-framework)
+[6] [https://medium.com](https://medium.com/@loggd/building-secure-authentication-a-complete-guide-to-jwts-passwords-mfa-and-oauth-fdad8d243b91)
+[7] [https://dev.to](https://dev.to/khaledsaeed18/access-and-refresh-tokens-in-token-based-authentication-2a9o)
+[8] [https://saasitive.com](https://saasitive.com/blog/token-based-authentication-django-rest-framework-djoser/)
+[9] [https://infosecwriteups.com](https://infosecwriteups.com/all-about-attacking-jwt-9770f2b9d087)
+[10] [https://www.authgear.com](https://www.authgear.com/post/jwt-security-best-practices-common-vulnerabilities/)
+[11] [https://www.hjp.at](https://www.hjp.at/doc/rfc/rfc5849.html)
+[12] [https://discourse.slimframework.com](https://discourse.slimframework.com/t/multiple-authorization-and-custom-headers/1337)
+
+To add an exact 30-minute automatic expiration window while keeping the system stateless, you can append a dynamic time-bucket directly into your combined string.
+
+Because standard clock times switch at different intervals for different users, the industry-standard way to handle this is to divide the current Unix epoch time into 30-minute intervals (blocks).
+[1] 
+
+## Time-Window Token Provider
+
+This updated engine checks both the current 30-minute block and the previous 30-minute block. This dual-check prevents valid tokens from suddenly breaking if a user generates a token at 10:29 and submits it at 10:31.
+
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class ExpiringTokenEngine
+{
+    private readonly byte[] _secretServerKey;
+
+    // 30 minutes expressed in total seconds
+
+    private const long WindowSeconds = 30 * 60; 
+
+    public ExpiringTokenEngine(string secretKey)
+    {
+        _secretServerKey = Encoding.UTF8.GetBytes(secretKey);
+    }
+
+    /// <summary>
+    /// Generates a token valid for the current 30-minute window.
+    /// </summary>
+    public string GenerateToken(string key, string tenantId)
+    {
+        long currentWindow = GetCurrentWindowIndex();
+        return CreateHash(key, tenantId, currentWindow);
+    }
+
+    /// <summary>
+    /// Validates the token against the current and previous 30-minute windows.
+    /// </summary>
+    public bool ValidateToken(string key, string tenantId, string suppliedToken)
+    {
+        long currentWindow = GetCurrentWindowIndex();
+
+        // Check 1: Is it from the current 30-minute block?
+
+        string currentExpected = CreateHash(key, tenantId, currentWindow);
+
+        if (CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(currentExpected), Encoding.UTF8.GetBytes(suppliedToken)))
+        {
+            return true;
+        }
+
+        // Check 2: Is it from the immediately preceding 30-minute block?
+        string previousExpected = CreateHash(key, tenantId, currentWindow - 1);
+
+        if (CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(previousExpected), Encoding.UTF8.GetBytes(suppliedToken)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private string CreateHash(string key, string tenantId, long windowIndex)
+    {
+        // Incorporating the windowIndex means the token string changes every 30 minutes
+
+        string combinedInput = $"{tenantId.ToLowerInvariant()}:{key.ToLowerInvariant()}:{windowIndex}";
+
+        byte[] inputBytes = Encoding.UTF8.GetBytes(combinedInput);
+
+        using var hmac = new HMACSHA256(_secretServerKey);
+        byte[] hashBytes = hmac.ComputeHash(inputBytes);
+
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    private long GetCurrentWindowIndex()
+    {
+        // Returns how many 30-minute blocks have passed since 1970
+
+        long unixTimeSeconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        return unixTimeSeconds / WindowSeconds;
+    }
+}
+
+## Critical Rules for 30-Minute Windows
+
+* Actual Lifespan Variance: Because tokens map to strict clock intervals rather than an independent timer, a token will live anywhere from 30 to 60 minutes before expiring. [2] 
+
+* Server Time Sync: Your host servers must have synchronized clocks (using NTP). If Server A's clock drifts by more than a couple of minutes from Server B, tokens generated on one will fail validation on the other.
+
+## Next Steps
+
+If you want to refine this flow, let me know:
+
+* Do you need to capture specific custom data inside the token itself, or is a pure verification string enough?
+
+* Will you be passing this token inside an HTTP Header or as a query string parameter in a Web URL?
+
+
+[1] [https://www.loginradius.com](https://www.loginradius.com/blog/engineering/advantages-of-totp)
+[2] [https://docs.mulesoft.com](https://docs.mulesoft.com/mule-sdk/latest/oauth-token-expiration)
+
+The best practice for an API is to pass the token via an HTTP Header (specifically the Authorization header), and then unpack it during the request lifecycle to populate the HttpContext.User as Claims. This keeps your architecture standard, secure, and compatible with ASP.NET Core's authorization system. [1, 2, 3, 4] 
+
+Here is the complete implementation showing how to extract the token from the header, validate it using your 30-minute engine, and inject the results into HttpContext as Claims.
+
+## 1. The Custom Authentication Middleware'
+
+This middleware intercepts incoming HTTP requests, looks for the token in the headers, validates it, and assigns an identity to the HttpContext. 
+[5, 6, 7, 8] 
+
+using Microsoft.AspNetCore.Http;using System.Security.Claims;using System.Threading.Tasks;
+public class TenantTokenAuthMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly ExpiringTokenEngine _tokenEngine;
+
+    public TenantTokenAuthMiddleware(RequestDelegate next, ExpiringTokenEngine tokenEngine)
+    {
+        _next = next;
+        _tokenEngine = tokenEngine;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // 1. Extract values from Headers
+        // Expecting: Authorization: Bearer <token>
+        if (!context.Request.Headers.TryGetValue("Authorization", out var authHeader) || 
+            string.IsNullOrEmpty(authHeader))
+        {
+            await _next(context);
+            return;
+        }
+
+        string headerValue = authHeader.ToString();
+        if (!headerValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            await _next(context);
+            return;
+        }
+
+        string token = headerValue.Substring("Bearer ".Length).Trim();
+
+        // Expecting the client to also provide context headers to verify against the hash
+        context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantId);
+        context.Request.Headers.TryGetValue("X-User-Key", out var userKey);
+
+        if (!string.IsNullOrEmpty(tenantId) && !string.IsNullOrEmpty(userKey))
+        {
+            // 2. Validate using your 30-minute stateless token engine
+            bool isValid = _tokenEngine.ValidateToken(userKey!, tenantId!, token);
+
+            if (isValid)
+            {
+                // 3. Transform variables into Claims and attach to HttpContext
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userKey!),
+                    new Claim("TenantId", tenantId!),
+                    new Claim("AuthToken", token) // Stores the raw token in HttpContext claims if needed later
+                };
+
+                var identity = new ClaimsIdentity(claims, "CustomTenantTokenAuth");
+                context.User = new ClaimsPrincipal(identity);
+            }
+        }
+
+        await _next(context);
+    }
+}
+
+## 2. Registering the Middleware in Program.cs
+Add your token engine as a singleton and register the custom middleware so it runs on every API request. [9] 
+
+var builder = WebApplication.CreateBuilder(builder.Environment);
+// Register your expiring token engine with your server secret keystring serverSecret = builder.Configuration["TokenSettings:SecretKey"] ?? "YOUR_SUPER_SECRET_KEY_HERE_MIN_32_CHARS";
+builder.Services.Singleton(new ExpiringTokenEngine(serverSecret));
+var app = builder.Build();
+// Add the middleware to the pipeline (Place it BEFORE app.MapControllers/Endpoints)
+app.UseMiddleware<TenantTokenAuthMiddleware>();
+// Optional: If you want to use standard [Authorize] attributes on your controllers
+app.UseAuthorization(); 
+
+app.Run();
+
+## 3. How to Consume Claims in a Controller
+Once the middleware attaches the ClaimsPrincipal to the HttpContext, you can instantly read the keys and tenant details inside any controller action.
+
+using Microsoft.AspNetCore.Authorization;using Microsoft.AspNetCore.Mvc;using System.Linq;
+
+[ApiController]
+[Route("api/[controller]")]public class DataController : ControllerBase
+{
+    [HttpGet("secure-resource")]
+    public IActionResult GetSecureData()
+    {
+        // Check if the middleware authenticated the user
+        if (User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            return Unauthorized("Missing or invalid tenant token.");
+        }
+
+        // Pull the variables directly out of the HttpContext Claims
+        string? userKey = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        string? tenantId = User.FindFirst("TenantId")?.Value;
+        string? tokenUsed = User.FindFirst("AuthToken")?.Value;
+
+        return Ok(new {
+            Message = "Access granted via HttpContext Claims!",
+            CurrentKey = userKey,
+            CurrentTenant = tenantId,
+            TokenInstance = tokenUsed
+        });
+    }
+}
+
+## How the Client Makes the HTTP Request
+To access this endpoint, the consuming client application must format its HTTP request with the values inside the headers like this:
+
+GET /api/data/secure-resource HTTP/1.1
+Host: your-api-domain.com
+Authorization: Bearer <your_generated_30_min_token_string>
+X-Tenant-Id: Tenant-ABC-123
+X-User-Key: User-XYZ-789
+
+## Next Steps
+If you want to enhance this authorization setup, let me know:
+
+* Do you want to block unauthorized traffic automatically inside the middleware with a 401 Unauthorized response, instead of letting it slip through to the controller?
+* Do you need to set up formal ASP.NET Core Authorization Policies based on these tenant claims?
+
+
+[1] [https://connect2id.com](https://connect2id.com/learn/oauth-2)
+[2] [https://medium.com](https://medium.com/@london.lingo.01/building-secure-apis-with-http-authorization-header-tips-and-best-practices-2c56a5e4eb59)
+[3] [https://www.codemag.com](https://www.codemag.com/Article/2401031/Web-API-Authentication)
+[4] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/entra/identity-platform/scenario-web-app-call-api-acquire-token)
+[5] [https://jasonwatmore.com](https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api)
+[6] [https://jasonwatmore.com](https://jasonwatmore.com/post/2021/06/02/net-5-create-and-validate-jwt-tokens-use-custom-jwt-middleware)
+[7] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/customized-authentication-filters-in-asp-mvc-5/)
+[8] [https://medium.com](https://medium.com/@nagasudhirpulla/cookie-based-authentication-authorization-in-asp-net-core-explained-f4e8091980e3)
+[9] [https://maherz.medium.com](https://maherz.medium.com/how-to-secure-your-net-core-apis-0ff56e4cecb9)
+
+To validate the token using a unique Tenant Secret Key fetched dynamically via a Tenant Resolver, you must switch from a fixed server secret key to a dynamic lookup inside the middleware.
+
+This approach ensures that a compromised key for Tenant A cannot be used to forge or validate tokens for Tenant B.
+
+Here is the updated, production-ready architecture.
+
+## 1. Define the Tenant Resolver Interface
+
+First, define an interface for your database or registry lookup. This service will retrieve the unique secret key configured for each tenant.
+
+public interface ITenantResolver
+{
+    // Fetches the unique cryptographically secure key for a specific tenant
+
+    Task<string?> GetTenantSecretKeyAsync(string tenantId);
+}
+
+// Example mock implementation for testing
+
+public class DbTenantResolver : ITenantResolver
+{
+    public async Task<string?> GetTenantSecretKeyAsync(string tenantId)
+    {
+        // Replace this with your actual database, Redis, or Key Vault lookup
+        if (tenantId == "tenant-abc") return "SecretKeyForTenantABC_MustBeLongAndSecure";
+        if (tenantId == "tenant-xyz") return "SecretKeyForTenantXYZ_MustBeLongAndSecure";
+        
+        return null; // Tenant not found
+    }
+}
+
+## 2. Update the Expiring Token Engine
+
+We modify the token engine so that it no longer stores a single server secret key. Instead, the secret key must be passed dynamically into the GenerateToken and ValidateToken methods at runtime.
+
+using System;
+using System.Security.Cryptography;
+using System.Text;
+
+public class TenantExpiringTokenEngine
+{
+    private const long WindowSeconds = 30 * 60; // 30 minutes
+
+    public string GenerateToken(string key, string tenantId, string tenantSecretKey)
+    {
+        long currentWindow = GetCurrentWindowIndex();
+
+        return CreateHash(key, tenantId, currentWindow, tenantSecretKey);
+    }
+
+    public bool ValidateToken
+    (string key, string tenantId, string suppliedToken, string tenantSecretKey)
+    {
+        long currentWindow = GetCurrentWindowIndex();
+
+        // 1. Check current 30-minute block
+
+        string currentExpected = CreateHash(key, tenantId, currentWindow, tenantSecretKey);
+
+        if (CryptographicOperations.FixedTimeEquals
+        (Encoding.UTF8.GetBytes(currentExpected), Encoding.UTF8.GetBytes(suppliedToken)))
+        {
+            return true;
+        }
+
+        // 2. Check previous 30-minute block (grace period)
+
+        string previousExpected = CreateHash(key, tenantId, currentWindow - 1, tenantSecretKey);
+
+        if (CryptographicOperations.FixedTimeEquals
+        (Encoding.UTF8.GetBytes(previousExpected), Encoding.UTF8.GetBytes(suppliedToken)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private string CreateHash (string key, string tenantId, 
+    long windowIndex, string tenantSecretKey)
+    {
+        string combinedInput = $"{tenantId.ToLowerInvariant()}:{key.ToLowerInvariant()}:{windowIndex}";
+
+        byte[] inputBytes = Encoding.UTF8.GetBytes(combinedInput);
+
+        byte[] secretBytes = Encoding.UTF8.GetBytes(tenantSecretKey);
+
+        using var hmac = new HMACSHA256(secretBytes);
+
+        byte[] hashBytes = hmac.ComputeHash(inputBytes);
+
+        return Convert.ToHexString(hashBytes).ToLowerInvariant();
+    }
+
+    private long GetCurrentWindowIndex()
+    {
+        return DateTimeOffset.UtcNow.ToUnixTimeSeconds() / WindowSeconds;
+    }
+}
+
+## 3. Update the Middleware to Resolve the Tenant
+
+The middleware now extracts the X-Tenant-Id header, asks the ITenantResolver for that specific tenant's secret key, and passes it to the engine. If the tenant doesn't exist, it short-circuits with a 401 Unauthorized response. 
+
+[1] 
+
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+
+public class TenantResolverAuthMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly TenantExpiringTokenEngine _tokenEngine;
+
+    public TenantResolverAuthMiddleware
+    (RequestDelegate next, TenantExpiringTokenEngine tokenEngine)
+    {
+        _next = next;
+        _tokenEngine = tokenEngine;
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // 1. Extract context identification fields from headers
+
+        context.Request.Headers.TryGetValue("X-Tenant-Id", out var tenantIdHeader);
+
+        context.Request.Headers.TryGetValue("X-User-Key", out var userKeyHeader);
+
+        if (string.IsNullOrEmpty(tenantIdHeader) || string.IsNullOrEmpty(userKeyHeader))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            await context.Response.WriteAsync("Missing tracking headers (X-Tenant-Id or X-User-Key).");
+
+            return;
+        }
+
+        string tenantId = tenantIdHeader.ToString();
+
+        string userKey = userKeyHeader.ToString();
+
+        // 2. Extract Authorization Bearer Token
+
+        if (!context.Request.Headers.TryGetValue("Authorization", out var authHeader) 
+        || string.IsNullOrEmpty(authHeader))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            await context.Response.WriteAsync("Authorization header missing.");
+
+            return;
+        }
+
+        string headerValue = authHeader.ToString();
+
+        if (!headerValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            await context.Response.WriteAsync("Authorization scheme must be Bearer.");
+
+            return;
+        }
+
+        string token = headerValue.Substring("Bearer ".Length).Trim();
+
+        // 3. Resolve Tenant Secret Key using Scoped Service Provider
+
+        // (Resolvers linked to DbContexts must be resolved within the scope of the request)
+
+        var tenantResolver = context.RequestServices.GetRequiredService<ITenantResolver>();
+
+        string? tenantSecretKey = await tenantResolver.GetTenantSecretKeyAsync(tenantId);
+
+        if (string.IsNullOrEmpty(tenantSecretKey))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            await context.Response.WriteAsync("Invalid or unregistered Tenant ID.");
+
+            return;
+        }
+
+        // 4. Validate Token with resolved key
+
+        bool isValid = _tokenEngine.ValidateToken(userKey, tenantId, token, tenantSecretKey);
+
+        if (!isValid)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            await context.Response.WriteAsync("Token validation failed or token expired.");'
+
+            return;
+        }
+
+        // 5. Build Claims principal and append to HttpContext
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, userKey),
+
+            new Claim("TenantId", tenantId)
+        };
+
+        var identity = new ClaimsIdentity(claims, "TenantResolverAuthentication");
+
+        context.User = new ClaimsPrincipal(identity);
+
+        await _next(context);
+    }
+}
+
+## 4. Registration Wire-up (Program.cs)
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Register engine as a reusable thread-safe stateless instance
+builder.Services.AddSingleton<TenantExpiringTokenEngine>();
+
+// Register your dynamic resolver (Scoped lifecycle fits most DB-driven architectures)
+builder.Services.AddScoped<ITenantResolver, DbTenantResolver>();
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+// Add your resolver verification engine into the HTTP pipeline
+app.UseMiddleware<TenantResolverAuthMiddleware>();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+
+## Next Steps
+
+If you want to configure this further, tell me:
+
+* Are your tenant secret keys stored in clear text or encrypted/hashed within your database?
+
+* Do you need to cache the secret keys in Memory Cache or Redis to avoid looking up the tenant key in the database on every single API request?
+
+
+[1] [https://wso2.com](https://wso2.com/api-platform/policy-hub/policies/api-key-auth)

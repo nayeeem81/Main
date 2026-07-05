@@ -18,9 +18,11 @@ public class TenantResolverHandlingMiddleware
     ITenantContext tenantContext,
     ITenantSetter tenantSetter,
     ITenancyService tenancyService,
-    IMemoryCache memoryCache)
+    IMemoryCache memoryCache,
+    TenantExpiringTokenEngine tokenEngine)
     {
-        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache);
+
+        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,tokenEngine);
 
         await _next (context);
     }

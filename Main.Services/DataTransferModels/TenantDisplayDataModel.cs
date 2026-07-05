@@ -8,12 +8,14 @@ public class TenantDisplayDataModel
     {
     }
 
-    public TenantDisplayDataModel (string tenantId,string name,string domain,StoreType shopType)
+    public TenantDisplayDataModel
+    (string tenantId,string name,string domain,StoreType shopType,string key)
     {
         TenantId = tenantId;
         Name = name;
         Domain = domain;
         StoreType = shopType;
+        TokenKey = key;
     }
 
     public string TenantId
@@ -32,6 +34,11 @@ public class TenantDisplayDataModel
     }
 
     public StoreType StoreType
+    {
+        get; set;
+    }
+
+    public string? TokenKey
     {
         get; set;
     }

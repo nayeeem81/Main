@@ -55,4 +55,9 @@ public class Tenant
         get; set;
     }
 
+    public string TenantKey
+    {
+        get; set;
+    }
+
 }
