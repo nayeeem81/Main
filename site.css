@@ -2,23 +2,27 @@
     font-family: 'Roboto', sans-serif;
     line-height: 1.6;
     color: #333;
-    
 }
 
 header {
-    background: linear-gradient(90deg, #FF0033, #0066FF); 
-    color: #FFFFFF; 
-    font-family: 'Roboto', sans-serif; 
+    background: linear-gradient(90deg, #FF0033, #0066FF);
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     font-weight: bold;
     text-align: justify;
     padding: 20px;
     line-height: 1.2;
+    border: 0px;
+    border-bottom: 8px solid orange;
+    border-radius: 0px;
 }
 
     header h1 {
+        padding-top: 40px;
+        padding-bottom: 40px;
         text-shadow: 0 0 8px #FF0033, 0 0 12px #0066FF;
-        vertical-align:bottom;
+        vertical-align: bottom;
     }
 
 
@@ -64,6 +68,27 @@ header {
             color: #FFD700; /* Gold hover for UX contrast */
         }
 
+.electric-blue-text {
+  color: #fff;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  /* Layers of shadow create the neon glow effect */
+  text-shadow: 
+    0 0 5px #00d2ff,
+    0 0 10px #00d2ff,
+    0 0 20px #00a8ff,
+    0 0 40px #0066ff,
+    0 0 80px #0044ff;
+}
+
+h1, h2, h3, h4 {
+    color: #fff;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    /* Layers of shadow create the neon glow effect */
+    text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff, 0 0 20px #00a8ff, 0 0 40px #0066ff, 0 0 80px #0044ff;
+}
+
 p {
     margin-bottom: 1rem;
     line-height: 1.6;
@@ -74,17 +99,20 @@ p {
 /* Layout */
 
 main {
-    background-color: white;
-    margin:30px;
+    margin: 0px;
 }
 
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr; 
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 0px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* 1. Border Configuration */
+    border: 0px dashed #e1e4e8; /* Soft grey border that isn't harsh */
+    /* 2. Corner Rounding */
+    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
 }
 
 .container-profile {
@@ -93,9 +121,13 @@ main {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     width: 100%;
-    padding: 0px;
+    padding: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
+    /* 1. Border Configuration */
+    border: 1px solid #e1e4e8; /* Soft grey border that isn't harsh */
+    /* 2. Corner Rounding */
+    border-radius: 12px; /* Perfect medium-round corner for modern UIs */
 }
 
 
@@ -135,15 +167,25 @@ main {
     background-color: #f9f9f9;
     padding: 1.5rem;
     overflow-y: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    /* 1. Border Configuration */
+    border: 1px dashed #e1e4e8; /* Soft grey border that isn't harsh */
+    /* 2. Corner Rounding */
+    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
+    border-top-left-radius:0px;
+    border-top-right-radius:0px;
+
 }
 
 .content-section {
     min-height: 80vh;
-    border-bottom: 1px dashed #ccc;
+    border-bottom: 0px dashed #ccc;
     padding-bottom: 2rem;
-    margin-bottom: 2rem;
+    /* 1. Border Configuration */
+    border: 0px solid #e1e4e8; /* Soft grey border that isn't harsh */
+    /* 2. Corner Rounding */
+    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
 }
 
     .content-section h2 {
@@ -172,9 +214,9 @@ main {
 
 
 
-.container-profile header {
+.container header {
     background-image: radial-gradient(at 10% 20%, rgba(0, 240, 255, 0.3) 0px, transparent 50%), radial-gradient(at 90% 80%, rgba(0, 255, 102, 0.3) 0px, transparent 50%);
-    color: black;
+    color: white;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     font-weight: bold;
@@ -182,15 +224,22 @@ main {
     padding: 10px;
     line-height: 1.6;
     margin-bottom: 10px;
-    border: 1px thin dashed #ccc;
+    border: 0px thin dashed #ccc;
 }
 
 b.color-profile-naim {
-    color: brown;
+    color: orangered;
     font-weight: bold;
 }
 
 b.color-profile-googoleai {
-    color: #FF0033;
+    color: orangered;
     font-weight: bold;
+}
+
+b.linkcolor {
+    color: royalblue;
+    font-size: 20px;
+    font-weight: 200;
+    text-decoration-line:underline;
 }
