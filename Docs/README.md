@@ -16,7 +16,7 @@ A store is called tenant ⇄ A tenant is a store. **(vice versa)**
 
 The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. 
 
-### The registration is for the shop with an email address from the portal. Example: www.tenators.com An email can be used with multiple tenants. Just like a single sign in across all tenants. 
+### The registration is for the shop with an email address from the portal. Example: www.tenantors.com An email can be used with multiple tenants. Just like a single sign in across all tenants. 
 
 
 ### Consider scenarios:  
