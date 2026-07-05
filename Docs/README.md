@@ -64,7 +64,7 @@ This isolation is a big concern for multi-tenant applications because of the sha
 2. Second is the secret key for each tenant.
 3. Token is generated using key and tenant id. 
 
-Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key).  
+// Under work in code/token part only): Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key). Explain may not correct. // 
 
 ### **Isolation must be enforced at: Token Level, Middleware Level, Policy Lavel, Database Lavel, Encryption Lavel (Key)**: 
 
