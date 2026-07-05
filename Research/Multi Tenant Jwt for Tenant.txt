@@ -23,7 +23,9 @@ public async Task<IActionResult> Login(LoginViewModel model)
     var resolvedTenantId = HttpContext.Items["CurrentTenantId"]?.ToString();
 
     // 1. Find user and ensure they belong to the current tenant context
+
     var user = await _userManager.FindByNameAsync(model.Username);
+
     if (user == null || user.TenantId != resolvedTenantId)
     {
         ModelState.AddModelError("", "Invalid login attempt for this tenant.");
@@ -31,7 +33,9 @@ public async Task<IActionResult> Login(LoginViewModel model)
     }
 
     // 2. Use Identity to sign in (Handles the Identity Cookie automatically)
+
     var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+
     
     if (result.Succeeded)
     {
@@ -67,6 +71,7 @@ public class TenantResolverMiddleware
     {
         // 1. Resolve Tenant from URL / Header
         string currentTenantId = context.Request.Headers["X-Tenant-ID"].ToString();
+
         if (string.IsNullOrEmpty(currentTenantId))
         {
             // Fallback to domain/subdomain parsing logic if header is missing
@@ -74,16 +79,22 @@ public class TenantResolverMiddleware
         }
 
         // 2. If the user is authenticated via ASP.NET Identity, perform cross-validation
+
         if (context.User.Identity?.IsAuthenticated == true)
         {
             // Extract TenantId embedded in Identity Claims (or from your ApplicationUser)
+
             var identityTenantId = context.User.FindFirst("TenantId")?.Value;
+
             var sessionTenantId = context.Session.GetString("TenantId");
 
+
             // Enforce strict matching across all three points of truth
+
             if (currentTenantId != identityTenantId || currentTenantId != sessionTenantId)
             {
                 // Tenant mismatch! Sign them out or reject the request
+
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsync("Unauthorized: Tenant context mismatch.");
                 return;

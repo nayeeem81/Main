@@ -11,6 +11,17 @@ public partial class BaseController
         HttpContext.Session.SetString ("X-Identity-ID",identityId);
     }
 
+    public void SetSessionTenantId (string resolvedTenantId)
+    {
+        HttpContext.Session.SetString ("X-Tenant-ID",resolvedTenantId);
+    }
+
+    public void SetSessionTenantUserRole (string resolvedTenantRole)
+    {
+        HttpContext.Session.SetString ("X-Tenant-User-Role",resolvedTenantRole);
+    }
+
+
     protected void SetSessionRechargeSubCategoryID (int? subCategoryID)
     {
         HttpContext.Session.SetInt32 ("SubCategoryID",subCategoryID.HasValue ? subCategoryID.Value : -1);

@@ -25,4 +25,9 @@ public class ApplicationUserDataModel
     {
         get; set;
     }
+
+    public string TenantId
+    {
+        get; set;
+    }
 }

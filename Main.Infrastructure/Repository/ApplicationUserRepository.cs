@@ -163,37 +163,25 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return new List<string> ();
     }
 
-    public async Task<List<string>> GetTenantRolesAsync (string email,string tenantId)
+    public async Task<string?> GetTenantRolesAsync (string email,string tenantId)
     {
         ApplicationUser? user = await FindByEmailAsync(email);
 
         if ( user == null )
         {
-            return new List<string> ();
+            return null;
         }
 
-        List<TenantUser> userTenants = _context.TenantUsers.Where<TenantUser>
-        (a => a.TenantId == tenantId && a.UserId == user.Id).ToList();
+        TenantUser? userTenants =
+        await _context.TenantUsers.FirstOrDefaultAsync<TenantUser>
+        (a => a.TenantId == tenantId && a.UserId == user.Id);
 
         if ( userTenants == null )
         {
-            return new List<string> ();
+            return null;
         }
 
-        var listTenantRoles = new List<string> ();
-
-        if ( userTenants.Any () )
-        {
-            userTenants.ForEach (tenantUserRole =>
-            {
-                if ( !string.IsNullOrEmpty (tenantUserRole.TenantRole) )
-                {
-                    listTenantRoles.Add (tenantUserRole.TenantRole);
-                }
-            });
-            return listTenantRoles.ToList ();
-        }
-        return new List<string> ();
+        return userTenants.TenantRole;
     }
 
     public async Task<bool> SetLockoutEndDateAsync (string email)

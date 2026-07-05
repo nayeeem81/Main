@@ -142,7 +142,7 @@ public class AuthController: BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login (LoginViewModel loginDisplayViewModel)
     {
-
+        // Step 1: Check Modle Error
         if ( ModelState.IsValid )
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
@@ -150,14 +150,35 @@ public class AuthController: BaseController
             return View ("Login",loginDisplayViewModel);
         }
 
-        ApplicationUserDataModel? applicationIdentityUserDataModel = await _userAccountService
-            .FindByEmailAsync(loginDisplayViewModel.Email);
+        // Resolved TenantId in Middleware
+        string resolvedTenantId = _tenantSetter.CurrentTenantId;
+        string contextTenantId = _userContext.TenantId;
 
+        if ( resolvedTenantId != contextTenantId )
+        {
+            ModelState.AddModelError ("","Invalid login attempt for this tenant.");
+            return View (loginDisplayViewModel);
+        }
+
+        // Getting User by email and resolved TenantId
+        ApplicationUserDataModel? applicationIdentityUserDataModel
+        = await _userAccountService.GetApplicationUser(loginDisplayViewModel.Email, resolvedTenantId!);
+
+        // if user not found
         if ( InvalidApplicationUser (applicationIdentityUserDataModel,loginDisplayViewModel) )
         {
             return View ("Login",loginDisplayViewModel);
         }
 
+
+        // if is found: but tenant id mismatch
+        if ( applicationIdentityUserDataModel?.TenantId != resolvedTenantId )
+        {
+            ModelState.AddModelError ("","Invalid login attempt for this tenant.");
+            return View (loginDisplayViewModel);
+        }
+
+        // if email confirmed?
         if ( !await IsEmailConfirmed (loginDisplayViewModel) )
         {
             return RedirectToAction ("Login");
@@ -175,16 +196,42 @@ public class AuthController: BaseController
             // loggedin user id
             SetSessionXIdentityId (applicationIdentityUserDataModel.Id);
 
-            await _userAccountService.GetUserClaims (loginDisplayViewModel.Email,_tenantSetter.CurrentTenantId);
+            // setting tenant id
+            SetSessionTenantId (resolvedTenantId);
 
+
+
+            string tenantRoleClaim =
+            await _userAccountService.GetTenantUserRoleClaim(loginDisplayViewModel.Email, resolvedTenantId);
+
+            // logged in tenant id
+            SetSessionTenantUserRole (tenantRoleClaim);
+
+            string token = "";
+
+            List<Claim> listClaims =
+            [
+                new Claim (ClaimTypes.NameIdentifier,applicationIdentityUserDataModel.Id),
+                new Claim ("TenantId",resolvedTenantId),
+                new Claim("TenantRole",tenantRoleClaim),
+                new Claim ("UserName", applicationIdentityUserDataModel?.UserName!),
+                new Claim ("Email",applicationIdentityUserDataModel?.UserName!),
+                new Claim ("TokenTenantUserAuthorize",token),
+            ];
+
+            ClaimsIdentity claimsIdentity = new(listClaims);
+            HttpContext.User.AddIdentity (claimsIdentity);
 
             // Successful login, redirect to home page or dashboard
             return RedirectToAction ("Index","Home");
+
         }
 
         // OWASP Mitigation: Do not reveal if the password is incorrect or the account is locked, show a generic error message
         return View (loginDisplayViewModel);
     }
+
+
 
     private async Task<bool> IsEmailConfirmed (LoginViewModel loginDisplayViewModel)
     {
@@ -209,6 +256,7 @@ public class AuthController: BaseController
 
             return true;
         }
+
         return false;
     }
 

@@ -22,7 +22,7 @@ public interface IApplicationUserRepository
 
     Task<List<string>> GetRolesAsync (string email);
 
-    Task<List<string>> GetTenantRolesAsync (string email,string tenantId);
+    Task<string?> GetTenantRolesAsync (string email,string tenantId);
 
     Task<ApplicationUser?> FindByNameIdAsync (string id);
 

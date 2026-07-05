@@ -4,8 +4,6 @@ using Domain.Model;
 using Main.Common;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity;
-
-using System.Security.Claims;
 namespace Main.Services;
 
 public class AccountService: IAccountService
@@ -73,23 +71,34 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<ApplicationUserDataModel?> GetApplicationUser (string email)
+    public async Task<ApplicationUserDataModel?> GetApplicationUser
+    (string email,string tenantId)
     {
         ApplicationUser? applicationUser
-            = await _userRepository.FindByEmailAsync ( email );
+        = await _userRepository.FindByEmailAsync ( email );
 
         if ( applicationUser == null )
         {
             return null;
         }
 
-        ApplicationUserDataModel? applicationUserDataModel = new
-()
+        TenantUser? tenantUser =
+        await _tenantUserRepository.GetByUserIdAsync(applicationUser?.Id!, tenantId);
+
+        if ( tenantUser == null )
         {
-            Id = applicationUser.Id,
-            UserName = applicationUser.UserName,
-            Email = applicationUser.Email
+            return null;
+        }
+
+        ApplicationUserDataModel? applicationUserDataModel
+        = new ()
+        {
+            Id = applicationUser?.Id!,
+            UserName = applicationUser?.UserName,
+            Email = applicationUser?.Email,
+            TenantId= tenantUser.TenantId
         };
+
         return applicationUserDataModel;
     }
 
@@ -148,38 +157,21 @@ public class AccountService: IAccountService
         return false;
     }
 
-    public async Task GetUserClaims (string email,string tenantId)
+    public async Task<string> GetTenantUserRoleClaim (string email,string tenantId)
     {
-
-        List<string> listIdentityRoles = await _userRepository.GetRolesAsync (email);
-
-        listIdentityRoles.ForEach (async identityRole =>
-        {
-            Claim claim = new(ClaimTypes.Role, identityRole.ToString());
-            await _userRepository.AddClaimAsync (email,claim);
-        });
-
         var identityUser = await _userRepository.FindByEmailAsync(email);
         string userId = identityUser!.Id;
 
+        string? tenantRole = await _userRepository.GetTenantRolesAsync (email, tenantId);
 
-        List<string> listTenantRoles = await _userRepository.GetTenantRolesAsync (email, tenantId);
-
-        listTenantRoles.ForEach (async tenantRole =>
+        if ( tenantRole != null )
         {
-            var expectedClaimValue = $"{userId}:{tenantId}:{tenantRole.ToString()}";
-            Claim claim = new("TenantRole",  expectedClaimValue);
-            await _userRepository.AddClaimAsync (email,claim);
-        });
+            tenantRole = "";
+        }
 
-        await _userRepository.AddClaimAsync (email,new (ClaimTypes.Email,identityUser.Email!));
+        var expectedClaimValue = $"{userId}:{tenantId}:{tenantRole!.ToString()}";
 
-        await _userRepository.AddClaimAsync (email,new (ClaimTypes.Name,identityUser.UserName!));
-
-        await _userRepository.AddClaimAsync (email,new (ClaimTypes.NameIdentifier,identityUser.Id.ToString ()));
-
-        await _userRepository.AddClaimAsync (email,new ("TenantId",tenantId));
-
+        return expectedClaimValue;
     }
 
     private ApplicationUser CreateApplicationUser (UserAccountDataModel userAccountDataModel)
