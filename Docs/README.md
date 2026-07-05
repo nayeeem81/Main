@@ -60,18 +60,49 @@ So, it is very necessary to who are the users requesting access to the database 
 
 This isolation is a big concern for multi-tenant applications because of the shared database and application which is used by all tenants. How do we isolate them and their users from the shared application and database infrastructure is the point where the data leak happens, and it is because of the architecture lacking with few of the concerns that didn’t address inside the application architecture design. 
 
-1. The tenant id is the first security attribute.
-2. Second is the secret key for each tenant.
-3. Token is generated using key and tenant id. 
+# Multi-Tenant Application Security: For Each Tenant  
 
-// Under work in code/token part only): Every resolved tenant request is validated against the session with the scope of the tenant. Request has the Tenant Id; server has the (key and tenant id). The token is the value of the session. The session key is (Tenant Id and Key). Explain may not correct. // 
+He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.  
 
-### **Isolation must be enforced at: Token Level, Middleware Level, Policy Lavel, Database Lavel, Encryption Lavel (Key)**: 
+Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx. 
 
-1. Tenant Resolve Handler: Uses Token with Key for Server Validation.
-2. Authorization Role Handler: Uses Tenant Id, Tenant Role, User Id to identify the Policy assigned for user to access.
-3. Database Query Filter by Tenant Id and Encrypted Token (Tenant Id and Key) 
+## Multi-Tenant Application Security: 
 
+**Resolving Tenant (Middleware)** is the starting point to secure the Tenant and its data. Tenant host is resolved against the database and if found, will serve the tenant; otherwise, the application will route to the portal. The found tenant’s id is the first-class security variable to serve the tenant. This id is used to partition the shared database at the very beginning when the request life cycle starts using DI. This is the first request for the tenant. The id is used for multiple security related token generations. 
+
+## Stop Data Leake  
+### Users who access multiple Tenants
+
+We use the id to create an encrypted token. We keep the token as a claim for the tenant from the next request. We use sessions to store the id, create the token, and match the incoming token.  We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser tabs.  
+
+## Stop Unauthorized Access: 
+
+Also, when the user logged in for the first time, we created an authorization access token for the authenticated user.  
+
+Variables to create tokens: UserId, TenantId, User Role for the Tenant, with a Secret Key.  
+
+We embed the token as user claim in server after logging in. Claims are usually encrypted. We put an encrypted token inside the claims. In the browser, it is safe. Tenant and user-related variables are not exposed.  
+
+We also add a claim with a variable: UserId, TenantId, Tenant Role in the request object. (UserId:TenantId:Role) 
+
+## Requests After Logging in:  
+
+For authorization in the server, we recreate the token (using the same variables with the secret key) and validate it in the server with the incoming request.  
+
+Match formatted tenant role (UserId:TenantId:Role) from the claim to extract the Role and validate against the allowed roles.  
+
+In the middleware of Authorization Handler: the policy for the tenant validates them.  Any one of the above unsuccessful validations will not allow the logged user to access the resources. 
+
+Like before we check the valid resolved tenant against the incoming request, this is layer one security. Layer two is the logged user access token, role claims. Both cases, security is provided by token with the secret key which we didn't expose inside the user claim. Any unwanted user's tries will need the key to create the token.  
+
+Then, we allow middleware to give return success for accessing the allowed resources. The policy is configured in the service registration and uses the MVC default to authorize policy attributes. 
+
+## Stop Resource Access by Unwanted / by Mistake: 
+
+We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate. We made a few changes in the default option for this to work for multi-tenancy. We created a path for cookies for each tenant; so that in a browser, they didn't go from one tenant to another and pick up another tenant's token. Browser in this case will check the path, which it received, and send back to the server. 
+
+## We Handle Tenant Security Following Above Standards🔄(80%)
+**for such multi tenant applications **
 
 # Multi Tenant Architecture 🔄(70%) 🟥(30%)
 
