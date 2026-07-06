@@ -10,9 +10,6 @@ public class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        // Register engine as a reusable thread-safe stateless instance
-        _ = builder.Services.AddSingleton<TenantExpiringTokenEngine> ();
-
         // Configure Serilog for global logging
         _ = builder.AddSerilogConfiguration ();
 
@@ -33,8 +30,12 @@ public class Program
         // 2. Add standard Antiforgery services
         _ = builder.Services.AddAntiforgery ();
 
-        // 3. Register the dynamic, request-scoped configuration hook 
-        _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
+        //// 3. Register the dynamic, request-scoped configuration hook 
+        //_ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
+
+        // 2. Configure Scoped Action Filters
+        _ = builder.Services.AddScoped<MultiTenantAntiforgeryCookieFilter> ();
+
         _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
 
         // Add exception logging service

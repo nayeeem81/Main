@@ -9,16 +9,14 @@ namespace Main.WebAppCore.Middleware;
 
 public static class TenantResolutionExtensions
 {
-    private const string RootDomain = "localhost";
     private const string SessionKey = "CurrentTenantId";
-
+    private const string RootDomain = "localhost";
     public static async Task<bool> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
-        IMemoryCache memoryCache,
-        TenantExpiringTokenEngine tokenEngine)
+        IMemoryCache memoryCache)
     {
         var cachedTenant = GetTenantFromSession(context);
 
@@ -51,6 +49,7 @@ public static class TenantResolutionExtensions
         }
 
         context.Response.Redirect (RootDomain);
+
         return false;
     }
 
@@ -83,7 +82,8 @@ public static class TenantResolutionExtensions
         context.Session.SetString (SessionKey,sessionData);
     }
 
-    // Keep your strategy methods (ResolveFromPath, ResolveFromSubdomain, ResolveFromDomain)
+    // Keep your strategy methods
+    // (ResolveFromPath, ResolveFromSubdomain, ResolveFromDomain)
     private static string? ResolveFromPath (this HttpContext context)
     {
         string pathRequest = context.Request.Path.Value ?? "";
@@ -132,4 +132,33 @@ public static class TenantResolutionExtensions
         return segments;
     }
 
+    public static void TenantResolveMiddlewareTokenMatching (string resolvedTenantId,HttpContext context,ITokenService tokenService)
+    {
+        // 2. Extract Access Token
+        string? authHeader = context.Request
+                                    .Headers["Authorization"]
+                                    .FirstOrDefault();
+
+        if ( authHeader != null && authHeader.StartsWith ("Bearer",StringComparison.OrdinalIgnoreCase) )
+        {
+            // token from header
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+
+            // 3. Centralized Decryption & Validation
+            var principal = tokenService.ValidateAndDecryptToken
+                (token, out _);
+
+            if ( principal != null )
+            {
+                var tokenTenant = principal.FindFirst("tenant_id")?.Value;
+
+                // 4. Multi-Tenant Cross-Contamination Check
+                if ( tokenTenant != null && tokenTenant.Equals (resolvedTenantId,StringComparison.OrdinalIgnoreCase) )
+                {
+                    // Token matches requested tenant context
+                    context.User = principal;
+                }
+            }
+        }
+    }
 }

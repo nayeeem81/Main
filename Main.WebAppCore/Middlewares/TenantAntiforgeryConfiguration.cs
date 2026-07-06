@@ -21,14 +21,12 @@ public class TenantAntiforgeryConfiguration: IConfigureNamedOptions<AntiforgeryO
     {
         string? tenantId = _tenantSetter.CurrentTenantId;
 
-        _ = _tenantContext.ApplicationUserId;
-
         if ( tenantId != null )
         {
             // Dynamically set cookie name, path, and header based on the current tenant
             options.HeaderName = "X-XSRF-TOKEN";
             options.Cookie.Name = $"XSRF-TOKEN-{tenantId}";
-            options.Cookie.Path = $"/tenant-{tenantId}";
+
 
             // Optional: Match the form field if you use standard MVC forms
             options.FormFieldName = $"__RequestVerificationToken_{tenantId}";

@@ -19,11 +19,20 @@ public class TenantResolverHandlingMiddleware
     ITenantSetter tenantSetter,
     ITenancyService tenancyService,
     IMemoryCache memoryCache,
-    TenantExpiringTokenEngine tokenEngine)
+    ITokenService tokenService)
     {
+        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache);
 
-        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,tokenEngine);
+        if ( result )
+        {
+            string resolvedTenantId = tenantSetter.CurrentTenantId;
+
+            TenantResolutionExtensions.TenantResolveMiddlewareTokenMatching
+            (resolvedTenantId,context,tokenService);
+        }
 
         await _next (context);
     }
+
+
 }

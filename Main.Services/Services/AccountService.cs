@@ -159,19 +159,9 @@ public class AccountService: IAccountService
 
     public async Task<string> GetTenantUserRoleClaim (string email,string tenantId)
     {
-        var identityUser = await _userRepository.FindByEmailAsync(email);
-        string userId = identityUser!.Id;
+        string tenantRole = await _userRepository.GetTenantRolesAsync (email, tenantId);
 
-        string? tenantRole = await _userRepository.GetTenantRolesAsync (email, tenantId);
-
-        if ( tenantRole != null )
-        {
-            tenantRole = "";
-        }
-
-        var expectedClaimValue = $"{userId}:{tenantId}:{tenantRole!.ToString()}";
-
-        return expectedClaimValue;
+        return tenantRole;
     }
 
     private ApplicationUser CreateApplicationUser (UserAccountDataModel userAccountDataModel)

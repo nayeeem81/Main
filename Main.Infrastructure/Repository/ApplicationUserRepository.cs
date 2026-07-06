@@ -163,25 +163,20 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return new List<string> ();
     }
 
-    public async Task<string?> GetTenantRolesAsync (string email,string tenantId)
+    public async Task<string> GetTenantRolesAsync (string email,string tenantId)
     {
         ApplicationUser? user = await FindByEmailAsync(email);
 
         if ( user == null )
         {
-            return null;
+            return "";
         }
 
         TenantUser? userTenants =
         await _context.TenantUsers.FirstOrDefaultAsync<TenantUser>
         (a => a.TenantId == tenantId && a.UserId == user.Id);
 
-        if ( userTenants == null )
-        {
-            return null;
-        }
-
-        return userTenants.TenantRole;
+        return userTenants == null ? "" : userTenants.TenantRole;
     }
 
     public async Task<bool> SetLockoutEndDateAsync (string email)

@@ -2,11 +2,10 @@
 using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.Controllers.AuthService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
 using System.Security.Claims;
-
 using WebAppCore.ViewModel;
 using WebAppCore.ViewModel.Extensions;
 
@@ -18,18 +17,21 @@ public class AuthController: BaseController
     private readonly ITenantContext _userContext;
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
+    private readonly ITokenService _tokenService;
 
     public AuthController (
         IAccountService userAccountService,
         ITenantContext userContext,
         IEmailSenderService emailService,
-        ITenantSetter tenantSetter
+        ITenantSetter tenantSetter,
+        ITokenService tokenService
        )
     {
         _userAccountService = userAccountService;
         _userContext = userContext;
         _emailService = emailService;
         _tenantSetter = tenantSetter;
+        _tokenService = tokenService;
     }
 
 
@@ -66,26 +68,57 @@ public class AuthController: BaseController
 
         // OWASP Mitigation: Create the user account with secure password hashing and do not reveal if the email is already registered or if the account creation failed
         IdentityResult result
-            = await _userAccountService.CreateApplicationUserAccount ( userAccountDataModel );
+        = await _userAccountService.CreateApplicationUserAccount ( userAccountDataModel );
 
 
         if ( result.Succeeded )
         {
             // OWASP Mitigation: Send email verification email with secure token if account creation succeeded, regardless of whether the email is already registered or not
-            await SendVerifyEmail (registrationViewModel != null ? registrationViewModel.Email : string.Empty);
+
+            await SendVerifyEmail
+            (registrationViewModel != null ? registrationViewModel.Email : string.Empty);
 
             // Redirect to a generic confirmation page that instructs the user to check their email for the verification link, without revealing if the account was created or if the email is already registered
+
             return RedirectToAction ("VerifyEmailSent");
         }
 
         // Add errors to model state to display in the view
+
         foreach ( var error in result.Errors )
         {
             ModelState.AddModelError (string.Empty,error.Description);
         }
 
         // Return the view with the original input and error messages, without revealing if the email is already registered or if the account creation failed
+
         return View (registrationViewModel);
+    }
+
+
+
+    // Helper method to send email verification email with secure token if user exists but email is not verified (OWASP Mitigation)
+    public async Task SendVerifyEmail (string email)
+    {
+        var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( email );
+
+        if ( !string.IsNullOrEmpty (emailVerifyToken) )
+        {
+            var verifyLink = Url.Action ( "VerifyLink", "Auth", new
+            {
+                Email = email,
+                Token = emailVerifyToken
+            },  Request.Scheme );
+
+            var verifyEmailDataModel = new VerifyDataModel ()
+            {
+                Email = email,
+                VerifyLink = verifyLink != null    ?
+                          verifyLink.ToString() : string.Empty
+            };
+
+            await _emailService.SendEmailVerificationAsync (verifyEmailDataModel);
+        }
     }
 
 
@@ -126,7 +159,6 @@ public class AuthController: BaseController
     }
 
 
-
     // Login Flow: User accesses the login page, which displays the login form
     public IActionResult Login ()
     {
@@ -152,37 +184,23 @@ public class AuthController: BaseController
 
         // Resolved TenantId in Middleware
         string resolvedTenantId = _tenantSetter.CurrentTenantId;
-        string contextTenantId = _userContext.TenantId;
 
-        if ( resolvedTenantId != contextTenantId )
-        {
-            ModelState.AddModelError ("","Invalid login attempt for this tenant.");
-            return View (loginDisplayViewModel);
-        }
 
         // Getting User by email and resolved TenantId
         ApplicationUserDataModel? applicationIdentityUserDataModel
         = await _userAccountService.GetApplicationUser(loginDisplayViewModel.Email, resolvedTenantId!);
 
-        // if user not found
-        if ( InvalidApplicationUser (applicationIdentityUserDataModel,loginDisplayViewModel) )
+        // if user not found or invalid
+        if ( await AuthentiicationExtension.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,loginDisplayViewModel,resolvedTenantId) )
         {
+            if ( !loginDisplayViewModel.EmailConfirmed!.Value )
+            {
+                await SendVerifyEmail (loginDisplayViewModel.Email);
+            }
+
             return View ("Login",loginDisplayViewModel);
         }
 
-
-        // if is found: but tenant id mismatch
-        if ( applicationIdentityUserDataModel?.TenantId != resolvedTenantId )
-        {
-            ModelState.AddModelError ("","Invalid login attempt for this tenant.");
-            return View (loginDisplayViewModel);
-        }
-
-        // if email confirmed?
-        if ( !await IsEmailConfirmed (loginDisplayViewModel) )
-        {
-            return RedirectToAction ("Login");
-        }
 
         // OWASP Mitigation: Use secure password verification and do not reveal if the password is incorrect or the account is locked
         bool result = await _userAccountService.PasswordSignInAsync (
@@ -193,34 +211,27 @@ public class AuthController: BaseController
 
         if ( result )
         {
-            // loggedin user id
-            SetSessionXIdentityId (applicationIdentityUserDataModel.Id);
+            // Set tokens
+            AuthorizationExtension.AddTenantIsolatedHeaderToken
+            (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,
+             resolvedTenantId,"User",15,7);
 
-            // setting tenant id
-            SetSessionTenantId (resolvedTenantId);
+            // Get tenant specific role
+            string tenantRole =
+            await _userAccountService.GetTenantUserRoleClaim
+            (loginDisplayViewModel.Email, resolvedTenantId);
 
+            // formated role
+            string formatedTenantRole =
+            $"{applicationIdentityUserDataModel.Id}:{resolvedTenantId}:{tenantRole
+            .ToString ()}";
 
-
-            string tenantRoleClaim =
-            await _userAccountService.GetTenantUserRoleClaim(loginDisplayViewModel.Email, resolvedTenantId);
-
-            // logged in tenant id
-            SetSessionTenantUserRole (tenantRoleClaim);
-
-            string token = "";
-
-            List<Claim> listClaims =
-            [
-                new Claim (ClaimTypes.NameIdentifier,applicationIdentityUserDataModel.Id),
-                new Claim ("TenantId",resolvedTenantId),
-                new Claim("TenantRole",tenantRoleClaim),
-                new Claim ("UserName", applicationIdentityUserDataModel?.UserName!),
-                new Claim ("Email",applicationIdentityUserDataModel?.UserName!),
-                new Claim ("TokenTenantUserAuthorize",token),
-            ];
-
-            ClaimsIdentity claimsIdentity = new(listClaims);
-            HttpContext.User.AddIdentity (claimsIdentity);
+            // Http User Responce Claims 
+            AuthorizationExtension.AddUserClaims
+            (HttpContext,applicationIdentityUserDataModel.Id,
+            resolvedTenantId,formatedTenantRole,
+            applicationIdentityUserDataModel!.UserName!,
+            applicationIdentityUserDataModel?.Email!);
 
             // Successful login, redirect to home page or dashboard
             return RedirectToAction ("Index","Home");
@@ -232,37 +243,6 @@ public class AuthController: BaseController
     }
 
 
-
-    private async Task<bool> IsEmailConfirmed (LoginViewModel loginDisplayViewModel)
-    {
-        bool result = await _userAccountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email);
-
-        if ( !result )
-        {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
-
-            await SendVerifyEmail (loginDisplayViewModel.Email);
-        }
-
-        return result;
-    }
-
-    private bool InvalidApplicationUser (ApplicationUserDataModel? applicationIdentityUserDataModel,
-    LoginViewModel loginDisplayViewModel)
-    {
-        if ( applicationIdentityUserDataModel == null )
-        {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-
-
     // Logout Flow: User clicks the logout button, which triggers the Logout action that signs the user out and redirects to the home page
     public async Task<IActionResult> Logout ()
     {
@@ -270,34 +250,6 @@ public class AuthController: BaseController
 
         return RedirectToAction ("Index","Home");
     }
-
-
-
-    // Helper method to send email verification email with secure token if user exists but email is not verified (OWASP Mitigation)
-    private async Task SendVerifyEmail (string email)
-    {
-        var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( email );
-
-        if ( !string.IsNullOrEmpty (emailVerifyToken) )
-        {
-            var verifyLink = Url.Action ( "VerifyLink", "Auth", new
-            {
-                Email = email,
-                Token = emailVerifyToken
-            },  Request.Scheme );
-
-            var verifyEmailDataModel = new VerifyDataModel ()
-            {
-                Email = email,
-                VerifyLink = verifyLink != null    ?
-                          verifyLink.ToString() : string.Empty
-            };
-
-            await _emailService.SendEmailVerificationAsync (verifyEmailDataModel);
-
-        }
-    }
-
 
 
     // Forget Password Reset Flow - Step 1: User initiates password reset by providing email address 
