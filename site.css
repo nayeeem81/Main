@@ -250,14 +250,27 @@ b.color-profile-naim {
     font-weight: bold;
 }
 
+.linkcolor {
+    color: royalblue;
+    font-size: 20px;
+    font-weight: 200;
+    text-decoration-line: underline;
+}
+
 b.color-profile-googoleai {
     color: orangered;
     font-weight: bold;
 }
 
-b.linkcolor {
+div.main-content p {
     color: royalblue;
-    font-size: 20px;
-    font-weight: 200;
-    text-decoration-line:underline;
+    padding: 20px;
+}
+
+b.highlight {
+    background-color: yellow;
+    color: black;
+    padding: 0px;
+    border-radius: 0px;
+    margin: 3px;
 }
