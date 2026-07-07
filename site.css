@@ -100,13 +100,14 @@ p {
 
 main {
     margin: 0px;
+    padding: 15px;
 }
 
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding: 0px;
+    padding: 15px;
     margin-top: 10px;
     margin-bottom: 10px;
     /* 1. Border Configuration */
@@ -183,8 +184,7 @@ h2.crimson {
 /* Main Content */
 .main-content {
     background-color: #f9f9f9;
-    padding: 1.5rem;
-    overflow-y: auto;
+    padding: 15px;
     margin-top: 0px;
     margin-bottom: 10px;
     /* 1. Border Configuration */
@@ -264,7 +264,7 @@ b.color-profile-googoleai {
 
 div.main-content p {
     color: royalblue;
-    padding: 20px;
+    padding: 15px;
 }
 
 b.highlight {

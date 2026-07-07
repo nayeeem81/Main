@@ -51,53 +51,64 @@
     </header>
 
     <main>
+
         <br />
-        <h1>🏬🛍️🛒Stores Web App (Multi-Tenant SaaS)</h1>
+
+        <h1>🏬🛍️Store Web App (Multi-Tenant SaaS)</h1>
 
         <div class="main-content">
 
             <br />
-
             <p>
                 We are developing a multi-tenant stores web application.
-
-                <br />
-                <br />
-
-                <b style="color:red;font-size:large; font-weight:bolder;">
-                    A store is called tenant ⇄ A tenant is a store. (vice versa)
-                </b>
-
-                <br />
-                <br />
-
-                <h2>
-                    Store is a 🛍️Shop inside 🏬Shopping Mall
-                </h2>
-
-                <br />
-                <br />
-
-                The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop.
-
-                <b>
-                    The registration is for the shop with an email address from the multi-tenant portal:
-                </b>
-
-                <br />
-                <br />
-
-                <h2>
-                    www.tenantors.com
-                </h2>
-
-                <br />
-                <br />
-
-                An email can be used with multiple tenants. Just like a single sign in across all tenants. Consider scenarios:
-
             </p>
+                
+            <br />
+                
+            <br />
+
+            <b style="color:red;font-size:large; font-weight:bolder;">
+
+                A store is called tenant ⇄ A tenant is a store. (vice versa)
+
+            </b>
+
+            <br />
+            <br />
+
+            <h2>
+                Store is a 🛍️Shop inside 🏬Shopping Mall
+            </h2>
+
+            <br />
+            <br />
+                
+                
+            <p>
+                The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop.
+            </p>
+
+                
+            <b>
+                The registration is for the shop with an email address from the multi-tenant portal:
+            </b>
+
+            <br />
+            <br />
+
+            <h2>
+                www.tenantors.com
+            </h2>
+
+            <br />
+            <br />
+
+            <p>
+                An email can be used with multiple tenants. Just like a single sign in across all tenants. Consider scenarios:
+            </p>
+
             <a href="#pik"> back to up </a>
+
         </div>
 
         <br />
@@ -121,6 +132,7 @@
             </p>
 
             <br />
+
         </div>
 
         <br />
@@ -130,16 +142,22 @@
 
         <div class="main-content">
 
+            <br />
+
             <p>
                 The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
             </p>
+
         </div>
 
         <br />
+
         <h1>
             Tenant🛍️ & User🔑
         </h1>
+
         <div class="main-content">
+
             <br />
 
             <h2>
@@ -260,15 +278,18 @@
             </h3>
 
             <br />
+
         </div>
 
         <br />
+
 
         <h1>
             🧩Category C
         </h1>
 
         <div class="main-content">
+
             <br />
 
             <p>
@@ -299,6 +320,7 @@
         </h1>
 
         <div class="crimson-main-content">
+
             <br />
 
             <h2>
@@ -331,26 +353,33 @@
 
             <p>
                 <b>Monolithic Architecture</b>: Monolithic architecture is a traditional software design where all components of an application—such as the user interface, business logic, and database access—are combined into a single, unified, and self-contained codebase. It runs and deploys as one single unit. We chose monolithic architecture for this project because it simplifies development, testing, and deployment. It allows us to focus on building a cohesive application without the overhead of managing multiple services or microservices. This approach is particularly suitable for small to medium-sized applications where the complexity of a distributed system is not justified.
+            </P>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
+            <p>
                 <b>Tenant Isolation </b>: We provided effort in the scaling process by providing optimized database queries by query filters and implementing efficient caching strategies and tenant isolation strategies using .Net 8.0 middleware pipeline. We are provideing Tenant resolution for domain, subdomains and subdirectory based tenants and Policy based Tenant Roles handelig and validating against the request and server memory cache. In the process of Tenant Role assignment, we keet isolatin in our concern. We keep the tenant, country, region, host type, user and tenant roles inconsideration in each tables in database. TenantId is the primary filter. But we validate together with the tenant's other attributes in combinatin and logging and carefully doing cacheing the request pipeline, tryig to keep the tenant isolatin as the number one priority of the application design and architecture design structure.
+            </P>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
+            <p>
                 <b>Scale the Monolithic Application </b>: To scale a monolithic architecture for a multi-tenant store using a shared database, must optimize, how the single application handle resources and how the database separates tenant data. Scaling a monolith involves two distinct paths: vertical scaling (making the single server stronger) and horizontal scaling (cloning the entire monolith across multiple servers). For a multi-tenant store, horizontal scaling is often more effective, as it allows for better load distribution and fault tolerance. However, it requires careful management of shared resources (distributed cache redis) and tenant data isolation.
+            </P>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>Clean Architecture</b>: Clean architecture is a software design pattern that organizes code into independent, concentric layers centered around business logic. The primary goal is to separate your core application logic from external concerns like databases, user interfaces, frameworks, and tools.
+            <p>
 
-                <br />
-                <br />
+            <b>Clean Architecture</b>: Clean architecture is a software design pattern that organizes code into independent, concentric layers centered around business logic. The primary goal is to separate your core application logic from external concerns like databases, user interfaces, frameworks, and tools.
 
-            </p>
+            <p/>
+
+            <br />
+            <br />
 
             <a href="#pik"> back to up </a>
 
@@ -362,90 +391,109 @@
             <h1>🚀Multi-Tenant application .NET 8.0</h1>
 
             <br />
+                
+            <b class="color-profile-naim">  Asked Google AI: </b>
+
+            <br />
+            <br />
+
+            <b>Monolithic Architecture: Clean Architecture - One Application - Shared Database </b>:
 
             <p>
-                <b class="color-profile-naim">  Asked Google AI: </b>
-
-                <br />
-                <br />
-
-                <b>Monolithic Architecture: Clean Architecture - One Application - Shared Database </b>:
-
                 Multi-tenant applications in .NET 8.0 are highly scalable because they pool infrastructure, allowing a single deployed instance or web cluster to serve thousands of customers (tenants) efficiently.
 
                 Instead of scaling the entire web project, developers scale specific high-traffic services horizontally, such as background jobs, database queries, and microservices.
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>How .NET 8.0 Multi-Tenancy Scales </b>
+            <b>How .NET 8.0 Multi-Tenancy Scales </b>
 
+            <p>
                 Instead of scaling the entire monolith, you scale only the stressed components. This selective scaling is achieved through specific methods:
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>Horizontal Compute Scaling: </b>
+            <b>Horizontal Compute Scaling: </b>
 
+            <p>
                 You can deploy multiple instances of your .NET 8.0 Web API behind a load balancer. When a heavy-traffic tenant creates a massive spike in requests, you simply add more server instances to the pool (scale-out). Because the infrastructure is shared, this absorbs the traffic without provisioning new servers from scratch.
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>Asynchronous Background Processing: </b>
+            <b>Asynchronous Background Processing: </b>
 
+            <p>
                 For high-traffic operations (like generating reports or processing tenant-specific invoices), .NET 8.0 uses message queues (e.g., RabbitMQ, Azure Queue Storage). The web project offloads these heavy jobs to background workers, preventing the primary web project from crashing or slowing down.
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>Database Partitioning (Sharding):</b>
+            <b>Database Partitioning (Sharding):</b>
 
+            <p>
                 As your tenant base grows, the database becomes the primary bottleneck. .NET 8.0 (often using Entity Framework Core) can utilize global query filters to automatically append a TenantId to every query, or route traffic to different databases based on the active tenant. If a specific tenant is very high-traffic, their specific database or table is moved to a dedicated, high-performance server (vertical scaling).
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>Tenant-Aware Caching:</b>
+            <b>Tenant-Aware Caching:</b>
 
+            <P>
                 To handle read-heavy traffic, .NET 8.0 applications rely on distributed caches (like Redis). Data is cached at the tenant level, so heavy requests for one tenant's inventory or dashboard are served directly from the cache without hitting the database.
+            </p>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>The Web Project vs. High-Traffic Components </b>
+            <b>The Web Project vs. High-Traffic Components </b>
 
+            <p>
                 In a multi-tenant environment, you almost always scale the compute instances and background workers, not the isolated "web project" file itself.
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>The Web Project (The Entry Point):</b>
+            <b>The Web Project (The Entry Point):</b>
 
+            <p>
                 Scales horizontally. You just duplicate the same ASP.NET Core web app across multiple instances to handle more incoming HTTP requests.
+            <p/>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b>The High-Traffic Portions (Microservices):</b>
+            <b>The High-Traffic Portions (Microservices):</b>
 
+            <p>
                 You break apart heavy modules from the main web app into isolated services. For example, a tenant's billing service can be scaled to 10 instances, while their less-used messaging service remains at 1 instance.
+            <p>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                <b class="color-profile-googoleai">
-                    Google AI:
-                </b>
+            <b class="color-profile-googoleai">
+                Google AI:
+            </b>
 
-                <br />
-                <br />
+            <br />
+            <br />
 
-                If you would like to scale your application, tell me about:
 
-                <br />
-                <br />
+            <b>If you would like to scale your application, tell me about:</b>
 
+            <br />
+            <br />
+
+            <p>
                 1. The hosting environment you are using (e.g., Azure, AWS, or on-premise Kubernetes)
 
                 <br />
@@ -522,9 +570,9 @@
                 <br />
                 <br />
 
-                <h1>
+                <h2>
                     Strategy 1: Scaling Your Current monolithic Architecture
-                </h1>
+                </h2>
 
                 <br />
 
@@ -555,7 +603,7 @@
                 <br />
                 <br />
 
-                <h1>Strategy 2: Scaling by Introducing an API Project</h1>
+                <h2>Strategy 2: Scaling by Introducing an API Project</h2>
 
 
                 <br />
@@ -624,7 +672,7 @@
                     Google AI:
                 </b>
 
-                <h1>How Traffic Routes to These Instances:</h1>
+                <h2>How Traffic Routes to These Instances:</h2>
 
                 <br />
 
@@ -717,7 +765,6 @@
         <div class="container">
 
             <div class="main-content">
-
 
                 <section id="section1" class="content-section">
 
@@ -999,7 +1046,7 @@
 
             <a href="#pik"> back to up </a>
 
-        </div>
+        </m>
 
         <!--   Container Layout: (contains: 2 cloumn, type is a grid, uses div as column )    -->
         <div class="container">
