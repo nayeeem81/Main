@@ -90,40 +90,52 @@ He/she will go to the link of the tenant URL; browser sends the request to the s
 
 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx. 
 
-## Multi-Tenant Application Security: 
+# Multi-Tenant Application Security: 
 
-**Resolving Tenant (Middleware)** is the starting point to secure the Tenant and its data. Tenant host is resolved against the database and if found, will serve the tenant; otherwise, the application will route to the portal. The found tenant’s id is the first-class security variable to serve the tenant. This id is used to partition the shared database at the very beginning when the request life cycle starts using DI. This is the first request for the tenant. The id is used for multiple security related token generations. 
+## Resolving Tenant (Middleware) 🔄(100%)
 
-## Stop Data Leake  
-### Users who access multiple Tenants
+It is the starting point to isolate and secure the Tenant and its data.  
 
-We use the id to create an encrypted token. We keep the token as a claim for the tenant from the next request. We use sessions to store the id, create the token, and match the incoming token.  We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser tabs.  
+1. Tenant host is resolved against the database and if found, the middleware will serve the tenant; otherwise, the application will route to the portal.
+2. The found tenant’s id is the first-class security variable to serve the tenant. This is kept in the session for future requests to stop hitting the database again.
+3. The Resolved Tenant Id is primarily used to partition the shared database at the very beginning when the request life cycle starts using DI.
+4. The authenticated user token validation we do in this same middleware. At the very entry point, we reject if the token does not match the regenerated token for an authenticated user.
+5. We also match the Resolved Tenant Id from memory with the Tenant Id coming from the request in HttpContext to stop contaminated tenant **[Stop Data Leake]**  
 
-## Stop Unauthorized Access: 
+**We provide safety here for the authenticated user for the tenant as the token uses the userid, tenant id and role of the tenant with a long secret key. We stopped at the entry point.** 
 
-Also, when the user logged in for the first time, we created an authorization access token for the authenticated user.  
+## **Another Layer of security**🔄(100%) 
+ is for the tenant using same Jwt but it is tenant specific & browser tab specific. This token confirms the unsafe action cannot take place even if the user passes the tenant to resolve middleware (authorization). This token is checked just before executing the unsafe actions (which change data: add, update, delete) using authorization of action filters. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. **[Stop Data Leake]** 
 
-Variables to create tokens: UserId, TenantId, User Role for the Tenant, with a Secret Key.  
+We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser with different tabs. **[Users who access multiple Tenants]** 
 
-We embed the token as user claim in server after logging in. Claims are usually encrypted. We put an encrypted token inside the claims. In the browser, it is safe. Tenant and user-related variables are not exposed.  
+## After successful login: 🔄(100%) 
 
-We also add a claim with a variable: UserId, TenantId, Tenant Role in the request object. (UserId:TenantId:Role) 
+1. We use Jwt for token generation and validation. The authenticated user is validated in the middleware which resolves the tenant host.
+2. We didn’t leave the session memory entirely. For faster detection of the tenant host, we must stop hitting the database each time for performance. Currently we are checking the memory cache; if found, we immediately return the Tenant Id. For scale horizontally, we need a shared distributed Radis cache for all instances.
+3. For the secret Key, which we use for encryption of the token store, we need a separate data store for the safety of the Key. Currently, we are using one key for all tenants. It is quite long (64 bytes), hard to decrypt by unwanted. 
 
-## Requests After Logging in:  
+## How we do? 🔄(100%)
+In response object, we create an authorization header; for a token (short lived, long living) refreshing token with a description created by (UserId, TenantId, User Role) by a secret key. The key is longer in size for security. 
 
-For authorization in the server, we recreate the token (using the same variables with the secret key) and validate it in the server with the incoming request.  
+Also, when the user logged in for the first time, we created an authorization access token for the authenticated user. Variables to create tokens: UserId, TenantId, User Role for the Tenant, with a Secret Key.  
 
-Match formatted tenant role (UserId:TenantId:Role) from the claim to extract the Role and validate against the allowed roles.  
+**We embed the token description as user claim (in server after logging in). claims are usually encrypted. In the browser, it is safe for tenant and user-related variables are not exposed.**  
 
-In the middleware of Authorization Handler: the policy for the tenant validates them.  Any one of the above unsuccessful validations will not allow the logged user to access the resources. 
+**We also add claim inside the HttpContext User object: UserId, TenantId, Tenant Role.** 
 
-Like before we check the valid resolved tenant against the incoming request, this is layer one security. Layer two is the logged user access token, role claims. Both cases, security is provided by token with the secret key which we didn't expose inside the user claim. Any unwanted user's tries will need the key to create the token.  
+## Authorize Role Middleware: 🔄(100%)
 
-Then, we allow middleware to give return success for accessing the allowed resources. The policy is configured in the service registration and uses the MVC default to authorize policy attributes. 
+1. For authorization in the server, we recreate the token (using the same variables with the secret key) and validate it in the server with the incoming request (Tenant Resolve Middleware). That is just validation.
+2. But the role will be checked in the Role assignment middleware. Match formatted tenant role (UserId:TenantId:Role) from the User object to claim to extract the Role and validate against the allowed roles.  
+
+In the middleware of Authorization Handler: the success assigns access policy for the user for a tenant.  Any one of the above unsuccessful validations will not allow the logged user to access the resources. Then, we allow middleware to give return success for accessing the allowed resources. The policy is configured in the service registration and uses the MVC default to authorize policy attributes. 
+
+**[Above all are impkemented]**
 
 ## Stop Resource Access by Unwanted / by Mistake: 
-
-We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate. We made a few changes in the default option for this to work for multi-tenancy. We created a path for cookies for each tenant; so that in a browser, they didn't go from one tenant to another and pick up another tenant's token. Browser in this case will check the path, which it received, and send back to the server. 
+**Not implemented**
+We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate. We made a few changes in the default option for this to work for multi-tenancy. We created a path for cookies for each tenant; so that in a browser, they didn't go from one tenant to another and pick up another tenant's token. Browser in this case will check the path, which it received, and send back to the server. ****
 
 ## We Handle Tenant Security Following Above Standards🔄(80%)
 **for such multi tenant applications **
