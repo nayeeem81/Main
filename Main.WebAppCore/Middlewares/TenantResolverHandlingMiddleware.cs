@@ -34,5 +34,4 @@ public class TenantResolverHandlingMiddleware
         await _next (context);
     }
 
-
 }

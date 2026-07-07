@@ -25,7 +25,7 @@ public class TenantAntiforgeryConfiguration: IConfigureNamedOptions<AntiforgeryO
         {
             // Dynamically set cookie name, path, and header based on the current tenant
             options.HeaderName = "X-XSRF-TOKEN";
-            options.Cookie.Name = $"XSRF-TOKEN-{tenantId}";
+            options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
 
 
             // Optional: Match the form field if you use standard MVC forms

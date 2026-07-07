@@ -31,7 +31,7 @@ public class Program
         _ = builder.Services.AddAntiforgery ();
 
         //// 3. Register the dynamic, request-scoped configuration hook 
-        //_ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
 
         // 2. Configure Scoped Action Filters
         _ = builder.Services.AddScoped<MultiTenantAntiforgeryCookieFilter> ();
@@ -59,14 +59,19 @@ public class Program
         _ = app.UseGlobalExceptionHandling ();
 
         _ = app.UseHttpsRedirection ();
+
         _ = app.UseStatusCodePages ();
+
         _ = app.UseWebOptimizer ();
+
         _ = app.UseStaticFiles ();
 
         _ = app.UseRouting ();
 
         _ = app.UseSession ();
+
         _ = app.UseResponseCaching ();
+
         _ = app.UseCustomLocalization ();
 
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
@@ -76,6 +81,7 @@ public class Program
         _ = app.UseAntiforgery ();
 
         _ = app.UseAuthentication ();
+
         _ = app.UseAuthorization ();
 
         _ = app.MapControllers ();
