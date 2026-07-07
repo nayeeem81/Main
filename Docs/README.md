@@ -105,7 +105,7 @@ It is the starting point to isolate and secure the Tenant and its data.
 **We provide safety here for the authenticated user for the tenant as the token uses the userid, tenant id and role of the tenant with a long secret key. We stopped at the entry point.** 
 
 ## **Another Layer of security**🔄(100%) 
- is for the tenant using same Jwt but it is tenant specific & browser tab specific. This token confirms the unsafe action cannot take place even if the user passes the tenant to resolve middleware (authorization). This token is checked just before executing the unsafe actions (which change data: add, update, delete) using authorization of action filters. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. **[Stop Data Leake]** 
+ is for the tenant using same cookie but it is tenant specific & browser tab specific because the name of the cookie is suffixed by Ienant Id. This token confirms the unsafe action cannot take place even if the user gets pass with the authentication Jwt token (by validating) inside the resolve middleware (tenant resolver) and go dow stream. This antiforgery token (with teannt suffix) is checked just before executing the unsafe actions (which change data: add, update, delete) using action filter. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. Options are set with IConfiguration for the cookie naming. **[Stop Data Leake]** 
 
 We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser with different tabs. **[Users who access multiple Tenants]** 
 
