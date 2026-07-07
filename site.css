@@ -161,6 +161,16 @@ main {
             color: #0066FF;
         }
 
+.crimson-main-content {
+    color: darkseagreen;
+    background-color: crimson;
+    padding: 15px;
+    overflow-y: auto;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border: 1px dashed #e1e4e8;
+    border-radius: 7px;
+}
 
 /* Main Content */
 .main-content {
