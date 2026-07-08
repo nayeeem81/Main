@@ -81,7 +81,7 @@ header {
     0 0 80px #0044ff;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3 {
     color: #fff;
     font-family: sans-serif;
     text-transform: uppercase;
@@ -89,54 +89,54 @@ h1, h2, h3, h4 {
     text-shadow: 0 0 5px #00d2ff, 0 0 10px #00d2ff, 0 0 20px #00a8ff, 0 0 40px #0066ff, 0 0 80px #0044ff;
 }
 
-p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-    font-size: 1rem;
-    text-align: justify;
+h4 {
+    color: #fff;
+    padding-left: 15px;
 }
-
 /* Layout */
 
 main {
     margin: 0px;
-    padding: 15px;
 }
+
+/* Main Content */
+.main-content {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border: 1px dashed #e1e4e8;
+    border-radius: 7px; 
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+    p.feature {
+        line-height: 2;
+    }
 
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 15px;
+    width: 100%;
+    gap: 2px;
     margin-top: 10px;
     margin-bottom: 10px;
-    /* 1. Border Configuration */
-    border: 0px dashed #e1e4e8; /* Soft grey border that isn't harsh */
-    /* 2. Corner Rounding */
-    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
+    border: 0px dashed #e1e4e8;
+    border-radius: 7px;
 }
 
-.container-profile {
-    background-color: #f9f9f9;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    width: 100%;
-    padding: 15px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    /* 1. Border Configuration */
-    border: 1px solid #e1e4e8; /* Soft grey border that isn't harsh */
-    /* 2. Corner Rounding */
-    border-radius: 12px; /* Perfect medium-round corner for modern UIs */
-}
-
-
-/* Sidebar */
-.sidebar {
-    padding: 1.5rem;
-    border-right: 1px solid #ccc;
-}
+    /* Sidebar */
+    .sidebar {
+        padding: 1.5rem;
+        border-right: 1px solid #ccc;
+    }
 
     .sidebar h2 {
         margin-bottom: 1rem;
@@ -173,41 +173,33 @@ main {
     border-radius: 7px;
 }
 
-h1.crimson {
-    padding-top: 20px;
+.main-content p.crimson-main-content {
+    color: darkseagreen;
+    text-align:justify;
+    background-color: crimson;
+    padding: 15px;
+    overflow-y: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px dashed #e1e4e8;
+    border-radius: 7px;
 }
 
 h2.crimson {
     padding-top: 10px;
 }
 
-/* Main Content */
-.main-content {
-    background-color: #f9f9f9;
-    padding: 15px;
-    margin-top: 0px;
-    margin-bottom: 10px;
-    /* 1. Border Configuration */
-    border: 1px dashed #e1e4e8; /* Soft grey border that isn't harsh */
-    /* 2. Corner Rounding */
-    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
-    border-top-left-radius:0px;
-    border-top-right-radius:0px;
-
-}
-
 .content-section {
+    background-color: #f9f9f9;
     min-height: 80vh;
-    border-bottom: 0px dashed #ccc;
-    padding-bottom: 2rem;
-    /* 1. Border Configuration */
-    border: 0px solid #e1e4e8; /* Soft grey border that isn't harsh */
-    /* 2. Corner Rounding */
-    border-radius: 7px; /* Perfect medium-round corner for modern UIs */
+    padding-bottom: 10px;
+    border: 1px solid #e1e4e8;
+    border-radius: 7px;
+    padding: 10px;
 }
 
     .content-section h2 {
-        margin-bottom: 1rem;
+        margin-bottom: 10px;
         color: #FF0033;
     }
 
@@ -217,7 +209,7 @@ h2.crimson {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 20px; /* Safe: will not cause horizontal scrolling */
+    gap: 10px; 
 }
 
 .col-box {
@@ -229,8 +221,6 @@ h2.crimson {
     margin: 0px;
     margin-bottom: 2rem;
 }
-
-
 
 .container header {
     background-image: radial-gradient(at 10% 20%, rgba(0, 240, 255, 0.3) 0px, transparent 50%), radial-gradient(at 90% 80%, rgba(0, 255, 102, 0.3) 0px, transparent 50%);
@@ -273,4 +263,19 @@ b.highlight {
     padding: 0px;
     border-radius: 0px;
     margin: 3px;
+}
+
+b.red {
+    color: red;
+    font-size: large;
+    font-weight: bolder;
+}
+
+h3.tenanttypes {
+    color: darkslategray;
+}
+
+b.tenanttypesred {
+    color: orangered;
+    font-weight: 300;
 }

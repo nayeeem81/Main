@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -53,153 +52,143 @@
     <main>
 
         <br />
-
-        <h1>🏬🛍️Store Web App (Multi-Tenant SaaS)</h1>
-
+        <h2> 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS) </h2>
         <div class="main-content">
 
-            <br />
-            <p>
-                We are developing a multi-tenant stores web application.
-            </p>
-                
-            <br />
-                
-            <br />
+            <section>
 
-            <b style="color:red;font-size:large; font-weight:bolder;">
+                <br />
 
-                A store is called tenant ⇄ A tenant is a store. (vice versa)
+                <b class="red">
+                    We are developing a multi-tenant stores web application.
+                    A store is called tenant ⇄ A tenant is a store. (vice versa)
+                </b>
 
+                <br />
+                <br />
+
+                <h3>
+                    🛍️store is a 🛍️shop inside 🏬shopping mall
+                </h3>
+
+                <p>
+                    The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the admin of a shop. The registration is for the shop with an email address from the multi-tenant portal:
+                </p>
+
+                <br />
+
+                <h3>
+                    www.tenantors.com
+                </h3>
+
+                <br />
+
+                <p>
+                    The registration is for the shop with an email address from the portal (example: www.tenantors.com). An email can be used for multiple tenants. Just like a single sign in across all tenants. Read followng for understanding the detail, about the multi-tenant web application. We explain first, the application related keywords and objects. We must undertand them to get a complete view about the concept & story of the multi-tenant SaaS.
+                </p>
+
+            </section>
+
+            <a href="#pik"> back to up </a>
+
+        </div>
+
+
+        <br />
+        <h2>   Tenant🛍️ & User🔑  </h2>
+        <div class="main-content">
+
+            <section>
+                <h3>Further Details To Understand the story better next...</h3>
+                <br />
+                <br />
+                <h3>
+                    1. 🛍️Tenants:
+                </h3>
+
+                <p>
+                    Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+                </p>
+
+                <br />
+
+                <h3>
+                    2. 🔑Users:
+                </h3>
+
+                <p>
+                    Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address.
+                </p>
+            </section>
+        </div>
+
+        <br />
+        <h2>🛍️Tenant Types (According to Hosting Plan)</h2>
+        <div class="main-content">
+
+            <b class="tenanttypesred">
+                Tenant name is: rotikhai
             </b>
 
             <br />
-            <br />
 
-            <h2>
-                Store is a 🛍️Shop inside 🏬Shopping Mall
-            </h2>
+            <b>rotikhai</b> can host in 3 differnt ways to use our <b>Multi Tenant Web App Store Features.</b>
 
             <br />
             <br />
-                
-                
-            <p>
-                The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop.
-            </p>
-
-                
-            <b>
-                The registration is for the shop with an email address from the multi-tenant portal:
-            </b>
-
-            <br />
             <br />
 
-            <h2>
-                www.tenantors.com
-            </h2>
+            <h3>Domain: www.rotikhai.com</h3>
 
-            <br />
             <br />
 
             <p>
-                An email can be used with multiple tenants. Just like a single sign in across all tenants. Consider scenarios:
+                After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
             </p>
+
+            <br />
+
+            <h3>subdomain: www.rotikhai.tenantors.com  </h3>
+
+            <b>Unique username is the name of the subdomain</b>
+
+            <br />
+
+            <p>
+                After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
+            </p>
+
+            <br />
+
+            <h3>Subdirectory: www.tenantors.com/rotikhai/</h3>
+
+            <b>Unique username is the name of the subdirectory</b>
+
+            <p>
+                After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
+            </p>
+
+            <br />
 
             <a href="#pik"> back to up </a>
 
         </div>
 
         <br />
-
-        <h1>
-            Scenario 1
-        </h1>
-
+        <h2>🛍️Tenant Work Space</h2>
         <div class="main-content">
 
-            <br />
-
-            <p>
-                You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
-            </p>
-
-            <br />
-
-            <p>
-                You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
-            </p>
-
-            <br />
-
-        </div>
-
-        <br />
-        <h1>
-            Scenario 2
-        </h1>
-
-        <div class="main-content">
-
-            <br />
-
-            <p>
-                The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
-            </p>
-
-        </div>
-
-        <br />
-
-        <h1>
-            Tenant🛍️ & User🔑
-        </h1>
-
-        <div class="main-content">
-
-            <br />
-
-            <h2>
-                Tenants
-            </h2>
-
-            <br />
-
-            <p>
-                Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
-            </p>
-
-            <br />
-
-            <h2>
-                Users
-            </h2>
-
-            <br />
-
-            <p>
-                Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link.
-            </p>
-
-            <p>
-                A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address.
-            </p>
-
-            <br />
-            <br />
-
-            <p style="color:darkseagreen;background-color:crimson;padding:15px;border-radius:7px;">
+            <p class="crimson-main-content">
 
                 <b style="font-size:x-large;">
-                    Tenant Shop Website (URL):
+                    Tenant Website
                 </b>
 
                 <br />
                 <br />
 
                 <b style="font-size:larger;">
-                    Tenant has it's own work space. Users can uupload products, add ads (images, links) and arrange the pages by their choice.
+                    Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.
                 </b>
 
                 <br />
@@ -213,9 +202,7 @@
                 <br />
 
                 <b style="font-size:larger;">
-
                     You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!
-
                 </b>
 
                 <br />
@@ -223,111 +210,76 @@
 
             </p>
 
-        </div>
-
-        <br />
-
-        <h1>
-            🛍️Category A
-        </h1>
-
-        <div class="main-content">
-
-            <br />
-
-            <p>
-                After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
-            </p>
-
-            <h3>
-                <b>
-                    🛍️domain:
-                </b>
-                <b class="linkcolor">
-                    www.rotikhai.com
-                </b>
-            </h3>
-
-        </div>
-
-
-        <br />
-
-        <h1>
-            🏷️Category B
-        </h1>
-
-        <div class="main-content">
-
-            <br />
-
-            <p>
-                After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
-            </p>
-
             <br />
 
             <h3>
-
-                <b>
-                    🏷️subdomain:
-                </b>
-                <b class="linkcolor">
-                    www.rotikhai.tenantors.com
-                </b>
+                🏢 Store Features (Tenant):
             </h3>
 
-            <br />
+            <section>
 
-        </div>
+                <p class="feature">
 
-        <br />
+                    🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)
+                    <br />
+                    🔒 Security & Isolation: Manage user account and change password 🔄(100%)
+                    <br />
+                    📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)
+                    <br />
+                    🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)
+                    <br />
+                    🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)
+                    <br />
+                    🛒Shopping Cart and Order Processing: (Pending Development) 🟥(0%)
+                    <br />
+                    📝Payment Manager: (Pending Development) 🟥(0%)
+                    <br />
 
+                </p>
 
-        <h1>
-            🧩Category C
-        </h1>
-
-        <div class="main-content">
-
-            <br />
-
-            <p>
-                After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
-            </p>
-
-            <br />
-
-            <h3>
-                <b>
-                    🧩Subdirectory:
-                </b>
-                <b class="linkcolor">
-                    www.tenantors.com/rotikhai/
-                </b>
-            </h3>
-
-            <br />
+            </section>
 
             <a href="#pik"> back to up </a>
 
         </div>
 
         <br />
+        <h2>👑Conecpt of the Story</h2>
+        <div class="main-content">
+            <section>
 
-        <h1>
-            🌐➡️&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔒🛡️🔀➡️&nbsp;&nbsp;&nbsp;&nbsp;🖥️Internet-Nginx-VPS
-        </h1>
+                <p>
+                    You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
+                </p>
 
+                <p>
+                    You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
+                </p>
+
+                <p>
+                    The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
+                </p>
+
+            </section>
+
+            <a href="#pik"> back to up </a>
+
+        </div>
+
+        <br />
+        <h2>
+            ☁️🐧Hosting Environment (Linux VPS)
+        </h2>
         <div class="crimson-main-content">
+            <h3>
+                🐧Linux Environment In ☁️Cloud VPS
+            </h3>
 
             <br />
 
-            <h2>
-                🔒🛡️&nbsp;&nbsp;&nbsp;➡️&nbsp;&nbsp;&nbsp;🖥️Nginx Router For VPS
-            </h2>
-
-            <br />
+            <h3>
+                Internet🌐➡️&nbsp;&nbsp;&nbsp;Nginx Reverce Proxy🔒🛡️➡️&nbsp;&nbsp;&nbsp;Router to Web App🖥️
+            </h3>
 
             <p>
                 He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
@@ -335,404 +287,312 @@
 
             <br />
 
-            <h2>🔒🛡️🔀&nbsp;&nbsp;&nbsp;➡️ &nbsp;&nbsp;&nbsp;🖥️🖥️🖥️Load Balance (Scale)</h2>
-
-            <br />
+            <h3>
+                Internet🌐➡️&nbsp;&nbsp;&nbsp;Nginx Reverce Proxy🔒🛡️🔀&nbsp;&nbsp;&nbsp;Load Balance🖥️🖥️🖥️
+            </h3>
 
             <p>
                 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
             </p>
 
+            <br />
+
+            <a href="#pik"> back to up </a>
         </div>
 
+        <br />
+        <h2>🚀 Architecture</h2>
         <div class="main-content">
-
-            <h1>🚀 Architecture</h1>
-
-            <br />
-
             <p>
                 <b>Monolithic Architecture</b>: Monolithic architecture is a traditional software design where all components of an application—such as the user interface, business logic, and database access—are combined into a single, unified, and self-contained codebase. It runs and deploys as one single unit. We chose monolithic architecture for this project because it simplifies development, testing, and deployment. It allows us to focus on building a cohesive application without the overhead of managing multiple services or microservices. This approach is particularly suitable for small to medium-sized applications where the complexity of a distributed system is not justified.
-            </P>
-
-            <br />
-            <br />
-
+            </p>
             <p>
                 <b>Tenant Isolation </b>: We provided effort in the scaling process by providing optimized database queries by query filters and implementing efficient caching strategies and tenant isolation strategies using .Net 8.0 middleware pipeline. We are provideing Tenant resolution for domain, subdomains and subdirectory based tenants and Policy based Tenant Roles handelig and validating against the request and server memory cache. In the process of Tenant Role assignment, we keet isolatin in our concern. We keep the tenant, country, region, host type, user and tenant roles inconsideration in each tables in database. TenantId is the primary filter. But we validate together with the tenant's other attributes in combinatin and logging and carefully doing cacheing the request pipeline, tryig to keep the tenant isolatin as the number one priority of the application design and architecture design structure.
-            </P>
-
-            <br />
-            <br />
-
+            </p>
             <p>
                 <b>Scale the Monolithic Application </b>: To scale a monolithic architecture for a multi-tenant store using a shared database, must optimize, how the single application handle resources and how the database separates tenant data. Scaling a monolith involves two distinct paths: vertical scaling (making the single server stronger) and horizontal scaling (cloning the entire monolith across multiple servers). For a multi-tenant store, horizontal scaling is often more effective, as it allows for better load distribution and fault tolerance. However, it requires careful management of shared resources (distributed cache redis) and tenant data isolation.
-            </P>
-
-            <br />
-            <br />
-
+            </p>
             <p>
+                <b>Clean Architecture</b>: Clean architecture is a software design pattern that organizes code into independent, concentric layers centered around business logic. The primary goal is to separate your core application logic from external concerns like databases, user interfaces, frameworks, and tools.
+            <p />
 
-            <b>Clean Architecture</b>: Clean architecture is a software design pattern that organizes code into independent, concentric layers centered around business logic. The primary goal is to separate your core application logic from external concerns like databases, user interfaces, frameworks, and tools.
-
-            <p/>
-
-            <br />
             <br />
 
             <a href="#pik"> back to up </a>
 
         </div>
 
-
+        <br />
+        <h2>🚀Multi-Tenant application .NET 8.0</h2>
         <div class="main-content">
 
-            <h1>🚀Multi-Tenant application .NET 8.0</h1>
-
-            <br />
-                
-            <b class="color-profile-naim">  Asked Google AI: </b>
-
-            <br />
-            <br />
-
-            <b>Monolithic Architecture: Clean Architecture - One Application - Shared Database </b>:
+            <p>
+                <b class="color-profile-naim">
+                    Naim:
+                </b>
+                <b>
+                    Monolithic Architecture: Clean Architecture - One Application - Shared Database
+                </b>
+            </p>
 
             <p>
-                Multi-tenant applications in .NET 8.0 are highly scalable because they pool infrastructure, allowing a single deployed instance or web cluster to serve thousands of customers (tenants) efficiently.
+                <b class="color-profile-googoleai">Google AI</b>
+                Multi-tenant applications in .NET 8.0 are highly scalable because they pool infrastructure, allowing a single deployed instance or web cluster to serve thousands of customers (tenants) efficiently.Instead of scaling the entire web project, developers scale specific high-traffic services horizontally, such as background jobs, database queries, and microservices.
+            </p>
 
-                Instead of scaling the entire web project, developers scale specific high-traffic services horizontally, such as background jobs, database queries, and microservices.
-            <p/>
+        </div>
 
-            <br />
-            <br />
-
-            <b>How .NET 8.0 Multi-Tenancy Scales </b>
+        <br />
+        <h2>How .NET 8.0 Multi-Tenancy Scales:</h2>
+        <div class="main-content">
 
             <p>
                 Instead of scaling the entire monolith, you scale only the stressed components. This selective scaling is achieved through specific methods:
-            <p/>
-
-            <br />
-            <br />
-
-            <b>Horizontal Compute Scaling: </b>
+            </p>
 
             <p>
+                <b class="color-profile-googoleai">
+                    Horizontal Compute Scaling:
+                </b>
                 You can deploy multiple instances of your .NET 8.0 Web API behind a load balancer. When a heavy-traffic tenant creates a massive spike in requests, you simply add more server instances to the pool (scale-out). Because the infrastructure is shared, this absorbs the traffic without provisioning new servers from scratch.
-            <p/>
-
-            <br />
-            <br />
-
-            <b>Asynchronous Background Processing: </b>
+            </p>
 
             <p>
+                <b>The Web Project (The Entry Point):</b>
+                Scales horizontally. You just duplicate the same ASP.NET Core web app across multiple instances to handle more incoming HTTP requests.
+            </p>
+
+            <p>
+                <b>Asynchronous Background Processing: </b>
+                <br />
+
                 For high-traffic operations (like generating reports or processing tenant-specific invoices), .NET 8.0 uses message queues (e.g., RabbitMQ, Azure Queue Storage). The web project offloads these heavy jobs to background workers, preventing the primary web project from crashing or slowing down.
-            <p/>
-
-            <br />
-            <br />
-
-            <b>Database Partitioning (Sharding):</b>
+            </p>
 
             <p>
+                <b>Database Partitioning (Sharding):</b>
+                <br />
+
                 As your tenant base grows, the database becomes the primary bottleneck. .NET 8.0 (often using Entity Framework Core) can utilize global query filters to automatically append a TenantId to every query, or route traffic to different databases based on the active tenant. If a specific tenant is very high-traffic, their specific database or table is moved to a dedicated, high-performance server (vertical scaling).
-            <p/>
+            </p>
 
-            <br />
-            <br />
+            <p>
+                <b>Tenant-Aware Caching:</b>
+                <br />
 
-            <b>Tenant-Aware Caching:</b>
-
-            <P>
                 To handle read-heavy traffic, .NET 8.0 applications rely on distributed caches (like Redis). Data is cached at the tenant level, so heavy requests for one tenant's inventory or dashboard are served directly from the cache without hitting the database.
             </p>
 
-            <br />
-            <br />
-
-            <b>The Web Project vs. High-Traffic Components </b>
-
             <p>
+                <b>The Web Project vs. High-Traffic Components </b>
+                <br />
+
                 In a multi-tenant environment, you almost always scale the compute instances and background workers, not the isolated "web project" file itself.
-            <p/>
+            </p>
+        </div>
 
-            <br />
-            <br />
+        <br />
+        <h2>How to scale this application:</h2>
 
-            <b>The Web Project (The Entry Point):</b>
-
+        <div class="main-content">
             <p>
-                Scales horizontally. You just duplicate the same ASP.NET Core web app across multiple instances to handle more incoming HTTP requests.
-            <p/>
-
-            <br />
-            <br />
-
-            <b>The High-Traffic Portions (Microservices):</b>
-
-            <p>
-                You break apart heavy modules from the main web app into isolated services. For example, a tenant's billing service can be scaled to 10 instances, while their less-used messaging service remains at 1 instance.
-            <p>
-
-            <br />
-            <br />
-
-            <b class="color-profile-googoleai">
-                Google AI:
-            </b>
-
-            <br />
-            <br />
-
-
-            <b>If you would like to scale your application, tell me about:</b>
-
-            <br />
-            <br />
-
-            <p>
-                1. The hosting environment you are using (e.g., Azure, AWS, or on-premise Kubernetes)
-
-                <br />
-                <br />
-
-                2. Your database strategy (Shared database vs. separate databases per tenant)
-
-                <br />
-                <br />
-
-                3. What is causing the high traffic (e.g., massive user logins vs. heavy data exports/imports)
-
-                <br />
-                <br />
-
-                I can help you design an exact scaling plan.
-
-
-                <br />
-                <br />
-
                 <b class="color-profile-naim">
                     Naim:
                 </b>
-
-                <br />
-                <br />
-
                 My deployment infrastructure is Linux VPS. I am using shared database. If traffic grows, what strategy the application architecture should I use?
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b class="color-profile-naim">
                     Naim:
                 </b>
-
                 Like: 1. Web project, Shared Service project, Shared Common prohect, Domain Project (models & repository interfaces), Infrastructure Project (dbcontext and repository). It is considered as monolitich, right?
+            </p>
 
-                <br />
-                <br />
-
-                <b class="color-profile-naim">
-                    Naim:
-                </b>
-
-                I have shared service project. It can use api project (currently  don't have). In current architecture: how to scale? If  I introduce a API project, then, how can I scale? Also, explaine , how to scale one instance of application is instantiated multiple instances, and how the traffic route to thse instances?
-
-
-                <br />
-                <br />
-
+            <p>
                 <b class="color-profile-googoleai">
                     Google AI:
                 </b>
-
-                <br />
-                <br />
-
                 Yes, your current architecture is a monolithic architecture.
+            </p>
 
+            <p>
                 Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
+            </p>
 
-                <br />
-                <br />
+            <p>
+                <b class="color-profile-naim">
+                    Naim:
+                </b>
+                I have shared service project. It can use api project (currently  don't have). In current architecture: how to scale? If  I introduce a API project, then, how can I scale? Also, explaine , how to scale one instance of application is instantiated multiple instances, and how the traffic route to thse instances?
+            </p>
+        </div>
 
+        <br />
+        <h2>
+            How to scale your monolithic architecture:
+        </h2>
+        <div class="main-content">
+            <p>
                 Here is exactly how to scale your monolithic architecture, how introducing a separate API project changes the strategy, and how routing works across multiple instances.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
+            </p>
 
-                <br />
-                <br />
+            <h3>
+                Strategy 1: Scaling Your Current monolithic Architecture
+            </h3>
 
-                <h2>
-                    Strategy 1: Scaling Your Current monolithic Architecture
-                </h2>
-
-                <br />
-
-
+            <p>
                 Because your entire application runs as a single process, you cannot scale just the "Shared Service project" on its own. You must scale the entire monolith together.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Vertical Scaling First:</b>
+                <br />
 
                 Upgrade your Linux VPS to a higher tier with more CPU cores and RAM. This is the fastest, zero-code way to handle more traffic.
-
-                <br />
-                <br />
-
+            </p>
+            <p>
                 <b>Database Connection Pooling:</b>
-
+                <br />
                 Since you use a shared database, multiple application threads will compete for database connections. You must optimize your connection pool size in your appsettings.json connection string so the database doesn't choke.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>In-Memory Caching:</b>
+                <br />
 
                 Use .AddMemoryCache() in .NET 8.0 to store frequently requested, non-tenant-specific data directly in the VPS RAM to avoid hitting the shared database.
+            </p>
 
-                <br />
-                <br />
+            <h3>
+                Strategy 2: Scaling by Introducing an API Project
+            </h3>
 
-                <h2>Strategy 2: Scaling by Introducing an API Project</h2>
-
-
-                <br />
-
+            <p>
                 If you split your architecture so that the Web Project (frontend/UI) communicates with a separate API Project (backend logic, services, and database access), you gain better scaling flexibility.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Independent Scaling:</b>
+                <br />
 
                 You can deploy the Web project and the API project onto two completely separate Linux VPS instances.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Targeted Resource Allocation:</b>
+                <br />
 
                 If your traffic involves heavy data processing, your API VPS will need high CPU/RAM. If your traffic is just users loading static web pages, your Web VPS can remain small and cheap.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>API Worker Pools:</b>
+                <br />
 
                 If the API becomes the bottleneck, you can duplicate only the API project across 3 or 4 separate Linux servers, while keeping only 1 server for the Web frontend.
+            </p>
 
-                <br />
-                <br />
+        </div>
 
+        <br />
+        <h2>How one Instance Becomes Multiple Instances:</h2>
+
+        <div class="main-content">
+            <p>
                 <b class="color-profile-googoleai">
                     Google AI:
                 </b>
-
-                <h1>How 1 Instance Becomes Multiple Instances:</h1>
-
-                <br />
 
                 To turn one instance into multiple instances on a Linux VPS infrastructure, you use a process called Horizontal Scaling (Scaling Out).
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Clone the Environment:</b>
-
+                <br />
                 You provision 2 or more separate Linux VPS instances (e.g., VPS 1, VPS 2, VPS 3).
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Deploy the Code:</b>
-
+                <br />
                 You deploy the exact same compiled .NET 8.0 published folder to all of those VPS instances.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Keep them Stateless:</b>
+                <br />
 
                 For this to work, the application must not save files (like uploaded user images) or user sessions locally on the VPS disk. Sessions should be stored in a shared distributed cache (like Redis), and files should go to an object storage service (like AWS S3 or MinIO).
+            </p>
+        </div>
 
-                <br />
-                <br />
-
+        <br />
+        <h2>How Traffic Routes to These Instances:</h2>
+        <div class="main-content">
+            <p>
                 <b class="color-profile-googoleai">
                     Google AI:
                 </b>
-
-                <h2>How Traffic Routes to These Instances:</h2>
-
                 <br />
-
 
                 To split traffic among your multiple VPS instances, you must place a Reverse Proxy / Load Balancer in front of them. On Linux, Nginx or HAProxy are the industry standards for this.
+            </p>
 
-                <br />
-                <br />
-
-                Step 1: [ Incoming User Traffic ]
-                <br />
-                When a user
-                goes to your domain name (e.g., www.example.com). The DNS resolves this to the public IP of your Nginx server:
-
-                <br />
+            <p>
+                <b>
+                    Step 1: [ Incoming User Traffic ]
+                </b>
                 <br />
 
-                Step 2: [ Nginx Load Balancer ]
-                (Public IP: 192.168.1.1) :
+                When a user goes to your domain name (e.g., www.example.com). The DNS resolves this to the public IP of your Nginx server:
+            </p>
+
+
+            <p>
+                <b>
+                    Step 2: [ Nginx Load Balancer ]
+                    (Public IP: 192.168.1.1) :
+                </b>
                 <br />
-                <br />
+
                 Seneds the traffic to your multiple VPS instances based on the load balancing algorithm you choose:
-                <br />
-                <br />
+            </p>
+
+            <p>
+
                 Step 3:
                 <br />
-
                 1. [ VPS Instance 1 ] :(Port: 5000)
                 <br />
-
                 2. [ VPS Instance 2 ] :(Port: 5000)
                 <br />
-
                 3. [ VPS Instance 3 ] :(Port: 5000)
-
                 <br />
+            </p>
 
-                <br />
-
+            <p>
                 <b>The Entry Point:</b>
+                <br />
 
                 Your domain name points directly to the single IP address of the Nginx server.
+            </p>
 
-                <br />
-
-                <br />
-
+            <p>
                 <b> The Routing Rules:</b>
-
+                <br />
                 You configure Nginx with the private IP addresses of your .NET 8.0 VPS instances.
+            </p>
 
-                <br />
-                <br />
-
+            <p>
                 <b>Load Balancing Algorithms:</b>
-
-                <br />
-                <br />
-
-                Nginx passes the traffic using specific rules:
+                <b>
+                    Nginx passes the traffic using specific rules:
+                </b>
 
                 <br />
 
@@ -740,57 +600,49 @@
 
                 Sends request 1 to VPS 1, request 2 to VPS 2, request 3 to VPS 3, and repeats.
 
+            </p>
 
-                <br />
-
-                <br />
-
+            <p>
                 <b>2. Least Connections:</b>
+                <br />
 
                 Sends the next user request to whichever VPS is currently handling the least amount of active traffic.
+            </p>
 
+            <p>
+                <b> 3. Ip Hash (Sticky Sessions):</b>
                 <br />
-                <br />
-
-                <b>3. Ip Hash (Sticky Sessions):</b>
 
                 Ensures a specific tenant or user always hits the exact same VPS instance, which is helpful if you cannot use a shared distributed cache yet.
             </p>
 
-            <a href="#pik"> back to up </a>
+            <br />
 
+            <a href="#pik"> back to up </a>
+            <br />
         </div>
 
-
+        <br />
+        <h2>Knowledge Cultivation</h2>
         <div class="container">
-
-            <div class="main-content">
-
-                <section id="section1" class="content-section">
+                <div  class="main-content">
 
                     <h3>Project goals</h3>
 
-                    <br />
-
-                    <b>Volunteering for Code Reuse</b>
-
-                    <br />
-
                     <p align="justify">
-
+                        <b>Volunteering for Code Reuse</b>
+                        <br />
+                        <br />
                         Volunteering your time is one of the best examples of giving back to the community. While this can be one of the more time-consuming ways to give back, it can also be the most fulfilling and hands-on.
-
-                        <br />
-                        <br />
-
                     </p>
 
-                    <p align="center">
+                    <br />
+                    <br />
 
+                    <p align="center">
                         <b>
                             “Knowledge is meant to be shared. I am dedicated to empowering the next generation of engineers. Goal is to create a community with same motivation.”
                         </b>
-
                     </p>
 
                     <br />
@@ -798,199 +650,120 @@
 
                     <a href="#pik"> back to up </a>
 
-                </section>
-
-
-            </div>
-
-            <div class="main-content">
-
-
-                <section id="section3" class="content-section">
+                </div>
+                <div  class="main-content">
 
                     <h3>Tech stack & technologies</h3>
 
-                    <br />
+                    <p align="justify">
 
-                    <p align="left">
-
-                        <b>🛠️ Development Tool (IDE)</b>
+                        🛠️ Development Tool (IDE)
                         <br />
 
-                        <b>🛠️ Framework:</b> .NET 8.0
+                        🛠️ Framework: .NET 8.0
                         <br />
 
-                        <b>🛠️ Language:</b> C#
+                        🛠️ Language: C#
                         <br />
 
-                        <b>🛠️ ORM:</b> Entity Framework Core
+                        🛠️ ORM: Entity Framework Core
                         <br />
 
-                        <b>🛠️ Database:</b> Sql Server
+                        🛠️ Database: Sql Server
                         <br />
 
-                        <b>🛠️ Database Tool: </b> Sql Server Management Studio 2022
+                        🛠️ Database Tool: Sql Server Management Studio 2022
 
                         <br />
                         <br />
 
-                        <b>Frontend & Styling</b>
+                        Frontend & Styling
                         <br />
 
-                        <b>🎨 Scripting:</b> JavaScript
+                        🎨 Scripting: JavaScript
                         <br />
 
-                        <b>🎨 Markup:</b> HTML5
+                        🎨 Markup: HTML5
                         <br />
 
-                        <b>🎨 Styling:</b> CSS3
+                        🎨 Styling: CSS3
                         <br />
 
-                        <b>🎨Preprocessors:</b> SCSS, Less
-
+                        🎨Preprocessors: SCSS, Less
                         <br />
                         <br />
 
-                        <b>DevOps & Infrastructure</b>
+                        DevOps & Infrastructure
                         <br />
 
-                        <b>🎨Source Control (ALCM)</b> Git
+                        🎨Source Control (ALCM) Git
                         <br />
 
-                        <b> 🚀 Dev Ops (Agile)</b> Git Hub Project
+                        🚀 Dev Ops (Agile) Git Hub Project
                         <br />
 
-                        <b>🐋 Containerization:</b> Docker
+                        🐋 Containerization: Docker
 
                     </p>
 
                     <br />
                     <a href="#pik"> back to up </a>
 
-                </section>
-
-
+                </div>
             </div>
 
-        </div>
-
-
+        <br />
+        <h2>Deliver code & build community</h2>
         <div class="main-content">
-
-            <h2>Deliver code & build community</h2>
-
-            <br />
-
             <p align="justify">
-
                 This community is tring to deliver and engage engineers to practice collaborative production-grade software engineering. Our goal is to collectively design, build, and document a complete Multi-Tenant SaaS Storefront using .NET 8.0 ASP.NET Core MVC. Our focus is to encourage, engage new engineers and learners to join, learn and contribute in this community & project.
-
             </p>
-
-            <br />
 
             <h2>
                 Learn & Create Code
             </h2>
 
-            <div class="container">
+        <div class="container">
+            <div class="content-section">
+                <p align="justify">
+                    <b>🚑 Real-World Problem Solving</b>
+                    We solve production challenges like tenant isolation pipelines, global database filtering with EF Core, and secure client-side scripting.
+                    <b>[ON GOING]</b>
+                </p>
 
-                <div class="main-content">
-
-                    <section class="content-section">
-
-                        <p align="left">
-
-                            <b>🚑 Real-World Problem Solving</b>
-
-                        </p>
-
-                        <p align="justify">
-
-                            We solve production challenges like tenant isolation pipelines, global database filtering with EF Core, and secure client-side scripting.
-
-                            <b>[ON GOING]</b>
-
-                        </p>
-
-                        <br />
-
-                        <p align="left">
-
-                            <b>📝 Interactive Course Materials</b>
-
-                        </p>
-
-                        <p align="justify">
-
-                            Every major architectural component is accompanied by step-by-step documentation, real-life examples, and actionable lab challenges.
-                            <b>[Plan]</b>
-
-                        </p>
-
-                        <br />
-
-                    </section>
-
-                </div>
-
-                <div class="main-content">
-
-                    <section class="content-section">
-
-                        <p align="left">
-                            <b>✨Co-Authoring Code</b>
-                        </p>
-
-                        <p align="justify">
-
-                            Community members collaborate directly through GitHub Pull Requests, code reviews, and automated CI/CD pipeline building. <b>[Plan]</b>
-
-                        </p>
-
-                        <br />
-
-                        <p align="left">
-
-                            <b>👍 DevOps & Delivery: </b>
-
-                        </p>
-
-                        <p align="justify">
-
-                            We hopefully will finish by publishing our codebases to live Linux VPS servers, mastering the entire software development lifecycle (SDLC).
-
-                            <b>[ON GOING]</b>
-
-                        </p>
-
-                    </section>
-
-                </div>
-
-                <a href="#pik"> back to up </a>
-
+                <p align="justify">
+                    <b>📝 Interactive Course Materials</b>
+                    Every major architectural component is accompanied by step-by-step documentation, real-life examples, and actionable lab challenges.
+                    <b>[Plan]</b>
+                </p>
             </div>
 
-            <br />
+            <div class="content-section">
+                <p align="justify">
+                    <b>✨Co-Authoring Code</b>
+                    Community members collaborate directly through GitHub Pull Requests, code reviews, and automated CI/CD pipeline building. <b>[Plan]</b>
+                </p>
+                <p align="justify">
+                    <b>👍 DevOps & Delivery: </b>
+                    We hopefully will finish by publishing our codebases to live Linux VPS servers, mastering the entire software development lifecycle (SDLC).<b>[ON GOING]</b>
+                </p>
+            </div>
+        </div>
 
-            <h1>🚀 Course curriculum Outline</h1>
+            <a href="#pik"> back to up </a>
+        </div>
 
-            <br />
-
+        <br />
+        <h2>🚀 Course curriculum Outline</h2>
+        <div class="main-content">
             <p>
-
                 <b>Here is a structured course curriculum blueprint:</b>
-
-                <br />
 
                 Source material designed specifically for your .NET 8.0 ASP.NET Core MVC Multi-Tenant Store application. This curriculum is architected to teach junior developers how to build a production-ready SaaS (Software as a Service) platform using Clean Architecture.
 
             </p>
 
             <p>
-                <br />
-                <br />
                 <b>📚 Chapter 1</b>
                 <br />
 
@@ -1004,37 +777,27 @@
             </p>
 
             <p>
-
-                <br />
                 <b>📚 Chapter 2</b>
                 <br />
 
                 1. Data Isolation with EF CoreQuery Filters for automated Tenant Isolation.
                 <br />
                 2. Database migrations management on a shared platform.
-
             </p>
 
             <p>
-
-                <br />
                 <b>📚Chapter 3</b>
-
                 <br />
                 1. Modern MVC with Vanilla JavaScript
                 <br />
                 2. Building dynamic, non-blocking UI storefronts.
                 <br />
                 3. Asynchronous fetching (fetch API), secure anti-forgery tokens, and modular DOM scripts.
-
             </p>
 
             <p>
-
-                <br />
                 <b>📚 Chapter 4</b>
                 <br />
-
                 1. Production Deployment & DevOps
                 <br />
                 2. Managing environments safely via GitHub Actions and secrets.
@@ -1046,48 +809,25 @@
 
             <a href="#pik"> back to up </a>
 
-        </m>
+        </div>
 
-        <!--   Container Layout: (contains: 2 cloumn, type is a grid, uses div as column )    -->
+        <h3>naimul.prodhan81@gmail.com</h3>
         <div class="container">
-
-            <div class="main-content">
-
-
-                <section class="content-section">
-
+            <div class="content-section">
                     <header>
-
                         <h2>✍️ About Me</h2>
-
                     </header>
 
-
-                    <b> Hi there, I'm Naim Ul Islam Prodhan 👋 </b>
+                    <b>
+                        Hi there, I'm Naim Ul Islam Prodhan 👋
+                    </b>
 
                     I am an engineer, father, and community advocate from Bangladesh. My journey has taken me from local corporate offices to travels abroad, and now into the world of open-source and self-taught engineering.
-
-                    <br />
-                    <br />
-
-
-
-
-
-                </section>
-
-
-            </div>
-
-            <div class="main-content">
-
-
-                <section class="content-section">
-
+                </div>
+     
+            <div class="content-section">
                     <header>
-
                         <h2>📖 Perseverance </h2>
-
                     </header>
 
                     In January 2024, I survived a mild brain stroke that temporarily took away my ability to speak. Facing a long recovery and time away from full-time work, I chose to redirect my energy toward continuous learning and technology. I rebuilt my skills step-by-step—using my phone and tools like Google Colab to learn new programming languages and frameworks.
@@ -1108,26 +848,21 @@
 
                     </b>
 
-                </section>
-
-
-            </div>
-
+                </div>  
         </div>
 
         <br />
-
-        <h1>
+        <h2>
             Google AI used to Generate Content
-        </h1>
-        <h4>Based on my search, query and questions</h4>
+        </h2>
+
         <div class="main-content">
 
+            <b>Based on my search, query and questions</b>
 
-            <h2>
-
+            <h3>
                 For Jwt Token for Multi Tenant Impementation
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://andrewlock.net](https://andrewlock.net/implementing-custom-token-providers-for-passwordless-authentication-in-asp-net-core-identity/)
@@ -1146,9 +881,9 @@
                 [14] [https://stackoverflow.com](https://stackoverflow.com/questions/74110441/net-core-identity-server-custom-token-provider-generating-long-token-string)
             </p>
 
-            <h2>
+            <h3>
                 Configure Session Options
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://antondevtips.com](https://antondevtips.com/blog/master-configuration-in-asp-net-core-with-the-options-pattern)
@@ -1159,9 +894,9 @@
                 [6] [https://www.youtube.com](https://www.youtube.com/watch?v=G910vWOdhQ8)
             </p>
 
-            <h2>
+            <h3>
                 Default ValidateAntiForgeryToken
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://www.syncfusion.com](https://www.syncfusion.com/blogs/post/10-practices-secure-asp-net-core-mvc-app)
@@ -1176,9 +911,9 @@
                 [10] [https://fiware-orion.readthedocs.io](https://fiware-orion.readthedocs.io/en/master/orion-api.html)
             </p>
 
-            <h2>
+            <h3>
                 Global Excepton Handling
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://medium.com](https://medium.com/@Moltech/middleware-in-net-enhancing-request-handling-with-custom-logic-7bf4f7a648a6)
@@ -1194,9 +929,9 @@
                 [11] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/UploadFile/a3d5d0/structured-logging-with-serilog-and-seq-part-2/)
             </p>
 
-            <h2>
+            <h3>
                 View and Analyze Your Serilog/Log files
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://dzone.com](https://dzone.com/articles/multi-tenancy-implementation-using-spring-boot-and)
@@ -1210,9 +945,9 @@
                 [9] [https://blog.angelwebdesigns.com.au](https://blog.angelwebdesigns.com.au/structured-logging-with-serilog-in-asp-net-core/)
             </p>
 
-            <h2>
+            <h3>
                 Keep Log Seperately in Places (layers)
-            </h2>
+            </h3>
 
             <p>
                 [1] [https://www.youtube.com](https://www.youtube.com/watch?v=T-EiJQOKNpk)

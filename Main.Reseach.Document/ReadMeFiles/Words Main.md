@@ -1,74 +1,132 @@
-**🎬📺 SaaS Business Model:** In SaaS business model users/tenants instead of (buying and installing software) locally, access tools (applicatin features) via web browsers or apps, eliminating upfront infrastructure and maintenance costs.  
+# 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS)
+
+**We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
+
+### **🛍️store is a 🛍️shop inside 🏬shopping mall**
+
+The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the admin of a shop. The registration is for the shop with an email address from the multi-tenant portal:
+
+### www.tenantors.com
+
+The registration is for the shop with an email address from the portal (example: www.tenantors.com). An email can be used for multiple tenants. Just like a single sign in across all tenants. Read followng for understanding the detail, about the multi-tenant web application. We explain first, the application related keywords and objects. We must undertand them to get a complete view about the concept & story of the multi-tenant SaaS.
+
+## Tenant🛍️ & User🔑 
+
+### Further Details To Understand the story better next...
+
+### 1. 🛍️Tenants:
+Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+
+### 2. 🔑Users:
+Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address.
+
+## 🛍️Tenant Types (According to Hosting Plan)
+
+### Tenant name is: **rotikhai**
+           
+**rotikhai** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
+
+### Domain: www.rotikhai.com
+After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
+
+### Subdomain: www.rotikhai.tenantors.com
+**Unique username is the name of the subdomain**
+After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
+            
+### Subdirectory: www.tenantors.com/rotikhai/
+**Unique username is the name of the subdirectory**
+After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
+
+## 🛍️Tenant Work Space
+
+### Tenant Shop Website (URL):
+
+**Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
+
+
+**Think the workspace as your shop in a shopping mall:**
+
+
+**You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
+
+
+
+
+
+
+
+
+**🎬📺 SaaS Business Model:** In SaaS business model users/tenants instead of (buying and installing software) locally, access tools (applicatin features) via web browsers or apps, eliminating upfront infrastructure and maintenance costs.
 
 **🔑🏢 Multi-Tenant SaaS:** This is a specific underlying technical architecture where all customers share the exact same software instance and physical infrastructure for receiving the application features. 
 
 **🏬🛍️🛒Multi-Tenant Web Application:** is one example of the underling multi-Tenant SaaS. In this Model, Tenant is a store/shop. 
 
+# 🏬🛍️🛒Multi-Tenant Stores
 
 
-# 🏬🛍️🛒Multi-Tenant Stores (Multi-Tenant SaaS)
-
-We are developing a multi-tenant stores web application. 
-
-A store is called tenant ⇄ A tenant is a store. **(vice versa)** 
-
-**Store is a 🛍️Shop inside 🏬Shopping Mall**
-
-The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. 
-
-### The registration is for the shop with an email address from the portal. Example: www.tenantors.com An email can be used with multiple tenants. Just like a single sign in across all tenants. 
 
 
-### Consider scenarios:  
 
-## Scenario 1: 
 
+
+### The registration is for the shop with an email address from the portal. Example: www.tenantors.com An email can be used with multiple tenants. Just like a single sign in across all tenants. Consider scenarios:
+
+## 👑Scenario 1
 You have a business with a valid trade license and do business professionally.  You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.  
 
 You have staff in your business.  After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager. 
 
-## Scenario 2:  
+## 🛠️Scenario 2
 
 The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop. 
 
-## Tenant🛍️ & User🔑  
+## Tenant🛍️ & User🔑
 
-1. Tenants: Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
-2. Users: Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. 
-
-A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address. 
+1. 🛍️Tenants: Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+2. 🔑Users: Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address. 
 
 ## Tenant Shop Website (URL): 
+Tenant has ti's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.
 
-Tenant has ti's own work space. Users can uupload products, add ads (images, links) and arrange the pages by their choice.
-
-### Your Shop in a Shopping Mall: 
-
+### Your Shop in a Shopping Mall:
 **The way the owner and managers plan and design interior and arrange products of a shop in a shopping mall.**
 
 
-**1. Category A:** 
+# 🛍️Category A
 After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features. 
 
-**www.rotikhai.com (domain)** 
+### **Example:1  🛍️domain: www.rotikhai.com** 
 
-**2. Category B:** 
+# 🏷️Category B
 After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features. 
 
-**www.rotikhai.tenantors.com  (subdomain)** 
+### **Example 2:  🏷️subdomain: www.rotikhai.tenantors.com
 
-**3. Category C:** 
+# 🧩Category C 
 After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features. 
 
-**www.tenantors.com/rotikhai/ (subdirectory)** 
+### Example 3:  **🧩Subdirectory: www.tenantors.com/rotikhai/**
 
-## Web Application Shopping Features: 
+# 🏢 Store Features (Tenant):
 
-1. Product Manager (manage shop products with admin dashboard)
-2. Advertisement Manager (create ads with images, texts, links)
-3. Page Manager (small CMS to organize the products and ads with different templates)
-4. Shopping Cart and Order Processing:
-5. Payment Manager: 
+**1. 🏢Tenant Profile (domain setup / buy domain, invite users) 🔄(50%)**
+**2. 🔒 Security & Isolation: Manage user account and change password 🔄(100%)**
+**3. 📦Product Manager: Manage shop products (add, edit, delete, view) with admin dashboard 🔄(100%)**
+**4. 🖼️Advertisement Manager (create ads with images, texts, links) 🔄(100%)**
+**5. 🎛️Page Manager (small CMS to organize the products and ads with different templates) 🔄(100%)**
+**6. 🛒Shopping Cart and Order Processing: (Pending Development) 🟥(0%)**
+**7. 📝Payment Manager: (Pending Development) 🟥(0%)**
+
+# Browser🌐➡️   Nginx🔒🛡️🔀➡️   Host🖥️
+
+### Host Environment Linux VPS
+
+## 🔒🛡️   Nginx Router For VPS   🖥️
+He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
+
+## 🔒🛡️🔀   Nginx Load Balance (Scale)   🖥️🖥️🖥️
+Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
 ## Concerns for Tenant (Isolation): 
 
@@ -105,7 +163,7 @@ It is the starting point to isolate and secure the Tenant and its data.
 **We provide safety here for the authenticated user for the tenant as the token uses the userid, tenant id and role of the tenant with a long secret key. We stopped at the entry point.** 
 
 ## **Another Layer of security**🔄(100%) 
- is for the tenant using same Jwt but it is tenant specific & browser tab specific. This token confirms the unsafe action cannot take place even if the user passes the tenant to resolve middleware (authorization). This token is checked just before executing the unsafe actions (which change data: add, update, delete) using authorization of action filters. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. **[Stop Data Leake]** 
+ is for the tenant using same cookie but it is tenant specific & browser tab specific because the name of the cookie is suffixed by Ienant Id. This token confirms the unsafe action cannot take place even if the user gets pass with the authentication Jwt token (by validating) inside the resolve middleware (tenant resolver) and go dow stream. This antiforgery token (with teannt suffix) is checked just before executing the unsafe actions (which change data: add, update, delete) using action filter. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. Options are set with IConfiguration for the cookie naming. **[Stop Data Leake]** 
 
 We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser with different tabs. **[Users who access multiple Tenants]** 
 
@@ -133,14 +191,16 @@ In the middleware of Authorization Handler: the success assigns access policy fo
 
 **[Above all are impkemented]**
 
-## Stop Resource Access by Unwanted / by Mistake: 
-**Not implemented**
-We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate. We made a few changes in the default option for this to work for multi-tenancy. We created a path for cookies for each tenant; so that in a browser, they didn't go from one tenant to another and pick up another tenant's token. Browser in this case will check the path, which it received, and send back to the server. ****
+## Stop Resource Access by Unwanted / by Mistake: 🔄(100%) 
 
-## We Handle Tenant Security Following Above Standards🔄(80%)
+**Anti-forgery second layer of security with resolved Tenant Id with suffix for the Cookie Name**
+
+We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate (custom validation). We made a few changes in the default option for this to work for multi-tenancy. Based on the nameof cookie we will validate. Cookie header is same. For Java Script and Ajax, it is default MVC request. Validatin is custom. Validation attribute is custom for action. In view the tag helper is default. We removed a (path based isolation cookies) for each tenant; rether keep the cookie name unique for each tenant. 
+
+## We Handle Tenant Security Following Above Standards🔄(100%)
 **for such multi tenant applications **
 
-# Multi Tenant Architecture 🔄(70%) 🟥(30%)
+# Multi Tenant Architecture 🔄(00%) 🟥(20%)
 
 ## SaaS Cross-Cutting Concerns 
 In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns represent technical functionalities that span your entire system and must execute across various endpoints, layers, or microservices without altering the core business rules. In a multi-tenant SaaS application, these concerns become highly critical because they must almost always be evaluated in the context of a specific tenant.Core 
@@ -347,7 +407,6 @@ It is extended to use tenants (IdentityUser is now:
 
 ## Global Excepton Handling
 
-
 [1] [https://medium.com](https://medium.com/@Moltech/middleware-in-net-enhancing-request-handling-with-custom-logic-7bf4f7a648a6)
 [2] [https://medium.com](https://medium.com/@mina.abdo/middleware-and-request-pipeline-in-asp-net-core-73044052c88a)
 [3] [https://www.linkedin.com](https://www.linkedin.com/pulse/kiss-try-catch-goodbye-middleware-cleaner-more-manageable-islam-5dmhc)
@@ -390,3 +449,4 @@ It is extended to use tenants (IdentityUser is now:
 [14] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-01-30-centralized-logging-architecture/view)
 
  
+
