@@ -127,7 +127,7 @@ p {
     grid-template-columns: 1fr 1fr;
     width: 100%;
     gap: 2px;
-    margin-top: 10px;
+    margin-top: 0px;
     margin-bottom: 10px;
     border: 0px dashed #e1e4e8;
     border-radius: 7px;
