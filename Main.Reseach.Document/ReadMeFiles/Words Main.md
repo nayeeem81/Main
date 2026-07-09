@@ -22,20 +22,47 @@ Initial tenant creation, this multi-tenant web application; assigns the user (em
 
 ## 🛍️Tenant Types (According to Hosting Plan)
 
-### Tenant name is: **rotikhai**
+### Tenant name is: **kaiassociates**
            
-**rotikhai** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
+**kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
 
-### Domain: www.rotikhai.com
+### Domain: www.kaiassociates.com
 After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
 
-### Subdomain: www.rotikhai.tenantors.com
+### Subdomain: www.kaiassociates.tenantors.com
 **Unique username is the name of the subdomain**
 After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
             
-### Subdirectory: www.tenantors.com/rotikhai/
+### Subdirectory: www.tenantors.com/kaiassociates/
 **Unique username is the name of the subdirectory**
 After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
+
+## Login approach
+Tenant is registered by an user email. Verify email link sent upon registration form submission. User gets admin role and a subdirectory for the tenant (default). He/She must must verify the registered email to activate the tenant account. 
+
+Tenant user can login and access the store work space only using verified email.
+
+**After email verification, user will login in the website, from where the user was registered. (example:tenantors.com)**
+
+1. After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
+
+🆔🪪www.kaiassociates.com
+
+2. After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
+
+📲🪪www.kaiassociates.tenantors.com
+
+3. After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
+
+🏢🪪www.tenantors.com/kaiassociates
+
+### Summary:
+
+### 🛍️ Tenant View:
+In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
+
+### 🛠️Technical View:
+It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
 
 ## 🛍️Tenant Work Space
 
