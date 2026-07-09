@@ -44,29 +44,29 @@ Tenant user can login and access the store work space only using verified email.
 
 **After email verification, user will login in the website, from where the user was registered. (example:tenantors.com)**
 
-1. After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
+After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
 
-🆔🪪www.kaiassociates.com
+**🆔🪪www.kaiassociates.com**
 
-2. After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
+After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
 
-📲🪪www.kaiassociates.tenantors.com
+**📲🪪www.kaiassociates.tenantors.com**
 
-3. After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
+After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
 
-🏢🪪www.tenantors.com/kaiassociates
+**🏢🪪www.tenantors.com/kaiassociates**
 
 ### Summary:
 
-### 🛍️ Tenant View:
+### **🛍️ Tenant View:**
 In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
 
-### 🛠️Technical View:
+### **🛠️Technical View:**
 It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
 
 ## 🛍️Tenant Work Space
 
-### Tenant Shop Website (URL):
+### **Tenant Shop Website (URL):**
 
 **Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
 
@@ -76,7 +76,7 @@ It will confirm the isolation of the store identity and their  independent work 
 
 **You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
 
-### 🏢 Store Features (Tenant):
+### **🏢 Store Features (Tenant):**
 
 1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**
 2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
