@@ -78,7 +78,8 @@ It will confirm the isolation of the store identity and their  independent work 
 
 ### 🏢 Store Features (Tenant):
 
-1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**   2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
+1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**
+2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
 3. **📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)**                  
 4. **🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)** 
 5. **🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)**
