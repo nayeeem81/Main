@@ -1,74 +1,109 @@
-**🎬📺 SaaS Business Model:** In SaaS business model users/tenants instead of (buying and installing software) locally, access tools (applicatin features) via web browsers or apps, eliminating upfront infrastructure and maintenance costs.  
+# 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS)
 
-**🔑🏢 Multi-Tenant SaaS:** This is a specific underlying technical architecture where all customers share the exact same software instance and physical infrastructure for receiving the application features. 
+**We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
 
-**🏬🛍️🛒Multi-Tenant Web Application:** is one example of the underling multi-Tenant SaaS. In this Model, Tenant is a store/shop. 
+### **🛍️store is a 🛍️shop inside 🏬shopping mall**
+
+The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the admin of a shop. The registration is for the shop with an email address from the multi-tenant portal:
+
+### www.tenantors.com
+
+The registration is for the shop with an email address from the portal (example: www.tenantors.com). An email can be used for multiple tenants. Just like a single sign in across all tenants. Read followng for understanding the detail, about the multi-tenant web application. We explain first, the application related keywords and objects. We must undertand them to get a complete view about the concept & story of the multi-tenant SaaS.
+
+## Tenant🛍️ & User🔑 
+
+### Further Details To Understand the story better next...
+
+### 1. 🛍️Tenants:
+Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+
+### 2. 🔑Users:
+Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address.
+
+## 🛍️Tenant Types (According to Hosting Plan)
+
+### Tenant name is: **kaiassociates**
+           
+**kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
+
+### Domain: www.kaiassociates.com
+After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
+
+### Subdomain: www.kaiassociates.tenantors.com
+**Unique username is the name of the subdomain**
+After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
+            
+### Subdirectory: www.tenantors.com/kaiassociates/
+**Unique username is the name of the subdirectory**
+After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
+
+## Login approach
+Tenant is registered by an user email. Verify email link sent upon registration form submission. User gets admin role and a subdirectory for the tenant (default). He/She must must verify the registered email to activate the tenant account. 
+
+Tenant user can login and access the store work space only using verified email.
+
+**After email verification, user will login in the website, from where the user was registered. (example:tenantors.com)**
+
+1. After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
+
+🆔🪪www.kaiassociates.com
+
+2. After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
+
+📲🪪www.kaiassociates.tenantors.com
+
+3. After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
+
+🏢🪪www.tenantors.com/kaiassociates
+
+### Summary:
+
+### 🛍️ Tenant View:
+In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
+
+### 🛠️Technical View:
+It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
+
+## 🛍️Tenant Work Space
+
+### Tenant Shop Website (URL):
+
+**Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
 
 
-
-# 🏬🛍️🛒Multi-Tenant Stores (Multi-Tenant SaaS)
-
-We are developing a multi-tenant stores web application. 
-
-A store is called tenant ⇄ A tenant is a store. **(vice versa)** 
-
-**Store is a 🛍️Shop inside 🏬Shopping Mall**
-
-The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the owner of a shop. 
-
-### The registration is for the shop with an email address from the portal. Example: www.tenantors.com An email can be used with multiple tenants. Just like a single sign in across all tenants. 
+**Think the workspace as your shop in a shopping mall:**
 
 
-### Consider scenarios:  
+**You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
 
-## Scenario 1: 
+### 🏢 Store Features (Tenant):
 
-You have a business with a valid trade license and do business professionally.  You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.  
+1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**   2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
+3. **📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)**                  
+4. **🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)** 
+5. **🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)**
+6. **🛒Shopping Cart and Order Processing: (Pending Development) 🟥(0%)**
+7. **📝Payment Manager: (Pending Development) 🟥(0%)**
 
-You have staff in your business.  After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager. 
+## 👑Conecpt of the Story
 
-## Scenario 2:  
+You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
 
-The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop. 
+You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
 
-## Tenant🛍️ & User🔑  
+The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
 
-1. Tenants: Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
-2. Users: Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. 
+## ☁️🐧Hosting Environment (Linux VPS)
 
-A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address. 
+### 🐧Linux Environment In ☁️Cloud VPS
 
-## Tenant Shop Website (URL): 
+### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️➡️   Router to Web App🖥️
 
-Tenant has ti's own work space. Users can uupload products, add ads (images, links) and arrange the pages by their choice.
+He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
 
-### Your Shop in a Shopping Mall: 
+### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️🔀   Load Balance🖥️🖥️🖥️
 
-**The way the owner and managers plan and design interior and arrange products of a shop in a shopping mall.**
-
-
-**1. Category A:** 
-After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features. 
-
-**www.rotikhai.com (domain)** 
-
-**2. Category B:** 
-After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features. 
-
-**www.rotikhai.tenantors.com  (subdomain)** 
-
-**3. Category C:** 
-After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features. 
-
-**www.tenantors.com/rotikhai/ (subdirectory)** 
-
-## Web Application Shopping Features: 
-
-1. Product Manager (manage shop products with admin dashboard)
-2. Advertisement Manager (create ads with images, texts, links)
-3. Page Manager (small CMS to organize the products and ads with different templates)
-4. Shopping Cart and Order Processing:
-5. Payment Manager: 
+Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
 ## Concerns for Tenant (Isolation): 
 
@@ -213,11 +248,9 @@ Default Identity Authentication: Keeps the default ASP.NET Core Identity setup. 
 1. Policy based Tenant Role (authorization) 
 2. Global Roles: Operates on the default Identity Roles (GlobalAdmin, User). 
 3. TenantRole: Policy-based, driven by tenant-specific roles. 
-4. Tenant Scoping: Once a user is authenticated, the system generates custom claims that isolate the user to the specific tenant they are accessing. Aithenticated user uses the default Identity Auth Cookie.
-5. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant. 
-6. Keeping the code structure clean and memorable. Authorization code is mostly in one place, manageable and maintainable for more roles and policies.
-7. Subdirectory Handling: Routes are rewritten for subdirectory-based tenants, allowing the browser and server to manage authentication of cookies natively. (Removes code complexity) 
-8. Request Security: Unsafe requests are protected by the Identity default Antiforgery mechanisms. Fetch and AJAX requests require an explicit header attachment.
+4. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant. 
+5. Keeping the code structure clean and memorable. Authorization code is mostly in one place, manageable and maintainable for more roles and policies and uses Jwt Token.
+6. Request Security: Unsafe requests are protected by the Jwt Custom cookei options and validation.
 
 ## Solution Design & Architecture (.NET 8.0) 
 
@@ -226,16 +259,106 @@ I started my code to build and run for a client (small shop). It was previously 
 
 When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
 
-### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.  
+### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.
+
+## How to scale this application:
+
+Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
+
+Here is exactly how to scale your monolithic architecture, how introducing a separate API project changes the strategy, and how routing works across multiple instances.
+
+Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
+
+### Strategy 1: Scaling Your Current monolithic Architecture
+
+Because your entire application runs as a single process, you cannot scale just the "Shared Service project" on its own. You must scale the entire monolith together.
+
+**Vertical Scaling First:**
+
+Upgrade your Linux VPS to a higher tier with more CPU cores and RAM. This is the fastest, zero-code way to handle more traffic.
+
+**Database Connection Pooling:**
+
+Since you use a shared database, multiple application threads will compete for database connections. You must optimize your connection pool size in your appsettings.json connection string so the database doesn't choke.
+
+**In-Memory Caching:**
+
+Use .AddMemoryCache() in .NET 8.0 to store frequently requested, non-tenant-specific data directly in the VPS RAM to avoid hitting the shared database.
+
+**Strategy 2: Scaling by Introducing an API Project**
+
+If you split your architecture so that the Web Project (frontend/UI) communicates with a separate API Project (backend logic, services, and database access), you gain better scaling flexibility.
+
+**Independent Scaling:**
+
+You can deploy the Web project and the API project onto two completely separate Linux VPS instances.
+
+**Targeted Resource Allocation:**
+
+If your traffic involves heavy data processing, your API VPS will need high CPU/RAM. If your traffic is just users loading static web pages, your Web VPS can remain small and cheap.
+
+**API Worker Pools:**
+
+If the API becomes the bottleneck, you can duplicate only the API project across 3 or 4 separate Linux servers, while keeping only 1 server for the Web frontend.
+
+### How one Instance Becomes Multiple Instances:
+
+To turn one instance into multiple instances on a Linux VPS infrastructure, you use a process called Horizontal Scaling (Scaling Out).
+
+You provision 2 or more separate Linux VPS instances (e.g., VPS 1, VPS 2, VPS 3).
+
+**Deploy the Code:**
+
+You deploy the exact same compiled .NET 8.0 published folder to all of those VPS instances.
+
+**Keep them Stateless:**
+
+For this to work, the application must not save files (like uploaded user images) or user sessions locally on the VPS disk. Sessions should be stored in a shared distributed cache (like Redis), and files should go to an object storage service (like AWS S3 or MinIO).
+
+### How Traffic Routes to These Instances:
+
+To split traffic among your multiple VPS instances, you must place a Reverse Proxy / Load Balancer in front of them. On Linux, Nginx or HAProxy are the industry standards for this.
+
+**Step 1: [ Incoming User Traffic ]**
+When a user goes to your domain name (e.g., www.example.com). The DNS resolves this to the public IP of your Nginx server:
+
+**Step 2: [ Nginx Load Balancer ]**
+(Public IP: 192.168.1.1) :
+Seneds the traffic to your multiple VPS instances based on the load balancing algorithm you choose:
+
+**Step 3:**
+1. [ VPS Instance 1 ] :(Port: 5000)
+2. [ VPS Instance 2 ] :(Port: 5000)
+3. [ VPS Instance 3 ] :(Port: 5000)
+
+The Entry Point:
+
+Your domain name points directly to the single IP address of the Nginx server.
+
+**The Routing Rules:**
+You configure Nginx with the private IP addresses of your .NET 8.0 VPS instances.
+
+**Load Balancing Algorithms:**
+
+Nginx passes the traffic using specific rules:
+**1. Round Robin:**
+Sends request 1 to VPS 1, request 2 to VPS 2, request 3 to VPS 3, and repeats.
+
+**2. Least Connections:**
+Sends the next user request to whichever VPS is currently handling the least amount of active traffic.
+
+**3. Ip Hash (Sticky Sessions):**
+Ensures a specific tenant or user always hits the exact same VPS instance, which is helpful if you cannot use a shared distributed cache yet.
+
 
 ### The Best Practices by Research 
 
 **Note:** 
-Before planning for the multitenant aplicatin saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
+Before planning for the multitenant application saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
 
 ### Current Archiecture is:
-1. Monolithich (one deployable unit, can be scaled horizontally and vertically)
-2. Clean Architecture (makes the code organnized and maintainable)
+**1. Monolithich** (one deployable unit, can be scaled horizontally and vertically). Above has details about scaleing for this application.
+**2. Clean Architecture** (makes the code organnized and maintainable)
 
 I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
 
@@ -272,7 +395,7 @@ I started to create the architecture of the new solution, keeping in mind the be
 It is extended to use tenants (IdentityUser is now: 
 1. ApplicationUser inherited from IdentityUser).
 2. Authentication didn't change. 
-3. Authorization is updated for multi-tenant environment. 
+3. Authorization is updated for multi-tenant environment.
 
 ## The Best Practices (Web Project): 
 1. I used View Components to make the code modular and readable on the layout page.
