@@ -14,7 +14,8 @@ header {
     padding: 20px;
     line-height: 1.2;
     border: 0px;
-    border-bottom: 8px solid orange;
+    border-bottom: 30px solid orange;
+    border-top: 30px solid orangered;
     border-radius: 0px;
 }
 
@@ -164,24 +165,24 @@ p {
 
 .crimson-main-content {
     color: darkseagreen;
-    background-color: crimson;
+    background-color: orangered;
     padding: 15px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 0px;
     margin-bottom: 10px;
-    border: 1px dashed #e1e4e8;
+    border: 3px dashed black;
     border-radius: 7px;
 }
 
 .main-content p.crimson-main-content {
     color: darkseagreen;
     text-align:justify;
-    background-color: crimson;
+    background-color: orangered;
     padding: 15px;
     overflow-y: auto;
     margin-top: 10px;
     margin-bottom: 10px;
-    border: 1px dashed #e1e4e8;
+    border: 3px dashed #e1e4e8;
     border-radius: 7px;
 }
 
