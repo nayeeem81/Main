@@ -85,9 +85,11 @@ public class Program
         _ = app.UseAuthorization ();
 
         _ = app.MapControllers ();
+
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
         await DataSeeder.SeedDataAsync (app.Services);
+
         await app.RunAsync ();
     }
 }

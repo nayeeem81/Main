@@ -1,5 +1,6 @@
 ﻿using Main.Infrastructure;
 using Main.Services;
+using Main.WebAppCore.Middlewares;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Main.WebAppCore.Middleware;
@@ -23,15 +24,15 @@ public class TenantResolverHandlingMiddleware
     {
         bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache);
 
+
         if ( result )
         {
             string resolvedTenantId = tenantSetter.CurrentTenantId;
-
-            TenantResolutionExtensions.TenantResolveMiddlewareTokenMatching
+            TokenExtensions.TenantResolveMiddlewareTokenMatching
             (resolvedTenantId,context,tokenService);
         }
 
         await _next (context);
     }
-
 }
+
