@@ -9,15 +9,8 @@ using Serilog.Formatting.Compact;
 
 namespace Main.Infrastructure;
 
-/// <summary>
-/// Serilog configuration for global exception and application logging
-/// </summary>
 public static class RegisterSerilogConfiguration
 {
-    /// <summary>
-    /// Configures Serilog for the application
-    /// Logs to files, console, and can be extended to log to database
-    /// </summary>
     public static WebApplicationBuilder AddSerilogConfiguration (this WebApplicationBuilder builder)
     {
         var loggingPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
@@ -80,10 +73,6 @@ public static class RegisterSerilogConfiguration
         return builder;
     }
 
-    /// <summary>
-    /// Configures database logging for exceptions
-    /// This allows exceptions to be logged to the database for persistence and querying
-    /// </summary>
     public static IServiceCollection AddExceptionLogging (this IServiceCollection services)
     {
         // Exception logging service will be registered separately
@@ -92,10 +81,7 @@ public static class RegisterSerilogConfiguration
     }
 }
 
-/// <summary>
-/// Interface for exception logging service
-/// Abstracts the logging mechanism (file, database, etc.)
-/// </summary>
+
 public interface IExceptionLoggingService
 {
     /// <summary>
@@ -115,9 +101,7 @@ public interface IExceptionLoggingService
         string? customData = null,
         string source = "API");
 
-    /// <summary>
-    /// Gets all logged exceptions with optional filtering
-    /// </summary>
+
     Task<List<ExceptionLog>> GetExceptionsAsync (
         int? statusCode = null,
         string? errorCode = null,
@@ -127,18 +111,12 @@ public interface IExceptionLoggingService
         int pageNumber = 1,
         int pageSize = 20);
 
-    /// <summary>
-    /// Gets exception summary for dashboard
-    /// </summary>
+
     Task<(int Total,int Unresolved,int Today)> GetExceptionSummaryAsync ();
 
-    /// <summary>
-    /// Marks an exception as resolved
-    /// </summary>
+
     Task MarkAsResolvedAsync (long exceptionId,string? notes = null);
 
-    /// <summary>
-    /// Gets a specific exception by ID
-    /// </summary>
+
     Task<ExceptionLog?> GetExceptionByIdAsync (long id);
 }

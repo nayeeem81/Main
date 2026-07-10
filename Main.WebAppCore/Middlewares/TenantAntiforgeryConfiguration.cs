@@ -27,6 +27,10 @@ public class TenantAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions
 
             // Optional: Match the form field if you use standard MVC forms
             options.FormFieldName = $"__RequestVerificationToken_{tenantId}";
+
+            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.HttpOnly = true;
+
         }
     }
 }
