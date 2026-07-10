@@ -83,12 +83,11 @@ header {
     0 0 80px #0044ff;
 }
 
-
-
 h4 {
     color: #fff;
     padding-left: 15px;
 }
+
 /* Layout */
 
 main {
@@ -114,6 +113,7 @@ main {
     border: 0px dashed #e1e4e8;
     border-radius: 7px;
 }
+
 /* Main Content */
 .main-content {
     background-color: #f9f9f9;
@@ -121,16 +121,19 @@ main {
     margin-top: 0px;
     margin-bottom: 0px;
     border: 1px dashed #e1e4e8;
-    border-radius: 7px; 
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
+    border-radius: 5px; 
 }
 
-h1, h2, h3 {
-        color: red;
-        font-family: sans-serif;
-        text-transform: uppercase;
-    }
+h1, h2 {
+    color: red;
+    font-family: sans-serif;
+    text-transform: uppercase;
+}
+
+h3 {
+    color: #FFD700;
+    font-weight: bolder;
+}
 
     p {
         margin-bottom: 10px;
@@ -173,36 +176,22 @@ h1, h2, h3 {
                 color: #0066FF;
             }
 
-    .crimson-main-content {
+.crimson-main-content {
+    color: darkseagreen;
+    text-align: justify;
+    background-color: orangered;
+    padding: 15px;
+    overflow-y: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 3px dashed #e1e4e8;
+    border-radius: 7px;
+    opacity: 0.8;
+}
+
+    .crimson-main-content h3 {
         color: darkseagreen;
-        background-color: orangered;
-        opacity: .7;
-        padding: 15px;
-        overflow-y: auto;
-        margin-top: 0px;
-        margin-bottom: 10px;
-        border: 3px dashed black;
-        border-radius: 7px;
-    }
-
-        .crimson-main-content h3 {
-            color: darkseagreen;
-        }
-
-        .main-content p.crimson-main-content {
-            color: darkseagreen;
-            text-align: justify;
-            background-color: orangered;
-            padding: 15px;
-            overflow-y: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            border: 3px dashed #e1e4e8;
-            border-radius: 7px;
-        }
-
-    h2.crimson {
-        padding-top: 10px;
+        font-weight: 700;
     }
 
     .content-section {
