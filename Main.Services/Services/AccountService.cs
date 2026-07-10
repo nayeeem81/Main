@@ -116,10 +116,10 @@ public class AccountService: IAccountService
         return result;
     }
 
-    public async Task<string?> GetEmailVerifyToken (string email)
+    public async Task<string> GetEmailVerifyToken (string email)
     {
         string? code = await _userRepository.GenerateEmailConfirmationTokenAsync (email);
-        return code;
+        return string.IsNullOrEmpty (code) ? "" : code;
     }
 
     public async Task<ApplicationUserDataModel?> FindByEmailAsync (string email)
@@ -143,7 +143,7 @@ public class AccountService: IAccountService
     }
 
 
-    public async Task<bool> CreateApplicationUser (string email,string token)
+    public async Task<bool> CompleteEmailVerification (string email,string token)
     {
         var userIdentity = await _userRepository.FindByEmailAsync (email);
 

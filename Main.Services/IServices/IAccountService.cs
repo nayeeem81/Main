@@ -18,9 +18,9 @@ public interface IAccountService
 
     Task<List<ApplicationUserDataModel>?> Users ();
 
-    Task<string?> GetEmailVerifyToken (string email);
+    Task<string> GetEmailVerifyToken (string email);
 
-    Task<bool> CreateApplicationUser (string email,string token);
+    Task<bool> CompleteEmailVerification (string email,string token);
 
     Task<string> GetTenantUserRoleClaim (string email,string tenantId);
 

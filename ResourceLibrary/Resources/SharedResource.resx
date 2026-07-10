@@ -3257,4 +3257,8 @@
     <value>Fashion</value>
     <comment>Fashion</comment>
   </data>
+  <data name="PasswordMatchError" xml:space="preserve">
+    <value>PasswordMatchError</value>
+    <comment>PasswordMatchError</comment>
+  </data>
 </root>

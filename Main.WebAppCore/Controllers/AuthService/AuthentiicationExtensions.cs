@@ -4,7 +4,7 @@ using WebAppCore.ViewModel;
 
 namespace Main.WebAppCore.Controllers.AuthService;
 
-public static class AuthentiicationExtension
+public static class AuthentiicationExtensions
 {
     public static async Task<bool> InvalidApplicationUser (
     IAccountService accountService,
@@ -26,7 +26,7 @@ public static class AuthentiicationExtension
             return true;
         }
 
-        if ( !await IsEmailConfirmed (accountService,loginDisplayViewModel) )
+        if ( !await EmailExtensions.IsEmailConfirmed (accountService,loginDisplayViewModel) )
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
 
@@ -39,16 +39,17 @@ public static class AuthentiicationExtension
             loginDisplayViewModel.EmailConfirmed = true;
         }
 
-
         return false;
     }
 
-    public static async Task<bool> IsEmailConfirmed (IAccountService accountService,LoginViewModel loginDisplayViewModel)
+    public static async Task<bool> PasswordSignInAsync
+    (IAccountService accountService,
+    string userName,
+    string password,
+    bool isPersistent,
+    bool lockoutOnFailure)
     {
-        bool result = await accountService.IsEmailConfirmedAsync (loginDisplayViewModel.Email);
-
+        var result = await accountService.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
         return result;
     }
-
-
 }

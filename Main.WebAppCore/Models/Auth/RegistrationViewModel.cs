@@ -25,7 +25,6 @@ public class RegistrationViewModel: BaseViewModel
     }
 
 
-    //[Required ( ErrorMessageResourceName = "PhoneRequired",ErrorMessageResourceType = typeof ////( SharedResource ) )]
     [Display (Name = "Phone",Prompt = "PhonePlaceholder",ResourceType = typeof (SharedResource))]
     public string? Phone
     {
@@ -42,6 +41,7 @@ public class RegistrationViewModel: BaseViewModel
 
 
     [Required (ErrorMessageResourceName = "RePasswordRequired",ErrorMessageResourceType = typeof (SharedResource))]
+    [Compare ("Password",ErrorMessageResourceName = "PasswordMatchError",ErrorMessageResourceType = typeof (SharedResource))]
     [Display (Name = "RePassword",Prompt = "RePasswordPlaceholder",ResourceType = typeof (SharedResource))]
     [DataType (DataType.Password)]
     public string RePassword

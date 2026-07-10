@@ -3204,4 +3204,7 @@
   <data name="ModifyPostNotUrgentDeal1" xml:space="preserve">
     <value>Not Urgent Deal</value>
   </data>
+  <data name="PasswordMatchError" xml:space="preserve">
+    <value>The password and confirmation password do not match.</value>
+  </data>
 </root>

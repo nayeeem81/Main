@@ -3203,4 +3203,7 @@
   <data name="TotalFreePosts" xml:space="preserve">
     <value>Total Free Posts</value>
   </data>
+  <data name="PasswordMatchError" xml:space="preserve">
+    <value>পাসওয়ার্ড এবং কনফার্মেশন পাসওয়ার্ড মিলছে না।</value>
+  </data>
 </root>

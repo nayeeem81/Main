@@ -1,5 +1,4 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Main.WebAppCore.Controllers.AuthService;
@@ -34,8 +33,7 @@ public class AuthController: BaseController
         _tokenService = tokenService;
     }
 
-
-    // Registration Flow: User accesses the registration page, which displays the registration form
+    // Registration Flow 1: User accesses the registration page
     public IActionResult Registration ()
     {
         var objModel = new RegistrationViewModel();
@@ -43,97 +41,56 @@ public class AuthController: BaseController
         return View (objModel);
     }
 
-
-    // Registration Flow: User submits the registration form with email, password, and other details, which triggers the SignUp action that validates input, creates a new user account, sends a verification email, and redirects to a confirmation page
+    // Registration Flow 2: User submits the registration form.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Registration (RegistrationViewModel registrationViewModel)
     {
-
         if ( ModelState.IsValid )
         {
             return View (registrationViewModel);
         }
 
-        // OWASP Mitigation: Validate that password and confirm password match and do not reveal which one is incorrect
-        if ( !AuthExtensions.CheckPasswordMatch (registrationViewModel != null ? registrationViewModel.Password : string.Empty,registrationViewModel != null ? registrationViewModel.RePassword : string.Empty) )
+        try
         {
+            var that = this!;
+
+            UserAccountDataModel userAccountDataModel
+            = AuthExtensions.MapToDataModel(registrationViewModel != null ?
+            registrationViewModel : new RegistrationViewModel());
+
+            // Create the tenant user account (ApplicationUser)
+            IdentityResult result =
+            await _userAccountService.CreateApplicationUserAccount
+            ( userAccountDataModel );
+
+            string email =  registrationViewModel?.Email ?? string.Empty;
+
+            if ( result.Succeeded )
+            {
+                await EmailExtensions.SendVerifyEmail
+                (( IUrlHelper ) that,_userAccountService,
+                _emailService,email,HttpContext);
+
+                return RedirectToAction ("VerifyEmailSent");
+            }
+
             return View (registrationViewModel);
         }
-
-
-        // Map the view model to the data model for user account creation
-        UserAccountDataModel userAccountDataModel
-            = AuthExtensions.MapToDataModel (registrationViewModel != null ? registrationViewModel : new RegistrationViewModel());
-
-        // OWASP Mitigation: Create the user account with secure password hashing and do not reveal if the email is already registered or if the account creation failed
-        IdentityResult result
-        = await _userAccountService.CreateApplicationUserAccount ( userAccountDataModel );
-
-
-        if ( result.Succeeded )
+        catch
         {
-            // OWASP Mitigation: Send email verification email with secure token if account creation succeeded, regardless of whether the email is already registered or not
-
-            await SendVerifyEmail
-            (registrationViewModel != null ? registrationViewModel.Email : string.Empty);
-
-            // Redirect to a generic confirmation page that instructs the user to check their email for the verification link, without revealing if the account was created or if the email is already registered
-
-            return RedirectToAction ("VerifyEmailSent");
-        }
-
-        // Add errors to model state to display in the view
-
-        foreach ( var error in result.Errors )
-        {
-            ModelState.AddModelError (string.Empty,error.Description);
-        }
-
-        // Return the view with the original input and error messages, without revealing if the email is already registered or if the account creation failed
-
-        return View (registrationViewModel);
-    }
-
-
-
-    // Helper method to send email verification email with secure token if user exists but email is not verified (OWASP Mitigation)
-    public async Task SendVerifyEmail (string email)
-    {
-        var emailVerifyToken = await _userAccountService.GetEmailVerifyToken ( email );
-
-        if ( !string.IsNullOrEmpty (emailVerifyToken) )
-        {
-            var verifyLink = Url.Action ( "VerifyLink", "Auth", new
-            {
-                Email = email,
-                Token = emailVerifyToken
-            },  Request.Scheme );
-
-            var verifyEmailDataModel = new VerifyDataModel ()
-            {
-                Email = email,
-                VerifyLink = verifyLink != null    ?
-                          verifyLink.ToString() : string.Empty
-            };
-
-            await _emailService.SendEmailVerificationAsync (verifyEmailDataModel);
+            throw;
         }
     }
 
-
-
-    // Registration Flow: After successful registration, user is shown a page that instructs them to check their email for the verification link (OWASP Mitigation)
+    // Registration Flow 3: User requested to check email
     public IActionResult VerifyEmailSent ()
     {
         ViewData["Title"] = "Email Sent";
-
         return View ();
     }
 
-
-
-    // Registration Flow: User clicks the email verification link, which triggers the VerifyEmail action that validates the token, activates the user account, and redirects to a confirmation page (Complete)
+    // Registration Flow 4: User clicks Verification link
     public async Task<IActionResult> VerifyLink (string email,string token)
     {
         if ( string.IsNullOrEmpty (email) || string.IsNullOrEmpty (token) )
@@ -142,92 +99,88 @@ public class AuthController: BaseController
         }
 
         _ = _userContext.GetCreateBaseDataModel ();
-
-        _ = await _userAccountService.CreateApplicationUser (email,token);
+        _ = await _userAccountService.CompleteEmailVerification (email,token);
 
         return RedirectToAction ("VerifyComplete");
     }
 
-
-
-    // Registration Flow: User clicks the email verification link, which triggers the VerifyEmail action that validates the token, activates the user account, and redirects to a confirmation page (Complete)
+    // Registration Flow 5: Tenant Account is confirmed.(Email verified)
     public IActionResult VerifyComplete ()
     {
         ViewData["Title"] = "Verification Complete";
-
         return View ();
     }
 
-
-    // Login Flow: User accesses the login page, which displays the login form
+    // Login Flow 1: login page
     public IActionResult Login ()
     {
-        var loginDisplayViewModel = new LoginViewModel("Login");
-
+        LoginViewModel loginDisplayViewModel = new("Login");
         return View (loginDisplayViewModel);
     }
 
-
-
-    // Login Flow: User submits login form with email and password, which triggers the Login action that validates credentials, checks email verification, sets user claims, and redirects to the home page on success
+    // Login Flow: login form submit (1. authentication, 2. authorization (jwt token)
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login (LoginViewModel loginDisplayViewModel)
     {
-        // Step 1: Check Modle Error
+        var that = this!;
+        string email =  loginDisplayViewModel?.Email ?? string.Empty;
+
         if ( ModelState.IsValid )
         {
-            loginDisplayViewModel.Message = "Invalid login attempt. Please check your credentials and try again.";
-
+            loginDisplayViewModel!.Message = "Invalid login attempt. Please check your credentials and try again.";
             return View ("Login",loginDisplayViewModel);
         }
 
-        // Resolved TenantId in Middleware
+        // (1. Authentication)
         string resolvedTenantId = _tenantSetter.CurrentTenantId;
-
-
-        // Getting User by email and resolved TenantId
         ApplicationUserDataModel? applicationIdentityUserDataModel
-        = await _userAccountService.GetApplicationUser(loginDisplayViewModel.Email, resolvedTenantId!);
+        = await _userAccountService.GetApplicationUser(email, resolvedTenantId!);
 
-        // if user not found or invalid
-        if ( await AuthentiicationExtension.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,loginDisplayViewModel,resolvedTenantId) )
+        // Validation: email verified, user exists (2. Authentication)
+        if ( await AuthentiicationExtensions.InvalidApplicationUser (_userAccountService,applicationIdentityUserDataModel,
+        loginDisplayViewModel!,resolvedTenantId) )
         {
-            if ( !loginDisplayViewModel.EmailConfirmed!.Value )
+            bool emailConfirm  = loginDisplayViewModel?.EmailConfirmed ?? true;
+            if ( !emailConfirm )
             {
-                await SendVerifyEmail (loginDisplayViewModel.Email);
+                await EmailExtensions.SendVerifyEmail
+                (( IUrlHelper ) that,_userAccountService,
+                _emailService,email,HttpContext);
             }
 
+            // Can not login: validationfailed (2.Authentication)
             return View ("Login",loginDisplayViewModel);
         }
 
+        // User login  (3. Authentication)
+        bool result =
+                await AuthentiicationExtensions.PasswordSignInAsync
+                    ( _userAccountService,
+                    applicationIdentityUserDataModel!.UserName!,
+                    loginDisplayViewModel!.Password,
+                    isPersistent: false,
+                    lockoutOnFailure: false );
 
-        // OWASP Mitigation: Use secure password verification and do not reveal if the password is incorrect or the account is locked
-        bool result = await _userAccountService.PasswordSignInAsync (
-                            applicationIdentityUserDataModel!.UserName!,
-                            loginDisplayViewModel.Password,
-                            isPersistent: false,
-                            lockoutOnFailure: false );
-
+        // Login successful (4. Authentication, ended)
         if ( result )
         {
-            // Set tokens
-            AuthorizationExtension.AddTenantIsolatedHeaderToken
+
+            // Get tenant specific role (1. Authhorization, start)
+            string tenantRole =  await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
+
+            // Auth Jwt Token (2. Authhorization)
+            AuthorizationExtensions.AddTenantIsolatedHeaderToken
             (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,
-             resolvedTenantId,"User",15,7);
+            resolvedTenantId,tenantRole.ToString (),15,7);
 
-            // Get tenant specific role
-            string tenantRole =
-            await _userAccountService.GetTenantUserRoleClaim
-            (loginDisplayViewModel.Email, resolvedTenantId);
-
-            // formated role
+            // Formated tenant role  (3. Authhorization)
             string formatedTenantRole =
             $"{applicationIdentityUserDataModel.Id}:{resolvedTenantId}:{tenantRole
             .ToString ()}";
 
-            // Http User Responce Claims 
-            AuthorizationExtension.AddUserClaims
+            // HttpContext Responce UserClaims (4. Authhorization)
+            AuthorizationExtensions.AddUserClaims
             (HttpContext,applicationIdentityUserDataModel.Id,
             resolvedTenantId,formatedTenantRole,
             applicationIdentityUserDataModel!.UserName!,
@@ -235,10 +188,9 @@ public class AuthController: BaseController
 
             // Successful login, redirect to home page or dashboard
             return RedirectToAction ("Index","Home");
-
         }
 
-        // OWASP Mitigation: Do not reveal if the password is incorrect or the account is locked, show a generic error message
+        // Do not reveal if the password is incorrect or the account is locked, show a generic error message
         return View (loginDisplayViewModel);
     }
 
@@ -252,7 +204,7 @@ public class AuthController: BaseController
     }
 
 
-    // Forget Password Reset Flow - Step 1: User initiates password reset by providing email address 
+    // Password Reset Flow (1): User initiates password reset by providing email address 
     [HttpGet]
     public IActionResult ResetEmail ()
     {
@@ -263,7 +215,7 @@ public class AuthController: BaseController
 
 
 
-    // Forget Password Reset Flow - Step 2.0: User submits email address to receive password reset link, regardless of whether the email exists or is verified (OWASP Mitigation)
+    // Password Reset Flow (2): User submits email address to receive password reset link.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResetEmail (ForgotPasswordViewModel forgotPasswordViewModel)
@@ -273,68 +225,38 @@ public class AuthController: BaseController
             return View (forgotPasswordViewModel);
         }
 
+        var that = this!;
         var user = await _userAccountService.FindByEmailAsync(forgotPasswordViewModel.Email);
 
-        // OWASP Mitigation: Do not reveal if the user exists or is verified
-        if ( user == null || !await _userAccountService.IsEmailConfirmedAsync (user.Email!) )
+        if ( user != null &&
+        await EmailExtensions.IsEmailConfirmed (_userAccountService,user?.Email!) )
         {
-            await SendVerifyEmail (forgotPasswordViewModel.Email);
+            await EmailExtensions.SendVerifyEmail
+            (( IUrlHelper ) that,_userAccountService,
+            _emailService,forgotPasswordViewModel.Email,HttpContext);
 
-            // Do not reveal if the user exists or is verified
-            return RedirectToAction (nameof (SendVerifyEmail));
+            return RedirectToAction ("SendVerifyEmail");
         }
 
-        // Step 2.1: Send email with password reset link
-        await SendResetEmail (forgotPasswordViewModel.Email);
+        var result = await EmailExtensions.SendResetEmail
+        (( IUrlHelper ) that, _userAccountService, _emailService, forgotPasswordViewModel.Email, HttpContext);
 
-        // Do not reveal if the user exists or is verified
         return RedirectToAction (nameof (ResetEmailSent));
     }
 
 
-
-    // Step 2.1: Helper method to send password reset email with secure token
-    private async Task SendResetEmail (string email)
-    {
-        // Step 2.1.1: Generate a secure single-use token embedded in the URL
-        var token = await _userAccountService.GeneratePasswordResetTokenAsync(email);
-
-        if ( !string.IsNullOrEmpty (token) )
-        {
-
-            var callbackUrl = Url.Action("ResetLink", "Auth",
-                              new
-                              {
-                                  Email = email , Token = token
-                              }, Request.Scheme);
-
-            var resetDataModel = new ResetDataModel()
-            {
-                Email = email,
-                ResetLink = callbackUrl != null ? callbackUrl.ToString() : string.Empty
-            };
-
-            await _emailService.SendResetPasswordEmailAsync (resetDataModel);
-        }
-    }
-
-
-
-    // Forget Password Reset Flow - Step 3: User is informed that if the email exists and is verified, a password reset link has been sent (OWASP Mitigation)
+    // Password Reset Flow (3): User is informed that reset email is sent.
     [HttpGet]
     public IActionResult ResetEmailSent ()
     {
         ViewData["Title"] = "Reset Email Sent";
-
         return View ();
     }
 
 
-
-    // Forget Password Reset Flow - Step 4: User clicks the password reset link, which includes the secure token, and is taken to the password reset form
+    // Password Reset Flow (4): User clicks the password reset link
     public async Task<IActionResult> ResetLink (string email,string token)
     {
-
         if ( string.IsNullOrEmpty (email) || string.IsNullOrEmpty (token) )
         {
             return BadRequest ("Invalid link request.");
@@ -354,28 +276,25 @@ public class AuthController: BaseController
         };
 
         return View ("ResetPassword",resetPasswordViewModel);
-
     }
 
 
-
-    // Forget Password Reset Flow - Step 5: User submits the new password, which triggers the ResetPassword action that validates the token, resets the password, invalidates the token, and redirects to a confirmation page
+    // Password Reset Flow - (5): User submits the new password
     [HttpPost]
     public async Task<IActionResult> ResetPassword (ResetPasswordViewModel resetPasswordViewModel)
     {
-
         if ( !ModelState.IsValid )
         {
             return View (resetPasswordViewModel);
         }
 
-        ApplicationUserDataModel? userIdentity = await _userAccountService.FindByEmailAsync(resetPasswordViewModel.Email);
+        ApplicationUserDataModel? applicationUserDataModel = await _userAccountService.FindByEmailAsync(resetPasswordViewModel.Email);
 
 
-        // Reset with new password and invalidate the token and timestamp to prevent reuse (OWASP Mitigation)
-        var email = userIdentity?.Email;
+        // Reset with new password and invalidate the token and timestamp to prevent reuse 
+        var email = applicationUserDataModel?.Email;
+
         bool result = await _userAccountService.ResetPasswordAsync(email!, resetPasswordViewModel.Token, resetPasswordViewModel.ConfirmPassword);
-
 
         if ( result )
         {
@@ -386,19 +305,15 @@ public class AuthController: BaseController
     }
 
 
-
-    // Forget Password Reset Flow - Step 6: User is shown a confirmation page that the password has been reset successfully
+    // Password Reset Flow - (6): User is shown a confirmation page
     [HttpGet]
     public IActionResult ResetComplete ()
     {
         ViewData["Title"] = "Password Updated";
-
         return View ();
     }
 
-
-
-    // Change Password Flow - Step 1: Authenticated user accesses the change password form
+    // Change Password Flow - (1): Authenticated user accesses the change password form
     [HttpGet]
     public async Task<IActionResult> ChangePassword ()
     {
@@ -409,16 +324,16 @@ public class AuthController: BaseController
 
         var changePasswordViewModel = new ChangePasswordViewModel
         {
-            Email = User.Claims.FirstOrDefault (c => c.Type == ClaimTypes.Email)?.Value ?? ""
+            Email = User.Claims
+            .FirstOrDefault (c => c.Type == ClaimTypes.Email)?.Value ?? ""
         };
-
 
         return View (changePasswordViewModel);
     }
 
 
 
-    // Change Password Flow - Step 2: User submits the change password form with current and new passwords
+    // Change Password Flow - (2): User submits the change password form 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangePassword (ChangePasswordViewModel changePasswordViewModel)
@@ -431,16 +346,13 @@ public class AuthController: BaseController
 
         ApplicationUserDataModel? userIdentity = await _userAccountService.FindByEmailAsync(changePasswordViewModel.Email);
 
-
         if ( userIdentity == null )
         {
             return View (changePasswordViewModel);
         }
 
-
-        var result = await _userAccountService
-            .ChangePasswordAsync(userIdentity?.Email!, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
-
+        var result =
+        await _userAccountService.ChangePasswordAsync(userIdentity?.Email!, changePasswordViewModel.CurrentPassword, changePasswordViewModel.NewPassword);
 
         if ( result )
         {
@@ -449,5 +361,4 @@ public class AuthController: BaseController
 
         return View (changePasswordViewModel);
     }
-
 }

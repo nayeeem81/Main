@@ -6127,6 +6127,15 @@ namespace ResourceLibrary.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PasswordMatchError.
+        /// </summary>
+        public static string PasswordMatchError {
+            get {
+                return ResourceManager.GetString("PasswordMatchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PasswordPlaceholder.
         /// </summary>
         public static string PasswordPlaceholder {
