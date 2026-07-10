@@ -19,6 +19,7 @@ public class Program
         _ = builder.Services.AddHttpContextAccessor ();
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+
         // 1. Register HTTP Context and Antiforgery Engine
         _ = builder.Services.AddAntiforgery ();
         // 2. Register your Dynamic Options and Action Filter
@@ -27,9 +28,9 @@ public class Program
 
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
-
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
+
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
         _ = builder.Services.AddAuthorization (builder.Configuration);
@@ -37,10 +38,7 @@ public class Program
         {
             _ = pipeline.CompileLessFiles ();
         });
-
-
         _ = builder.Services.AddExceptionLogging ();
-
         _ = builder.Services.AddControllersWithViews (options =>
         {
             _ = options.Filters.AddService<AntiforgeryActionFilter> ();
