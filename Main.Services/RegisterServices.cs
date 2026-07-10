@@ -7,8 +7,6 @@ public static class RegisterServices
     public static IServiceCollection AddService (this IServiceCollection services,
     IConfiguration configuration)
     {
-
-
         _ = services.AddMemoryCache (options =>
         {
             options.SizeLimit = 1024;

@@ -19,29 +19,32 @@ public class Program
         _ = builder.Services.AddHttpContextAccessor ();
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+        // 1. Register HTTP Context and Antiforgery Engine
+        _ = builder.Services.AddAntiforgery ();
+        // 2. Register your Dynamic Options and Action Filter
+        _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptions> ();
+        _ = builder.Services.AddScoped<AntiforgeryActionFilter> ();
+
         _ = builder.Services.AddDatabase (builder.Configuration);
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
+
         _ = builder.Services.AddRepository (builder.Configuration);
         _ = builder.Services.AddService (builder.Configuration);
         _ = builder.Services.AddEmailService (builder.Configuration);
         _ = builder.Services.AddCustomLocalization ();
         _ = builder.Services.AddAuthorization (builder.Configuration);
+        _ = builder.Services.AddWebOptimizer (pipeline =>
+        {
+            _ = pipeline.CompileLessFiles ();
+        });
 
-        // 2. Add standard Antiforgery services
-        _ = builder.Services.AddAntiforgery ();
 
-        //// 3. Register the dynamic, request-scoped configuration hook 
-        _ = builder.Services.ConfigureOptions<TenantAntiforgeryConfiguration> ();
-
-        // 2. Configure Scoped Action Filters
-        _ = builder.Services.AddScoped<MultiTenantAntiforgeryCookieFilter> ();
-
-        _ = builder.Services.AddWebOptimizer (pipeline => { _ = pipeline.CompileLessFiles (); });
-
-        // Add exception logging service
         _ = builder.Services.AddExceptionLogging ();
 
-        _ = builder.Services.AddControllersWithViews ();
+        _ = builder.Services.AddControllersWithViews (options =>
+        {
+            _ = options.Filters.AddService<AntiforgeryActionFilter> ();
+        });
 
         var app = builder.Build();
 
@@ -77,8 +80,6 @@ public class Program
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
         _ = app.UseCors ();
-
-        _ = app.UseAntiforgery ();
 
         _ = app.UseAuthentication ();
 
