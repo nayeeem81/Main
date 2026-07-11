@@ -22,6 +22,7 @@ public class Program
 
         // 1. Register HTTP Context and Antiforgery Engine
         _ = builder.Services.AddAntiforgery ();
+
         // 2. Register your Dynamic Options and Action Filter
         _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptions> ();
         _ = builder.Services.AddScoped<AntiforgeryActionFilter> ();

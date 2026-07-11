@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-namespace Main.WebAppCore.Controllers.AuthService;
+namespace Main.WebAppCore.Controllers.Extensions;
 
 public static class UrlExtensions
 {

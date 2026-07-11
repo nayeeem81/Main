@@ -2,7 +2,7 @@
 using Main.Services;
 using System.Security.Claims;
 
-namespace Main.WebAppCore.Controllers.AuthService;
+namespace Main.WebAppCore.Controllers.Extensions;
 
 public static class AuthorizationExtensions
 {
@@ -20,25 +20,32 @@ public static class AuthorizationExtensions
      string userId,string resolvedTenantId,
      string role,int minutes,int days)
     {
-        // Tenant role
-        var roles = new[] { role };
+        // 2. Create your tokens after successful sign-in
+        var accessJwt =  tokenService.GenerateAccessToken
+        (userId,resolvedTenantId,minutes);
 
-        // Set isolated cookie for short life token
-        _ = tokenService.GenerateAccessToken
-        (userId,resolvedTenantId,roles,minutes);
+        var refreshTokenStr = tokenService.GenerateRefreshToken();
 
-        var refreshToken = tokenService.GenerateRefreshToken();
-
-        // Set refresh token cookie key with tenant id, set refresh token
-        context.Response.Cookies.Append
-        ($"X-Refresh-Token-{resolvedTenantId}",
-        refreshToken,
+        // 3. COOKIE 1: Save the short-lived Access JWT (Expires in 15 minutes)
+        context.Response.Cookies.Append ($".App.AccessToken.{resolvedTenantId}",
+        accessJwt.ToString () ?? "",
         new CookieOptions
+        {
+            HttpOnly = true,   // Protects against XSS attacks stealing your JWT
+            Secure = true,     // Mandates HTTPS through Nginx
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTimeOffset.UtcNow.AddMinutes (15),
+            Path = "/"         // Accessible by all pages in your app
+        });
+
+        // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)
+        context.Response.Cookies.Append ($".App.RefreshToken.{resolvedTenantId}",refreshTokenStr,new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
-            Expires = DateTime.UtcNow.AddDays (days)
+            Expires = DateTimeOffset.UtcNow.AddDays (7),
+            Path = "/account/refresh-token" // Locked down specifically to your refresh endpoint
         });
     }
 

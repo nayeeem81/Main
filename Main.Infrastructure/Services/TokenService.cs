@@ -1,6 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Domain.Model;
+using Main.Common;
+using Main.IRepository;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,9 +15,11 @@ public class TokenService: ITokenService
 {
     private readonly TokenValidationParameters _validationParameters;
     private readonly byte[] _signingKey;
+    private readonly ITokenRepository _tokenRepository;
 
-    public TokenService (IConfiguration config)
+    public TokenService (IConfiguration config,ITokenRepository tokenRepository)
     {
+        _tokenRepository = tokenRepository;
         _signingKey = Encoding.UTF8.GetBytes (config["Jwt:Secret"]!);
         _validationParameters = new TokenValidationParameters
         {
@@ -28,8 +34,8 @@ public class TokenService: ITokenService
         };
     }
 
-    public string GenerateAccessToken
-    (string userId,string tenantId,IEnumerable<string> roles,int expiryInMinutes)
+    public async Task<string> GenerateAccessToken
+    (string userId,string tenantId,int expiryInMinutes)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -39,8 +45,6 @@ public class TokenService: ITokenService
             new("tenant_id", tenantId)
         };
 
-        claims.AddRange (roles.Select (role => new Claim (ClaimTypes.Role,role)));
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -49,10 +53,28 @@ public class TokenService: ITokenService
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        _ = await SaveRefreshToken (userId,tenantId,token.ToString () ?? "");
+
         return tokenHandler.WriteToken (token);
     }
 
-    public string GenerateRefreshToken () => Convert.ToBase64String (RandomNumberGenerator.GetBytes (62));
+    public string GenerateRefreshToken () =>
+        Convert.ToBase64String (RandomNumberGenerator.GetBytes (62));
+
+
+
+    public async Task<bool> RevokeUserRefreshTokensAsync (string userId,string tenantId)
+    {
+        bool result = await _tokenRepository.LogoutRevokeUserRefreshTokensAsync(userId,tenantId);
+        return result;
+    }
+
+    public async Task<bool> SaveRefreshToken (string userId,string tenantId,string token)
+    {
+        bool result = await _tokenRepository.SaveTokenAsync(userId,tenantId,token);
+        return result;
+    }
 
     public ClaimsPrincipal? ValidateAndDecryptToken (string token,out SecurityToken? validatedToken)
     {
@@ -67,5 +89,47 @@ public class TokenService: ITokenService
             return null;
             // Return null if validation fails
         }
+    }
+
+    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,string tenantId,string userId)
+    {
+        UserRefreshToken? savedToken = await _tokenRepository.GetSavedRefreshTokenAsync(currentToken,tenantId);
+
+        if ( savedToken == null )
+        {
+            return new TokenResponseModel (false);
+        }
+
+        if ( savedToken.IsRevoked )
+        {
+            _ = await _tokenRepository.RevokeAllUserTokensAsync (userId,tenantId);
+            throw new SecurityException ("Refresh token reuse detected! Compromise suspected. All sessions revoked.");
+        }
+
+        if ( savedToken.ExpiresAt <= DateTime.UtcNow )
+        {
+            return new TokenResponseModel (false);
+        }
+
+        var newAccessJwtStr = GenerateRefreshToken ();
+
+        if ( savedToken != null )
+        {
+            savedToken.IsRevoked = true;
+            savedToken.ReplacedByToken = newAccessJwtStr.ToString ();
+            _ = await _tokenRepository.UpdateTokenAsync (savedToken);
+        }
+
+        bool result = await _tokenRepository.SaveRotateRefreshTokenAsync(newAccessJwtStr.ToString()?? "", userId,tenantId);
+
+        var newAccessJwt = await GenerateAccessToken(userId, tenantId, 20);
+
+        TokenResponseModel tokenResponseModel = new(result)
+        {
+            AccessToken =  newAccessJwt,
+            RefreshToken =  newAccessJwtStr.ToString()?? ""
+        };
+
+        return tokenResponseModel;
     }
 }

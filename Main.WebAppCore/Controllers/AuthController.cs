@@ -1,7 +1,7 @@
 ﻿using DataTransferModel;
 using Main.Infrastructure;
 using Main.Services;
-using Main.WebAppCore.Controllers.AuthService;
+using Main.WebAppCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -200,8 +200,50 @@ public class AuthController: BaseController
     {
         await _userAccountService.SignOutAsync ();
 
-        return RedirectToAction ("Index","Home");
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var tenantId = _tenantSetter.CurrentTenantId;
+
+        // 1. Invalidate long-lived token on the backend server database
+        if ( !string.IsNullOrEmpty (userId) )
+        {
+            _ = await _tokenService.RevokeUserRefreshTokensAsync (userId,tenantId);
+        }
+
+        // 2. Erase both token cookies from the browser
+        Response.Cookies.Delete ($".App.AccessToken.{tenantId}",new CookieOptions { Path = "/" });
+        Response.Cookies.Delete ($".App.RefreshToken.{tenantId}",new CookieOptions { Path = "/account/refresh-token" });
+
+        // 3. Clear your custom tenant session state and default antiforgery structures
+        Response.Cookies.Delete ($".AspNetCore.Antiforgery.{tenantId}",new CookieOptions { Path = "/" });
+        HttpContext.Session.Clear ();
+
+        // 4. CLIENT-SIDE: Signal modern browsers to wipe all local origins data
+        // Clears local storage, session storage, and HTTP cache
+        Response.Headers.Append ("Clear-Site-Data","\"cache\", \"storage\"");
+
+        // 5. CLIENT-SIDE: Instruct proxy (Nginx) and browser to never cache this response
+        Response.Headers.Append ("Cache-Control","no-cache, no-store, must-revalidate");
+        Response.Headers.Append ("Pragma","no-cache");
+        Response.Headers.Append ("Expires","0");
+
+        // 6. CLIENT-SIDE: Explicitly wipe cookies via expiration headers
+        // Deletes the dynamically suffixed multi-tenant antiforgery cookie
+        var antiforgeryCookieName = $".AspNetCore.Antiforgery.{tenantId}";
+        Response.Cookies.Delete (antiforgeryCookieName,new CookieOptions
+        {
+            Path = "/",
+            Secure = true,
+            HttpOnly = true
+        });
+
+        // 7. Deletes standard ASP.NET Identity and Session cookies if they exist
+        Response.Cookies.Delete (".AspNetCore.Identity.Application",new CookieOptions { Path = "/" });
+        Response.Cookies.Delete (".AspNetCore.Session",new CookieOptions { Path = "/" });
+
+        // 8. Redirect to login
+        return RedirectToAction ("Login","Account");
     }
+
 
 
     // Password Reset Flow (1): User initiates password reset by providing email address 
@@ -243,6 +285,7 @@ public class AuthController: BaseController
 
         return RedirectToAction (nameof (ResetEmailSent));
     }
+
 
 
     // Password Reset Flow (3): User is informed that reset email is sent.

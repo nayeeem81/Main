@@ -109,6 +109,11 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
+    public DbSet<UserRefreshToken> UserRefreshTokens
+    {
+        get; set;
+    }
+
     protected override void OnModelCreating (ModelBuilder builder)
     {
         base.OnModelCreating (builder);
@@ -229,6 +234,8 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         _ = builder.Entity<AValue> ().HasQueryFilter (p => p.TenantId == currentTenant);
 
         _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.TenantId == currentTenant);
+
+        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.TenantId == currentTenant);
     }
 
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)

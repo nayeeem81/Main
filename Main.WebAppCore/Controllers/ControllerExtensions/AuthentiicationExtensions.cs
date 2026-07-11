@@ -2,7 +2,7 @@
 using Main.Services;
 using WebAppCore.ViewModel;
 
-namespace Main.WebAppCore.Controllers.AuthService;
+namespace Main.WebAppCore.Controllers.Extensions;
 
 public static class AuthentiicationExtensions
 {
