@@ -1094,21 +1094,25 @@ Would you like any assistance reviewing how to securely hash the Refresh Token s
 
 [1] [https://github.com](https://github.com/strapi/strapi/issues/8998)
 
+**Naim: Thankyou so much!**
+
 You are very welcome! It is completely smart to focus on getting the core architecture, token rotation, and multi-tenant isolation working locally first before moving to deployment.
 Whenever you are ready to move your clean architecture monolith onto your Linux VPS with Nginx, just come back to this thread and we can tackle that part step-by-step.
 Since we have covered the full login, rotation, and logout lifecycle for both your tokens and multi-tenant cookies, let me know:
 
-* Do you want to implement the database table hashing logic for the refresh tokens to protect against database leaks?
-* Do you need help setting up the error handling / breach detection response if a token reuse attack actually happens?
-* Are there any other clean architecture layer questions you'd like to work on next?
+***Do you want to implement the database table hashing logic for the refresh tokens to protect against database leaks?**  
+***Do you need help setting up the error handling / breach detection response if a token reuse attack actually happens?**
+***Are there any other clean architecture layer questions you'd like to work on next?**
 
-Good luck with the implementation!
+
+
+**Good luck with the implementation!**
 
 To handle token refreshing automatically in a server-rendered ASP.NET Core Web Application (MVC), the code needs to live globally on the client side.
 
 Because you are storing both tokens in HttpOnly cookies, your JavaScript code does not need to read or append the tokens manually—the browser does that automatically. 
 
-Instead, your JavaScript code simply needs to intercept failed AJAX calls (like 401 Unauthorized errors), hit the refresh endpoint, and retry the original action seamlessly.
+**Instead, your JavaScript code simply needs to intercept failed AJAX calls (like 401 Unauthorized errors), hit the refresh endpoint, and retry the original action seamlessly.**
 
 ## Where to Put the JavaScript Code
 
@@ -1293,6 +1297,110 @@ window.fetch = async (...args) =>
     return response;
 };
 
+**Naim: headers: "RequestVerificationToken" I have handler to ckeck and cookike for this. The cokie name is same with tenant is suffix. Do I need to add this part for callig the refresh action for validation of the anitifogery validation> My refresh action uses te antifrgery attribute?**
+
+
+Yes, you must include the token header. [1] 
+
+Because your refresh controller action is decorated with an antiforgery attribute (such as [ValidateAntiForgeryToken] or [AutoValidateAntiforgeryToken]), ASP.NET Core will instantly block your AJAX request with a 400 Bad Request error if that header is missing. [2, 3, 4] 
+
+## How Antiforgery Validation Works Under the Hood
+
+Antiforgery protection requires a two-piece puzzle to pass: [5] 
+
+   1. The Cookie Piece: The encrypted antiforgery token stored in your browser cookies (which you mentioned has your tenant suffix).
+   
+   2. The Request Piece: The matching token value sent explicitly inside the incoming HTTP request payload (either inside a Form Post body or as an HTTP Header). [6, 7, 8] 
+
+When a malicious third-party site tries to trick a user into sending a cross-site request (CSRF), the browser automatically appends the cookie piece, but the attacker's site has absolutely no way to read or steal the request piece sitting on your actual HTML page. [9, 10, 11, 12] 
+
+## The Core Problem for your AJAX Fetch
+By default, ASP.NET Core's [ValidateAntiForgeryToken] only looks for the request piece inside the HTTP Form Body (multipart/form-data or application/x-www-form-urlencoded). [13, 14, 15, 16] 
+
+Because your AJAX refresh request sends a clean JSON body or an empty POST body, ASP.NET Core has no form fields to check. To fix this, you must pass the request piece inside an HTTP header and explicitly configure ASP.NET Core to look for that specific header name. [13, 17, 18] 
+
+------------------------------
+## Step 1: Tell ASP.NET Core to look for the Header (Program.cs)
+In your initialization file, configure the antiforgery options to recognize your custom header name: [13, 19, 20, 21] 
+
+builder.Services.AddAntiforgery(options =>
+{
+    // Make sure this string matches exactly what you pass in your JavaScript headers
+    options.HeaderName = "RequestVerificationToken"; 
+    
+    // Your existing custom cookie configuration with tenant suffix goes here
+    options.Cookie.Name = "XSRF-TOKEN"; 
+});
+
+------------------------------
+## Step 2: Include it inside your Javascript customFetch interceptor
+
+Update your AJAX routine to fetch the hidden token from your page layout and cleanly pass it along whenever the token refresh endpoint is triggered:
+
+async function customFetch(url, options = {}) {
+
+    options.headers = options.headers || {};
+    const tenantId = window.currentTenant || "tenantA";
+
+    // Standard tenant routing helpers
+    options.headers["X-Tenant-Id"] = tenantId;
+    options.credentials = "include"; // Forces the browser to send the HTTP-only auth cookies
+
+    let response = await fetch(url, options);
+
+    // If access token is expired, enter the silent refresh cycle
+    if (response.status === 401 && response.headers.get("Token-Expired") === "true") {
+        console.log("Access token expired. Triggering antiforgery-validated refresh...");
+
+        // Pull the hidden verification value from the current HTML layout
+        const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+
+        const refreshResponse = await fetch("/api/auth/refresh", {
+            method: "POST",
+            headers: { 
+                "X-Tenant-Id": tenantId,
+                // CRITICAL: Deliver the request-piece via the header configured in Program.cs
+                "RequestVerificationToken": antiForgeryTokenValue 
+            },
+            credentials: "include" // Send the long-lived refresh cookie along
+        });
+
+        if (refreshResponse.ok) {
+            console.log("Tokens rotated smoothly! Retrying original operation...");
+            return await fetch(url, options);
+        } else {
+            window.location.href = `/login?tenant=${tenantId}`;
+            return response;
+        }
+    }
+
+    return response;
+}
+
+If you notice that your antiforgery token values expire or change over long periods of idle time, let me know; I can show you how to return a fresh antiforgery token pair inside the body payload of your /refresh controller response to keep the client token updated!
+
+[1] [https://www.cisco.com](https://www.cisco.com/c/en/us/td/docs/security/firepower/fxos/API_Getting_Started/fxos-api/m_getting-started-with-the-rest-api.html)
+[2] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/cross-site-request-forgery-csrf-protection-in-asp-net-core/)
+[3] [https://www.red-gate.com](https://www.red-gate.com/simple-talk/development/dotnet-development/anti-forgery-validation-asp-net-core/)
+[4] [https://www.telerik.com](https://www.telerik.com/products/reporting/documentation/knowledge-base/anti-forgery-token-issue-in-asp-net-core-application)
+[5] [https://techcommunity.microsoft.com](https://techcommunity.microsoft.com/blog/iis-support-blog/anti-forgery-token-and-anti-forgery-cookie-related-issues/984870)
+[6] [https://www.linkedin.com](https://www.linkedin.com/posts/mahmudxyz_aspnetcore-csrf-websecurity-activity-7314843671470698498-EP00)
+[7] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/security/anti-request-forgery?view=aspnetcore-10.0)
+[8] [https://www.nedmcclain.com](https://www.nedmcclain.com/better-csrf-protection/)
+[9] [https://stackoverflow.com](https://stackoverflow.com/questions/18097401/the-anti-forgery-cookie-token-and-form-field-token-do-not-match-in-mvc-4)
+[10] [https://faun.pub](https://faun.pub/csrf-vulnerabilities-and-how-to-avoid-them-f3d61d99ab7)
+[11] [https://beaglesecurity.com](https://beaglesecurity.com/blog/vulnerability/csrf-token-missing.html)
+[12] [https://medium.com](https://medium.com/iocscan/cross-site-request-forgery-csrf-f2134359a385)
+[13] [https://jason-ge.medium.com](https://jason-ge.medium.com/asp-net-core-anti-forgery-explained-9549edfae926)
+[14] [https://docs.snowflake.com](https://docs.snowflake.com/en/user-guide/data-integration/openflow/processors/invokehttp)
+[15] [https://docs.nuance.com](https://docs.nuance.com/agent-coach/APIs/Reporting-API/oauth-token-exchange.html)
+[16] [https://odetocode.com](https://odetocode.com/blogs/scott/archive/2017/02/06/anti-forgery-tokens-and-asp-net-core-apis.aspx)
+[17] [https://www.learnrazorpages.com](https://www.learnrazorpages.com/security/request-verification)
+[18] [https://abp.io](https://abp.io/docs/latest/CSRF-Anti-Forgery)
+[19] [https://duendesoftware.com](https://duendesoftware.com/blog/20250325-understanding-antiforgery-in-aspnetcore)
+[20] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/validateantiforgerytoken-in-asp-net-core/)
+[21] [https://www.blinkingcaret.com](https://www.blinkingcaret.com/2018/11/29/asp-net-core-web-api-antiforgery/)
+
 ------------------------------
 ## What About Normal Page Loads (Non-AJAX)?
 
@@ -1334,8 +1442,352 @@ options.Events = new JwtBearerEvents
     }
 };
 
+**Naim:window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname); what does the encodeURIComponent(window.location.pathname), part so?**
+
+The encodeURIComponent(window.location.pathname) part converts the current page's URL path into a safe format that can be embedded inside another URL as a single text parameter.
+
+## Why It Is Necessary
+URLs use special characters like ?, /, &, and = to separate routes and data fields. If you try to pass a raw path like /dashboard/reports/edit?id=5 inside another URL without encoding it, the browser gets confused about where the login link ends and where your parameters begin. [1, 2, 3, 4, 5] 
+
+Encoding replaces those special structural characters with safe percentage codes (like %2F for / and %3F for ?). [6, 7] 
+
+## How It Works (Step-by-Step)
+Imagine a user is viewing an internal report page, and their refresh token expires:
+
+* window.location.pathname: Resolves to the raw string /dashboard/reports
+* encodeURIComponent(...): Transforms that string into %2Fdashboard%2Freports
+
+When combined into your final string, the browser loads this exact URL line:
+/account/login?returnUrl=%2Fdashboard%2Freports
+
+## The Ultimate Benefit
+When the user lands on the login page, your ASP.NET Core backend can securely read that returnUrl string, decode it back into /dashboard/reports, and automatically send the user right back to the exact page they were working on the moment they finish entering their password. This prevents them from being kicked back to a generic home screen. [8] 
+
+Would you like to see the C# backend code for your AccountController to safely read and redirect to this returnUrl parameter while protecting against open-redirect security vulnerabilities?
+
+[1] [https://wordpress.com](https://wordpress.com/go/tutorials/what-is-a-url/)
+[2] [https://developers.google.com](https://developers.google.com/maps/url-encoding)
+[3] [https://cyberchimps.com](https://cyberchimps.com/blog/what-is-a-url/)
+[4] [https://www.hackerone.com](https://www.hackerone.com/blog/secure-coding-practices-mastering-url-encoding-enhanced-web-security)
+[5] [https://ssojet.com](https://ssojet.com/escaping/url-escaping-in-typescript)
+[6] [https://medium.com](https://medium.com/javascript-decoded-in-plain-english/decoding-the-web-a-deep-dive-into-url-encoding-and-http-request-architecture-14cfa1e3e4d5)
+[7] [https://code.tutsplus.com](https://code.tutsplus.com/using-php-urlencode-and-urldecode--cms-37725t)
+[8] [https://blog.nativescript.org](https://blog.nativescript.org/building-login-functionality-for-nativescript-apps/)
+
 
 Would you like to see how to implement that backend refresh-page Controller Action to handle those full-page load refreshes smoothly, or are you ready to test your current setup?
 
+**Naim: ould you like to see how to implement that backend refresh-page Controller Action to handle those full-page load refreshes smoothly? Yes**
+
+When a refresh token expires, the user’s entire authentication session is officially dead. Unlike an expired access token (which can be silently fixed in the background), an expired refresh token means the user must be forced to log in again. [1, 2, 3, 4, 5] 
+To handle this cleanly without breaking your AJAX/Fetch frontend or leaving the user stuck on a broken screen, follow this end-to-end strategy. [6] 
+------------------------------
+
+## 1. The Backend Check (ASP.NET Core API / Controller)
+When your JavaScript hits the /refresh endpoint, the backend looks up the token in the database or validates the incoming HTTP-only cookie. If ExpiryDate < DateTime.UtcNow, the server must return an explicit status code. [4, 7, 8] 
+Do not send a 302 Redirect back to a login page for an AJAX call. JavaScript cannot follow cross-origin page redirects inside a silent background fetch() request. Send a clean 401 Unauthorized response with a clear custom header or error payload. [3, 9, 10, 11] 
+
+[HttpPost("/api/auth/refresh")]public async Task<IActionResult> Refresh([FromBody] TokenRequestDto request)
+{
+    var savedRefreshToken = await _tokenService.GetSavedTokenAsync(request.RefreshToken);
+
+    // If token doesn't exist, was revoked, or is EXPIRED
+    if (savedRefreshToken == null || savedRefreshToken.ExpiryDate < DateTime.UtcNow)
+    {
+        // Return 401 with a specific error sub-code for the frontend
+        return StatusCode(401, new { 
+            error = "invalid_grant", 
+            message = "Your session has expired. Please log in again." 
+        });
+    }
+
+    // Otherwise, generate new access + refresh token family...
+    var newTokens = await _tokenService.GenerateNewTokensAsync(savedRefreshToken.UserId);
+    return Ok(newTokens);
+}
+
+------------------------------
+## 2. The Frontend Handler (JavaScript Interceptor)
+Your dynamic JavaScript fetch calls should look for this specific 401 error status. If it encounters it, it should cleanly redirect the entire window to your login screen or show a prompt, rather than failing silently in the console. [10, 11, 12, 13, 14] 
+You can abstract this into a smart helper function that intercepts all AJAX requests:
+
+async function authenticatedFetch(url, options = {}) {
+    let response = await fetch(url, options);
+
+    // If access token is expired, your app normally hits the /refresh route here.
+    if (response.status === 401) {
+        console.warn("Access token expired, attempting silent session refresh...");
+        
+        const refreshSuccessful = await tryToRefreshTokens();
+        
+        if (refreshSuccessful) {
+            // Re-try the original request one more time with the new token
+            return await fetch(url, options);
+        } else {
+            // REFRESH TOKEN EXPIRED: Hard stop. Clear local storage and boot the user.
+            alert("Your session has completely expired. Redirecting to login...");
+            localStorage.removeItem("accessToken"); // If storing tokens locally
+            window.location.href = "/login?returnUrl=" + encodeURIComponent(window.location.pathname);
+            return;
+        }
+    }
+
+    return response;
+}
+async function tryToRefreshTokens() {
+    try {
+        const response = await fetch('/api/auth/refresh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: localStorage.getItem("refreshToken") })
+        });
+
+        if (response.status === 401) {
+            // This confirms the backend rejected the refresh token because it's expired!
+            return false; 
+        }
+
+        const data = await response.json();
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+------------------------------
+## 3. Production Best Practices for Security
+
+   1. Refresh Token Rotation (Highly Recommended): Every single time the client uses a refresh token to get a new access token, revoke the old one immediately and issue a brand-new refresh token. This keeps the session open indefinitely for active users while protecting against token theft. [4, 15, 16] 
+   2. Database Housekeeping: Expired refresh tokens will pile up fast in your database. Set up a lightweight, background hosted service (IHostedService) in ASP.NET Core that runs a SQL script once a day to purge rows where ExpiryDate < DateTime.UtcNow. [4, 15] 
+
+Would you like to see how to implement Refresh Token Rotation inside your database logic, or would you prefer a sample of the Background Worker that cleans up expired tokens? [4] 
+
+[1] [https://www.youtube.com](https://www.youtube.com/watch?v=9CobMWEzr2A&t=39)
+[2] [https://medium.com](https://medium.com/towardsdev/understanding-refresh-tokens-in-web-api-development-with-c-17761a591cfc)
+[3] [https://medium.com](https://medium.com/towardsdev/understanding-refresh-tokens-in-web-api-development-with-c-17761a591cfc)
+[4] [https://codewithmukesh.com](https://codewithmukesh.com/blog/refresh-tokens-in-aspnet-core/)
+[5] [https://docs.katalon.com](https://docs.katalon.com/katalon-studio/troubleshooting/troubleshoot-common-exceptions/auto-session-renewal-failure)
+[6] [https://community.auth0.com](https://community.auth0.com/t/refresh-tokens-with-asp-net-core-mvc/47714)
+[7] [https://www.youtube.com](https://www.youtube.com/watch?v=vTXXdm44IdQ&t=512)
+[8] [https://www.yogihosting.com](https://www.yogihosting.com/jwt-refresh-token-aspnet-core/)
+[9] [https://github.com](https://github.com/Azure-Samples/active-directory-aspnetcore-webapp-openidconnect-v2/issues/264)
+[10] [https://medium.com](https://medium.com/@roshanj100/refresh-tokens-in-asp-net-core-the-key-to-secure-and-seamless-sessions-8b33324568e3)
+[11] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/refresh-token-implementation-in-asp-net-core/)
+[12] [https://alexhost.com](https://alexhost.com/faq/a-useful-guide-to-diagnosing-and-solving-the-401-error/)
+[13] [https://github.com](https://github.com/manfredsteyer/angular-oauth2-oidc/issues/820)
+[14] [https://scripturesintech.medium.com](https://scripturesintech.medium.com/token-expiry-handling-flutter-dart-generic-architecture-c378fc41bdb4)
+[15] [https://www.youtube.com](https://www.youtube.com/watch?v=kR_9gRBeRMQ)
+[16] [https://javascript.plainenglish.io](https://javascript.plainenglish.io/securing-your-app-with-access-and-refresh-tokens-a-practical-guide-41d239ee5085)
 
 
+
+
+
+**Naim: I have done rotaion part. I am using jwt, short lived and lon livd tohens. I want see code for refresh of the controller  action. AS well the explain  the  the events what is happing in the options of the jwt in the program.cs? can the option event can be used for refresh token generatin? or tfor fetch/ajax, I must write the java script code to handle the error of expired and request te controler action for a refresh. my tokens are named with tenant suffix and not keepingthe body? Just in cookie both long and short lived tokens.**
+
+## 1. The ASP.NET Core Refresh Controller Action (Using Cookies)
+Because your tokens use a tenant suffix (e.g., access_token_tenantA, refresh_token_tenantA) and are stored securely in HTTP-only cookies, your controller needs to extract the tenant context first, read the cookies, validate the expired access token manually (ignoring its lifetime), and then rotate the tokens. [1, 2, 3] 
+
+using Microsoft.AspNetCore.Mvc;using Microsoft.IdentityModel.Tokens;using System.IdentityModel.Tokens.Jwt;using System.Security.Claims;using System.Text;
+namespace YourApp.Controllers
+{
+    [ApiController]
+    [Route("api/auth")]
+    public class AuthController : ControllerBase
+    {
+        private readonly ITokenService _tokenService;
+        private readonly IConfiguration _config;
+
+        public AuthController(ITokenService tokenService, IConfiguration config)
+        {
+            _tokenService = tokenService;
+            _config = config;
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            // 1. Resolve tenant context (from sub-domain, route, custom header, etc.)
+            string tenantId = Request.Headers["X-Tenant-Id"].ToString() ?? "default";
+            
+            string accessTokenName = $"access_token_{tenantId}";
+            string refreshTokenName = $"refresh_token_{tenantId}";
+
+            // 2. Extract tokens from cookies
+            if (!Request.Cookies.TryGetValue(accessTokenName, out var expiredAccessToken) ||
+                !Request.Cookies.TryGetValue(refreshTokenName, out var refreshToken))
+            {
+                return Unauthorized(new { message = "Tokens are missing." });
+            }
+
+            try
+            {
+                // 3. Extract claims from the expired access token without validating its expiry date
+                var principal = GetPrincipalFromExpiredToken(expiredAccessToken);
+                if (principal == null) return Unauthorized(new { message = "Invalid access token structure." });
+
+                var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                // 4. Validate and rotate the refresh token (Database / Cache validation)
+                // Your rotation logic should mark the old refresh token as used/invalidated here.
+                var (newAccessToken, newRefreshToken) = await _tokenService.RotateTokensAsync(userId, tenantId, refreshToken);
+
+                // 5. Append new short-lived and long-lived tokens back to HTTP-only cookies
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Force HTTPS
+                    SameSite = SameSiteMode.Strict,
+                    Path = "/"
+                };
+
+                // Short-lived Access Token Cookie (e.g., 15 mins)
+                Response.Cookies.Append(accessTokenName, newAccessToken, new CookieOptions 
+                { 
+                    HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Path = "/",
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(15) 
+                });
+
+                // Long-lived Refresh Token Cookie (e.g., 7 days)
+                Response.Cookies.Append(refreshTokenName, newRefreshToken, new CookieOptions 
+                { 
+                    HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Path = "/",
+                    Expires = DateTimeOffset.UtcNow.AddDays(7) 
+                });
+
+                return Ok(new { message = "Session refreshed successfully." });
+            }
+            catch (SecurityTokenException)
+            {
+                // Refresh token rotation failed (e.g., reuse detected, token revoked, or expired)
+                // Clear cookies immediately to wipe the session
+                Response.Cookies.Delete(accessTokenName);
+                Response.Cookies.Delete(refreshTokenName);
+                return StatusCode(401, new { error = "session_expired", message = "Session compromised or expired. Please re-authenticate." });
+            }
+        }
+
+        private ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = true,
+                ValidateIssuer = true,
+                ValidIssuer = _config["Jwt:Issuer"],
+                ValidAudience = _config["Jwt:Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)),
+                ValidateLifetime = false // CRITICAL: This allows us to read claims from an already expired token!
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            
+            if (securityToken is not JwtSecurityToken jwtSecurityToken || 
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("Invalid token algorithm");
+            }
+
+            return principal;
+        }
+    }
+}
+
+------------------------------
+## 2. Can Program.cs JWT Option Events be used to generate a Refresh Token?
+No, you should not generate a new refresh token inside the JWT Bearer option events. [4] 
+Here is what happens behind the scenes during those lifecycle events in Program.cs:
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                // EVENT 1: Runs BEFORE validation.
+                // Since your tokens are in cookies instead of the Authorization header,
+                // you must tell ASP.NET Core where to find the short-lived access token.
+                string tenantId = context.Request.Headers["X-Tenant-Id"].ToString() ?? "default";
+                context.Token = context.Request.Cookies[$"access_token_{tenantId}"];
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                // EVENT 2: Runs AFTER successful validation.
+                // The short-lived token is perfectly valid. The request proceeds cleanly.
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                // EVENT 3: Runs if validation FAILS (e.g., the short-lived token is EXPIRED).
+                // If it expired, this event appends a "Token-Expired: true" header to the response 
+                // so your JavaScript AJAX call knows exactly what happened.
+                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                {
+                    context.Response.Headers.Append("Token-Expired", "true");
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+## Why you can't refresh inside these events:
+
+   1. Asynchronous Architecture Constraints: The authentication middleware runs completely before your controller. If you try to issue new cookies and alter data records mid-flight inside OnAuthenticationFailed, you will corrupt the inbound request lifecycle. [5] 
+   2. Database Dependencies: Token rotation requires heavy database/cache operations (looking up the long-lived token, updating states, preventing reuse attacks). Jamming data operations into low-level middleware events violates the single responsibility principle and hurts framework performance. [6] 
+
+------------------------------
+## 3. Do I must write JavaScript code to handle the expired error?
+Yes. Because your application uses AJAX/Fetch requests, you must write client-side interceptor code to handle the expired access token and seamlessly make a call to your refresh endpoint. [7] 
+Browsers will not automatically catch a 401 Unauthorized API response from a silent fetch request and rerun the call. Your JavaScript needs to coordinate the workflow like this: [8] 
+
+// A central helper function for all your AJAX callsasync function customFetch(url, options = {}) {
+    options.headers = options.headers || {};
+    
+    // Pass tenant context so the backend knows which suffixed cookie to read
+    const tenantId = window.currentTenant || "tenantA"; 
+    options.headers["X-Tenant-Id"] = tenantId;
+    options.credentials = "include"; // CRITICAL: This forces the browser to send HTTP-only cookies!
+
+    let response = await fetch(url, options);
+
+    // If the short-lived access token cookie is expired
+    if (response.status === 401 && response.headers.get("Token-Expired") === "true") {
+        console.log("Short-lived token expired. Requesting refresh via controller...");
+
+        // Silently call the refresh controller action
+        const refreshResponse = await fetch("/api/auth/refresh", {
+            method: "POST",
+            headers: { "X-Tenant-Id": tenantId },
+            credentials: "include" // Send the long-lived refresh cookie along
+        });
+
+        if (refreshResponse.ok) {
+            console.log("Tokens rotated smoothly inside cookies! Retrying original request...");
+            // Re-execute the exact same request now that cookies are updated
+            return await fetch(url, options);
+        } else {
+            console.warn("Refresh token expired or compromised. User session dead.");
+            // Wipe any client states and push to login page
+            window.location.href = `/login?tenant=${tenantId}`;
+            return response;
+        }
+    }
+
+    return response;
+}
+
+Would you like to explore how to track token misuse or reuse inside your RotateTokensAsync logic if a compromised refresh token is intercepted?
+
+[1] [https://workos.com](https://workos.com/blog/why-your-app-needs-refresh-tokens-and-how-they-work)
+[2] [https://www.blinkingcaret.com](https://www.blinkingcaret.com/2018/05/30/refresh-tokens-in-asp-net-core-web-api/)
+[3] [https://www.freecodecamp.org](https://www.freecodecamp.org/news/how-to-build-a-secure-authentication-system-with-jwt-and-refresh-tokens/)
+[4] [https://salesforce.stackexchange.com](https://salesforce.stackexchange.com/questions/215963/oauth-2-0-jwt-bearer-token-flow-refresh-token)
+[5] [https://www.authgear.com](https://www.authgear.com/post/nextjs-session-management/)
+[6] [https://medium.com](https://medium.com/@ashusk_1790/jwt-authentication-security-mistakes-that-will-bite-you-06255bac5391)
+[7] [https://www.reddit.com](https://www.reddit.com/r/dotnet/comments/1asb8n4/jwt_token_refresh_api/)
+[8] [https://github.com](https://github.com/manfredsteyer/angular-oauth2-oidc/issues/820)

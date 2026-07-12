@@ -21,7 +21,7 @@ public class TenantAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions
         if ( tenantId != null )
         {
             // Dynamically set cookie name and header based on the current tenant
-            options.HeaderName = "X-XSRF-TOKEN";
+            options.HeaderName = "RequestVerificationToken";
 
             options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
 
