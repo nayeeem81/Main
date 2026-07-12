@@ -8,6 +8,7 @@ namespace Main.WebAppCore.Middleware;
 public class TenantResolverHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private const string rootDomain = "localhost";
 
     public TenantResolverHandlingMiddleware (RequestDelegate next)
     {
@@ -22,14 +23,13 @@ public class TenantResolverHandlingMiddleware
     IMemoryCache memoryCache,
     ITokenService tokenService)
     {
-        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache);
+        bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain);
 
 
-        if ( result )
+        if ( result && TenantSafetyCheckExtensions.CheckContamination
+            (tenantSetter.CurrentTenantId,context) )
         {
-            string resolvedTenantId = tenantSetter.CurrentTenantId;
-            TokenExtensions.TenantResolveMiddlewareTokenMatching
-            (resolvedTenantId,context,tokenService);
+            context.Response.Redirect (rootDomain);
         }
 
         await _next (context);

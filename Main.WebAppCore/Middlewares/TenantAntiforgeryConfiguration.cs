@@ -22,15 +22,13 @@ public class TenantAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions
         {
             // Dynamically set cookie name and header based on the current tenant
             options.HeaderName = "RequestVerificationToken";
-
             options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
-
             // Optional: Match the form field if you use standard MVC forms
             options.FormFieldName = $"__RequestVerificationToken_{tenantId}";
 
             options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.HttpOnly = true;
-
         }
     }
 }

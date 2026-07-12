@@ -10,14 +10,14 @@ namespace Main.WebAppCore.Middleware;
 public static class TenantResolutionExtensions
 {
     private const string SessionKey = "CurrentTenantId";
-    private const string RootDomain = "localhost";
 
     public static async Task<bool> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
         ITenantSetter tenantSetter,
         ITenancyService tenancyService,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        string rootDomain)
     {
         var cachedTenant = GetTenantFromSession(context);
 
@@ -48,7 +48,7 @@ public static class TenantResolutionExtensions
             }
         }
 
-        context.Response.Redirect (RootDomain);
+        context.Response.Redirect (rootDomain);
 
         return false;
     }

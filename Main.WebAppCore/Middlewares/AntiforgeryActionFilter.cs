@@ -45,7 +45,12 @@ public class AntiforgeryActionFilter: IAsyncAuthorizationFilter
             }
             catch ( AntiforgeryValidationException )
             {
-                context.Result = new BadRequestObjectResult ("Antiforgery token verification failed for tenant environment.");
+                // 3. Fail elegantly with a 400 Bad Request if tokens drift or mismatch
+                context.Result = new BadRequestObjectResult (new
+                {
+                    error = "antiforgery_failed",
+                    message = "Security token validation failed. Request blocked."
+                });
             }
         }
 
