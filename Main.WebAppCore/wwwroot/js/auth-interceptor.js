@@ -48,15 +48,10 @@ $.ajaxSetup({
             // The browser automatically attaches the .App.RefreshToken.{tenantId} cookie!
 
             return $.ajax({
-                url: '/refresh/refresh',
-                type: 'POST',
+                url: '/refresh-token',
+                type: 'POST'
 
-                // Include anti-forgery token header if your refresh endpoint requires it
-
-                headers: {
-                    "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
-                }
-
+                // Include anti-forgery token header if your refresh endpoint requires it]
             }).then(function (response) {
                 isRefreshing = false;
                 processQueue(null, true);
@@ -80,9 +75,11 @@ $.ajaxSetup({
     }
 });
 
+window.fetch = secureFetch;
 const { fetch: originalFetch } = window;
 
-window.fetch = async (...args) => {
+window.fetch = async (args) =>
+{
     let [resource, config] = args;
     let response = await originalFetch(resource, config);
 
@@ -107,7 +104,7 @@ window.fetch = async (...args) => {
 
             // Run background token rotation
 
-            const refreshResponse = await originalFetch('/refresh/refresh', {
+            const refreshResponse = await originalFetch('/refresh-token', {
                 method: 'POST',
                 headers: {
                     "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value || ""

@@ -449,6 +449,695 @@ public async Task<IActionResult> Refresh()
 }
 
 
+**Naim: [HttpPost ("refresh-token")] why do we place this string inside the attribute?**
+
+We place that string inside the attribute to define the exact URL path (the route) that triggers this specific backend action.
+
+When you write [HttpPost("refresh-token")], you are configuring two distinct behaviors at the same time:
+
+## 1. It Dictates the HTTP Method
+The [HttpPost] portion tells ASP.NET Core that this endpoint will only accept incoming POST requests. If a user or a script attempts to use a GET, PUT, or DELETE request on this route, the framework will automatically reject it with a 405 Method Not Allowed error.
+
+## 2. It Defines the Route URL Path
+The "refresh-token" string inside the parentheses is the path fragment. Depending on how your controller is set up at the class level, this string determines your final endpoint URL:
+
+* Case A (No Route on the Controller Class):
+If your controller class doesn't have an explicit route attribute above it, the action maps directly to the root:
+
+https://yourdomain.com
+
+* Case B (With a Base Route on the Controller Class):
+If your controller class is decorated with something like [Route("api/auth")], ASP.NET Core automatically combines them:
+
+https://yourdomain.com
+
+
+## Why this is critical for your AJAX code
+This string must match exactly what you pass into your JavaScript fetch() method. If you change the string inside the attribute to [HttpPost("refresh")], your JavaScript will immediately start throwing 404 Not Found errors unless you update your frontend code to match.
+Would you like to see how to use token replacement like [HttpPost("[action]")] to make your URLs automatically match the exact name of your C# method?
+
+
+**Naim: Does this mean that my action name is "refresh-token"?**
+No, it does not. Your C# action method name is the actual name of the function written in your code, whereas the string inside the attribute is purely the URL route path.
+For example, look at this setup:
+
+[HttpPost("refresh-token")]public async Task<IActionResult> ExecuteSessionRotation()
+{
+    // ... logic
+}
+
+In this case:
+
+* The Action Method Name is: ExecuteSessionRotation (used inside your C# project for unit testing or logging).
+* The Route Path is: /refresh-token (used exclusively by your JavaScript fetch call). [1] 
+
+ASP.NET Core allows you to decouple these two names so you can follow proper C# naming conventions (like PascalCase) for your methods while keeping your external URLs clean and SEO-friendly (like kebab-case).
+
+## When DO they match?
+If you want your URL path to automatically match your C# method name without manually typing a string every time, you can use token replacement using the [action] keyword:
+
+[HttpPost("[action]")]public async Task<IActionResult> RefreshToken()
+{
+    // The URL path automatically becomes exactly: /RefreshToken
+}
+
+If you're using explicit redirect commands in your backend, let me know; I can show you how to safely use C# nameof() to reference your actions without breaking your application if you decide to rename your methods later!
+
+[1] [https://www.reddit.com](https://www.reddit.com/r/nextjs/comments/1lvhms3/struggling_with_access_token_refresh_token/)
+
+**Naim: My case te cortroller name is: Refresh, Action name is: Refresh. And post [HttpPost("refresh-token")]**
+
+In your specific setup, here is exactly how your naming maps out:
+
+* Controller Name: RefreshController
+* C# Action Method Name: Refresh
+* External Web URL Route: /refresh-token (or /api/refresh/refresh-token depending on your class-level attributes).
+
+Because you explicitly put "refresh-token" inside the [HttpPost] attribute, it completely overrides your C# method name for the web routing engine. ASP.NET Core ignores the function name Refresh when looking at inbound web traffic and strictly listens for the string path you provided.
+
+## How this maps to your code:
+
+namespace YourApp.Controllers
+{
+    // If you have a Route attribute here, it prefixes your action path
+    [Route("api/[controller]")] // Resolves to: api/refresh
+
+    [ApiController]
+    public class RefreshController : ControllerBase
+    {
+        // The string here overrides the method name "Refresh"
+        [HttpPost("refresh-token")] 
+        public async Task<IActionResult> Refresh()
+        {
+            // Your token rotation logic...
+            return Ok();
+        }
+    }
+}
+
+## What this means for your JavaScript fetch():
+
+   1. If you have [Route("api/[controller]")] on the class:
+   Your JavaScript must target the combined route:
+   
+   fetch('/api/refresh/refresh-token', { method: 'POST' })
+   
+   2. If you have NO route attribute on the class:
+   Your JavaScript targets the root path directly:
+   
+   fetch('/refresh-token', { method: 'POST' })
+   
+   
+Your C# method name Refresh is now only used inside your backend code—for example, if you want to call it from a unit test or reference it using nameof(Refresh).
+Would you like to check what route attribute you have placed at the very top of your RefreshController class to make sure your JavaScript fetch URL matches it perfectly?
+
+**Naim: [Route("api/[controller]")]  I am not this. Just Post["'"]. What will be my fetch or ajax url for reacing this action (Refresh) and controler (Refresh)?**
+
+If you do not have a [Route] attribute on your controller class, and your attribute is exactly [HttpPost("refresh-token")], then your C# controller and method names are completely ignored by the URL router.
+Your JavaScript Fetch or AJAX URL will target the root of your application:
+## The Exact Fetch URL
+
+fetch('/refresh-token', {
+    method: 'POST',
+    // ... your headers and credentials
+});
+
+## The Exact jQuery AJAX URL
+
+$.ajax({
+    url: '/refresh-token',
+    type: 'POST',
+    // ... your data and headers
+});
+
+## Why it works this way
+Because you did not prefix the class with an API route, ASP.NET Core registers "refresh-token" relative to your main domain name.
+
+* Local Development: https://localhost:7001/refresh-token
+* Production: https://yourdomain.com
+
+Starting your URL string with a leading forward slash (like /refresh-token) is highly recommended. It tells the browser to always start looking from the absolute root domain, ensuring your AJAX call will successfully reach the endpoint regardless of which page the user is currently browsing.
+
+Would you like to see how to add an Anti-Forgery token header explicitly to this specific URL inside your jQuery AJAX setup?
+
+**Naim: Would you like to see how to add an Anti-Forgery token header explicitly to this specific URL inside your jQuery AJAX setup? Yes**
+
+Here is how to explicitly attach your custom Anti-Forgery token header to your /refresh-token endpoint using a jQuery AJAX setup. [1] 
+## The jQuery AJAX Implementation
+Since you configured your ASP.NET Core Program.cs to look for the header named "RequestVerificationToken", you must pass that exact key inside the headers object.
+
+$.ajax({
+    url: '/refresh-token',
+    type: 'POST',
+    // CRITICAL: Tells the browser to send your HTTP-only tenant cookies 
+    xhrFields: {
+        withCredentials: true
+    },
+    headers: {
+        // Tells the backend which suffixed cookie to read
+        "X-Tenant-Id": window.currentTenant || "tenantA",
+        
+        // Pass the request-piece of the Anti-Forgery token from your HTML
+        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+    },
+    success: function (response) {
+        console.log("Tokens rotated smoothly via jQuery!", response);
+        // Retry your original failed request here
+    },
+    error: function (xhr) {
+        if (xhr.status === 401) {
+            console.warn("Refresh token expired or invalid. Evicting user.");
+            const tenantId = window.currentTenant || "tenantA";
+            window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+        } else {
+            console.error("An unexpected error occurred:", xhr.statusText);
+        }
+    }
+});
+
+## Key jQuery Differences to Keep in Mind:
+
+   1. xhrFields: { withCredentials: true }: In vanilla JavaScript fetch, you use credentials: 'include'. In jQuery, you must use this xhrFields block. If you omit this, the browser will block your long-lived cookies from being transmitted with the AJAX request, causing validation to fail. [2] 
+   2. $() Selector: Make sure your Razor layout file contains the @Html.AntiForgeryToken() helper somewhere inside your HTML structure. This generates the hidden <input> field that jQuery reads via the $('input[name="__RequestVerificationToken"]') selector. [3, 4, 5] 
+
+Would you like to see how to wrap this setup into a global jQuery AJAX Prefilter so that all of your AJAX requests automatically append these headers without writing them manually every time?
+
+[1] [https://aspnetboilerplate.com](https://aspnetboilerplate.com/Pages/Documents/v1.0.0.0/XSRF-CSRF-Protection)
+[2] [https://docs.medusajs.com](https://docs.medusajs.com/resources/js-sdk/auth/overview)
+[3] [https://www.thereformedprogrammer.net](https://www.thereformedprogrammer.net/asp-net-core-razor-pages-how-to-implement-ajax-requests/)
+[4] [https://dev.to](https://dev.to/hossien014/dotnet-error-invalid-anti-forgery-token-found-102k)
+[5] [https://www.simplethread.com](https://www.simplethread.com/aspnet-mvc-ajax-csrf-protection-with-jquery-15/)
+
+**Naim: Yes, Using a jQuery AJAX Prefilter is the cleanest way to handle this globally. It intercepts every single jQuery AJAX call right before it leaves the browser, injecting your custom Anti-Forgery header, tenant context, and credential options automatically. [1]**
+
+Place this JavaScript setup inside your main shared or global layout file (e.g., _Layout.cshtml) so it runs before any other application scripts execute. [2] 
+
+## The Global jQuery Prefilter Setup
+
+$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+
+    // 1. Force the browser to send your HTTP-only cookies with every request
+
+    options.xhrFields = options.xhrFields || {};
+    options.xhrFields.withCredentials = true;
+
+    // 2. Initialize headers if they don't exist yet
+
+    options.headers = options.headers || {};
+
+    // 3. Inject your tenant context suffix dynamically
+
+    const tenantId = window.currentTenant || "tenantA";
+
+    options.headers["X-Tenant-Id"] = tenantId;
+
+    // 4. Inject the Anti-Forgery Request Token for POST, PUT, and DELETE operations
+
+    const requestType = options.type ? options.type.toUpperCase() : "GET";
+
+    if (requestType === "POST" || requestType === "PUT" || requestType === "DELETE") 
+    {
+        const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+        
+        if (antiForgeryTokenValue) {
+            options.headers["RequestVerificationToken"] = antiForgeryTokenValue;
+        }
+    }
+});
+
+------------------------------
+## Step 2: Combine with a Global Global Error Handler for Silent Token Refresh
+
+To make full-page transitions truly smooth, pair the prefilter with a global error hook ($.ajaxSetup). 
+
+If any request on your website fails with a 401 Unauthorized because your short-lived access token expired, this script pauses the app, calls your /refresh-token action, updates your HTTP-only cookies, and transparently retries the user's original action without them noticing a thing. [3, 4] 
+
+$.ajaxSetup ( {
+
+    error: function (xhr, textStatus, errorThrown) {
+
+        // Capture the original configuration of the request that just failed
+
+        const originalRequestOptions = this;
+
+        // Check if the short-lived token expired (matching the header sent by Program.cs)\
+
+        if (xhr.status === 401 && xhr.getResponseHeader("Token-Expired") === "true") 
+        {
+            console.warn("Short-lived access cookie expired. Attempting global silent refresh...");
+
+            // Trigger your custom refresh action manually via an isolated AJAX call
+
+            $.ajax({
+                url: '/refresh-token',
+                type: 'POST',
+
+                // Prefilter handles headers and credentials automatically here
+
+                success: function () {
+
+                    console.log("Session refreshed smoothly! Retrying original request...");
+
+                    // Re-fire the exact request that failed previously
+
+                    $.ajax(originalRequestOptions);
+                },
+                error: function (refreshXhr) {
+
+                    console.error("Refresh token expired or compromised. Routing to login.");
+
+                    const tenantId = window.currentTenant || "tenantA";
+
+                    window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+
+                }
+            });
+        }
+    }
+});
+
+## Why this structure provides high utility:
+
+* Zero Boilerplate: Your developer team can write everyday $.post("/api/data", ...) calls across dozens of separate JS files without ever thinking about headers, tokens, or security configurations again.
+
+* Automatic Exclusions: The prefilter safely skips adding the Anti-Forgery token to GET requests, remaining compliant with standard web architecture rules while safeguarding modify actions.
+
+Would you like to see how to handle concurrent/duplicate AJAX calls so that if three requests expire at the exact same moment, they wait for a single /refresh-token execution instead of hammering your backend concurrently?
+
+[1] [https://github.com](https://github.com/abpframework/abp/issues/1679)
+[2] [https://abp.io](https://abp.io/docs/latest/framework/ui/mvc-razor-pages/javascript-api/ajax)
+[3] [https://www.guvi.in](https://www.guvi.in/blog/ajax-with-jquery/)
+[4] [https://medium.com](https://medium.com/flutter-community/how-to-integrate-apis-seamlessly-in-flutter-7c2a4cd9f3b2)
+
+**Naim: Place this JavaScript setup inside your main shared or global layout file (e.g., _Layout.cshtml) so it runs before any other application scripts execute.  Should I place in the head section?**
+
+No, do not place it in the <head> section. [1] 
+
+If you put this script inside the <head>, your jQuery prefilter will execute immediately, but it will fail completely the moment a user triggers a POST request. [2] 
+
+## The Problem with <head> Execution
+Look closely at this line inside the prefilter logic:
+
+const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+
+When a browser reads an HTML page, it parses it from top to bottom. The <head> is loaded before the <body> even exists. If your script runs inside the <head>, jQuery searches the page for the hidden Anti-Forgery input field, finds nothing (because the body hasn't loaded yet), and assigns undefined to your token. Your subsequent AJAX calls will immediately fail with a 400 Bad Request. [3, 4, 5] 
+------------------------------
+## The Correct Placement: Bottom of _Layout.cshtml
+You should place your global prefilter and error handler at the very bottom of your _Layout.cshtml file, right after your jQuery script tag loads, but before any page-specific scripts.
+
+Here is exactly how your layout file's scripts section should look:
+
+    <!-- 1. First, load the core jQuery library -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- 2. Second, embed the ASP.NET Core Anti-Forgery helper in the body -->
+    @Html.AntiForgeryToken()
+
+    <!-- 3. Third, inject your global AJAX interceptor configurations -->
+    <script>
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            options.xhrFields = options.xhrFields || {};
+            options.xhrFields.withCredentials = true;
+            options.headers = options.headers || {};
+
+            const tenantId = window.currentTenant || "tenantA";
+            options.headers["X-Tenant-Id"] = tenantId;
+
+            const requestType = options.type ? options.type.toUpperCase() : "GET";
+            if (requestType === "POST" || requestType === "PUT" || requestType === "DELETE") {
+                // This will now successfully find the input element!
+                const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+                if (antiForgeryTokenValue) {
+                    options.headers["RequestVerificationToken"] = antiForgeryTokenValue;
+                }
+            }
+        });
+
+        $.ajaxSetup({
+            error: function (xhr, textStatus, errorThrown) {
+                const originalRequestOptions = this;
+                if (xhr.status === 401 && xhr.getResponseHeader("Token-Expired") === "true") {
+                    $.ajax({
+                        url: '/refresh-token',
+                        type: 'POST',
+                        success: function () {
+                            $.ajax(originalRequestOptions);
+                        },
+                        error: function () {
+                            const tenantId = window.currentTenant || "tenantA";
+                            window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- 4. Fourth, render individual page scripts (e.g., dashboard.js, reports.js) -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+## Why this specific order works flawlessly:
+
+   1. jQuery is ready: The $ library is initialized and available.
+   2. DOM is queryable: The HTML document has loaded far enough down that $('input[name="__RequestVerificationToken"]') successfully grabs the fresh verification token.
+   3. Global protection is active: Because it sits above @RenderSection("Scripts"), your view-specific scripts (like a custom script loaded on your /dashboard view) will inherit this behavior automatically without you adding any extra config code there. [6, 7, 8] 
+
+Would you like to see how to organize your backend layout so that the @Html.AntiForgeryToken() tag renders cleanly and securely across every sub-page automatically?
+
+[1] [https://github.com](https://github.com/vercel/next.js/discussions/16854)
+[2] [https://support.cookiebot.com](https://support.cookiebot.com/hc/en-us/articles/27408568285212-Implementing-Cookiebot-CMP-in-a-Next-js-site-App-Router)
+[3] [https://runestone.academy](https://runestone.academy/ns/books/published/webfundamentals/CSS/layoutattributes.html)
+[4] [https://dev.to](https://dev.to/martyhimmel/javascript-es5---getting-started-5980)
+[5] [https://wordpress.stackexchange.com](https://wordpress.stackexchange.com/questions/tagged/jquery?tab=Newest)
+[6] [https://www.dummies.com](https://www.dummies.com/article/technology/programming-web-design/html5/how-to-use-ajax-to-create-an-initialization-function-for-html5-and-css3-programming-156675/)
+[7] [https://css-tricks.com](https://css-tricks.com/web-components-demystified/)
+[8] [https://www.greatfrontend.com](https://www.greatfrontend.com/questions/quiz/why-is-it-in-general-a-good-idea-to-leave-the-global-scope-of-a-website-as-is-and-never-touch-it)
+
+**Naim: Can I keep this (3. Third, inject your global AJAX interceptor configurations)  in a js file?**
+
+Yes, you can absolutely move this into a standalone .js file. Moving it into an external file is a best practice because it keeps your _Layout.cshtml clean, makes your code easier to maintain, and allows the browser to cache the file for better loading performance. [1, 2, 3] 
+However, you must follow two strict rules when doing this:
+
+## Rule 1: Include @Html.AntiForgeryToken() inside the HTML body
+An external .js file cannot execute Razor code like @Html.AntiForgeryToken(). You must leave that tag inside your HTML layout file (e.g., inside the <body>). As long as that tag is in your HTML, your external JavaScript file can still find it using the $('input[name="__RequestVerificationToken"]') selector. [4, 5] 
+
+## Rule 2: Keep the script loading order exact
+When you link your new file, you must make sure it loads after jQuery, but before your @RenderSection.
+
+Here is exactly how your _Layout.cshtml should look after moving the code to a file named global-ajax.js:
+
+    <!-- 1. Load the core jQuery library first -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- 2. Keep the Razor Anti-Forgery token helper inside the HTML body -->
+    @Html.AntiForgeryToken()
+
+    <!-- 3. Load your external configuration file -->
+    <script src="~/js/global-ajax.js" asp-append-version="true"></script>
+
+    <!-- 4. Render individual page scripts last -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+## What goes inside your wwwroot/js/global-ajax.js file:
+Simply paste your clean JavaScript code into the file without any <script> tags or Razor elements: [6] 
+
+// wwwroot/js/global-ajax.js
+
+$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+    options.xhrFields = options.xhrFields || {};
+    options.xhrFields.withCredentials = true;
+    options.headers = options.headers || {};
+
+    const tenantId = window.currentTenant || "tenantA";
+    options.headers["X-Tenant-Id"] = tenantId;
+
+    const requestType = options.type ? options.type.toUpperCase() : "GET";
+    if (requestType === "POST" || requestType === "PUT" || requestType === "DELETE") {
+        const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+        if (antiForgeryTokenValue) {
+            options.headers["RequestVerificationToken"] = antiForgeryTokenValue;
+        }
+    }
+});
+
+$.ajaxSetup({
+    error: function (xhr, textStatus, errorThrown) {
+        const originalRequestOptions = this;
+        if (xhr.status === 401 && xhr.getResponseHeader("Token-Expired") === "true") {
+            console.warn("Short-lived access cookie expired. Attempting global silent refresh...");
+            
+            $.ajax({
+                url: '/refresh-token',
+                type: 'POST',
+                success: function () {
+                    console.log("Session refreshed smoothly! Retrying original request...");
+                    $.ajax(originalRequestOptions);
+                },
+                error: function () {
+                    console.error("Refresh token expired. Routing to login.");
+                    const tenantId = window.currentTenant || "tenantA";
+                    window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                }
+            });
+        }
+    }
+});
+
+Using the asp-append-version="true" attribute on your script tag inside the HTML layout is highly recommended; it forces the browser to pull a fresh copy of your file whenever you update your JavaScript logic, preventing outdated browser cache issues. [7, 8] 
+Would you like to see how to define the window.currentTenant variable dynamically on the backend so your external JavaScript file can always read the correct tenant identity?
+
+[1] [https://www.youtube.com](https://www.youtube.com/watch?v=cNxbMbPv0u0)
+[2] [https://www.syncfusion.com](https://www.syncfusion.com/blogs/post/protect-web-app-from-unauthorized-javascript-execution)
+[3] [https://www.digitalocean.com](https://www.digitalocean.com/community/tutorials/how-to-add-javascript-to-html)
+[4] [https://aspnet-htmx.com](https://aspnet-htmx.com/chapter03/)
+[5] [https://medium.com](https://medium.com/@sairathna/mastering-the-base-tag-in-html-simplifying-url-management-bc0b6a2cb7fc)
+[6] [https://medium.com](https://medium.com/@codingnexus/a-step-by-step-guide-to-adding-javascript-to-an-html-file-fd3465781e97)
+[7] [https://www.reddit.com](https://www.reddit.com/r/csharp/comments/wkf313/how_to_version_js_file_changes_so_that_client/)
+[8] [https://medium.com](https://medium.com/volosoft/migrating-from-asp-net-mvc-5-x-to-asp-net-core-520c9aa65e2c)
+
+**Naim: Will it work same for the fetch?**
+
+No, it will not work automatically for fetch. [1] 
+
+The global code we just wrote uses $.ajaxPrefilter and $.ajaxSetup, which are exclusive to jQuery. They only intercept requests made using $.ajax, $.get, or $.post.
+
+If you use native JavaScript fetch() anywhere in your application, it completely bypasses jQuery. It will not send the Anti-Forgery header, it will not automatically include cookies, and it will not catch expired token errors to refresh your session. [2, 3] 
+
+If you are using both jQuery and fetch, or if you plan to migrate to fetch entirely, you must create a similar global interceptor wrapper for native JavaScript.
+
+------------------------------
+## The fetch Solution: A Reusable Global Wrapper
+
+Because JavaScript's native fetch API doesn't have a built-in prefilter mechanism, the standard production approach is to create a custom global function wrapper (often called window.customFetch or overwriting window.fetch). [4, 5] 
+
+Create a separate file named global-fetch.js or add this directly into your existing global-ajax.js file:
+
+// wwwroot/js/global-fetch.js
+// 1. Define a global wrapper function 
+
+
+async function secureFetch(url, options = {}) {
+    
+    options.headers = options.headers || {};
+
+    // EQUIVALENT TO withCredentials: true (Forces cookies to send)
+    options.credentials = 'include';
+
+    // EQUIVALENT TO jQuery Prefilter (Appends Anti-Forgery Header)
+    const method = options.method ? options.method.toUpperCase() : "GET";
+    if (method === "POST" || method === "PUT" || method === "DELETE") {
+        const antiForgeryTokenValue = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (antiForgeryTokenValue) {
+            options.headers["RequestVerificationToken"] = antiForgeryTokenValue;
+        }
+    }
+
+    // Execute the network request
+    let response = await fetch(url, options);
+
+    // EQUIVALENT TO jQuery ajaxSetup Error (Handles Silent Token Refresh)
+    if (response.status === 401 && response.headers.get("Token-Expired") === "true") {
+        console.warn("Short-lived access cookie expired. Fetch wrapper triggering refresh...");
+
+        // Call the refresh endpoint using the exact same rules
+        const refreshResponse = await fetch('/refresh-token', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]')?.value || ""
+            }
+        });
+
+        if (refreshResponse.ok) {
+            console.log("Session refreshed smoothly! Retrying original fetch request...");
+            // Re-fire the exact request that failed previously and return its outcome
+            return await fetch(url, options);
+        } else {
+            console.error("Refresh token expired. Fetch wrapper routing to login.");
+            window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+            return response;
+        }
+    }
+
+    return response;
+}
+// 2. OPTIONAL: Overwrite native fetch globally so you don't have to change your code// If you uncomment the line below, any standard "fetch()" call automatically becomes secure!// window.fetch = secureFetch;
+
+------------------------------
+## Comparison of Configurations:
+
+| Feature Requirement | jQuery ($.ajax) Code | Native JS (fetch) Code |
+|---|---|---|
+| Send HTTP-only Cookies | xhrFields: { withCredentials: true } | credentials: 'include' |
+| Find Anti-Forgery Value | $('input[name="__RequestVerificationToken"]').val() | document.querySelector('input[name="__RequestVerificationToken"]').value |
+| Check Error Header | xhr.getResponseHeader("Token-Expired") | response.headers.get("Token-Expired") |
+
+If you choose to use the global overwrite (window.fetch = secureFetch;), you can use native fetch('/api/data') anywhere in your code, and it will inherit the exact same security protection and silent recovery behaviors as your jQuery endpoints.
+
+Would you like to see how to test if your Anti-Forgery token validation is working correctly by manually stripping the header inside your browser's Developer Tools?
+
+[1] [https://docs.dnscontrol.org](https://docs.dnscontrol.org/language-reference/top-level-functions/fetch)
+[2] [https://forum.freecodecamp.org](https://forum.freecodecamp.org/t/why-would-you-use-a-fetch-get-request-instead-of-a-jquery-get-request/185051)
+[3] [https://fa.javascript.info](https://fa.javascript.info/fetch-crossorigin)
+[4] [https://medium.com](https://medium.com/@expertappdevs/axios-vs-fetch-in-react-native-a-c-level-guide-e035129fe202)
+[5] [https://github.com](https://github.com/denoland/deno/issues/11925)
+
+**Naim: If I give @Html.AntiForgeryToken() this in layout, then the form submit, how it will find and send to the server?**
+
+When you place @Html.AntiForgeryToken() inside a <form> block in your Razor layout or view, ASP.NET Core does not rely on JavaScript or AJAX at all. It handles the whole process natively using pure, standard HTML mechanics.
+
+Here is exactly how it finds and sends the token back to your server:
+
+## 1. The HTML Generation (On the Server)
+When ASP.NET Core processes the @Html.AntiForgeryToken() tag, it renders a hidden input field directly inside your HTML.
+
+If you view the source code of your page in the browser, you will see it outputs exactly this:
+
+<form action="/Account/SaveData" method="post">
+    <!-- This hidden input is generated automatically -->
+    <input name="__RequestVerificationToken" type="hidden" value="CfDJ8M3t...[Long Encrypted String]..." />
+    
+    <input type="text" name="Username" />
+    <button type="submit">Submit</button>
+</form>
+
+At the exact same time, ASP.NET Core drops an encrypted companion cookie into the browser.
+
+## 2. The Form Submission (On the Client)
+When a user clicks the "Submit" button, the browser performs a standard HTTP POST request. By default, browser form architecture dictates that every single input element inside that <form> tag that has a name attribute must be bundled up into the request body.
+
+Because the hidden input field has name="__RequestVerificationToken", the browser automatically packages its long encrypted string value right alongside your normal input values (like Username).
+
+The browser then shoots a payload looking like this straight to your server:
+
+POST /Account/SaveData HTTP/1.1
+Host: yoursite.com
+Content-Type: application/x-www-form-urlencoded
+
+__RequestVerificationToken=CfDJ8M3t...&Username=JohnDoe
+
+## 3. The Server Validation (Back on the Server)
+
+When the request lands on your controller action (which is decorated with [ValidateAntiForgeryToken]), ASP.NET Core executes its verification lifecycle:
+
+   1. It looks into the Cookies to find the cookie piece (which your tenant middleware handles).
+   2. It looks into the Form Body payload to find the key named __RequestVerificationToken.
+   3. It cross-checks both pieces. If they match and belong to the same session, your action code executes smoothly.
+
+## Summary: Form vs. AJAX Difference
+
+* Standard Forms: Do not need the JavaScript headers we wrote earlier. The browser naturally finds the hidden field inside the <form> tags and pushes it into the request body automatically.
+* AJAX / Fetch: Needs our JavaScript helper because AJAX does not naturally extract fields out of HTML forms unless you write explicit code to fetch and assign them to an HTTP header.
+
+Would you like to see how to handle a form submission if your form is generated dynamically via JavaScript after the page has already loaded?
+
+Yes, you can run into a major issue if you place @Html.AntiForgeryToken() both globally in the body and inside individual form tags on the same page.
+
+While it will not crash your server, it can cause random "400 Bad Request" (Antiforgery token validation failed) errors during your form submissions or AJAX calls.
+
+Here is exactly why this happens and how to avoid it.
+
+------------------------------
+## The Problem: Token Collision and Form Bloat
+
+Every single time you call @Html.AntiForgeryToken() on a page, ASP.NET Core does two things:
+
+   1. It reads or generates a security cookie.
+   2. It outputs a hidden <input> field with a unique, encrypted string token.
+
+If you have it globally in your body and inside a form, your HTML source code will look like this:
+
+<body>
+    <!-- 1. Your global token used by JavaScript/AJAX -->
+    <input name="__RequestVerificationToken" type="hidden" value="TOKEN_ALPHA..." />
+
+    <form action="/Submit" method="post">
+        <!-- 2. Your specific form token -->
+        <input name="__RequestVerificationToken" type="hidden" value="TOKEN_BETA..." />
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+## Why standard Forms can fail:
+
+When you click submit on that form, the browser only sends what is inside that specific <form> tag. It will successfully send TOKEN_BETA to the server, and the form will process cleanly.
+
+## Why AJAX / Fetch will fail:
+Remember the line of code we wrote for your jQuery/Fetch global interceptor?
+
+const antiForgeryTokenValue = $('input[name="__RequestVerificationToken"]').val();
+
+When jQuery runs $('input[name="__RequestVerificationToken"]'), it finds both hidden input fields on the page. Because .val() only extracts the value of the very first match it finds in the HTML document, it will grab TOKEN_ALPHA.
+
+If your form submission script later reads the form context or if another asynchronous component gets confused about which token matches the latest state of the cookie, ASP.NET Core's backend validator will reject the request with a 400 Bad Request because the cookie and the submitted header value drifted out of sync.
+------------------------------
+
+## The Correct Production Fix
+You only need one global @Html.AntiForgeryToken() tag rendered outside of your forms to satisfy both standard HTML forms and global AJAX interceptors.
+
+## Step 1: Remove it from your individual forms
+Delete @Html.AntiForgeryToken() from inside your .cshtml form tags entirely.
+
+## Step 2: Leave ONE global instance at the top of your _Layout.cshtml body
+Place it right at the beginning of your HTML <body>.
+
+<body>
+    <!-- Render this EXACTLY ONCE here for the entire application -->
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+        <!-- Standard HTML forms do not need the tag inside them anymore -->
+        <form action="/Account/Save" method="post">
+            <input type="text" name="Username" />
+            <button type="submit">Save</button>
+        </form>
+    </div>
+
+    <!-- Your scripts at the bottom -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/global-ajax.js"></script>
+</body>
+
+## Step 3: Update your JavaScript to attach it to standard forms automatically
+
+Since your forms no longer have the hidden input field inside them natively, update your global-ajax.js file so it automatically handles both AJAX calls and regular browser form submissions.
+Add this tiny snippet at the bottom of your global JavaScript file to cleanly clone your global token into any HTML form right before it submits:
+
+// wwwroot/js/global-ajax.js
+// Keep your existing prefilter and ajaxSetup code here...
+// NEW: Automatically inject the global token into standard HTML forms right before they submit
+
+$(document).on("submit", "form", function () {
+    const currentForm = $(this);
+    
+    // Check if the form is already missing the token field
+    if (currentForm.find('input[name="__RequestVerificationToken"]').length === 0) {
+        // Grab the single global token from the top of the body
+        const globalTokenValue = $('body > input[name="__RequestVerificationToken"]').val();
+        
+        if (globalTokenValue) {
+            // Append it cleanly so the browser submits it natively
+            currentForm.append(
+                $('<input>', { type: 'hidden', name: '__RequestVerificationToken', value: globalTokenValue })
+            );
+        }
+    }
+});
+
+## Why this architecture is foolproof:
+
+* Single Source of Truth: There is only one token value on your entire webpage (TOKEN_ALPHA). JavaScript, Fetch, jQuery, and native browser forms will all use the exact same value.
+* No Validation Errors: The backend cookie and the frontend token value will never drift out of sync, completely eliminating random 400 Bad Request bugs.
+
+Would you like to see how to verify if this single global token structure is loading correctly by using your browser's Inspect Element tool?
+
+
+
 ## How this Blocks Attackers (The Security Scenario)
 Imagine an attacker steals a user's valid 7-day cookie from their browser via a malware dump:
 

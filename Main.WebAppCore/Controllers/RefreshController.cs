@@ -59,7 +59,7 @@ namespace Main.WebAppCore.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
                     Expires = DateTimeOffset.UtcNow.AddDays (7),
-                    Path = "/account/refresh-token" // Locked down specifically to your refresh endpoint
+                    Path = "/account/refresh-token"// Locked down specifically to your refresh endpoint
                 });
 
                 // Return the fresh access JWT in the JSON payload

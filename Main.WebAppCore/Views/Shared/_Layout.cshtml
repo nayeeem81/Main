@@ -30,13 +30,15 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-    <script src="~/js/auth-interceptor.js" asp-append-version="true"></script>
+    
 
     @RenderSection( "Styles",required: false )
 
 </head>
 
 <body>
+    <!-- Render this EXACTLY ONCE here for the entire application -->
+    @Html.AntiForgeryToken()
 
     <span id="pick"></span>
 
@@ -118,6 +120,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/global-fetch.js" asp-append-version="true"></script>
+
+    <script src="~/js/auth-interceptor.js" asp-append-version="true"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
