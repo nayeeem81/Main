@@ -8,7 +8,7 @@
 **TenantResolverHandlingMiddleware:** In ASP.NET Core 8.0, a Multi-Tenant Request Pipeline isolates data and configuration per customer by resolving tenant context at the very beginning of an HTTP request. This architecture relies on this middleware to execute early in the pipeline to parse the incoming request, look up the tenant, and inject the context into a scoped service for downstream components.
 
 ### Middleware Name: TenantResolverHandlingMiddleware
-**Function: Tenant Identification & Contamination Check, Faster Response and Tenant Data Isolation**
+**Function: Tenant Identification, Faster Response and Tenant Data Isolation**
 
 **1. Tenant Identification & Contamination Check:**
 We first get the host and path from the HttpRequest object and extract the domain/subdomain or subdirectory. We check the extracted domain/subdomain or subdirectory in the database to identify if they are in the list of our tenants. If found, we consider the request is valid and tenant is resolved. When the resolver gets a request from a logged user, it ge the resolved tenant id and 
@@ -45,7 +45,12 @@ ITenantSetter is a scoped (service) registered in the program.cs. Scoped means: 
           │
           ▼
 ┌─────────────────────────────────┐
-│ 5. MVC Controller & EF Core     │ <--- App logic & isolated DB query execution
+│ 5. Authentication / Authorize   │ <--- Validates identities (Tenant-aware)
+└─────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────┐
+│ 6. MVC Controller & EF Core     │ <--- App logic & isolated DB query execution
 └─────────────────────────────────┘
 
 ## Global safety net
