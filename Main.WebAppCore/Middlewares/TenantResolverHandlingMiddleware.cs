@@ -1,6 +1,5 @@
 ﻿using Main.Infrastructure;
 using Main.Services;
-using Main.WebAppCore.Middlewares;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Main.WebAppCore.Middleware;
@@ -24,13 +23,6 @@ public class TenantResolverHandlingMiddleware
     ITokenService tokenService)
     {
         bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain);
-
-
-        if ( result && TenantSafetyCheckExtensions.CheckContamination
-            (tenantSetter.CurrentTenantId,context) )
-        {
-            context.Response.Redirect (rootDomain);
-        }
 
         await _next (context);
     }

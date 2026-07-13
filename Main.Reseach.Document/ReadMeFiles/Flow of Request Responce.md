@@ -1,3 +1,65 @@
+# Multi-Tenant Request Pipeline
+
+
+
+## Pipeline Starting Point: TenantResolverHandlingMiddleware 
+
+### Who does the work? 
+**TenantResolverHandlingMiddleware:** In ASP.NET Core 8.0, a Multi-Tenant Request Pipeline isolates data and configuration per customer by resolving tenant context at the very beginning of an HTTP request. This architecture relies on this middleware to execute early in the pipeline to parse the incoming request, look up the tenant, and inject the context into a scoped service for downstream components.
+
+### Middleware Name: TenantResolverHandlingMiddleware
+**Function: Tenant Identification & Contamination Check, Faster Response and Tenant Data Isolation**
+
+**1. Tenant Identification & Contamination Check:**
+We first get the host and path from the HttpRequest object and extract the domain/subdomain or subdirectory. We check the extracted domain/subdomain or subdirectory in the database to identify if they are in the list of our tenants. If found, we consider the request is valid and tenant is resolved. When the resolver gets a request from a logged user, it ge the resolved tenant id and 
+
+**Faster Response:**
+This middleware keep resolved TenantId in memory cache (consider active memory in the server end from where the request entered) for a specific time period (life time for 30 minutes). The tenant id is kept in memory; to not hit the database for resolved tenants again. We set the cache for 30 minutes. We query the database again and reset the cache active for next 30 minutes. This middleware does this for performance: faster response time for the request (reduce latency).
+
+**Tenant Data Isolation**
+ITenantSetter is a scoped (service) registered in the program.cs. Scoped means: for the entire request life time the service is active from the middleware to the end layer (ef core dbcontext). We set the resolved tenant id, in this service We can access this scoped service using Dependency Injection (DI) from any (controllers, services, DbContext) components. The primary objective is to create a Global Query Filter (isolated database partition for each tenant) from the shared database (for all tenants) using the resolved tenant id. Any data related to the tenant is isolated from other tenants because of this isolation. This data isolation is an architectural design using the scoped ITenantSetter. Each request for a tenant can work and view from the pertitioned isolated database for the tenant.
+ : 
+
+
+[ Incoming HTTP Request ] 
+          │
+          ▼
+┌────────────────────────────────────┐
+│ **1. Exception Handling & HSTS**   │ <--- Global safety net **(Explain Later)**
+└────────────────────────────────────┘
+          │
+          ▼
+┌────────────────────────────────────┐
+│ **2.Tenant Resolution Middleware** │ <--- **Custom Middeware:TenantResolverHandlingMiddleware
+└────────────────────────────────────┘        Extracts Tenant via Header/Subdomain/Subdirectory**
+          │
+          ▼
+┌─────────────────────────────────┐
+│ 3. Routing Middleware           │ <--- Matches URLs to endpoints
+└─────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────┐
+│ 4. Authentication / Authorize   │ <--- Validates identities (Tenant-aware)
+└─────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────┐
+│ 5. MVC Controller & EF Core     │ <--- App logic & isolated DB query execution
+└─────────────────────────────────┘
+
+## Global safety net
+
+[ Incoming Request ] ──► 1. Global Safety Net (Captures errors on the way back out)
+                            │
+                            ▼
+                         2. Tenant Resolution Middleware
+                            │
+                            ▼
+                         3. Controllers / DB Layer (If an exception throws here...)
+                            │
+        [ Exception Bubbles Up ] ──────► Catches it, logs it, and returns a friendly HTML view.
+
 ## Web App Project Folder Structure
 
 **We are using monolithich architecture, the published output will a single application instance and a single shared wwwroot.The MVC application folder structure separate Area controllers from standard controllers in this design pattern.**

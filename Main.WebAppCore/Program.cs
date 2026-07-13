@@ -82,6 +82,8 @@ _ = app.UseCors ();
 
 _ = app.UseAuthentication ();
 
+_ = app.UseMiddleware<TenantSecurityMiddleware> ();
+
 _ = app.UseAuthorization ();
 
 _ = app.MapControllers ();

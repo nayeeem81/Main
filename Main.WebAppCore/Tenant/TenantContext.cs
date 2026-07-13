@@ -103,7 +103,7 @@ public class TenantContext: ITenantContext
 
     private string GetTenantId ()
     {
-        return User?.FindFirst ("tenant_id")?.Value ?? "";
+        return User?.FindFirst ("TenantId")?.Value ?? "";
     }
 
     private string GetCurrentUserId ()

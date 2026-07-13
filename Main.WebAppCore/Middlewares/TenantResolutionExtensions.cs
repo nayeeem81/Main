@@ -1,16 +1,12 @@
 ﻿using DataTransferModel;
-using Main.Common;
 using Main.Infrastructure;
 using Main.Services;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text.Json;
 
 namespace Main.WebAppCore.Middleware;
 
 public static class TenantResolutionExtensions
 {
-    private const string SessionKey = "CurrentTenantId";
-
     public static async Task<bool> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
@@ -19,14 +15,6 @@ public static class TenantResolutionExtensions
         IMemoryCache memoryCache,
         string rootDomain)
     {
-        var cachedTenant = GetTenantFromSession(context);
-
-        if ( cachedTenant != null )
-        {
-            SetTenantSetter (cachedTenant,tenantSetter);
-            return true;
-        }
-
         string? tenantHost = context.ResolveFromSubdomain()
                             ?? context.ResolveFromDomain()
                             ?? ReutePathExtensions.ResolveFromPath(context);
@@ -35,13 +23,13 @@ public static class TenantResolutionExtensions
         {
             TenantDisplayDataModel? tenantDisplayDataModel = await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(120);
+
                 return await tenancyService.FindTenantAsync(tenantHost);
             });
 
             if ( tenantDisplayDataModel != null )
             {
-                SaveTenantToSession (context,tenantDisplayDataModel);
                 SetTenantSetter (tenantSetter,tenantDisplayDataModel);
 
                 return true;
@@ -58,27 +46,6 @@ public static class TenantResolutionExtensions
         tenantSetter.CurrentTenantId = tenantDisplayDataModel.TenantId;
         tenantSetter.TenantStore = tenantDisplayDataModel.StoreType;
         tenantSetter.TenantName = tenantDisplayDataModel.Name;
-    }
-
-    // Helper Method for ITenantSetter Set 
-    private static void SetTenantSetter (TenantModel cachedTenant,ITenantSetter tenantSetter)
-    {
-        tenantSetter.CurrentTenantId = cachedTenant.TenantId;
-        tenantSetter.TenantName = cachedTenant.TenantName;
-    }
-
-    // Helper to extract Tenant from Session
-    private static TenantModel? GetTenantFromSession (HttpContext context)
-    {
-        var sessionData = context.Session.GetString(SessionKey);
-        return sessionData == null ? null : JsonSerializer.Deserialize<TenantModel> (sessionData);
-    }
-
-    // Helper to store Tenant in Session
-    private static void SaveTenantToSession (HttpContext context,TenantDisplayDataModel tenantDisplayDataModel)
-    {
-        var sessionData = JsonSerializer.Serialize(tenantDisplayDataModel);
-        context.Session.SetString (SessionKey,sessionData);
     }
 
     private static string ResolveFromSubdomain (this HttpContext context)

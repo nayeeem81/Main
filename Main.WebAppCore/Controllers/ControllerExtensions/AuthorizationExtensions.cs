@@ -57,7 +57,7 @@ public static class AuthorizationExtensions
         [
             new Claim (ClaimTypes.NameIdentifier,userId),
             new Claim (ClaimTypes.Role,"User"),
-            new Claim ("tenant_id",resolvedTenantId),
+            new Claim ("TenantId",resolvedTenantId),
             new Claim("TenantRole",formatedTenantRole),
             new Claim ("UserName", userName),
             new Claim ("Email",email)
