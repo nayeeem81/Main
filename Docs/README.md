@@ -23,7 +23,7 @@ Initial tenant creation, this multi-tenant web application; assigns the user (em
 ## 🛍️Tenant Types (According to Hosting Plan)
 
 ### Tenant name is: **kaiassociates**
-           
+
 **kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
 
 ### Domain: www.kaiassociates.com
@@ -32,7 +32,7 @@ After creating a tenant, the user can add a domain for the tenant. The tenant ne
 ### Subdomain: www.kaiassociates.tenantors.com
 **Unique username is the name of the subdomain**
 After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
-            
+
 ### Subdirectory: www.tenantors.com/kaiassociates/
 **Unique username is the name of the subdirectory**
 After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
@@ -44,42 +44,39 @@ Tenant user can login and access the store work space only using verified email.
 
 **After email verification, user will login in the website, from where the user was registered. (example:tenantors.com)**
 
-After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
+1. After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
 
-**🆔🪪www.kaiassociates.com**
+🆔🪪www.kaiassociates.com
 
-After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
+2. After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
 
-**📲🪪www.kaiassociates.tenantors.com**
+📲🪪www.kaiassociates.tenantors.com
 
-After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
+3. After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
 
-**🏢🪪www.tenantors.com/kaiassociates**
+🏢🪪www.tenantors.com/kaiassociates
 
 ### Summary:
 
-### **🛍️ Tenant View:**
+### 🛍️ Tenant View:
 In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
 
-### **🛠️Technical View:**
+### 🛠️Technical View:
 It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
 
 ## 🛍️Tenant Work Space
 
-### **Tenant Shop Website (URL):**
+### Tenant Shop Website (URL):
 
 **Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
 
-
 **Think the workspace as your shop in a shopping mall:**
-
 
 **You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
 
-### **🏢 Store Features (Tenant):**
+### 🏢 Store Features (Tenant):
 
-1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**
-2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
+1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**   2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
 3. **📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)**                  
 4. **🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)** 
 5. **🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)**
@@ -106,33 +103,31 @@ He/she will go to the link of the tenant URL; browser sends the request to the s
 
 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
-## Concerns for Tenant (Isolation): 
+# 🚩Concerns for Tenant (Isolation)
+**This SaaS Multi-Tenant Architecture: Each Tenant uses one application and one shared database & shared static resource files.**
 
-Multi-Tenant applications often suffer from data leaks, which is an error because of the problem of isolation from one tenant to another. This error was not addressed by the application until they realized that the data was leaking because of an isolation problem. 
+Multi-Tenant applications often suffer from data leaks, which is an error because of the problem of isolation from one tenant to another. It is a challenge to address and solve, while designing the SaaS architecture. If the application architecture and cross cutting concerns, clean separation in code are implemented and configured properly; the tenant will not face data Leake, unauthorized access and security risks. We took the measures which are practiced in industry for such SaaS implementation. We addressed the isolation in the database level, implemented configuration for the authentication and authorization with Json Web Token (Jwt) which is secure and robust. Tenant and their data are safe in this multi-tenant Saas Web Application.
 
-**The architecture of the multi-tenant model inside the application uses shared resources.**  
+## ✅Isolation SaaS Architecture Solution:
+1. The shared database is partitioned using a global query filter in the database level using the resolved tenant id. Tenants use the database tables where only their records are present. Queries are done against the tenant records only. Other tenants' records are not available for the current tenant to query because of the global filter restrictions. This data isolation is done by tenant resolving middleware using a scoped tenant setting service.
+2. The User has to prove that he/she is a user of the resolved tenant. Tenant security middleware validates the resolved tenant's id with the encrypted user's tenant claim as proof. Tenant information is isolated from users from other tenants.
 
-The shared resources are: 
-1. The application who is serving all the tenants
-2. Sometimes the database as well. 
+**Check the Following Middlewares:**
 
-So, it is very necessary to who are the users requesting access to the database for information and changing the database records. Here isolation comes into the play.  How we are allowing access to the user over the data of a tenant. It is not about the user if the user is authenticated in the system properly, rather the solution is with answer, if the user has the right to request and get access to the requested resource. 
+## Middleware Order
 
-This isolation is a big concern for multi-tenant applications because of the shared database and application which is used by all tenants. How do we isolate them and their users from the shared application and database infrastructure is the point where the data leak happens, and it is because of the architecture lacking with few of the concerns that didn’t address inside the application architecture design. 
+<img width="759" height="235" alt="OrderOfMiddlewares" src="https://github.com/user-attachments/assets/8794a9b8-ecce-4357-944d-73a0ce902246" />
 
 # Multi-Tenant Request Pipeline
 
 <img width="641" height="536" alt="Request Plipeline" src="https://github.com/user-attachments/assets/4a4be819-efff-4c4b-8aa9-306febf8bd0d" />
-
 
 ## Global Safety Net
 
 <img width="635" height="218" alt="SafetyNetExceptionResponcePipeline" src="https://github.com/user-attachments/assets/40b630d1-6363-48cf-b382-868fb149c70b" />
 
 
-# Middleware Order
 
-<img width="759" height="235" alt="OrderOfMiddlewares" src="https://github.com/user-attachments/assets/8794a9b8-ecce-4357-944d-73a0ce902246" />
 
 # Pipeline Starting Point: 
 
@@ -170,63 +165,50 @@ The primary objective is to create a **Global Query Filter (isolated database pa
 **We are using monolithich architecture, the published output will a single application instance and a single shared wwwroot.The MVC application folder structure separate Area controllers from standard controllers in this design pattern.**
 
 
-
-
 **I am writting about the folder structure, to let know that the route is default. We are not doing any Tenant specific routeing.**
 
 
 ### Tenants have:
-**1. Domain**
-**2. Sub Domain**
-**3. Sub Directory**
+1. **Domain**
+2. **Sub Domain**
+3. **Sub Directory**
 
 
-**For (1 and 2), it is** always a default routeing. If we provide tenant specific route; it implies that we have special reasons and tenant specific directories. We are creating the architecture which serves multiple tenants with same application (the multi-tenant SaaS).
+1. **For (1 and 2), it is** always a default routeing. If we provide tenant specific route; it implies that we have special reasons and tenant specific directories. We are creating the architecture which serves multiple tenants with same application (the multi-tenant SaaS).
+2. **For static resources** which we can keep tenants specific: one style sheet [siteTennat1.css, siteTennat2.css, siteTennat3.css ... ] for each tenant for their own. This is a flexible and advaced method for styleing the pages for tenants. But it requres special skills in css code writeing to use the feature. 
 
 
-**For static resources** which we can keep tenants specific: one style sheet [siteTennat1.css, siteTennat2.css, siteTennat3.css ... ] for each tenant for their own. This is a flexible and advaced method for styleing the pages for tenants. But it requres special skills in css code writeing to use the feature. 
-
-
-In our application, We are not usng static resources for each tenant. We are providing two features to let them structure the pages by providing different Templates (to structure the page) and few themes (colors). 
+### Note: In our application, We are not usng static resources for each tenant. We are providing two features to let them structure the pages by providing different Templates (to structure the page) and few themes (colors). 
 
 
 ## Tenant Concern: 
-
-
 ### What we are doing is:
 
-**1. We will provide Vlobal Variables (colors) to create themes for tenants.** 
-**2. Templates (1 col, 2 col, 3 col, 4 col), Banner (1 Image), Ad (Image with Link), Image Carousal.** 
-**3. All templates will get the same color theme, set by the tenant.**
-**4. Tenant can organize the rows as their wish (up, down, drag and drop) with the templates provided.**
+1. **We will provide Global Variables (colors) to create themes for tenants.** 
+2. **Templates (1 col, 2 col, 3 col, 4 col), Banner (1 Image), Ad (Image with Link), Image Carousal.** 
+3. **All templates will get the same color theme, set by the tenant.**
+4. **Tenant can organize the rows as their wish (up, down, drag and drop) with the templates provided.**
 
 
 ## Technical Concern: 
-
-
 ### What we are doing is:
 
-
-**1. For the domain ad sub domain based tenants:** always get the default route bacause of the technology (asp.net core mvc). It is the defaut routeing middleware behavior in .Net 8.0 multi tennat SaaS.
-
-
-**2. For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/ttkhai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes. 
+1. **For the domain ad sub domain based tenants:** always get the default route bacause of the technology (asp.net core mvc). It is the defaut routeing middleware behavior in .Net 8.0 multi tennat SaaS.
+2. **For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/ttkhai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes.
 
 
-# Multi-Tenant Application Security: For Each Tenant  
+# Multi-Tenant Application Security: 
+**For Each Tenant...**
 
-He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.  
+He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
 
-
-Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx. 
+Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
 
 # Multi-Tenant Application Security: 
 
 
 ## Resolving Tenant (Middleware) 🔄(100%)
-
-
 It is the starting point to isolate and secure the Tenant and its data.  
 
 1. Tenant host is resolved against the database and if found, the middleware will serve the tenant; otherwise, the application will route to the portal.

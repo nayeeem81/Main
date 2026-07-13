@@ -45,15 +45,15 @@
                             │
         [ Exception Bubbles Up ] ──────► Catches it, logs it, and returns a friendly HTML view.**
 
-# Middleware Order
+ # Middleware Order
 
-**[ Middleware Order in Program.cs ]**
+ [ Middleware Order in Program.cs ]
 
-**1. TenantResolutionMiddleware ──► Resolves Tenant A via Subdomain/URL**
-**2. UseRouting()**               
-**3. UseAuthentication()        ──► Parses user claims (User claims they belong to Tenant B)**
-**4. TenantSecurityMiddleware   ──► MATCH CHECK: Does URL Tenant match User Tenant? (FAIL -> 403)**
-**5. UseAuthorization()** 
+ 1. TenantResolutionMiddleware ──► Resolves Tenant A via Subdomain/URL
+ 2. UseRouting()           
+ 3. UseAuthentication()        ──► Parses user claims (User claims they belong to Tenant B)
+ 4. TenantSecurityMiddleware   ──► MATCH CHECK: Does URL Tenant match User Tenant? (FAIL -> 403)    
+ 5. UseAuthorization()
 
 # Pipeline Starting Point: 
 
