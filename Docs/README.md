@@ -132,13 +132,7 @@ This isolation is a big concern for multi-tenant applications because of the sha
 
 # Middleware Order
 
-**[ Middleware Order in Program.cs ]**
-
-**1. TenantResolutionMiddleware ──► Resolves Tenant A via Subdomain/URL**
-**2. UseRouting()**               
-**3. UseAuthentication()        ──► Parses user claims (User claims they belong to Tenant B)**
-**4. TenantSecurityMiddleware   ──► MATCH CHECK: Does URL Tenant match User Tenant? (FAIL -> 403)**
-**5. UseAuthorization()** 
+<img width="759" height="235" alt="OrderOfMiddlewares" src="https://github.com/user-attachments/assets/8794a9b8-ecce-4357-944d-73a0ce902246" />
 
 # Pipeline Starting Point: 
 
