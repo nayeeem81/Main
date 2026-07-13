@@ -2,19 +2,19 @@
 
 **We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
 
-### **🛍️store is a 🛍️shop inside 🏬shopping mall**
+## **🛍️store is a 🛍️shop inside 🏬shopping mall**
 
 The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the admin of a shop. The registration is for the shop with an email address from the multi-tenant portal:
 
-### www.tenantors.com
+## www.tenantors.com
 
 The registration is for the shop with an email address from the portal (example: www.tenantors.com). An email can be used for multiple tenants. Just like a single sign in across all tenants. Read followng for understanding the detail, about the multi-tenant web application. We explain first, the application related keywords and objects. We must undertand them to get a complete view about the concept & story of the multi-tenant SaaS.
 
 ## Tenant🛍️ & User🔑 
 
-### Further Details To Understand the story better next...
+## Further Details To Understand the story better next...
 
-### 1. 🛍️Tenants:
+## 1. 🛍️Tenants:
 Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
 
 ### 2. 🔑Users:
@@ -22,18 +22,18 @@ Initial tenant creation, this multi-tenant web application; assigns the user (em
 
 ## 🛍️Tenant Types (According to Hosting Plan)
 
-### Tenant name is: **kaiassociates**
+## Tenant name is: **kaiassociates**
 
 **kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
 
-### Domain: www.kaiassociates.com
+## Domain: www.kaiassociates.com
 After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
 
-### Subdomain: www.kaiassociates.tenantors.com
+## Subdomain: www.kaiassociates.tenantors.com
 **Unique username is the name of the subdomain**
 After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
 
-### Subdirectory: www.tenantors.com/kaiassociates/
+## Subdirectory: www.tenantors.com/kaiassociates/
 **Unique username is the name of the subdirectory**
 After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
 
@@ -56,17 +56,17 @@ Tenant user can login and access the store work space only using verified email.
 
 🏢🪪www.tenantors.com/kaiassociates
 
-### Summary:
+## Summary:
 
-### 🛍️ Tenant View:
+## 🛍️ Tenant View:
 In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
 
-### 🛠️Technical View:
+## 🛠️Technical View:
 It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
 
 ## 🛍️Tenant Work Space
 
-### Tenant Shop Website (URL):
+## Tenant Shop Website (URL):
 
 **Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
 
@@ -74,7 +74,7 @@ It will confirm the isolation of the store identity and their  independent work 
 
 **You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
 
-### 🏢 Store Features (Tenant):
+## 🏢 Store Features (Tenant):
 
 1. **🏢🔄(50%) Tenant Profile: (domain setup / buy domain, invite users) **   
 2. **🔒🔄(100%) Security & Isolation: Manage user account and change password**                    
@@ -84,14 +84,14 @@ It will confirm the isolation of the store identity and their  independent work 
 6. **🛒🟥(0%)Shopping Cart and Order Processing: (Pending Development**
 7. **📝🟥(0%)Payment Manager: (Pending Development)**
 
-## 👑Conecpt Of The Story
+# 👑Conecpt Of The Story
 You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
 
 You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
 
 The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
 
-## ☁️🐧Hosting Environment
+# ☁️🐧Hosting Environment
 
 **☁️VPS With 🐧Linux Environment**
 
@@ -102,6 +102,17 @@ He/she will go to the link of the tenant URL; browser sends the request to the s
 **Internet🌐➡️**     **Nginx Reverce Proxy🔒🛡️🔀**     **Load Balance🖥️🖥️🖥️**
 
 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
+
+# Solution Design (Monolithic and Clean Structure)
+
+1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.
+2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.
+3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.
+4. Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  (But currently, we are keeping the connetin string in web app project)
+5. The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model).
+6. They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers.
+7. Browsers are not displayed with the model which the service project sends. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation).
+8. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters (connection string) are provided from the appsettigs.json from the web project.  
 
 # 🚩Concerns For The 🛍️Tenant (Isolation)
 **This SaaS Multi-Tenant Architecture: Each Tenant uses one application and one shared database & shared static resource files.**
@@ -209,58 +220,6 @@ He/she will go to the link of the tenant URL; browser sends the request to the s
 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
 
-# Multi-Tenant Application Security: 
-
-
-## Resolving Tenant (Middleware) 🔄(100%)
-It is the starting point to isolate and secure the Tenant and its data.  
-
-1. Tenant host is resolved against the database and if found, the middleware will serve the tenant; otherwise, the application will route to the portal.
-2. The found tenant’s id is the first-class security variable to serve the tenant. This is kept in the session for future requests to stop hitting the database again.
-3. The Resolved Tenant Id is primarily used to partition the shared database at the very beginning when the request life cycle starts using DI.
-4. The authenticated user token validation we do in this same middleware. At the very entry point, we reject if the token does not match the regenerated token for an authenticated user.
-5. We also match the Resolved Tenant Id from memory with the Tenant Id coming from the request in HttpContext to stop contaminated tenant **[Stop Data Leake]**  
-
-**We provide safety here for the authenticated user for the tenant as the token uses the userid, tenant id and role of the tenant with a long secret key. We stopped at the entry point.** 
-
-## **Another Layer of security**🔄(100%) 
- is for the tenant using same cookie but it is tenant specific & browser tab specific because the name of the cookie is suffixed by Ienant Id. This token confirms the unsafe action cannot take place even if the user gets pass with the authentication Jwt token (by validating) inside the resolve middleware (tenant resolver) and go dow stream. This antiforgery token (with teannt suffix) is checked just before executing the unsafe actions (which change data: add, update, delete) using action filter. It is overwriting the mvc core Iforgery attribute with validation and options with the tenant specific names for cookies. Options are set with IConfiguration for the cookie naming. **[Stop Data Leake]** 
-
-We do this to confirm that the same user (email) with multiple tenants' access cannot get any leaked data which he/she has no access for a tenant when he is accessing tenants from the same browser with different tabs. **[Users who access multiple Tenants]** 
-
-## After successful login: 🔄(100%) 
-
-1. We use Jwt for token generation and validation. The authenticated user is validated in the middleware which resolves the tenant host.
-2. We didn’t leave the session memory entirely. For faster detection of the tenant host, we must stop hitting the database each time for performance. Currently we are checking the memory cache; if found, we immediately return the Tenant Id. For scale horizontally, we need a shared distributed Radis cache for all instances.
-3. For the secret Key, which we use for encryption of the token store, we need a separate data store for the safety of the Key. Currently, we are using one key for all tenants. It is quite long (64 bytes), hard to decrypt by unwanted. 
-
-## How we do? 🔄(100%)
-In response object, we create an authorization header; for a token (short lived, long living) refreshing token with a description created by (UserId, TenantId, User Role) by a secret key. The key is longer in size for security. 
-
-Also, when the user logged in for the first time, we created an authorization access token for the authenticated user. Variables to create tokens: UserId, TenantId, User Role for the Tenant, with a Secret Key.  
-
-**We embed the token description as user claim (in server after logging in). claims are usually encrypted. In the browser, it is safe for tenant and user-related variables are not exposed.**  
-
-**We also add claim inside the HttpContext User object: UserId, TenantId, Tenant Role.** 
-
-## Authorize Role Middleware: 🔄(100%)
-
-1. For authorization in the server, we recreate the token (using the same variables with the secret key) and validate it in the server with the incoming request (Tenant Resolve Middleware). That is just validation.
-2. But the role will be checked in the Role assignment middleware. Match formatted tenant role (UserId:TenantId:Role) from the User object to claim to extract the Role and validate against the allowed roles.  
-
-In the middleware of Authorization Handler: the success assigns access policy for the user for a tenant.  Any one of the above unsuccessful validations will not allow the logged user to access the resources. Then, we allow middleware to give return success for accessing the allowed resources. The policy is configured in the service registration and uses the MVC default to authorize policy attributes. 
-
-**[Above all are impkemented]**
-
-## Stop Resource Access by Unwanted / by Mistake: 🔄(100%) 
-
-**Anti-forgery second layer of security with resolved Tenant Id with suffix for the Cookie Name**
-
-We have another attribute which is checked in parallel to assess a resource handled by default MVC Core in the middleware for stopping anti-forgery. It uses tokens on both sides to validate (custom validation). We made a few changes in the default option for this to work for multi-tenancy. Based on the nameof cookie we will validate. Cookie header is same. For Java Script and Ajax, it is default MVC request. Validatin is custom. Validation attribute is custom for action. In view the tag helper is default. We removed a (path based isolation cookies) for each tenant; rether keep the cookie name unique for each tenant. 
-
-## We Handle Tenant Security Following Above Standards🔄(100%)
-**for such multi tenant applications **
-
 # Multi Tenant Architecture 🔄(00%) 🟥(20%)
 
 ## SaaS Cross-Cutting Concerns 
@@ -279,31 +238,19 @@ In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns repr
 To adhere to the Single Responsibility Principle and avoid mixing business logic with infrastructure noise, .NET applications use three distinct design patterns to implement these concerns:
 
 1. **Middleware Pipeline** 
-ASP.NET Core Middleware Pipeline: Middleware handles concerns at the outer HTTP level before a request ever reaches your API endpoints. Best used for: Tenant resolution, global rate limiting, global authentication, and top-level exception handling. The Rule of Ordering: The order of your middleware configuration in Program.cs dictates execution. Rate limiting should execute before authentication to conserve server resources, while authentication must run before authorization.🔄(70%) 🟥(30%)
+ASP.NET Core Middleware Pipeline: Middleware handles concerns at the outer HTTP level before a request ever reaches your API endpoints. Best used for: Tenant resolution, global rate limiting, global authentication, and top-level exception handling. The Rule of Ordering: The order of your middleware configuration in Program.cs dictates execution. Rate limiting should execute before authentication to conserve server resources, while authentication must run before authorization.🔄(100%) 
 
 2. **MediatR Pipeline Behaviors (CQRS)** 
-If your architecture uses Clean Architecture or Vertical Slices with the MediatR library on GitHub, Pipeline Behaviors operate as intra-application middleware. Best used for: Domain validation (via FluentValidation), transactional database boundaries, application-level logging, and in-memory query caching. Benefit: It allows the application layer to remain independent of the ASP.NET Core HttpContext.🔄(70%) 🟥(30%)
+If your architecture uses Clean Architecture or Vertical Slices with the MediatR library on GitHub, Pipeline Behaviors operate as intra-application middleware. Best used for: Domain validation (via FluentValidation), transactional database boundaries, application-level logging, and in-memory query caching. Benefit: It allows the application layer to remain independent of the ASP.NET Core HttpContext.🟥(Not Using)
 
 3. **EF Core Global Query Filters & Interceptors** 
 When relying on Entity Framework Core, your database access layer can natively manage data separation rules. Best used for: Automated multi-tenant data filtering, soft deletes, and automated database auditing (such as injecting CreatedByTenantId or timestamp fields).
-🔄(70%) 🟥(30%)
-
+🔄(100%) 
 
 
 # Multi-Tenant Implementation 
 Monolithic Application & Shared Database 
 
-## Supported Tenant Strategies 
-The system supports flexible tenant identification through: 
-1. Domain, 
-2. Subdomain, 
-3. Subdirectory 
-
-## Tenant Resolve (Middleware) 
-Cache-aside pattern: (useig session)
-
-1. Resolution Process: The Tenant Resolver middleware identifies the tenant from the request (using routing or headers) and leverages Session and Memory Cache for quick lookups. 
-2. Caching: The resolved tenant is cached in the active session. For unresolved requests, the system searches the database, stores the result in Session, and bypasses subsequent DB lookups.
 
 ## Global Eception Handle (Middleware)
 
@@ -319,33 +266,42 @@ Cache-aside pattern: (useig session)
 ✅ **Multi-tenant** - Automatic tenant scoping via query filters  
 
 ## Authentication 
-Default Identity Authentication: Keeps the default ASP.NET Core Identity setup. Uses encrypted, cookie-based default ASP.NET Core Identity. Account Uniqueness: Email remains unique across the global user base. 
+
 
 ## Authorization 
-1. **Step 1: Claim Construction** 
-- The middleware retrieves the TenantId from ITenantSetter and matches it with the CurrentTenantId stored in the session. The system fetches the user's combined roles (global Identity Roles + Tenant-specific Roles). 
-- A unique user claim is created containing the UserId, TenantId, and TenantRole. These newly combined claims are then attached to the authenticated user's principal. 
-2. **Step 2: Authorization Handler Execution** 
-- The custom authorization handler reads the claim combination from the user's principal. If the claims are valid, it assigns the appropriate tenant-level policy authorization. 
 
-## Tenant Isolation 
-1. Policy based Tenant Role (authorization) 
-2. Global Roles: Operates on the default Identity Roles (GlobalAdmin, User). 
-3. TenantRole: Policy-based, driven by tenant-specific roles. 
-4. Data Partitioning: Data is partitioned at the row level via EF Core's Global Query Filters. A global filter (based on TenantId) is set via an ITenantSetter interface. Using Dependency Injection (DI), the database is partitioned and isolated for each tenant. 
-5. Keeping the code structure clean and memorable. Authorization code is mostly in one place, manageable and maintainable for more roles and policies and uses Jwt Token.
-6. Request Security: Unsafe requests are protected by the Jwt Custom cookei options and validation.
+## Security Features (Identity)
+
+1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
+
+2. **Cryptographic Failures & Session Hijacking (OWASP A02:2021)** Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides. Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable.
+
+3. **Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)** Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection.
+
+4. **Identification and Authentication Failures (OWASP A07:2021)** Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
 
 ## Solution Design & Architecture (.NET 8.0) 
 
-### Background: 
-I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. 
+### The Best Practices by Research 
 
-When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
+**Note:** 
+Before planning for the multitenant application saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
 
-### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.
+### Current Archiecture is:
+**1. Monolithich** (one deployable unit, can be scaled horizontally and vertically). Above has details about scaleing for this application.
+**2. Clean Architecture** (makes the code organnized and maintainable)
 
-## How to scale this application:
+I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
+
+**This objective created the Clean Architecture:**
+1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
+2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
+3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
+4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
+
+
+
+# How to scale this application:
 
 Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
 
@@ -353,7 +309,7 @@ Here is exactly how to scale your monolithic architecture, how introducing a sep
 
 Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
 
-### Strategy 1: Scaling Your Current monolithic Architecture
+## Strategy 1: Scaling Your Current monolithic Architecture
 
 Because your entire application runs as a single process, you cannot scale just the "Shared Service project" on its own. You must scale the entire monolith together.
 
@@ -385,7 +341,7 @@ If your traffic involves heavy data processing, your API VPS will need high CPU/
 
 If the API becomes the bottleneck, you can duplicate only the API project across 3 or 4 separate Linux servers, while keeping only 1 server for the Web frontend.
 
-### How one Instance Becomes Multiple Instances:
+## How one Instance Becomes Multiple Instances:
 
 To turn one instance into multiple instances on a Linux VPS infrastructure, you use a process called Horizontal Scaling (Scaling Out).
 
@@ -399,7 +355,7 @@ You deploy the exact same compiled .NET 8.0 published folder to all of those VPS
 
 For this to work, the application must not save files (like uploaded user images) or user sessions locally on the VPS disk. Sessions should be stored in a shared distributed cache (like Redis), and files should go to an object storage service (like AWS S3 or MinIO).
 
-### How Traffic Routes to These Instances:
+## How Traffic Routes to These Instances:
 
 To split traffic among your multiple VPS instances, you must place a Reverse Proxy / Load Balancer in front of them. On Linux, Nginx or HAProxy are the industry standards for this.
 
@@ -434,46 +390,23 @@ Sends the next user request to whichever VPS is currently handling the least amo
 **3. Ip Hash (Sticky Sessions):**
 Ensures a specific tenant or user always hits the exact same VPS instance, which is helpful if you cannot use a shared distributed cache yet.
 
+## Background: 
+I started my code to build and run for a client (small shop). It was previously made for an online marketplace. That was in .NET Framework 4.6 where you must deploy the portal in a windows or cloud based (Microsoft Azure) in Platform Service as a web application. Deployment infrastructure/platform service is a windows server based. 
 
-### The Best Practices by Research 
+When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
 
-**Note:** 
-Before planning for the multitenant application saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
+### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.
 
-### Current Archiecture is:
-**1. Monolithich** (one deployable unit, can be scaled horizontally and vertically). Above has details about scaleing for this application.
-**2. Clean Architecture** (makes the code organnized and maintainable)
 
-I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
 
-**This objective created the Clean Architecture:**
-1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
-2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
-3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
-4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
-## Solution Design (Monolithic and Clean Structure)
 
-1. In that consideration, my data infrastructure (Model, Repository) is self-registered. This project has zero dependency over any Data Transfer Object or View Model.
-2. Again, the service never communicates with the presentation layer with the Entity Models. They talk with Data Infrastructure in entity and business models.
-3. While communicating with the Presentation layer (web project), they use business objects which have no connection or tracking with Data Infrastructure. This technique provides the application database more secure because in any mistake, code doesn’t have any chances to alter or change.
-4. Since the Data Infrastructure is self-registered, we don’t need to keep any references for Data Infrastructure. We can even remove the Connection strings as well. We are using Code First Migration using Entity Framework Core. The migrator console app can take care of migrations and update the database.  (But currently, we are keeping the connetin string in web app project)
-5. The repository works with the entities only in the Data Infrastructure. The Data Infrastructure has two projects (Main. Infrastructure and Main. Model).
-6. They communicate with the Service layer (Project) happens using (Data Model & Entity Model) with the Data Infrastructure. Service sends Entity Model (for saving or update). The returned queries from the Data Infrastructure are re-created with new objects which have no connection with the database and entity model. It means communication initiates and closes inside the servers.
-7. Browsers are not displayed with the model which the service project sends. They see and communicate with the controller and end points with the View Model. This is in the web project (presentation).
-8. The service registrations, middleware is self-contained and reusable using dependency extensions. The parameters (connection string) are provided from the appsettigs.json from the web project.  
 
-### Future Work: 
+## Future Work: 
 1. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API.
 2. Because of the saperatin and breaking the code modular, we can convert the solution into micro service based deployment and scale the heavy traffic api services. 
 
-## Security Features
-(Default Identity Flow)
 
-1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
-2. **Cryptographic Failures & Session Hijacking (OWASP A02:2021)** Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides. Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable.
-3. **Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)** Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection.
-4. **Identification and Authentication Failures (OWASP A07:2021)** Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
 
 ## Previous Shop Example (Identity Default) 
 It is extended to use tenants (IdentityUser is now: 
