@@ -76,39 +76,39 @@ It will confirm the isolation of the store identity and their  independent work 
 
 ### 🏢 Store Features (Tenant):
 
-1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**   2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
-3. **📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)**                  
-4. **🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)** 
-5. **🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)**
-6. **🛒Shopping Cart and Order Processing: (Pending Development) 🟥(0%)**
-7. **📝Payment Manager: (Pending Development) 🟥(0%)**
+1. **🏢🔄(50%) Tenant Profile: (domain setup / buy domain, invite users) **   
+2. **🔒🔄(100%) Security & Isolation: Manage user account and change password**                    
+3. **📦🔄(100%) Product Manager: Manage Products (add, edit, delete, view) with admin dashboard**                  
+4. **🖼️🔄(100%) Advertisement Manager: (create ads with images, texts, links)** 
+5. **🎛️🔄(100%) Page Manager: (small CMS to organize the products and ads with different templates)**
+6. **🛒🟥(0%)Shopping Cart and Order Processing: (Pending Development**
+7. **📝🟥(0%)Payment Manager: (Pending Development)**
 
-## 👑Conecpt of the Story
-
+## 👑Conecpt Of The Story
 You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
 
 You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
 
 The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
 
-## ☁️🐧Hosting Environment (Linux VPS)
+## ☁️🐧Hosting Environment
 
-### 🐧Linux Environment In ☁️Cloud VPS
+**☁️VPS With 🐧Linux Environment**
 
-### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️➡️   Router to Web App🖥️
+**🌐➡️**     **Nginx Reverce Proxy🔒🛡️➡️**     **Router to Web App🖥️**
 
 He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
 
-### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️🔀   Load Balance🖥️🖥️🖥️
+**Internet🌐➡️**     **Nginx Reverce Proxy🔒🛡️🔀**     **Load Balance🖥️🖥️🖥️**
 
 Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
 
-# 🚩Concerns for Tenant (Isolation)
+# 🚩Concerns For The 🛍️Tenant (Isolation)
 **This SaaS Multi-Tenant Architecture: Each Tenant uses one application and one shared database & shared static resource files.**
 
 Multi-Tenant applications often suffer from data leaks, which is an error because of the problem of isolation from one tenant to another. It is a challenge to address and solve, while designing the SaaS architecture. If the application architecture and cross cutting concerns, clean separation in code are implemented and configured properly; the tenant will not face data Leake, unauthorized access and security risks. We took the measures which are practiced in industry for such SaaS implementation. We addressed the isolation in the database level, implemented configuration for the authentication and authorization with Json Web Token (Jwt) which is secure and robust. Tenant and their data are safe in this multi-tenant Saas Web Application.
 
-## ✅Isolation SaaS Architecture Solution:
+## ✅Isolation SaaS Architecture Solution
 1. The shared database is partitioned using a global query filter in the database level using the resolved tenant id. Tenants use the database tables where only their records are present. Queries are done against the tenant records only. Other tenants' records are not available for the current tenant to query because of the global filter restrictions. This data isolation is done by tenant resolving middleware using a scoped tenant setting service.
 2. The User has to prove that he/she is a user of the resolved tenant. Tenant security middleware validates the resolved tenant's id with the encrypted user's tenant claim as proof. Tenant information is isolated from users from other tenants.
 
@@ -127,55 +127,59 @@ Multi-Tenant applications often suffer from data leaks, which is an error becaus
 <img width="635" height="218" alt="SafetyNetExceptionResponcePipeline" src="https://github.com/user-attachments/assets/40b630d1-6363-48cf-b382-868fb149c70b" />
 
 
-
-
 # Pipeline Starting Point: 
 
 ## TenantResolverHandlingMiddleware
-**TenantResolverHandlingMiddleware:** In ASP.NET Core 8.0, a Multi-Tenant Request Pipeline isolates data and configuration per customer by resolving tenant context at the very beginning of an HTTP request. This architecture relies on this middleware to execute early in the pipeline to parse the incoming request, look up the tenant, and inject the context into a scoped service for downstream components.
+**TenantResolverHandlingMiddleware:** 
 
-**Middleware Name: TenantResolverHandlingMiddleware**
+  
+In ASP.NET Core 8.0, a Multi-Tenant Request Pipeline isolates data and configuration per customer by resolving tenant context at the very beginning of an HTTP request.  
+ 
+This architecture relies on this middleware to execute early in the pipeline to parse the incoming request, look up the tenant, and inject the context into a scoped service for downstream components. 
+ 
+**Middleware Name: TenantResolverHandlingMiddleware** 
+ 
+### Function: Tenant Identification, Faster Response and Tenant Data Isolation 
+ 
+1. **Tenant Identification:** 
+We first get the host and path from the HttpRequest object and extract the domain/subdomain or subdirectory. We check the extracted domain/subdomain or subdirectory in the database to identify if they are in the list of our tenants. If found, we consider the request to be valid and tenant is resolved. When the resolver gets a request from a logged user, it gets the resolved tenant id.
+2. **Faster Response:** 
+This middleware keeps resolved TenantId in memory cache (consider active memory in the server end from where the request entered) for a specific time (lifetime for 30 minutes). The tenant id is kept in memory to not hit the database for resolved tenants again. We set the cache for 30 minutes. We query the database again and reset the cache active for the next 30 minutes. This middleware does this for performance: faster response time for the request (reduce latency). 
+ 
+2. **Tenant Data Isolation** 
+ITenantSetter is a scoped (service) registered in the program.cs. Scoped means: for the entire request lifetime the service is active from the middleware to the end layer (ef core dbcontext). We set the resolved tenant id, in this service. We can access this scoped service using Dependency Injection (DI) from any (controllers, services, DbContext) components.  
+ 
+The primary objective is to create a **Global Query Filter (isolated database partition for each tenant) ** from the shared database (for all tenants) using the resolved tenant id. Any data related to the tenant is isolated from other tenants because of this isolation. This data isolation using the scoped ITenantSetter is an architectural design for multi-tenant applications using .NET 8.0. Each request for a tenant can work and view only from the partitioned isolated database for the tenant.  
+ 
+**Multi-Tenant SaaS: In this application, Database is shared. But it acts like a single database for each tenant.** 
+ 
+**What is Global Query Filter?** 
+1. It means that the tenant queries are done over the partitioned records (act and feel like a database for a tenant as his own database and not shared).  
+2. Other tenants' data are not present when any records are fetched from the database by a tenant. Because globally it is filtered by Global Query Filter based on the tenant id (resolved).
 
-### Function: Tenant Identification, Faster Response and Tenant Data Isolation
-
-**1. Tenant Identification:**
-We first get the host and path from the HttpRequest object and extract the domain/subdomain or subdirectory. We check the extracted domain/subdomain or subdirectory in the database to identify, if they are in the list of our tenants. If found, we consider the request is valid and tenant is resolved. When the resolver gets a request from a logged user, it get the resolved tenant id.
-
-**2. Faster Response:**
-This middleware keep resolved TenantId in memory cache (consider active memory in the server end from where the request entered) for a specific time period (life time for 30 minutes). The tenant id is kept in memory; to not hit the database for resolved tenants again. We set the cache for 30 minutes. We query the database again and reset the cache active for next 30 minutes. This middleware does this for performance: faster response time for the request (reduce latency).
-
-**3. Tenant Data Isolation**
-ITenantSetter is a scoped (service) registered in the program.cs. Scoped means: for the entire request life time the service is active from the middleware to the end layer (ef core dbcontext). We set the resolved tenant id, in this service. We can access this scoped service using Dependency Injection (DI) from any (controllers, services, DbContext) components. 
-
-The primary objective is to create a **Global Query Filter (isolated database partition for each tenant)** from the shared database (for all tenants) using the resolved tenant id. Any data related to the tenant is isolated from other tenants because of this isolation. This data isolation using the scoped ITenantSetter is an architectural design for multi tenant applicaton using .Net 8.0. Each request for a tenant can work and view only from the pertitioned isolated database for the tenant. 
-
-**Read the meaning of data isolation next:** 
-
-### Multi Tenant SaaS: 
-**In this application, Database is shared. But it acts like a single database for each tenant.**
-
-### By Global Query Filter
-**Data Isolation: It means that, the tenant queries are done the partitioned records (just like a database which is his own database). Other tenants data are not present when any records are fetched from the database by a tenant. Because, globally it is filtered by GlobalQuery Filter based on the tenant id (resolved).**
-
-## Web App Project Folder Structure (For Routeing)
-**To Understand the Need of Route for Multi Tenant Architecture**
+## Routeing Middlewware
+**To Understand the Route Middleware for Multi Tenant Architecture**
+See the Web App Project Folder Structure:
 
 <img width="503" height="349" alt="FolderStructureMonolithicWebProject" src="https://github.com/user-attachments/assets/0f1a9a08-cb26-440e-9ea0-f8354c971c35" />
 
-**We are using monolithich architecture, the published output will a single application instance and a single shared wwwroot.The MVC application folder structure separate Area controllers from standard controllers in this design pattern.**
+**We are using monolithic architecture, the published output will be a single application instance. This is the default MVC Web application folder structure with separate Area controllers and standard controllers. In this folder structure, wwwroot folder contains the static resource files (styleing, images, js etc). This is a basic folder structure for MVC design pattern for Web App Project** 
+ 
+ 
+**I am writing about the folder structure, to let me know about the default routing middleware. We are not doing any Tenant specific routings** 
+ 
+ 
+### Tenants have: 
+1. **Domain** 
+2. **Sub Domain** 
+3. **Sub Directory** 
+ 
+ 
+1. **For (1 and 2), it is** always a default routing. If we provide tenant specific routes, it implies that we have special reasons and tenant specific directories. We are creating an architecture which serves multiple tenants with the same application (the multi-tenant SaaS).
 
+2. For static resources, we can keep tenants specific: one style sheet [siteTennat1.css, siteTennat2.css, siteTennat3.css, siteTennat3.css, siteTennat3.css, siteTennat3.css ...] for each tenant for their own. This is a flexible and advanced method for styling the pages for tenants. But it requires special skills in CSS code writing to use the feature. 
 
-**I am writting about the folder structure, to let know that the route is default. We are not doing any Tenant specific routeing.**
-
-
-### Tenants have:
-1. **Domain**
-2. **Sub Domain**
-3. **Sub Directory**
-
-
-1. **For (1 and 2), it is** always a default routeing. If we provide tenant specific route; it implies that we have special reasons and tenant specific directories. We are creating the architecture which serves multiple tenants with same application (the multi-tenant SaaS).
-2. **For static resources** which we can keep tenants specific: one style sheet [siteTennat1.css, siteTennat2.css, siteTennat3.css ... ] for each tenant for their own. This is a flexible and advaced method for styleing the pages for tenants. But it requres special skills in css code writeing to use the feature. 
+**We are using monolithich architecture, the published output will be a single application instance. This is default MVC Web application folder structure with separate Area controllers and standard controllers. In this folder structure, wwwroot folder contains the static resource files (styleing, images, js etc). This is a basic folder structure for MVC design pattern for Web App Project**
 
 
 ### Note: In our application, We are not usng static resources for each tenant. We are providing two features to let them structure the pages by providing different Templates (to structure the page) and few themes (colors). 
