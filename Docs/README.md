@@ -190,35 +190,18 @@ See the Web App Project Folder Structure:
 
 2. For static resources, we can keep tenants specific: one style sheet [siteTennat1.css, siteTennat2.css, siteTennat3.css, siteTennat3.css, siteTennat3.css, siteTennat3.css ...] for each tenant for their own. This is a flexible and advanced method for styling the pages for tenants. But it requires special skills in CSS code writing to use the feature. 
 
-**We are using monolithich architecture, the published output will be a single application instance. This is default MVC Web application folder structure with separate Area controllers and standard controllers. In this folder structure, wwwroot folder contains the static resource files (styleing, images, js etc). This is a basic folder structure for MVC design pattern for Web App Project**
-
-
-### Note: In our application, We are not usng static resources for each tenant. We are providing two features to let them structure the pages by providing different Templates (to structure the page) and few themes (colors). 
+**In our application, We are not usng static resources for each tenant. We are providing two features to let them structure the pages by providing different Templates (to structure the page) and few themes (colors).** 
 
 
 ## Tenant Concern: 
-### What we are doing is:
-
 1. **We will provide Global Variables (colors) to create themes for tenants.** 
 2. **Templates (1 col, 2 col, 3 col, 4 col), Banner (1 Image), Ad (Image with Link), Image Carousal.** 
 3. **All templates will get the same color theme, set by the tenant.**
 4. **Tenant can organize the rows as their wish (up, down, drag and drop) with the templates provided.**
 
-
 ## Technical Concern: 
-### What we are doing is:
-
 1. **For the domain ad sub domain based tenants:** always get the default route bacause of the technology (asp.net core mvc). It is the defaut routeing middleware behavior in .Net 8.0 multi tennat SaaS.
 2. **For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/ttkhai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes.
-
-
-# Multi-Tenant Application Security: 
-**For Each Tenant...**
-
-He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
-
-Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
-
 
 # Multi Tenant Architecture 🔄(00%) 🟥(20%)
 
@@ -226,9 +209,9 @@ Nginx convert https (encrypted) requests to http (decrypted) requests, Routing f
 In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns represent technical functionalities that span your entire system and must execute across various endpoints, layers, or microservices without altering the core business rules. In a multi-tenant SaaS application, these concerns become highly critical because they must almost always be evaluated in the context of a specific tenant.Core 
 
 **SaaS Cross-Cutting Concerns:**
-1. **Tenant Resolution:** Identifying the tenant from headers, subdomains, or access tokens on every incoming HTTP request.🔄(70%)
-2. **Data Isolation:** Dynamically appending global query filters or swapping out connection strings based on the resolved tenant ID.🔄(70%)
-3. **Authentication & Authorization:** Ensuring users are authenticated globally and verified for specific tenant-level permissions or subscription tiers.🔄(70%)
+1. **Tenant Resolution:** Identifying the tenant from headers, subdomains, or access tokens on every incoming HTTP request.🔄(100%)
+2. **Data Isolation:** Dynamically appending global query filters or swapping out connection strings based on the resolved tenant ID.🔄(100%)
+3. **Authentication & Authorization:** Ensuring users are authenticated globally and verified for specific tenant-level permissions or subscription tiers.🔄(100%)
 4. **Feature Management & Billing Flags:** Enabling or disabling code execution branches dynamically according to the tenant’s subscription tier.🟥(0%)
 5. **Structured Logging & Tracing:** Injecting a TenantId attribute into every log context to isolate logs per customer across microservices.🔄(70%)
 6. **Rate Limiting & Throttling:** Restricting request limits at the tenant level to prevent noisy neighbor scenarios.🟥(0%)
@@ -270,6 +253,7 @@ Monolithic Application & Shared Database
 
 ## Authorization 
 
+
 ## Security Features (Identity)
 
 1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
@@ -299,9 +283,7 @@ I started to create the architecture of the new solution, keeping in mind the be
 3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
 4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
-
-
-# How to scale this application:
+# How to scale this application? (Google AI)
 
 Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
 
