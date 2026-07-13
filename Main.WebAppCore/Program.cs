@@ -80,8 +80,10 @@ _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
 _ = app.UseCors ();
 
+// Hydrate context.User with claims from the cookie/token
 _ = app.UseAuthentication ();
 
+// Verify that the authenticated user actually owns this URL space
 _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
 _ = app.UseAuthorization ();

@@ -305,3 +305,114 @@ Most modern SaaS applications provide a combination of both: [16]
 [16] [https://www.gurutechnolabs.com](https://www.gurutechnolabs.com/blog/multi-tenant-vs-single-tenant/)
 [17] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-02-16-how-to-build-a-multi-tenant-saas-application-with-azure-app-service-and-tenant-specific-custom-domains/view)
 [18] [https://servicestack.net](https://servicestack.net/posts/identity-migration)
+
+Yes, you absolutely should match the user's claimed TenantId against the resolved TenantId, and you should do it immediately after the authentication middleware executes. [1] 
+This verification step is a critical security safeguard against cross-tenant hijacking (e.g., a logged-in user from Tenant B manually types Tenant A's URL into their browser bar).
+------------------------------
+## Where to Perform the Match
+The check must happen after app.UseAuthentication() (which populates the user claims) but before the request hits your MVC controllers. [2, 3] 
+You can build a small, dedicated TenantSecurityMiddleware or handle it inside a custom Authorization Filter. A dedicated middleware placed right after authentication is the cleanest approach. [4] 
+
+[ Middleware Order in Program.cs ]
+
+1. TenantResolutionMiddleware ──► Resolves Tenant A via Subdomain/URL
+2. UseRouting()               
+3. UseAuthentication()        ──► Parses user claims (User claims they belong to Tenant B)
+4. TenantSecurityMiddleware   ──► MATCH CHECK: Does URL Tenant match User Tenant? (FAIL -> 403)
+5. UseAuthorization()         
+
+------------------------------
+## Step-by-Step Security Implementation## 1. Add the TenantId to Your Authentication Claims [5] 
+When users log in, issue a claim containing their structural TenantId. [6] 
+
+var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.Email),
+    new Claim("TenantId", user.TenantId) // Injected into the user's secure cookie or JWT
+};
+
+## 2. Create the Security Verification Middleware [7] 
+This middleware reads the TenantId resolved from the URL (via your ITenantProvider) and compares it directly with the TenantId found in the user's identity claims.
+
+public class TenantSecurityMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public TenantSecurityMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task InvokeAsync(HttpContext context, ITenantProvider tenantProvider)
+    {
+        // Only run this check if the user is successfully authenticated
+        if (context.User.Identity?.IsAuthenticated == true)
+        {
+            // 1. Get the TenantId embedded securely inside the user's login session
+            var userTenantId = context.User.FindFirst("TenantId")?.Value;
+
+            // 2. Get the TenantId that matches the current browser URL
+            var resolvedTenantId = tenantProvider.CurrentTenant?.Id;
+
+            // 3. ENFORCE ISOLATION: Reject if they don't match
+            if (string.IsNullOrEmpty(userTenantId) || 
+                !userTenantId.Equals(resolvedTenantId, StringComparison.OrdinalIgnoreCase))
+            {
+                // Sign out or short-circuit with a 403 Forbidden page
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Access Denied: You do not belong to this tenant space.");
+                return; // Stop the request pipeline immediately
+            }
+        }
+
+        await _next(context);
+    }
+}
+
+## 3. Wire It Up in Program.cs [8] 
+The order here is non-negotiable. Place it exactly between UseAuthentication and UseAuthorization. [9] 
+
+app.UseRouting();
+// 1. Hydrate context.User with claims from the cookie/token
+app.UseAuthentication();
+// 2. NEW: Verify that the authenticated user actually owns this URL space
+app.UseMiddleware<TenantSecurityMiddleware>();
+// 3. Process role-based policies on the validated tenant data
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+------------------------------
+## Exceptional Use Cases: Global Admins
+If you plan to have Global System Administrators (e.g., support staff who need to switch between tenant spaces to debug problems), you can bypass the block by checking a role claim: [10] 
+
+var isGlobalAdmin = context.User.IsInRole("GlobalAdmin");
+if (!isGlobalAdmin && !userTenantId.Equals(resolvedTenantId, StringComparison.OrdinalIgnoreCase))
+{
+    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+    return;
+}
+
+## Why This Architecture Works Flawlessly
+
+* Prevents URL Spoofing: Users cannot jump boundaries by altering the browser address bar.
+* Tamper-Proof Claims: The user's TenantId claim is cryptographically signed by your web server (via cookie encryption or JWT signature), making it impossible for the user to manipulate it client-side. [11, 12, 13] 
+* Zero Overhead: This comparison executes entirely in memory using claims already loaded by the authentication handler, introducing no database queries.
+
+If you are interested, I can show you how to handle the Log Out redirection loop gracefully when a user is kicked out by this middleware, or how to implement a Tenant Switching feature for your internal support admins. Which path would you like to explore next?
+
+[1] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/answers/questions/2279359/request-authorization-tenant-mismatch-graphservice)
+[2] [https://codewithmukesh.com](https://codewithmukesh.com/blog/jwt-authentication-in-aspnet-core/)
+[3] [https://profiles.ihe.net](https://profiles.ihe.net/ITI/IUA/index.html)
+[4] [https://blog.infernored.com](https://blog.infernored.com/logging-current-user-and-tenant-in-asp-net-boilerplate/)
+[5] [https://www.scottbrady.io](https://www.scottbrady.io/aspnet-identity/quick-and-easy-aspnet-identity-multitenancy)
+[6] [https://aspnetboilerplate.com](https://aspnetboilerplate.com/Pages/Documents/v1.5.1/Multi-Tenancy)
+[7] [https://dev.to](https://dev.to/chukwutosin_/how-to-invalidate-a-jwt-using-a-blacklist-28dl)
+[8] [https://medium.com](https://medium.com/sharpassembly/step-by-step-guide-to-implementing-multi-tenancy-in-webapi-using-asp-net-core-identity-f11b3bf88c56)
+[9] [https://damienbod.com](https://damienbod.com/2020/05/29/login-and-use-asp-net-core-api-with-azure-ad-auth-and-user-access-tokens/)
+[10] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/answers/questions/5812050/trying-to-acess-microsft-teams-but-microsoft-authe)
+[11] [https://medium.com](https://medium.com/sharpassembly/step-by-step-guide-to-implementing-multi-tenancy-in-webapi-using-asp-net-core-identity-f11b3bf88c56)
+[12] [https://moengage.com](https://moengage.com/docs/developer-guide/ios-sdk/sdk-integration/advanced/jwt-authentication)
+[13] [https://community.sap.com](https://community.sap.com/t5/human-capital-management-blog-posts-by-sap/sap-commissions-jwt-authentication/ba-p/13503097)
