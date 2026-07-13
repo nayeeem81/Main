@@ -201,7 +201,7 @@ See the Web App Project Folder Structure:
 
 ## Technical Concern: 
 1. **For the domain ad sub domain based tenants:** always get the default route bacause of the technology (asp.net core mvc). It is the defaut routeing middleware behavior in .Net 8.0 multi tennat SaaS.
-2. **For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/ttkhai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes.
+2. **For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/tt  khai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes.
 
 # Multi Tenant Architecture 🔄(00%) 🟥(20%)
 
@@ -248,13 +248,95 @@ Monolithic Application & Shared Database
 ✅ **Admin API** - Search, filter, export CSV, view stats, mark resolved, cleanup  
 ✅ **Multi-tenant** - Automatic tenant scoping via query filters  
 
-## Authentication 
+## Authentication
 
+**Authentication involves validation, signing in, creating access and refreshing tokens using Jwt and cookies suffixed with resolved TenantId.** 
 
-## Authorization 
+**Validation** 
 
+- Does the Model State is valid? 
 
-## Security Features (Identity)
+- Does the user have a verified email? 
+
+- Does email exist among the global identity application   users? 
+
+- is user locked. 
+
+- Does user email belong to the tenant? 
+
+**If above validations are successful, then try the user using Identity Sign in Manager to match the password** 
+
+Use the found user object and password to validate the user's credentials.  
+
+The password is encrypted in the database. Identity own managed Sign in manager validates the password against the database encrypted password. If the result is successful, it confirms that the user provided the correct email and password. 
+
+Create Short Lived Access Token (Jwt): Using: User Id, Tenant Id and No. Of Minutes to Expire with a Secret Key for encryption. 
+
+Create Long Lived Refresh Token (string): using (Base64 encoding) with a random number (62 bytes long). 
+
+Create Access Token (Jwt) Cookie 1:  
+
+Name: “.App.AccessToken. {resolved tenant Id}” with Value of the created Jwt Access Token with options: HttpOnly, Secure, Samesite, SameSiteMode.Strict, for 15 minutes and set the path (“/”) to access all pages. 
+
+Create Refresh Token Cookie 2:  
+
+Name: “.App.RefreshToken. {resolved tenant Id}” with cookie options: HttpOnly, Secure, Samesite, SameSiteMode.Strict, (for 7 days), with path "/account/refresh-token" for accessing refresh end point. 
+
+## Authorization: 
+
+If the user is a valid user in previous step successfully, find the user's role for this tenant.   
+
+Create formatted tenant roles using: UserId, Tenant Id and Tenant Role.  
+
+Create the List of Claims: NameIdentifier: UserId , ClaimTypes.Role: “User”, TenantId: TenantId, TenantRole: “{UserId}: {TenantId}: {TenantRole}”,  UserName: “”, Email: “” 
+
+Add the IdentityClaim (with claims) to the authenticated User in the Response object. 
+
+## Generate Refresh Tokens (Jwt & String): 
+
+**For Authenticated Users**
+
+Ajax, Fetch with unsafe requests will fail with error status 401 when the access token expires. This error status is captured by the global interceptor in the java script. The Form Submit with full page is verified by Jwt Event and if found that the token expired, it returns the same 401 status error code. The interceptor in each case gets the requested endpoint with the error status code. A refreshing token request may be processed immediately, If the interceptor code is not ready, it puts that error response in a queue.  
+
+The new refresh token generation request is automatically called by the global interceptor of java script. Once the new token is attached to the browser cookie, the failed code is again called by the interceptor code.  
+
+The file (auth-interceptor.js) is referenced just after the (jquery.min.js) file, in the main layout page. In that file: any failed request from those (for submit, ajax, fetch) is intercepted, kept in queue, request a new token and upon getting the token, it calls the failed method again and keeps the user authenticated and continues the session. Behind the scenes, the above work is done by this global error interceptor for the expired authentication access token.  
+
+We added antiforgery middleware default configuration in program.cs. We left the token generation and retrieval over the default MVC middleware. For validation, we use action filters by overwriting the default anti-forgery validation. The token is generated by the middleware; we just paste the helper tag on each page where we use (post, delete, put) methods. MVC does token retrieval when the helper tag is wrapped in the form tag for the full page submit, For the ajax and fetch: we must add a line to fetch/ajax request to send the antiforgery token, back. Fetch/Ajax usually just needs to add an attribute either with credential true or default. One line code added; default behavior is continued. 
+
+We have made some changes in the process to do the task dynamically. We made the part of code global (ajax, fetch and form submit). Previously, we used to paste the tag helper in the body of all views. Now, we have placed that line in the body of the main layout page. Every view can access that. Now, the sending the token back part with request we created a java script file to work globally, and we never need to write any line of code for ajax or fetch anymore. That is the reason why we move the helper tag of MVC to the body of the layout page to be accessible by all pages. When we attach the code from the global script, we ignore the safe method requests. That code is in global-ajax.js and source is referenced just a line above the interceptor js file in the layout page; for the form to submit, we need to find the input field, read the value of the token, and add that manually in the form body. Mvc default middleware will create and set the token in every request response cycle. Our global java script will send the token back like the default settings. For that reason, the MVC default helper tag is moved to the main layout (global), and we are not required to write the tag helper for the views. 
+
+We come back to the failed requests to call again. We have a refresh token; we have the global java script code to attach the token for anti-forgery (ajax, fetch or for submit); we can call the failed request from the interceptor code. User gets the same authenticated feel even if it was an outdated token. The background code keeps it unto date. 
+
+Controller End Point: 
+
+Request for new tokens are made to the controller end point. It is configured in the cookie path option (during cookie creation: login, refreshing). 
+
+End Point: In the web app standard controller: 
+
+Controller: Refresh,  
+
+Post (“/account/refresh-token”) 
+
+Action: Refresh 
+
+How does the refresh work?  
+
+We used tenant aware ITenantSetter to get the TenantId using DI in the controller.  
+
+Create the cookie name using the TenantId (resolved tenant id from DI) in the suffix: “.App.RefreshToken. {resolved TenantId}”. 
+
+Extract the token from the secure cookie from the Request.Cookies object using the created cookie name. We now have the token of the cookie. 
+
+Using the _tokenService.RotateRefreshTokenAsync method, we create a new Access Token (Jwt) and Refresh Token (string). 
+
+We save the newly created tokens as a new record and revoke the previous Access Token with an update command. We keep a reference of the newly created refresh token string, in the revoked token record in a property for creating a chain reference.  
+
+We append the short-lived Access Token JWT (Expires in 15 minutes) cookie and the long-lived Refresh Token String (Expires in 7 days) in the Response object with same options and name convention. 
+
+We return the fresh access JWT in the JSON payload with OK status.  
+
+## Security Principles (Identity)
 
 1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
 

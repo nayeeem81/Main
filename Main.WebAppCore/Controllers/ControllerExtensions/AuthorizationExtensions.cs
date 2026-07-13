@@ -31,11 +31,14 @@ public static class AuthorizationExtensions
         accessJwt.ToString () ?? "",
         new CookieOptions
         {
-            HttpOnly = true,   // Protects against XSS attacks stealing your JWT
-            Secure = true,     // Mandates HTTPS through Nginx
+            HttpOnly = true,
+            // Protects against XSS attacks stealing your JWT
+            Secure = true,
+            // Mandates HTTPS through Nginx
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddMinutes (15),
-            Path = "/"         // Accessible by all pages in your app
+            Path = "/"
+            // Accessible by all pages in your app
         });
 
         // 4. COOKIE 2: Save the long-lived Refresh Token (Expires in 7 days)

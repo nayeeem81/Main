@@ -342,3 +342,5 @@ In January 2024, I survived a mild brain stroke that temporarily took away my ab
 
 **🏬🛍️🛒Multi-Tenant Web Application:** is one example of the underling multi-Tenant SaaS. In this Model, Tenant is a store/shop.
 
+
+

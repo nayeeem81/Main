@@ -169,7 +169,7 @@ public class AuthController: BaseController
             // Get tenant specific role (1. Authhorization, start)
             string tenantRole =  await AuthorizationExtensions.GetTenantUserRole(_userAccountService, email, resolvedTenantId);
 
-            // Auth Jwt Token (2. Authhorization)
+            // Auth Jwt Token (5. Authentication)
             AuthorizationExtensions.AddTenantIsolatedHeaderToken
             (HttpContext,_tokenService,applicationIdentityUserDataModel.Id,
             resolvedTenantId,tenantRole.ToString (),15,7);
