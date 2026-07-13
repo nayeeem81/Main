@@ -122,50 +122,11 @@ This isolation is a big concern for multi-tenant applications because of the sha
 
 # Multi-Tenant Request Pipeline
 
-  [ Incoming HTTP Request ] 
-          │
-          ▼
-┌────────────────────────────────────┐
-│   1. Exception Handling & HSTS     │ <--- Global safety net (Explain Later)
-└────────────────────────────────────┘
-          │
-          ▼
-┌────────────────────────────────────┐
-│   2.Tenant Resolution Middleware   │ <---   Custom Middeware:TenantResolverHandlingMiddleware
-└────────────────────────────────────┘        Extracts Tenant via Header/Subdomain/Subdirectory
-          │
-          ▼
-┌─────────────────────────────────┐
-│ 3. Routing Middleware           │ <--- Matches URLs to endpoints
-└─────────────────────────────────┘
-          │
-          ▼
-┌─────────────────────────────────┐
-│ 4.Tenant Security Middleware    │ <--- TenantSecurityMiddleware: Does URL Tenant match User 
-└─────────────────────────────────┘      Tenant?
-          │
-          ▼
-┌─────────────────────────────────┐
-│ 5. Authentication / Authorize   │ <--- Parses user claims (User claims they belong to Tenant B)
-└─────────────────────────────────┘      Validates identities (Tenant-aware)
-          │
-          ▼
-┌─────────────────────────────────┐
-│ 6. MVC Controller & EF Core     │ <--- App logic & isolated DB query execution
-└─────────────────────────────────┘
 
 
 ## Global Safety Net
 
-**[ Incoming Request ] ──► 1. Global Safety Net (Captures errors on the way back out)
-                            │
-                            ▼
-                         2. Tenant Resolution Middleware
-                            │
-                            ▼
-                         3. Controllers / DB Layer (If an exception throws here...)
-                            │
-        [ Exception Bubbles Up ] ──────► Catches it, logs it, and returns a friendly HTML view.**
+
 
 # Middleware Order
 
@@ -219,26 +180,6 @@ The primary objective is to create a **Global Query Filter (isolated database pa
 **We are using monolithich architecture, the published output will a single application instance and a single shared wwwroot.The MVC application folder structure separate Area controllers from standard controllers in this design pattern.**
 
 
-
-Main.WebAppCore/
-│
-├── Areas/
-│   └── CompanyContent/                  <-- The Area name
-│       ├── Controllers/
-│       │   └── ManageProductController.cs
-│       └── Views/
-│           └── ManageProduct/
-│               └── Index.cshtml
-│
-├── Controllers/                         <-- Standard non-area controllers
-│   └── HomeController.cs
-│
-├── wwwroot/                             <-- Common assets used by everyone
-│   ├── css/
-│   │   └── site.css
-│   └── js/
-│       └── site.js
-------------------------------
 
 
 **I am writting about the folder structure, to let know that the route is default. We are not doing any Tenant specific routeing.**
