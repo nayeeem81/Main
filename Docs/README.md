@@ -122,10 +122,12 @@ This isolation is a big concern for multi-tenant applications because of the sha
 
 # Multi-Tenant Request Pipeline
 
+<img width="641" height="536" alt="Request Plipeline" src="https://github.com/user-attachments/assets/4a4be819-efff-4c4b-8aa9-306febf8bd0d" />
 
 
 ## Global Safety Net
 
+<img width="635" height="218" alt="SafetyNetExceptionResponcePipeline" src="https://github.com/user-attachments/assets/40b630d1-6363-48cf-b382-868fb149c70b" />
 
 
 # Middleware Order
@@ -147,35 +149,29 @@ This isolation is a big concern for multi-tenant applications because of the sha
 
 ### Function: Tenant Identification, Faster Response and Tenant Data Isolation
 
-
 **1. Tenant Identification:**
 We first get the host and path from the HttpRequest object and extract the domain/subdomain or subdirectory. We check the extracted domain/subdomain or subdirectory in the database to identify, if they are in the list of our tenants. If found, we consider the request is valid and tenant is resolved. When the resolver gets a request from a logged user, it get the resolved tenant id.
-
 
 **2. Faster Response:**
 This middleware keep resolved TenantId in memory cache (consider active memory in the server end from where the request entered) for a specific time period (life time for 30 minutes). The tenant id is kept in memory; to not hit the database for resolved tenants again. We set the cache for 30 minutes. We query the database again and reset the cache active for next 30 minutes. This middleware does this for performance: faster response time for the request (reduce latency).
 
-
 **3. Tenant Data Isolation**
 ITenantSetter is a scoped (service) registered in the program.cs. Scoped means: for the entire request life time the service is active from the middleware to the end layer (ef core dbcontext). We set the resolved tenant id, in this service. We can access this scoped service using Dependency Injection (DI) from any (controllers, services, DbContext) components. 
 
-
 The primary objective is to create a **Global Query Filter (isolated database partition for each tenant)** from the shared database (for all tenants) using the resolved tenant id. Any data related to the tenant is isolated from other tenants because of this isolation. This data isolation using the scoped ITenantSetter is an architectural design for multi tenant applicaton using .Net 8.0. Each request for a tenant can work and view only from the pertitioned isolated database for the tenant. 
-
 
 **Read the meaning of data isolation next:** 
 
 ### Multi Tenant SaaS: 
 **In this application, Database is shared. But it acts like a single database for each tenant.**
 
-
 ### By Global Query Filter
 **Data Isolation: It means that, the tenant queries are done the partitioned records (just like a database which is his own database). Other tenants data are not present when any records are fetched from the database by a tenant. Because, globally it is filtered by GlobalQuery Filter based on the tenant id (resolved).**
-
 
 ## Web App Project Folder Structure (For Routeing)
 **To Understand the Need of Route for Multi Tenant Architecture**
 
+<img width="503" height="349" alt="FolderStructureMonolithicWebProject" src="https://github.com/user-attachments/assets/0f1a9a08-cb26-440e-9ea0-f8354c971c35" />
 
 **We are using monolithich architecture, the published output will a single application instance and a single shared wwwroot.The MVC application folder structure separate Area controllers from standard controllers in this design pattern.**
 
