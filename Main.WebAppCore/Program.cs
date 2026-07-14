@@ -4,24 +4,19 @@ using Main.Services;
 using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
 using ResourceLibrary.Resources;
-using Serilog;
 using WebAppCore.Helper;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 _ = builder.Services.AddHttpContextAccessor ();
 
-_ = builder.AddSerilogConfiguration ();
-
-_ = builder.Host.UseSerilog ();
-
-_ = builder.Services.AddExceptionLogging ();
-
 _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
 
 _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
-_ = builder.Services.AddScoped<IExceptionLoggingService,ExceptionLoggingService> ();
+_ = builder.AddSerilogConfiguration ();
+
+//_ = builder.Host.UseSerilog ();
 
 AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
 .Get<MyConfigSettings> () ?? new MyConfigSettings ();
@@ -47,9 +42,12 @@ _ = builder.Services.AddWebOptimizer (pipeline =>
     _ = pipeline.CompileLessFiles ();
 });
 
+builder.Services.AddScoped<IExceptionLoggingService,
+                           ExceptionLoggingService> ();
+
 builder.Services.AddControllers (options =>
 {
-    _ = options.Filters.Add<AntiforgeryActionFilter> ();
+    _ = options.Filters.Add<TenantAntiforgeryFilter> ();
 });
 
 var app = builder.Build();

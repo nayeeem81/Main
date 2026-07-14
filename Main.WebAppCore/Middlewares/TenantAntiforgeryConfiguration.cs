@@ -16,9 +16,9 @@ public class TenantAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions
 
     public void Configure (string? name,AntiforgeryOptions options)
     {
-        string? tenantId = _tenantContext.TenantId;
+        string? tenantId = _tenantContext.ResolvedTenantId;
 
-        if ( tenantId != null )
+        if ( string.IsNullOrEmpty (tenantId) )
         {
             // Dynamically set cookie name based on the current tenant
             options.HeaderName = "X-XSRF-TOKEN";

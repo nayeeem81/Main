@@ -40,8 +40,7 @@ public static class RegisterDatabase
             options.User.RequireUniqueEmail = user.GetValue<bool> ("RequireUniqueEmail");
         })
         .AddEntityFrameworkStores<ApplicationDbContext> ()
-        .AddRoles<IdentityRole> ()
-        .AddDefaultTokenProviders ();
+        .AddRoles<IdentityRole> ();
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));
