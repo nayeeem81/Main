@@ -223,11 +223,10 @@ To adhere to the Single Responsibility Principle and avoid mixing business logic
 ASP.NET Core Middleware Pipeline: Middleware handles concerns at the outer HTTP level before a request ever reaches your API endpoints. Best used for: Tenant resolution, global rate limiting, global authentication, and top-level exception handling. The Rule of Ordering: The order of your middleware configuration in Program.cs dictates execution. Rate limiting should execute before authentication to conserve server resources, while authentication must run before authorization.🔄(100%) 
 
 2. **MediatR Pipeline Behaviors (CQRS)** 
-If your architecture uses Clean Architecture or Vertical Slices with the MediatR library on GitHub, Pipeline Behaviors operate as intra-application middleware. Best used for: Domain validation (via FluentValidation), transactional database boundaries, application-level logging, and in-memory query caching. Benefit: It allows the application layer to remain independent of the ASP.NET Core HttpContext.🟥(Not Using)
+If your architecture uses Clean Architecture 🔄(100%) or Vertical Slices with the MediatR 🟥(Not Using) library on GitHub, Pipeline Behaviors operate as intra-application middleware🔄(100%). Best used for: Domain validation (via FluentValidation)🔄(0%), transactional database boundaries🔄(100%), application-level logging🔄(100%), and in-memory query caching🔄(100%). Benefit: It allows the application layer to remain independent of the ASP.NET Core HttpContext.
 
 3. **EF Core Global Query Filters & Interceptors** 
-When relying on Entity Framework Core, your database access layer can natively manage data separation rules. Best used for: Automated multi-tenant data filtering, soft deletes, and automated database auditing (such as injecting CreatedByTenantId or timestamp fields).
-🔄(100%) 
+When relying on Entity Framework Core, your database access layer can natively manage data separation rules🔄(100%) . Best used for: Automated multi-tenant data filtering🔄(100%) , soft deletes, and automated database auditing🔄(100%)  (such as injecting CreatedByTenantId or timestamp fields)🔄(100%).
 
 
 # Multi-Tenant Implementation 
@@ -237,21 +236,22 @@ Monolithic Application & Shared Database
 ## Global Eception Handle (Middleware)
 
 ### **Key Features**
-✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks  
-✅ **Intelligent mapping** - 18 exception types → error codes + HTTP status codes  
-✅ **Serilog logging** - 3 log streams (application, errors, JSON) with daily rotation  
-✅ **Database persistence** - Stores full context with multi-tenant isolation  
+✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks🔄(100%)  
+✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks🔄(100%) 
+✅ **Intelligent mapping** - 18 exception types → error codes + HTTP status codes🔄(100%)  
+✅ **Serilog logging** - 3 log streams (application, errors, JSON) with daily rotation🔄(100%)  
+✅ **Database persistence** - Stores full context with multi-tenant isolation🔄(100%)  
 ✅ **Automatic deduplication** - Repeating exceptions increment counter (within 1 hour)  
-✅ **6 database indexes** - Optimized for fast queries and filtering  
-✅ **Secure** - Excludes auth headers, cookies, API keys; generic user messages  
+✅ **6 database indexes** - Optimized for fast queries and filtering🔄(100%)  
+✅ **Secure** - Excludes auth headers, cookies, API keys; generic user messages🔄(100%)  
 ✅ **Admin API** - Search, filter, export CSV, view stats, mark resolved, cleanup  
-✅ **Multi-tenant** - Automatic tenant scoping via query filters  
+✅ **Multi-tenant** - Automatic tenant scoping via query filters🔄(100%)  
 
-## Authentication
+## Authentication 🔄(100%)
 
 **Authentication involves validation, signing in, creating access and refreshing tokens using Jwt and cookies suffixed with resolved TenantId.** 
 
-**Validation** 
+**Validation**🔄(100%)
 
 - Does the Model State is valid? 
 
@@ -263,7 +263,7 @@ Monolithic Application & Shared Database
 
 - Does user email belong to the tenant? 
 
-**If above validations are successful, then try the user using Identity Sign in Manager to match the password** 
+**🔄(100%) If above validations are successful, then try the user using Identity Sign in Manager to match the password** 
 
 Use the found user object and password to validate the user's credentials.  
 
@@ -273,15 +273,15 @@ Create Short Lived Access Token (Jwt): Using: User Id, Tenant Id and No. Of Minu
 
 Create Long Lived Refresh Token (string): using (Base64 encoding) with a random number (62 bytes long). 
 
-Create Access Token (Jwt) Cookie 1:  
+🔄(100%) Create Access Token (Jwt) Cookie 1:  
 
 Name: “.App.AccessToken. {resolved tenant Id}” with Value of the created Jwt Access Token with options: HttpOnly, Secure, Samesite, SameSiteMode.Strict, for 15 minutes and set the path (“/”) to access all pages. 
 
-Create Refresh Token Cookie 2:  
+🔄(100%) Create Refresh Token Cookie 2:  
 
 Name: “.App.RefreshToken. {resolved tenant Id}” with cookie options: HttpOnly, Secure, Samesite, SameSiteMode.Strict, (for 7 days), with path "/account/refresh-token" for accessing refresh end point. 
 
-## Authorization: 
+## Authorization:🔄(100%) 
 
 If the user is a valid user in previous step successfully, find the user's role for this tenant.   
 
@@ -291,23 +291,23 @@ Create the List of Claims: NameIdentifier: UserId , ClaimTypes.Role: “User”,
 
 Add the IdentityClaim (with claims) to the authenticated User in the Response object. 
 
-## Generate Refresh Tokens (Jwt & String): 
+## Generate Refresh Tokens (Jwt & String)🔄(100%): 
 
 **For Authenticated Users**
 
-Ajax, Fetch with unsafe requests will fail with error status 401 when the access token expires. This error status is captured by the global interceptor in the java script. The Form Submit with full page is verified by Jwt Event and if found that the token expired, it returns the same 401 status error code. The interceptor in each case gets the requested endpoint with the error status code. A refreshing token request may be processed immediately, If the interceptor code is not ready, it puts that error response in a queue.  
+🔄(100%) Ajax, Fetch with unsafe requests will fail with error status 401 when the access token expires. This error status is captured by the global interceptor in the java script. The Form Submit with full page is verified by Jwt Event and if found that the token expired, it returns the same 401 status error code. The interceptor in each case gets the requested endpoint with the error status code. A refreshing token request may be processed immediately, If the interceptor code is not ready, it puts that error response in a queue.  
 
 The new refresh token generation request is automatically called by the global interceptor of java script. Once the new token is attached to the browser cookie, the failed code is again called by the interceptor code.  
 
-The file (auth-interceptor.js) is referenced just after the (jquery.min.js) file, in the main layout page. In that file: any failed request from those (for submit, ajax, fetch) is intercepted, kept in queue, request a new token and upon getting the token, it calls the failed method again and keeps the user authenticated and continues the session. Behind the scenes, the above work is done by this global error interceptor for the expired authentication access token.  
+🔄(100%) The file (auth-interceptor.js) is referenced just after the (jquery.min.js) file, in the main layout page. In that file: any failed request from those (for submit, ajax, fetch) is intercepted, kept in queue, request a new token and upon getting the token, it calls the failed method again and keeps the user authenticated and continues the session. Behind the scenes, the above work is done by this global error interceptor for the expired authentication access token.  
 
-We added antiforgery middleware default configuration in program.cs. We left the token generation and retrieval over the default MVC middleware. For validation, we use action filters by overwriting the default anti-forgery validation. The token is generated by the middleware; we just paste the helper tag on each page where we use (post, delete, put) methods. MVC does token retrieval when the helper tag is wrapped in the form tag for the full page submit, For the ajax and fetch: we must add a line to fetch/ajax request to send the antiforgery token, back. Fetch/Ajax usually just needs to add an attribute either with credential true or default. One line code added; default behavior is continued. 
+🔄(100%) We added antiforgery middleware default configuration in program.cs. We left the token generation and retrieval over the default MVC middleware. For validation, we use action filters by overwriting the default anti-forgery validation. The token is generated by the middleware; we just paste the helper tag on each page where we use (post, delete, put) methods. MVC does token retrieval when the helper tag is wrapped in the form tag for the full page submit, For the ajax and fetch: we must add a line to fetch/ajax request to send the antiforgery token, back. Fetch/Ajax usually just needs to add an attribute either with credential true or default. One line code added; default behavior is continued. 
 
-We have made some changes in the process to do the task dynamically. We made the part of code global (ajax, fetch and form submit). Previously, we used to paste the tag helper in the body of all views. Now, we have placed that line in the body of the main layout page. Every view can access that. Now, the sending the token back part with request we created a java script file to work globally, and we never need to write any line of code for ajax or fetch anymore. That is the reason why we move the helper tag of MVC to the body of the layout page to be accessible by all pages. When we attach the code from the global script, we ignore the safe method requests. That code is in global-ajax.js and source is referenced just a line above the interceptor js file in the layout page; for the form to submit, we need to find the input field, read the value of the token, and add that manually in the form body. Mvc default middleware will create and set the token in every request response cycle. Our global java script will send the token back like the default settings. For that reason, the MVC default helper tag is moved to the main layout (global), and we are not required to write the tag helper for the views. 
+🔄(100%) We have made some changes in the process to do the task dynamically. We made the part of code global (ajax, fetch and form submit). Previously, we used to paste the tag helper in the body of all views. Now, we have placed that line in the body of the main layout page. Every view can access that. Now, the sending the token back part with request we created a java script file to work globally, and we never need to write any line of code for ajax or fetch anymore. That is the reason why we move the helper tag of MVC to the body of the layout page to be accessible by all pages. When we attach the code from the global script, we ignore the safe method requests. That code is in global-ajax.js and source is referenced just a line above the interceptor js file in the layout page; for the form to submit, we need to find the input field, read the value of the token, and add that manually in the form body. Mvc default middleware will create and set the token in every request response cycle. Our global java script will send the token back like the default settings. For that reason, the MVC default helper tag is moved to the main layout (global), and we are not required to write the tag helper for the views. 
 
-We come back to the failed requests to call again. We have a refresh token; we have the global java script code to attach the token for anti-forgery (ajax, fetch or for submit); we can call the failed request from the interceptor code. User gets the same authenticated feel even if it was an outdated token. The background code keeps it unto date. 
+🔄(100%) We come back to the failed requests to call again. We have a refresh token; we have the global java script code to attach the token for anti-forgery (ajax, fetch or for submit); we can call the failed request from the interceptor code. User gets the same authenticated feel even if it was an outdated token. The background code keeps it unto date. 
 
-Controller End Point: 
+## Controller End Point:🔄(100%) 
 
 Request for new tokens are made to the controller end point. It is configured in the cookie path option (during cookie creation: login, refreshing). 
 
@@ -319,7 +319,7 @@ Post (“/account/refresh-token”)
 
 Action: Refresh 
 
-How does the refresh work?  
+## How does the refresh work? 🔄(100%) 
 
 We used tenant aware ITenantSetter to get the TenantId using DI in the controller.  
 
@@ -335,57 +335,61 @@ We append the short-lived Access Token JWT (Expires in 15 minutes) cookie and th
 
 We return the fresh access JWT in the JSON payload with OK status.  
 
-## Security Principles (Identity)
+# Security (Identity Default Flow) User (login) 🔄(100%)
 
-1. **Broken Access Control & Enumeration (OWASP A01:2021):**  Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error. This maps out registered user bases for targeted phishing. Mitigation: (Anti-Enumeration Logic, the controller uses an identity-blind diversion step) We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link. The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
+### ✅Broken Access Control & Enumeration
+- Attackers input various email addresses into a forgotten password form to see which ones return a "User not found" error.
+- This maps out registered user bases for targeted phishing.
 
-2. **Cryptographic Failures & Session Hijacking (OWASP A02:2021)** Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides. Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link. Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable.
+### Mitigation 
+- Anti-Enumeration Logic, the controller uses an identity-blind diversion step.
+- We will check if the user exists and if the email is verified or not. If not exists and verified, the enumerating code from hacker or threat will be redirected, but we do not reveal if the user exists. This means that we will check the link with the existence and verified requirement of the link.
+- The threat doesn't know if the user or email already exists. They are running code against the login. We will rather provide a confirmation that check your inbox for the link to set up your password. This is how we are mitigating the Anti-Enumeration Logic. 
 
-3. **Injection and Cross-Site Request Forgery (OWASP A03:2021 / A05:2021)** Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller. They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views. Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection.
+### ✅Cryptographic Failures & Session Hijacking🔄(100%) 
+- Predictable reset tokens (like simple base64 hashes or sequential numbers) can be guessed by automated scripts, allowing malicious password overrides.
+- Cryptographic Token Lifecycles & Security Stamp Invalidation The workflow calls ASP.NET Core's internal GeneratePasswordResetTokenAsync(user). This function is from the Identity User Manager. This generates a time-bound, cryptographically random string during sending an email link.
+- Once ResetPasswordAsync (Identity owned method) completes successfully, ASP.NET Core automatically refreshes the user's Security Stamp in the database. This instantly invalidates the token timestamp. The mail link is no longer usable.
 
-4. **Identification and Authentication Failures (OWASP A07:2021)** Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords. The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
+### ✅Injection and Cross-Site Request Forgery🔄(100%) (Default with tenant specific cookie and custom validation) 
+- Attackers spoof forms using unauthorized cross-domain scripts or target database flaws via inputs. The [ValidateAntiForgeryToken] attribute added to both POST endpoints (action) in controller.
+- They work side-by-side with @Html.AntiForgeryToken() implicitly built into the views.
+- Entity Framework Core acts as the data layer (ApplicationDbContext which is Identity configured). By utilizing parameterized LINQ parameters under the hood FindByEmailAsync(email) before signing in a user reduced the risk of password injection.
 
-## Solution Design & Architecture (.NET 8.0) 
+### ✅Identification and Authentication🔄(100%)
+- Failure Weak reset pathways easily bypass initial account defenses, nullifying complex user passwords.
+- The system explicitly requires email verification before allowing a password to reset flow (IsEmailConfirmedAsync) and login. 
 
-### The Best Practices by Research 
+# Solution Architecture (.NET 8.0):🔄(100%) 
+Current Archiecture is:
+1. ✅Monolithich:
+- One deployable unit, can be scaled horizontally and vertically). Above has details about scaleing for this application.
+2. ✅Clean Architecture:
+  
+- 🔄(100%) Makes the code organnized and maintainable.
+- 🔄(100%) The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
+- 🔄(100%) Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
+- 🔄(100%) My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
+- 🔄(100%) Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
+# 🔄(100%) The Best Practices by Research 
 **Note:** 
-Before planning for the multitenant application saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
-
-### Current Archiecture is:
-**1. Monolithich** (one deployable unit, can be scaled horizontally and vertically). Above has details about scaleing for this application.
-**2. Clean Architecture** (makes the code organnized and maintainable)
-
-I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
+- Before planning for the multitenant application saas, I didn't consider or research the scaling part. Still it is applicable with curret design. (Vertical ad Horizontal Scale)
+- I started to create the architecture of the new solution, keeping in mind the best practices of design and architecture. 
 
 **This objective created the Clean Architecture:**
-1. The primary objective was to make the code modular, reusable, separation of the concerns, and readable while doing the code for the solution.
-2. Another objective was to make sure it is Linux deployable and keeping the services completely separated from the presentation code (Web Project). Now, code is separated and using services but the API project is not there yet.
-3. My plan to separate the services from the presentation is to make the web project light weight and reuse the same in different cross platform non-computer devices (Mobile, Tab).
-4. Microsoft already has their own technology for app development (Xamarin) which uses the API (Web API) project hosted on any server. My plan was to keep the code common for everyone (web, mobile, & tablet). 
 
 # How to scale this application? (Google AI)
+Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS. Here is exactly how to scale your monolithic architecture, how introducing a separate API project changes the strategy, and how routing works across multiple instances. Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
 
-Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
-
-Here is exactly how to scale your monolithic architecture, how introducing a separate API project changes the strategy, and how routing works across multiple instances.
-
-Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
-
-## Strategy 1: Scaling Your Current monolithic Architecture
-
+## Strategy 1: Scaling Your Current Monolithic Architecture
 Because your entire application runs as a single process, you cannot scale just the "Shared Service project" on its own. You must scale the entire monolith together.
 
-**Vertical Scaling First:**
-
+- **Vertical Scaling First:**
 Upgrade your Linux VPS to a higher tier with more CPU cores and RAM. This is the fastest, zero-code way to handle more traffic.
-
-**Database Connection Pooling:**
-
+- **Database Connection Pooling:**
 Since you use a shared database, multiple application threads will compete for database connections. You must optimize your connection pool size in your appsettings.json connection string so the database doesn't choke.
-
-**In-Memory Caching:**
-
+- **In-Memory Caching:**
 Use .AddMemoryCache() in .NET 8.0 to store frequently requested, non-tenant-specific data directly in the VPS RAM to avoid hitting the shared database.
 
 **Strategy 2: Scaling by Introducing an API Project**
@@ -459,10 +463,6 @@ I started my code to build and run for a client (small shop). It was previously 
 When I started looking at the code and searching on the internet, I found that Microsoft doesn’t have any support over the framework because of security vulnerability. 
 
 ### I decided to do a migration of my code in .NET 8.0 because it has long term support plan and it is portable both in Windows and Linux servers. Also, the technology supports cross platforms including mobile devices and tablets.
-
-
-
-
 
 
 ## Future Work: 
