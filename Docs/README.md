@@ -76,7 +76,7 @@ It will confirm the isolation of the store identity and their  independent work 
 
 ## 🏢 Store Features (Tenant):
 
-1. **🏢🔄(50%) Tenant Profile: (domain setup / buy domain, invite users) **   
+1. **🏢🔄(50%) Tenant Profile: (domain setup / buy domain, invite users)**   
 2. **🔒🔄(100%) Security & Isolation: Manage user account and change password**                    
 3. **📦🔄(100%) Product Manager: Manage Products (add, edit, delete, view) with admin dashboard**                  
 4. **🖼️🔄(100%) Advertisement Manager: (create ads with images, texts, links)** 
@@ -92,7 +92,6 @@ You have staff in your business. After registering at the shop, you can add staf
 The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
 
 # ☁️🐧Hosting Environment
-
 **☁️VPS With 🐧Linux Environment**
 
 **🌐➡️**     **Nginx Reverce Proxy🔒🛡️➡️**     **Router to Web App🖥️**
@@ -469,8 +468,6 @@ When I started looking at the code and searching on the internet, I found that M
 ## Future Work: 
 1. The web project communicates with the service project with Business Model objects. This is how I tried to keep the web project separate and make the service project reusable for other cross-platform projects using Web API.
 2. Because of the saperatin and breaking the code modular, we can convert the solution into micro service based deployment and scale the heavy traffic api services. 
-
-
 
 ## Previous Shop Example (Identity Default) 
 It is extended to use tenants (IdentityUser is now: 
