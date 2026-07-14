@@ -1,4 +1,5 @@
 ﻿using Main.Model.DomainModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
@@ -32,6 +33,7 @@ public class EmailSmtp: RootBaseEntity
         get; set;
     } = string.Empty;
 
+    [ForeignKey ("FkTenantId")]
     public virtual Tenant? Tenant
     {
         get; set;

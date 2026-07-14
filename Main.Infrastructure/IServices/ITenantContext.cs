@@ -20,6 +20,11 @@ public interface ITenantContext
         get;
     }
 
+    string ResolvedTenantId
+    {
+        get;
+    }
+
     string? GetCurrentTenantRole ();
 
     DateTime GetLocalNow ();

@@ -25,7 +25,7 @@ public class GlobalExceptionHandlingMiddleware
     public async Task InvokeAsync (
         HttpContext context,
         IExceptionLoggingService exceptionLoggingService,
-        ITenantContext tenantContext)
+        ITenantSetter tenantSetter)
     {
         try
         {
@@ -33,7 +33,7 @@ public class GlobalExceptionHandlingMiddleware
         }
         catch ( Exception exception )
         {
-            await HandleExceptionAsync (context,exception,exceptionLoggingService,tenantContext);
+            await HandleExceptionAsync (context,exception,exceptionLoggingService,tenantSetter);
         }
     }
 
@@ -44,7 +44,7 @@ public class GlobalExceptionHandlingMiddleware
         HttpContext context,
         Exception exception,
         IExceptionLoggingService exceptionLoggingService,
-        ITenantContext tenantContext)
+        ITenantSetter tenantSetter)
     {
         // Map exception to error code and status code
         var (errorCode,statusCode,userMessage) = MapException (exception);

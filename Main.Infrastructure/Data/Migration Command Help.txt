@@ -1,5 +1,53 @@
 
+# 1. This physically creates the 'Migrations' folder inside Main.Infrastructure
+Add-Migration InitialCreate -Project Main.Infrastructure -StartupProject Main.WebAppCore
 
-Add-Migration InitialApplicationDBMigration3 -Context Main.Infrastructure.ApplicationDbContext
+# 2. This reads those physical files and generates the database tables
+Update-Database -Project Main.Infrastructure -StartupProject Main.WebAppCore
 
-Update-Database -Context Main.Infrastructure.ApplicationDbContext
+
+
+
+An error occurred while accessing the Microsoft.Extensions.Hosting services. Continuing without the application service provider. 
+
+Error: Some services are not able to be constructed (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Antiforgery.IAntiforgery 
+
+> Lifetime: Singleton 
+** ImplementationType: Microsoft.AspNetCore.Antiforgery.DefaultAntiforgery': 
+
+** Cannot consume scoped service 'Main.Infrastructure.ITenantSetter' from singleton 'Microsoft.Extensions.Options.IOptions`1
+
+[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) 
+(Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Antiforgery.IAntiforgeryTokenStore 
+
+## Lifetime: Singleton ImplementationType: Microsoft.AspNetCore.Antiforgery.
+>  DefaultAntiforgeryTokenStore': Cannot consume scoped service 'Main.Infrastructure.ITenantSetter' from singleton 'Microsoft.Extensions.Options. IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) 
+
+## (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Mvc.Filters.IAsyncAuthorizationFilter Lifetime: 
+
+## Scoped ImplementationType: Main.WebAppCore.Middleware.AntiforgeryActionFilter': Unable to resolve service for type 'Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate' while attempting to activate 'Main.WebAppCore.Middleware.AntiforgeryActionFilter'.) 
+
+1. (Error while validating the service descriptor 'ServiceType: Main.Services.IAccountService Lifetime: Scoped ImplementationType: Main.Services.AccountService': 
+
+2. Unable to resolve service for type 'Main.IRepository.IApplicationUserRepository' while attempting to activate 'Main.Services.AccountService'.) (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper Lifetime: Transient ImplementationType: Microsoft.AspNetCore.Mvc.ViewFeatures.HtmlHelper': 
+
+>  Cannot consume scoped service 'Microsoft.Extensions.Options.IConfigureOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]' from singleton 'Microsoft.Extensions.Options.IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) 
+
+.>. (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Mvc.ViewFeatures.IHtmlGenerator Lifetime: Singleton ImplementationType: Microsoft.AspNetCore.Mvc.ViewFeatures.DefaultHtmlGenerator': Cannot consume scoped service 'Microsoft.Extensions.Options.IConfigureOptions`1
+
+** [Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]' from singleton 'Microsoft.Extensions.Options.IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.ValidateAntiforgeryTokenAuthorizationFilter 
+
+** Lifetime: Singleton ImplementationType: Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.ValidateAntiforgeryTokenAuthorizationFilter': Cannot consume scoped service 'Microsoft.Extensions.Options.IConfigureOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]' from singleton 
+
+>  'Microsoft.Extensions.Options.IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.AutoValidateAntiforgeryTokenAuthorizationFilter Lifetime: 
+
+** Singleton ImplementationType: Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.AutoValidateAntiforgeryTokenAuthorizationFilter': Cannot consume scoped service 
+
+1.. 'Microsoft.Extensions.Options.IConfigureOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]' from singleton 'Microsoft.Extensions.Options.IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) 
+
+** (Error while validating the service descriptor 'ServiceType: Microsoft.AspNetCore.Components.Forms.AntiforgeryStateProvider Lifetime: Scoped ImplementationType: 
+
+** Microsoft.AspNetCore.Components.Endpoints.Forms.EndpointAntiforgeryStateProvider': Cannot consume scoped service 'Microsoft.Extensions.Options.IConfigureOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]' from singleton 'Microsoft.Extensions.Options.IOptions`1[Microsoft.AspNetCore.Antiforgery.AntiforgeryOptions]'.) (Error while validating the service descriptor 'ServiceType: 
+
+## Main.Infrastructure.IExceptionLoggingService Lifetime: Scoped ImplementationType: Main.Infrastructure.Services.ExceptionLoggingService': Unable to resolve service for type 'Serilog.ILogger' while attempting to activate 'Main.Infrastructure.Services.ExceptionLoggingService'.)
+

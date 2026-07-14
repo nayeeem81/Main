@@ -9,6 +9,8 @@ public static class RegisterData
     public static IServiceCollection AddRepository (
     this IServiceCollection services,IConfiguration configuration)
     {
+        _ = services.AddScoped<IApplicationUserRepository,ApplicationUserRepository> ();
+
         _ = services.AddScoped<ITenantRepository,TenantRepository> ();
 
         _ = services.AddScoped<ITenantInvitationRepository,TenantInvitationRepository> ();

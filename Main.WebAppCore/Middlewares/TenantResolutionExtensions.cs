@@ -7,6 +7,8 @@ namespace Main.WebAppCore.Middleware;
 
 public static class TenantResolutionExtensions
 {
+    private const string TenantHeaderKey = "X-Tenant-ID";
+
     public static async Task<bool> TryResolveTenantAsync (
         this HttpContext context,
         ITenantContext tenantContext,
@@ -21,9 +23,10 @@ public static class TenantResolutionExtensions
 
         if ( !string.IsNullOrEmpty (tenantHost) )
         {
-            TenantDisplayDataModel? tenantDisplayDataModel = await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
+            TenantDisplayDataModel? tenantDisplayDataModel =
+            await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(120);
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
 
                 return await tenancyService.FindTenantAsync(tenantHost);
             });
@@ -31,13 +34,12 @@ public static class TenantResolutionExtensions
             if ( tenantDisplayDataModel != null )
             {
                 SetTenantSetter (tenantSetter,tenantDisplayDataModel);
-
+                context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId;
                 return true;
             }
         }
 
         context.Response.Redirect (rootDomain);
-
         return false;
     }
 

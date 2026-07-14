@@ -1,48 +1,55 @@
 using Main.Infrastructure;
+using Main.Infrastructure.Services;
 using Main.Services;
 using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
-using Microsoft.AspNetCore.Mvc.Filters;
 using ResourceLibrary.Resources;
+using Serilog;
 using WebAppCore.Helper;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog for global logging
+_ = builder.Services.AddHttpContextAccessor ();
+
 _ = builder.AddSerilogConfiguration ();
+
+_ = builder.Host.UseSerilog ();
+
+_ = builder.Services.AddExceptionLogging ();
+
+_ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
+
+_ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+
+_ = builder.Services.AddScoped<IExceptionLoggingService,ExceptionLoggingService> ();
 
 AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
 .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
-_ = builder.Services.AddHttpContextAccessor ();
-_ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
-_ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
-
-// 1. Register HTTP Context and Antiforgery Engine
-_ = builder.Services.AddAntiforgery ();
-
-// 2. Register your Dynamic Options and Action Filter
 _ = builder.Services.ConfigureOptions<TenantAntiforgeryOptions> ();
-_ = builder.Services.AddScoped<IAsyncAuthorizationFilter,AntiforgeryActionFilter> ();
 
 _ = builder.Services.AddDatabase (builder.Configuration);
+
 _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
+
 _ = builder.Services.AddRepository (builder.Configuration);
+
 _ = builder.Services.AddService (builder.Configuration);
 
 _ = builder.Services.AddEmailService (builder.Configuration);
+
 _ = builder.Services.AddCustomLocalization ();
+
 _ = builder.Services.AddAuthorization (builder.Configuration);
+
 _ = builder.Services.AddWebOptimizer (pipeline =>
 {
     _ = pipeline.CompileLessFiles ();
 });
-_ = builder.Services.AddExceptionLogging ();
 
-_ = builder.Services.AddControllersWithViews (options =>
+builder.Services.AddControllers (options =>
 {
-    // Safely injects your scoped Tenant Action Filter using TypeFilter
-    options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof (AntiforgeryActionFilter)));
+    _ = options.Filters.Add<AntiforgeryActionFilter> ();
 });
 
 var app = builder.Build();
@@ -57,7 +64,6 @@ else
     _ = app.UseHsts ();
 }
 
-// Add global exception handling middleware - should be early in the pipeline
 _ = app.UseGlobalExceptionHandling ();
 
 _ = app.UseHttpsRedirection ();
@@ -80,10 +86,8 @@ _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
 _ = app.UseCors ();
 
-// Hydrate context.User with claims from the cookie/token
 _ = app.UseAuthentication ();
 
-// Verify that the authenticated user actually owns this URL space
 _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
 _ = app.UseAuthorization ();

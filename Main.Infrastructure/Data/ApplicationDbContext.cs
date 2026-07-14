@@ -12,10 +12,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public readonly string tenantId;
     public readonly ITenantContext _tenantContext;
 
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) :
-    base (options)
-    {
-    }
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)

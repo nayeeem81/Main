@@ -70,6 +70,8 @@ public static class RegisterServices
         _ = services.AddScoped<IProductService,ProductService> ();
         _ = services.AddScoped<IPageService,PageService> ();
 
+
+
         return services;
     }
 }

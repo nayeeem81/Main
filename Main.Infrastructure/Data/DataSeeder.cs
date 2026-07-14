@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class DataSeeder
 {
-    public static async Task SeedDataAsync ( IServiceProvider serviceProvider )
+    public static async Task SeedDataAsync (IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
 
@@ -35,19 +35,19 @@ public static class DataSeeder
 
         if ( tenant1 == null )
         {
-            Tenant tenantNew1 = new Tenant ( )
+            Tenant tenantNew1 = new( )
             {
                 Name = "LifeStyle Store",
                 HostName = "lifestyle-local",
                 Store = StoreType.LifeStyles
             };
 
-            context.Tenants.Add ( tenantNew1 );
-            await context.SaveChangesAsync ( );
+            _ = context.Tenants.Add (tenantNew1);
+            _ = await context.SaveChangesAsync ();
 
             seedTenancyId1 = tenantNew1.TenantId;
 
-            await PageSeed ( context,seedTenancyId1 );
+            await PageSeed (context,seedTenancyId1);
         }
 
 
@@ -56,19 +56,19 @@ public static class DataSeeder
 
         if ( tenant2 == null )
         {
-            Tenant tenantNew2 =  new Tenant ( seedTenancyId2 )
+            Tenant tenantNew2 =  new( seedTenancyId2 )
             {
                 Name = "Fine Arts Store",
                 HostName = "fanarts-local",
                 Store = StoreType.FineArts
             };
 
-            context.Tenants.Add ( tenantNew2 );
-            await context.SaveChangesAsync ( );
+            _ = context.Tenants.Add (tenantNew2);
+            _ = await context.SaveChangesAsync ();
 
             seedTenancyId2 = tenantNew2.TenantId;
 
-            await PageSeed ( context,seedTenancyId2 );
+            await PageSeed (context,seedTenancyId2);
         }
 
 
@@ -80,9 +80,9 @@ public static class DataSeeder
         string[] globalRoles = ["GlobalAdmin", "User"];
         foreach ( var roleName in globalRoles )
         {
-            if ( !await roleManager.RoleExistsAsync ( roleName ) )
+            if ( !await roleManager.RoleExistsAsync (roleName) )
             {
-                await roleManager.CreateAsync ( new IdentityRole ( roleName ) );
+                _ = await roleManager.CreateAsync (new IdentityRole (roleName));
             }
         }
 
@@ -100,7 +100,7 @@ public static class DataSeeder
             var result = await userManager.CreateAsync(newAdmin, "Focus@1nm");
             if ( result.Succeeded )
             {
-                await userManager.AddToRoleAsync ( newAdmin,"GlobalAdmin" );
+                _ = await userManager.AddToRoleAsync (newAdmin,"GlobalAdmin");
             }
         }
 
@@ -141,7 +141,7 @@ public static class DataSeeder
                 if ( createResult.Succeeded )
                 {
                     // Every regular person gets the global "User" identity role
-                    await userManager.AddToRoleAsync ( newUser,"User" );
+                    _ = await userManager.AddToRoleAsync (newUser,"User");
 
                     // Link the user to their specific tenant and custom tenant role
                     var tenantMapping = new TenantUser
@@ -151,28 +151,28 @@ public static class DataSeeder
                         TenantRole = config.TenantRole
                     };
 
-                    context.TenantUsers.Add ( tenantMapping );
+                    _ = context.TenantUsers.Add (tenantMapping);
                 }
             }
         }
 
         // Save all the UserTenants links to the database
-        await context.SaveChangesAsync ( );
+        _ = await context.SaveChangesAsync ();
     }
 
 
 
-    private static async Task PageSeed ( ApplicationDbContext context,string seedTenancyId )
+    private static async Task PageSeed (ApplicationDbContext context,string seedTenancyId)
     {
-        context.Pages.Add ( new Page ( EnumPublicPage.Home,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.AdsDetail,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.Resources,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.CategoryButtonMarket,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.SubCategoryDropdownMarket,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.SpecialMarketButton,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.AllMarket,seedTenancyId,true ) );
-        context.Pages.Add ( new Page ( EnumPublicPage.NoticeAndNews,seedTenancyId,true ) );
+        _ = context.Pages.Add (new Page (EnumPublicPage.Home,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.AdsDetail,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.Resources,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.CategoryButtonMarket,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.SubCategoryDropdownMarket,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.SpecialMarketButton,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.AllMarket,seedTenancyId,true));
+        _ = context.Pages.Add (new Page (EnumPublicPage.NoticeAndNews,seedTenancyId,true));
 
-        await context.SaveChangesAsync ( );
+        _ = await context.SaveChangesAsync ();
     }
 }

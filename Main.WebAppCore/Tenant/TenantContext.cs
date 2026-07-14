@@ -28,9 +28,23 @@ public class TenantContext: ITenantContext
         return User?.FindFirst ("TenantRole")?.Value ?? "";
     }
 
+
+
     public string TenantId => GetTenantId ();
 
     public string ApplicationUserId => GetCurrentUserId ();
+
+    public string ResolvedTenantId => GetResolvedTenantId ();
+
+    private string GetResolvedTenantId ()
+    {
+        if ( _httpContextAccessor.HttpContext?.Request.Headers.TryGetValue
+        ("X-Tenant-ID",out var resolvedTenantId) != null )
+        {
+            return resolvedTenantId.ToString ();
+        }
+        return string.Empty;
+    }
 
     public DateTime GetLocalNow ()
     {

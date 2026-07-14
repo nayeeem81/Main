@@ -12,10 +12,11 @@ public class AntiforgeryActionFilter: IAsyncAuthorizationFilter
     private readonly ITenantSetter _tenantSetter;
     private readonly ActionExecutionDelegate _next;
 
-    public AntiforgeryActionFilter (IAntiforgery antiforgery,ITenantSetter tenantSetter)
+    public AntiforgeryActionFilter (IAntiforgery antiforgery,ITenantSetter tenantSetter,ActionExecutionDelegate next)
     {
         _antiforgery = antiforgery;
         _tenantSetter = tenantSetter;
+        _next = next;
     }
 
     public async Task OnAuthorizationAsync (AuthorizationFilterContext context)
