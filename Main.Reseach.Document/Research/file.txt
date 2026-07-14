@@ -1,0 +1,104 @@
+Using [FluentValidation](https://github.com/FluentValidation/FluentValidation) for domain validation is a highly debated topic in software engineering. While it provides an incredibly clean, expressive, and strongly-typed API for data checking, applying it directly inside your Domain Layer often violates core Domain-Driven Design (DDD) principles. [1, 2, 3] 
+Here is a breakdown of why this architectural tension exists, the best-practice approaches, and how to implement it correctly.
+------------------------------
+## The Architectural Conflict
+In Clean Architecture and DDD, your core Domain Layer should remain pure. [1] 
+
+* 
+* Input Validation vs. Domain Invariants: Input validation (e.g., checking if an email is formatted correctly on a DTO) belongs in the API or Application layer. Domain validation enforces invariants—business rules that must always remain true for an entity (e.g., "An order cannot be approved if the customer is deactivated"). [1, 4] 
+* Third-Party Coupling: Your domain models should ideally be plain objects (POCOs) free from infrastructure or external library dependencies. Coupling your domain directly to FluentValidation.AbstractValidator<T> breaks this isolation. [1, 3] 
+* Always-Valid State: Domain entities should guard themselves dynamically. An entity shouldn't be allowed to exist in an invalid state. FluentValidation, by design, requires you to instantiate an object first and validate it afterwards. [1, 3, 5, 6] 
+* 
+
+------------------------------
+## Recommended Patterns for Domain Validation## Approach 1: Guard Clauses in Entities (Standard DDD) [1, 7, 8] 
+Instead of a framework, use constructor parameters and Guard Clauses directly inside your domain objects to enforce an "Always-Valid" state. Throw exceptions if business rules are broken. [1, 5, 7] 
+
+public class Customer
+{
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+
+    public Customer(Guid id, string name)
+    {
+        // Enforce invariants immediately
+        if (id == Guid.Empty) throw new ArgumentException("Invalid ID");
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name cannot be empty");
+
+        Id = id;
+        Name = name;
+    }
+}
+
+## Approach 2: FluentValidation in the Application Layer (Recommended) [9, 10] 
+Keep FluentValidation out of your entities. Instead, use it on incoming DTOs, Commands, or Requests in your Application Layer to act as an anti-corruption layer before your domain layer is even touched. [1, 4, 11, 12, 13] 
+
+// The Request DTO (Application Layer)public record CreateCustomerCommand(string Name, string Email);
+// The Validator (Application Layer)public class CreateCustomerCommandValidator : AbstractValidator<CreateCustomerCommand>
+{
+    public CreateCustomerCommandValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.Email).NotEmpty().EmailAddress();
+    }
+}
+
+## Approach 3: Separated Domain Validators (Hybrid Approach) [6, 14] 
+If your domain logic involves highly complex, multi-property business rules that change frequently, you can use FluentValidation. However, isolate the validator classes in a separate project or an application adapter layer so they don't pollute the core entities. [1, 15] 
+
+// Core Domain (Pure)public class Order
+{
+    public List<OrderItem> Items { get; set; } = new();
+    public decimal TotalAmount { get; set; }
+    public bool IsExpressShipping { get; set; }
+}
+// Validation Layer (Interacts with the Domain)public class OrderBusinessRuleValidator : AbstractValidator<Order>
+{
+    public OrderBusinessRuleValidator()
+    {
+        // Complex rule: Express shipping requires a minimum spend
+        RuleFor(order => order.TotalAmount)
+            .GreaterThanOrEqualTo(50)
+            .When(order => order.IsExpressShipping)
+            .WithMessage("Express shipping requires a minimum order total of $50.");
+    }
+}
+
+------------------------------
+## External Logic & Asynchronous Domain Checks
+One major benefit of FluentValidation over Data Annotations is the ability to easily perform asynchronous operations (like querying a database via a repository to check for uniqueness) using .MustAsync(). [3, 16] 
+If you use this for domain uniqueness rules, inject your interfaces right into the validator constructor: [3, 16] 
+
+public class UniqueEmailValidator : AbstractValidator<Customer>
+{
+    private readonly ICustomerRepository _repository;
+
+    public UniqueEmailValidator(ICustomerRepository repository)
+    {
+        _repository = repository;
+
+        RuleFor(customer => customer.Email)
+            .MustAsync(async (email, cancellation) => 
+                !await _repository.ExistsByEmailAsync(email, cancellation))
+            .WithMessage("This email address is already in use.");
+    }
+}
+
+Would you like to explore how to wire FluentValidation into a MediatR pipeline to automatically validate requests, or are you looking to see how to gracefully map validation exceptions back to Problem Details API responses?
+
+[1] [https://medium.com](https://medium.com/@d.jajimi/can-we-use-fluentvalidation-in-the-domain-layer-e9e923d2e65f)
+[2] [https://github.com](https://github.com/FluentValidation/FluentValidation)
+[3] [https://codewithmukesh.com](https://codewithmukesh.com/blog/fluentvalidation-in-aspnet-core/)
+[4] [https://medium.com](https://medium.com/@mariammaurice/how-to-implement-validation-with-mediatr-and-fluentvalidation-clean-architecture-ddd-net-6d53d2911b65)
+[5] [https://enterprisecraftsmanship.com](https://enterprisecraftsmanship.com/posts/always-valid-domain-model/)
+[6] [https://www.youtube.com](https://www.youtube.com/watch?v=6-eBSyatRX0&t=14)
+[7] [https://medium.com](https://medium.com/codenx/demystifying-guard-clauses-vs-fluentvalidation-in-c-07cfd2750ee0)
+[8] [https://medium.com](https://medium.com/@michaelmaurice410/domain-validation-with-net-clean-architecture-ddd-net-9-0d80da162192)
+[9] [https://medium.com](https://medium.com/@michaelmaurice410/domain-validation-with-net-clean-architecture-ddd-net-9-0d80da162192)
+[10] [https://www.kamilgrzybek.com](https://www.kamilgrzybek.com/blog/posts/domain-model-validation)
+[11] [https://stackoverflow.com](https://stackoverflow.com/questions/4499355/domain-object-validation-vs-view-model-validation)
+[12] [https://enterprisecraftsmanship.com](https://enterprisecraftsmanship.com/posts/validation-and-ddd/)
+[13] [https://medium.com](https://medium.com/@michaelmaurice410/domain-validation-with-net-clean-architecture-ddd-net-9-0d80da162192)
+[14] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/how-to-validate-request-models-using-fluentvalidation-in-net/)
+[15] [https://www.youtube.com](https://www.youtube.com/watch?v=0-vOmnkdcn0)
+[16] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-01-25-fluentvalidation-dotnet/view)
