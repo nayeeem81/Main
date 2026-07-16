@@ -15,11 +15,11 @@ public class Page: BaseEntity
         EnumPublicPage = enumPublicPage;
     }
 
-    public Page (EnumPublicPage enumPublicPage,string tenantId,bool isSeed)
+    public Page (EnumPublicPage enumPublicPage,Guid tenantId,bool isSeed)
     {
         ListPanels = new List<Panel> ();
         EnumPublicPage = enumPublicPage;
-        TenantId = tenantId;
+        MyTenantId = tenantId;
         ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
         CreatedDate = DateTime.MinValue;

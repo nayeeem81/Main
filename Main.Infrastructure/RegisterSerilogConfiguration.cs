@@ -75,6 +75,7 @@ public static class RegisterSerilogConfiguration
     public static IServiceCollection AddExceptionLogging (this IServiceCollection services)
     {
         // Exception logging service will be registered separately
+        //_ = services.AddSingleton (Serilog.Log.Logger);
 
         return services;
     }

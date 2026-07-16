@@ -11,7 +11,7 @@ public interface ITenantRepository
 
     Task FindCurrentTenantAsync (string? hostName);
 
-    Task<Tenant?> GetTenantByIdAsync (string tenantId);
+    Task<Tenant?> GetTenantByIdAsync (Guid tenantId);
 
     Task<Tenant?> CreateTenantAsync (Tenant tenant);
 

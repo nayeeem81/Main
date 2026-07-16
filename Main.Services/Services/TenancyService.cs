@@ -44,11 +44,11 @@ public class TenancyService: ITenancyService
         {
             CurrentTenant =
                 new TenantDisplayDataModel (
-                    tenant.TenantId,
+                    tenant.MyTenantId,
                     tenant.Name,
                     tenant.HostName,
                     tenant.Store,
-                    tenant.TenantKey);
+                    tenant.SecretKey);
 
             TenancyFound = true;
         }

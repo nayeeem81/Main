@@ -47,32 +47,10 @@ public class BaseEntity: RootBaseEntity, IMustHaveTenant
 
     public void AddSessionParameters (BaseDataModel modelBase)
     {
-        TenantUserId = modelBase.TenantUserId?.Trim ();
         SessionUserId = modelBase.SessionUserId?.Trim ();
-
-        TenantUserRole = modelBase.TenantUserRole?.Trim ();
         GlobalUserRole = modelBase.IentityRole?.Trim ();
-
         TenantCountry = modelBase.TenantCountry;
         TenantContinent = modelBase.TenantContinent?.Trim ();
-    }
-
-    public string TenantId
-    {
-        get;
-        set;
-    }
-
-    public string? TenantUserId
-    {
-        get;
-        set;
-    }
-
-    public string? TenantUserRole
-    {
-        get;
-        set;
     }
 
     public Country? TenantCountry
@@ -81,6 +59,11 @@ public class BaseEntity: RootBaseEntity, IMustHaveTenant
     }
 
     public string? TenantContinent
+    {
+        get;
+        set;
+    }
+    public Guid MyTenantId
     {
         get;
         set;

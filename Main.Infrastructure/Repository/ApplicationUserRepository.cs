@@ -30,13 +30,12 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return result.Succeeded == true;
     }
 
-    public async Task<bool> AddToTenantRoleAsync (string email,string tenantId,string roleName)
+    public async Task<bool> AddToTenantRoleAsync (string email,Guid tenantId,string roleName)
     {
         ApplicationUser? applicationUser = await FindByEmailAsync (email);
 
         TenantUser userTenant = new ()
         {
-            TenantId = tenantId,
             UserId = applicationUser!.Id,
             TenantRole = roleName
         };
@@ -163,7 +162,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
         return new List<string> ();
     }
 
-    public async Task<string> GetTenantRolesAsync (string email,string tenantId)
+    public async Task<string> GetTenantRolesAsync (string email,Guid tenantId)
     {
         ApplicationUser? user = await FindByEmailAsync(email);
 
@@ -174,7 +173,7 @@ public class ApplicationUserRepository: IApplicationUserRepository
 
         TenantUser? userTenants =
         await _context.TenantUsers.FirstOrDefaultAsync<TenantUser>
-        (a => a.TenantId == tenantId && a.UserId == user.Id);
+        (a => a.MyTenantId == tenantId && a.UserId == user.Id);
 
         return userTenants == null ? "" : userTenants.TenantRole;
     }

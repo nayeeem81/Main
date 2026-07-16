@@ -34,13 +34,11 @@ public class TenantRepository: ITenantRepository
             .FirstOrDefaultAsync<Tenant>
              (tenant => tenant.HostName.Length == host.Length
               && string.Equals (tenant.HostName,host));
-
-
     }
 
-    public async Task<Tenant?> GetTenantByIdAsync (string tenantId)
+    public async Task<Tenant?> GetTenantByIdAsync (Guid tenantId)
     {
-        Tenant? tenant = await _context.Tenants.FirstOrDefaultAsync (tenant => tenant.TenantId == tenantId);
+        Tenant? tenant = await _context.Tenants.FirstOrDefaultAsync (tenant => tenant.MyTenantId == tenantId);
 
         return tenant;
     }

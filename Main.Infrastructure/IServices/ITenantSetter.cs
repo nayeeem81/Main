@@ -4,7 +4,7 @@ namespace Main.Infrastructure;
 
 public interface ITenantSetter
 {
-    string CurrentTenantId
+    Guid CurrentTenantId
     {
         get; set;
     }

@@ -10,5 +10,6 @@ public class ApplicationUser: IdentityUser
     public virtual ICollection<TenantUser> TenantUsers
     {
         get; set;
+
     } = new HashSet<TenantUser> ();
 }

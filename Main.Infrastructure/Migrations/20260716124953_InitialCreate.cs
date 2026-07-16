@@ -33,11 +33,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,11 +99,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,7 +117,7 @@ namespace Main.Infrastructure.Migrations
                     ReceiverEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreatedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProcessedOnUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Error = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RetryCount = table.Column<int>(type: "int", nullable: false),
@@ -134,11 +130,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,11 +175,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -208,11 +200,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,9 +220,9 @@ namespace Main.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
                     SubCategoryID = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    SaleCommission = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    SaleCommission = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     SearchTag = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -243,11 +233,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,8 +252,8 @@ namespace Main.Infrastructure.Migrations
                     TenantRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "DATEADD(day, 5, GETUTCDATE())"),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AcceptedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -276,15 +264,42 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TenantInvitations", x => x.InviteId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tenants",
+                columns: table => new
+                {
+                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TenantHostType = table.Column<int>(type: "int", nullable: false),
+                    HostName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Store = table.Column<int>(type: "int", nullable: false),
+                    SmtpId = table.Column<int>(type: "int", nullable: true),
+                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    TenantCountry = table.Column<int>(type: "int", nullable: true),
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tenants", x => x.TenantId);
                 });
 
             migrationBuilder.CreateTable(
@@ -304,11 +319,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -338,11 +351,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -462,6 +473,38 @@ namespace Main.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TenantUsers",
+                columns: table => new
+                {
+                    TenantUserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TenantRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    TenantCountry = table.Column<int>(type: "int", nullable: true),
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TenantUsers", x => x.TenantUserId);
+                    table.ForeignKey(
+                        name: "FK_TenantUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRefreshTokens",
                 columns: table => new
                 {
@@ -481,11 +524,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -517,11 +558,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -551,11 +590,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -585,11 +622,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -600,6 +635,43 @@ namespace Main.Infrastructure.Migrations
                         principalTable: "Products",
                         principalColumn: "ProductID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailSmtps",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FromName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Host = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    FromEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnableSsl = table.Column<bool>(type: "bit", nullable: false),
+                    FkTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    TenantCountry = table.Column<int>(type: "int", nullable: true),
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailSmtps", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmailSmtps_Tenants_FkTenantId",
+                        column: x => x.FkTenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "TenantId");
                 });
 
             migrationBuilder.CreateTable(
@@ -625,11 +697,9 @@ namespace Main.Infrastructure.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TenantCountry = table.Column<int>(type: "int", nullable: true),
-                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TenantContinent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MyTenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -642,91 +712,30 @@ namespace Main.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "EmailSmtps",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FromName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Host = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Port = table.Column<int>(type: "int", nullable: false),
-                    FromEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EnableSsl = table.Column<bool>(type: "bit", nullable: false),
-                    FkTenantId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmailSmtps", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tenants",
-                columns: table => new
-                {
-                    TenantId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantHostType = table.Column<int>(type: "int", nullable: false),
-                    HostName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Store = table.Column<int>(type: "int", nullable: false),
-                    SmtpId = table.Column<int>(type: "int", nullable: true),
-                    TenantKey = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tenants", x => x.TenantId);
-                    table.ForeignKey(
-                        name: "FK_Tenants_EmailSmtps_SmtpId",
-                        column: x => x.SmtpId,
-                        principalTable: "EmailSmtps",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TenantUsers",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenantId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TenantRole = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TenantUsers", x => new { x.UserId, x.TenantId, x.TenantRole });
-                    table.ForeignKey(
-                        name: "FK_TenantUsers_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TenantUsers_Tenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "Tenants",
-                        principalColumn: "TenantId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AdImageFiles_AdminPostID",
                 table: "AdImageFiles",
                 column: "AdminPostID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AdImageFiles_MyTenantId",
+                table: "AdImageFiles",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AdPostComments_AdminPostID",
                 table: "AdPostComments",
                 column: "AdminPostID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdPostComments_MyTenantId",
+                table: "AdPostComments",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdPosts_MyTenantId",
+                table: "AdPosts",
+                column: "MyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -775,9 +784,36 @@ namespace Main.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AValues_MyTenantId",
+                table: "AValues",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmailOutboxMessages_MyTenantId",
+                table: "EmailOutboxMessages",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmailSmtps_FkTenantId",
                 table: "EmailSmtps",
-                column: "FkTenantId");
+                column: "FkTenantId",
+                unique: true,
+                filter: "[FkTenantId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExceptionLogs_MyTenantId",
+                table: "ExceptionLogs",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pages_MyTenantId",
+                table: "Pages",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Panels_MyTenantId",
+                table: "Panels",
+                column: "MyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Panels_PageID",
@@ -785,9 +821,19 @@ namespace Main.Infrastructure.Migrations
                 column: "PageID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Posts_MyTenantId",
+                table: "Posts",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_PanelID",
                 table: "Posts",
                 column: "PanelID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductComments_MyTenantId",
+                table: "ProductComments",
+                column: "MyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductComments_ProductID",
@@ -795,40 +841,54 @@ namespace Main.Infrastructure.Migrations
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductImageFiles_MyTenantId",
+                table: "ProductImageFiles",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductImageFiles_ProductID",
                 table: "ProductImageFiles",
                 column: "ProductID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tenants_SmtpId",
-                table: "Tenants",
-                column: "SmtpId");
+                name: "IX_Products_MyTenantId",
+                table: "Products",
+                column: "MyTenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TenantUsers_TenantId",
+                name: "IX_TenantInvitations_MyTenantId",
+                table: "TenantInvitations",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tenants_MyTenantId",
+                table: "Tenants",
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TenantUsers_MyTenantId",
                 table: "TenantUsers",
-                column: "TenantId");
+                column: "MyTenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TenantUsers_UserId",
+                table: "TenantUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRefreshTokens_MyTenantId",
+                table: "UserRefreshTokens",
+                column: "MyTenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRefreshTokens_UserId",
                 table: "UserRefreshTokens",
                 column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_EmailSmtps_Tenants_FkTenantId",
-                table: "EmailSmtps",
-                column: "FkTenantId",
-                principalTable: "Tenants",
-                principalColumn: "TenantId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_EmailSmtps_Tenants_FkTenantId",
-                table: "EmailSmtps");
-
             migrationBuilder.DropTable(
                 name: "AdImageFiles");
 
@@ -855,6 +915,9 @@ namespace Main.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "EmailOutboxMessages");
+
+            migrationBuilder.DropTable(
+                name: "EmailSmtps");
 
             migrationBuilder.DropTable(
                 name: "ExceptionLogs");
@@ -884,6 +947,9 @@ namespace Main.Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Tenants");
+
+            migrationBuilder.DropTable(
                 name: "Panels");
 
             migrationBuilder.DropTable(
@@ -894,12 +960,6 @@ namespace Main.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Pages");
-
-            migrationBuilder.DropTable(
-                name: "Tenants");
-
-            migrationBuilder.DropTable(
-                name: "EmailSmtps");
         }
     }
 }

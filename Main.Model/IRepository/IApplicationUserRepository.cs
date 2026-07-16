@@ -6,7 +6,7 @@ public interface IApplicationUserRepository
 {
     Task<bool> AddToRoleAsync (string email,string roleName);
 
-    Task<bool> AddToTenantRoleAsync (string email,string tenantId,string roleName);
+    Task<bool> AddToTenantRoleAsync (string email,Guid tenantId,string roleName);
 
     Task<ApplicationUser?> FindByEmailAsync (string email);
 
@@ -22,7 +22,7 @@ public interface IApplicationUserRepository
 
     Task<List<string>> GetRolesAsync (string email);
 
-    Task<string> GetTenantRolesAsync (string email,string tenantId);
+    Task<string> GetTenantRolesAsync (string email,Guid tenantId);
 
     Task<ApplicationUser?> FindByNameIdAsync (string id);
 

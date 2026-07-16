@@ -2,39 +2,28 @@
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
 
-namespace Main.WebAppCore.Middleware;
-
-public class TenantAntiforgeryOptions: IConfigureNamedOptions<AntiforgeryOptions>
+public class TenantAntiforgeryOptions: IConfigureOptions<AntiforgeryOptions>
 {
-    private readonly ITenantContext _tenantContext;
-    public TenantAntiforgeryOptions (ITenantContext tenantContext)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    //  Inject the Singleton HTTP context accessor, NOT your scoped ITenantContext directly
+    public TenantAntiforgeryOptions (IHttpContextAccessor httpContextAccessor)
     {
-        _tenantContext = tenantContext;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public void Configure (AntiforgeryOptions options) => Configure (Options.DefaultName,options);
-
-    public void Configure (string? name,AntiforgeryOptions options)
+    public void Configure (AntiforgeryOptions options)
     {
-        string? tenantId = _tenantContext.ResolvedTenantId;
-
-        if ( string.IsNullOrEmpty (tenantId) )
+        var httpContext = _httpContextAccessor.HttpContext;
+        if ( httpContext == null )
         {
-            // Dynamically set cookie name based on the current tenant
-            options.HeaderName = "X-XSRF-TOKEN";
-
-            options.Cookie.Name = $".AspNetCore.Antiforgery.{tenantId}";
-
-            // Optional: Match the form field if you use standard MVC forms
-            options.FormFieldName = $"__RequestVerificationToken_{tenantId}";
-
-            options.Cookie.SameSite = SameSiteMode.Strict;
-
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-
-            options.Cookie.HttpOnly = true;
+            return;
         }
+
+        //  Safely fetch your Scoped tenant service dynamically from the request scope
+        var tenantContext = httpContext.RequestServices.GetRequiredService<ITenantContext>();
+
+        // Apply your dynamic tenant logic here safely
+        options.Cookie.Name = $"Antiforgery_{tenantContext.TenantId}";
     }
 }
-
-

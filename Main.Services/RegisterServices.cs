@@ -47,7 +47,7 @@ public static class RegisterServices
                     // 2. Retrieve the tenant ID that your middleware already resolved
                     var tenantId = tenantSetter.CurrentTenantId;
 
-                    if ( !string.IsNullOrEmpty (tenantId) )
+                    if ( !string.IsNullOrEmpty (tenantId.ToString ()) )
                     {
                         // 3. Build your custom dynamic multi-tenant cookie name string
                         var cookieName = $".App.AccessToken.{tenantId}";

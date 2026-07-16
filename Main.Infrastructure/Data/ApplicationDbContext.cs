@@ -2,22 +2,22 @@
 using Main.Common;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System.Data;
 
 namespace Main.Infrastructure;
 
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
-    public readonly string tenantId;
+    public readonly Guid resolvedTenantId;
     public readonly ITenantContext _tenantContext;
 
-    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
+    //public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
     {
-        tenantId = tenantSetter.CurrentTenantId;
+        resolvedTenantId = tenantSetter.CurrentTenantId;
+
         _tenantContext = tenantContext;
     }
 
@@ -121,44 +121,42 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     }
 
     private void FluentApiConfiguration (ModelBuilder builder)
-    {
-        // Tenant 
-        _ = builder.Entity<Tenant> (static entity =>
-        {
-            _ = entity.HasKey (t => t.TenantId);
-            _ = entity.Property (t => t.TenantId)
-                  .HasValueGenerator<SequentialGuidValueGenerator> ();
 
-        });
+    {
+
+        _ = builder.Entity<Tenant> ()
+       .HasOne (t => t.EmaiSmtp)
+       .WithOne (e => e.Tenant)
+       .HasForeignKey<EmailSmtp> (e => e.FkTenantId);
 
         // Tenant User
         _ = builder.Entity<TenantUser> ()
-                   .HasKey (ut => new { ut.UserId,ut.TenantId,ut.TenantRole });
-        _ = builder.Entity<TenantUser> ()
-           .HasOne (ut => ut.User)
-           .WithMany (au => au.TenantUsers)
-           .HasForeignKey (ut => ut.UserId);
+            .HasOne (ut => ut.User)
+            .WithMany (au => au.TenantUsers)
+            .HasForeignKey (ut => ut.UserId);
+
 
         // Tenant Invitation
         _ = builder.Entity<TenantInvitation> (static entity =>
         {
-            _ = entity.HasKey (t => t.InviteId);
-            _ = entity.Property (t => t.InviteId)
-                  .HasValueGenerator<SequentialGuidValueGenerator> ();
             _ = entity.Property (t => t.Email)
                   .IsRequired ();
             _ = entity.Property (t => t.Token)
                   .IsRequired ();
             _ = entity.Property (t => t.Status)
-                  .HasDefaultValue (InvitationStatus.Pending)
                   .IsRequired ();
             _ = entity.Property (t => t.CreatedOn)
-                  .HasDefaultValueSql ("GETUTCDATE()")
                   .IsRequired ();
             _ = entity.Property (t => t.ExpiresOn)
-                  .HasDefaultValueSql ("DATEADD(day, 5, GETUTCDATE())")
                   .IsRequired ();
         });
+
+        // 1. Locate this line in your DbContext / Configuration file:
+        _ = builder.Entity<TenantInvitation> ()
+            .Property (t => t.Status)
+            .HasDefaultValue (InvitationStatus.Pending) // or your specific default
+            .HasSentinel (( InvitationStatus ) ( -1 ));      // Add this line to silence validation [20601]
+
 
         // Application User
         _ = builder.Entity<ApplicationUser> ()
@@ -174,10 +172,15 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         // Product
         _ = builder.Entity<Product> ()
            .Property (p => p.Discount)
-           .HasColumnType ("decimal(18,2)");
+           .HasPrecision (18,2);
+
+        _ = builder.Entity<Product> ()
+            .Property (p => p.Price)
+            .HasPrecision (18,2); // Set precision to 18 and scale to 2 digits
+
         _ = builder.Entity<Product> ()
             .Property (p => p.SaleCommission)
-            .HasColumnType ("decimal(18,2)");
+            .HasPrecision (18,2);
 
 
         // Email Outbox Message
@@ -191,54 +194,105 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             _ = entity.Property (t => t.Body)
                       .IsRequired ();
             _ = entity.Property (t => t.CreatedOnUtc)
-                      .HasDefaultValueSql ("GETUTCDATE()")
                       .IsRequired ();
             _ = entity.Property (t => t.RetryCount)
                       .IsRequired ();
         });
+
+        _ = builder.Entity<Tenant> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<TenantInvitation> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<TenantUser> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<Page> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<Post> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<Panel> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<Product> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<ProductComment> ()
+         .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<ProductImageFile> ()
+         .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<AdminPost> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<AdminPostComment> ()
+         .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<AdminImageFile> ()
+         .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<AValue> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<ExceptionLog> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<UserRefreshToken> ()
+          .HasIndex (ut => ut.MyTenantId);
+
+        _ = builder.Entity<EmailOutboxMessage> ()
+          .HasIndex (ut => ut.MyTenantId);
     }
 
     // TenantId based Query filters (comes from ITenantSetter.CurrentTenantId)
     // Initially, the CurrentTenantId is set in the TenantMiddleware, which is executed before the DbContext is created.
     private void TenantGlobalQueryFilter (ModelBuilder builder)
     {
-        string currentTenant = tenantId;
+        string currentTenant = resolvedTenantId.ToString();
 
-        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        Guid myTenantId = new(currentTenant);
 
-        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Tenant> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<TenantUser> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<Product> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<TenantInvitation> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Product> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<ProductImageFile> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<ProductComment> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<AdminPost> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<AdminImageFile> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<Post> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<AdminPostComment> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<Panel> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Post> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<Page> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Panel> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<AValue> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<Page> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<AValue> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
 
-        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.TenantId == currentTenant);
+        _ = builder.Entity<ExceptionLog> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
+
+        _ = builder.Entity<UserRefreshToken> ().HasQueryFilter (p => p.MyTenantId == myTenantId);
     }
 
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
     private void ApplyBaseDataTenantId ()
     {
-        string currentTenantId = tenantId;
+        string currentTenant = resolvedTenantId.ToString();
+
+        Guid myTenantId = new(currentTenant);
 
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
@@ -249,7 +303,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
         foreach ( var entry in entries )
         {
-            ( ( IMustHaveTenant ) entry.Entity ).TenantId = currentTenantId;
+            ( ( IMustHaveTenant ) entry.Entity ).MyTenantId = myTenantId;
 
             var entryState = entry.State;
 

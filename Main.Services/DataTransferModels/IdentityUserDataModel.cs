@@ -26,7 +26,7 @@ public class ApplicationUserDataModel
         get; set;
     }
 
-    public string TenantId
+    public Guid MyTenantId
     {
         get; set;
     }

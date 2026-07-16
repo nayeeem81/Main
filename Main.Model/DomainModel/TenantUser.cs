@@ -1,18 +1,25 @@
-﻿namespace Domain.Model;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class TenantUser
+namespace Domain.Model;
+
+public class TenantUser: BaseEntity
 {
     public TenantUser ()
     {
     }
 
+    [Key]
+    public int TenantUserId
+    {
+        get; set;
+    }
+
     public string UserId { get; set; } = string.Empty;
 
+    [ForeignKey ("UserId")]
     public virtual ApplicationUser User { get; set; } = null!;
 
-    public string TenantId { get; set; } = string.Empty;
-
-    public virtual Tenant Tenant { get; set; } = null!;
-
     public string TenantRole { get; set; } = string.Empty;
+
 }

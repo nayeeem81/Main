@@ -18,8 +18,8 @@ public class TenantInvitationRepository: ITenantInvitationRepository
     public async Task<TenantInvitation?> GetByTokenAsync (string token,CancellationToken ct = default)
         => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.Token == token,ct);
 
-    public async Task<TenantInvitation?> GetByEmailAndTenantAsync (string tenantId,string email,CancellationToken ct = default)
-        => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.TenantId == tenantId && x.Email == email,ct);
+    public async Task<TenantInvitation?> GetByEmailAndTenantAsync (Guid tenantId,string email,CancellationToken ct = default)
+        => await _db.TenantInvitations.FirstOrDefaultAsync (x => x.MyTenantId == tenantId && x.Email == email,ct);
 
     public async Task AddAsync (TenantInvitation invitation,CancellationToken ct = default)
     {
@@ -33,6 +33,6 @@ public class TenantInvitationRepository: ITenantInvitationRepository
         _ = await _db.SaveChangesAsync (ct);
     }
 
-    public async Task<bool> ExistsAsync (string tenantId,string email,CancellationToken ct = default)
-        => await _db.TenantInvitations.AnyAsync (x => x.TenantId == tenantId && x.Email == email && x.Status == InvitationStatus.Pending,ct);
+    public async Task<bool> ExistsAsync (Guid tenantId,string email,CancellationToken ct = default)
+        => await _db.TenantInvitations.AnyAsync (x => x.MyTenantId == tenantId && x.Email == email && x.Status == InvitationStatus.Pending,ct);
 }

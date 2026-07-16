@@ -8,7 +8,7 @@ public interface IAccountService
 {
     Task<IdentityResult> CreateApplicationUserAccount (UserAccountDataModel userAccountDataModel);
 
-    Task<ApplicationUserDataModel?> GetApplicationUser (string email,string tenantId);
+    Task<ApplicationUserDataModel?> GetApplicationUser (string email,Guid tenantId);
 
     Task<SignInResult> AuthenticateUser (string email,string password);
 
@@ -22,7 +22,7 @@ public interface IAccountService
 
     Task<bool> CompleteEmailVerification (string email,string token);
 
-    Task<string> GetTenantUserRoleClaim (string email,string tenantId);
+    Task<string> GetTenantUserRoleClaim (string email,Guid tenantId);
 
     Task<ApplicationUserDataModel?> FindByEmailAsync (string email);
 

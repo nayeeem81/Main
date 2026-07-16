@@ -1,15 +1,14 @@
 ﻿using Main.Common;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Model;
 
-public class Tenant
+public class Tenant: BaseEntity
 {
     // seed
     public Tenant (string key)
     {
-        TenantId = key;
+        SecretKey = key;
     }
 
     public Tenant ()
@@ -17,7 +16,7 @@ public class Tenant
     }
 
     [Key]
-    public string TenantId
+    public Guid TenantId
     {
         get; set;
     }
@@ -51,13 +50,13 @@ public class Tenant
         get; set;
     }
 
-    [ForeignKey (nameof (SmtpId))]
+
     public virtual EmailSmtp? EmaiSmtp
     {
         get; set;
     }
 
-    public string TenantKey
+    public string SecretKey
     {
         get; set;
     }

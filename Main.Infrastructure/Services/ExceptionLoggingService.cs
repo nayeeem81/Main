@@ -77,7 +77,6 @@ public class ExceptionLoggingService: IExceptionLoggingService
                 // Create new exception log entry
                 exceptionLog = new ExceptionLog
                 {
-                    TenantId = _tenantSetter.CurrentTenantId,
                     ExceptionType = exception.GetType ().Name,
                     StatusCode = statusCode,
                     ErrorCode = errorCode,

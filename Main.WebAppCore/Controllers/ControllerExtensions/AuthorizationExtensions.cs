@@ -7,7 +7,7 @@ namespace Main.WebAppCore.Controllers.Extensions;
 public static class AuthorizationExtensions
 {
     public static async Task<string> GetTenantUserRole
-    (IAccountService accountService,string email,string resolvedTenantId)
+    (IAccountService accountService,string email,Guid resolvedTenantId)
     {
         string tenantRole = await accountService.GetTenantUserRoleClaim
         (email, resolvedTenantId);
@@ -17,7 +17,7 @@ public static class AuthorizationExtensions
 
     public static void AddTenantIsolatedHeaderToken
     (HttpContext context,ITokenService tokenService,
-     string userId,string resolvedTenantId,
+     string userId,Guid resolvedTenantId,
      string role,int minutes,int days)
     {
         // 2. Create your tokens after successful sign-in
@@ -53,14 +53,14 @@ public static class AuthorizationExtensions
     }
 
     public static void AddUserClaims
-    (HttpContext context,string userId,string resolvedTenantId,
+    (HttpContext context,string userId,Guid resolvedTenantId,
     string formatedTenantRole,string userName,string email)
     {
         List<Claim> listUserClaims =
         [
             new Claim (ClaimTypes.NameIdentifier,userId),
             new Claim (ClaimTypes.Role,"User"),
-            new Claim ("TenantId",resolvedTenantId),
+            new Claim ("TenantId",resolvedTenantId.ToString()),
             new Claim("TenantRole",formatedTenantRole),
             new Claim ("UserName", userName),
             new Claim ("Email",email)

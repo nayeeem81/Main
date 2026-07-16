@@ -6,15 +6,15 @@ namespace Main.Infrastructure;
 
 public interface ITokenService
 {
-    Task<string> GenerateAccessToken (string userId,string tenantId,int expiryInMinutes);
+    Task<string> GenerateAccessToken (string userId,Guid tenantId,int expiryInMinutes);
 
     string GenerateRefreshToken ();
 
-    Task<bool> SaveRefreshToken (string userId,string tenantId,string token);
+    Task<bool> SaveRefreshToken (string userId,Guid tenantId,string token);
 
     ClaimsPrincipal? ValidateAndDecryptToken (string token,out SecurityToken? validatedToken);
 
-    Task<bool> RevokeUserRefreshTokensAsync (string userId,string tenantId);
+    Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId);
 
-    Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,string tenantId,string userId);
+    Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId);
 }

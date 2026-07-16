@@ -26,8 +26,6 @@ public static class DataSeeder
         // 1. SEED TENANTS AND PAGES
         // ==========================================
 
-        string seedTenancyId1 = "";
-        string seedTenancyId2 = "";
 
 
         // TENANT 1
@@ -35,7 +33,7 @@ public static class DataSeeder
 
         if ( tenant1 == null )
         {
-            Tenant tenantNew1 = new( )
+            Tenant tenantNew1 = new ( )
             {
                 Name = "LifeStyle Store",
                 HostName = "lifestyle-local",
@@ -43,11 +41,16 @@ public static class DataSeeder
             };
 
             _ = context.Tenants.Add (tenantNew1);
+
             _ = await context.SaveChangesAsync ();
 
-            seedTenancyId1 = tenantNew1.TenantId;
+            tenantNew1.MyTenantId = tenantNew1.TenantId;
+            _ = context.Update (tenantNew1);
+            _ = await context.SaveChangesAsync ();
 
-            await PageSeed (context,seedTenancyId1);
+
+            Guid myTenantId2 = tenantNew1.TenantId;
+            await PageSeed (context,myTenantId2);
         }
 
 
@@ -56,7 +59,8 @@ public static class DataSeeder
 
         if ( tenant2 == null )
         {
-            Tenant tenantNew2 =  new( seedTenancyId2 )
+
+            Tenant tenantNew2 =  new()
             {
                 Name = "Fine Arts Store",
                 HostName = "fanarts-local",
@@ -66,9 +70,14 @@ public static class DataSeeder
             _ = context.Tenants.Add (tenantNew2);
             _ = await context.SaveChangesAsync ();
 
-            seedTenancyId2 = tenantNew2.TenantId;
 
-            await PageSeed (context,seedTenancyId2);
+            tenantNew2.MyTenantId = tenantNew2.TenantId;
+            _ = context.Update (tenantNew2);
+            _ = await context.SaveChangesAsync ();
+
+
+            Guid myTenantId2 = tenantNew2.TenantId;
+            await PageSeed (context,myTenantId2);
         }
 
 
@@ -113,13 +122,13 @@ public static class DataSeeder
 
         var testUsersConfigurationSeed = new []
         {
-            new { Email = "tenant1.admin@test.com", TenantId = seedTenancyId1, TenantRole = "Admin" },
-            new { Email = "tenant1.content@test.com", TenantId = seedTenancyId1, TenantRole = "ContentManager" },
-            new { Email = "tenant1.member@test.com", TenantId = seedTenancyId1, TenantRole = "Member" },
+            new { Email = "tenant1.admin@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "Admin" },
+            new { Email = "tenant1.content@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "ContentManager" },
+            new { Email = "tenant1.member@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "Member" },
 
-            new { Email = "tenant2.admin@test.com", TenantId = seedTenancyId2, TenantRole = "Admin" },
-            new { Email = "tenant2.content@test.com", TenantId = seedTenancyId2, TenantRole = "ContentManager" },
-            new { Email = "tenant2.member@test.com", TenantId = seedTenancyId2, TenantRole = "Member" }
+            new { Email = "tenant2.admin@test.com", MyTenantId = tenant2!.TenantId  , TenantRole = "Admin" },
+            new { Email = "tenant2.content@test.com", MyTenantId = tenant2!.TenantId  , TenantRole = "ContentManager" },
+            new { Email = "tenant2.member@test.com", MyTenantId = tenant2!.TenantId , TenantRole = "Member" }
         };
 
         foreach ( var config in testUsersConfigurationSeed )
@@ -147,7 +156,7 @@ public static class DataSeeder
                     var tenantMapping = new TenantUser
                     {
                         UserId = newUser.Id,
-                        TenantId = config.TenantId,
+                        MyTenantId = config.MyTenantId,
                         TenantRole = config.TenantRole
                     };
 
@@ -162,7 +171,7 @@ public static class DataSeeder
 
 
 
-    private static async Task PageSeed (ApplicationDbContext context,string seedTenancyId)
+    private static async Task PageSeed (ApplicationDbContext context,Guid seedTenancyId)
     {
         _ = context.Pages.Add (new Page (EnumPublicPage.Home,seedTenancyId,true));
         _ = context.Pages.Add (new Page (EnumPublicPage.AdsDetail,seedTenancyId,true));

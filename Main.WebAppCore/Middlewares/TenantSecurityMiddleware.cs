@@ -23,8 +23,7 @@ public class TenantSecurityMiddleware
             var resolvedTenantId = tenantSetter.CurrentTenantId;
 
             // 3. ENFORCE ISOLATION: Reject if they don't match
-            if ( string.IsNullOrEmpty (userTenantId) ||
-                !userTenantId.Equals (resolvedTenantId,StringComparison.OrdinalIgnoreCase) )
+            if ( string.Equals (userTenantId,resolvedTenantId.ToString (),StringComparison.OrdinalIgnoreCase) )
             {
                 // Sign out or short-circuit with a 403 Forbidden page
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;

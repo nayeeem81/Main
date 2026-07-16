@@ -133,7 +133,7 @@ public class AuthController: BaseController
         }
 
         // (1. Authentication)
-        string resolvedTenantId = _tenantSetter.CurrentTenantId;
+        Guid resolvedTenantId = _tenantSetter.CurrentTenantId;
         ApplicationUserDataModel? applicationIdentityUserDataModel
         = await _userAccountService.GetApplicationUser(email, resolvedTenantId!);
 

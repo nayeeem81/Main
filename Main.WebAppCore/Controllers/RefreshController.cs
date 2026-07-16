@@ -21,7 +21,7 @@ namespace Main.WebAppCore.Controllers
         public async Task<IActionResult> Refresh ()
         {
             var tenantId = _tenantSetter.CurrentTenantId;
-            var cookieName = $".App.RefreshToken.{tenantId}";
+            var cookieName = $".App.RefreshToken.{tenantId.ToString()}";
 
             // Extract token from the secure cookie
             if ( !Request.Cookies.TryGetValue (cookieName,out var currentRefreshToken) )
@@ -33,7 +33,7 @@ namespace Main.WebAppCore.Controllers
             {
                 // Execute the service logic
                 var tokenResult = await _tokenService.RotateRefreshTokenAsync
-                    (currentRefreshToken, tenantId,_tenantContext.ApplicationUserId);
+                    (currentRefreshToken, tenantId!,_tenantContext.ApplicationUserId);
 
                 if ( tokenResult == null )
                 {

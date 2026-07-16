@@ -9,7 +9,7 @@ public static class AuthentiicationExtensions
     public static async Task<bool> InvalidApplicationUser (
     IAccountService accountService,
     ApplicationUserDataModel? applicationIdentityUserDataModel,
-    LoginViewModel loginDisplayViewModel,string resolvedTenantId)
+    LoginViewModel loginDisplayViewModel,Guid resolvedTenantId)
     {
         if ( applicationIdentityUserDataModel == null )
         {
@@ -19,7 +19,7 @@ public static class AuthentiicationExtensions
         }
 
 
-        if ( applicationIdentityUserDataModel?.TenantId != resolvedTenantId )
+        if ( applicationIdentityUserDataModel?.MyTenantId.ToString () != resolvedTenantId.ToString () )
         {
             loginDisplayViewModel.Message = "Invalid login attempt. Please, check your email if you have any account in this website.";
 

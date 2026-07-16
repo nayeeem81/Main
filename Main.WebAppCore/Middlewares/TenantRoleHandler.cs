@@ -23,7 +23,7 @@ public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
         var loggedUserId = user?.FindFirst
         (ClaimTypes.NameIdentifier)?.Value ?? "";
 
-        if ( tokenTenantId == resolvedTenantId &&
+        if ( tokenTenantId == resolvedTenantId.ToString () &&
         context.User.IsInRole ("User") )
         {
             // Validate "IdentityId:TenantId:RoleName" claim after Login success

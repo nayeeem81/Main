@@ -52,7 +52,6 @@ public class AccountService: IAccountService
 
             TenantUser tenantUser = new ()
             {
-                TenantId = tenant?.TenantId!,
                 UserId =  userIdentityEntity.Id ,
                 TenantRole = "Admin"
             };
@@ -72,7 +71,7 @@ public class AccountService: IAccountService
 
 
     public async Task<ApplicationUserDataModel?> GetApplicationUser
-    (string email,string tenantId)
+    (string email,Guid tenantId)
     {
         ApplicationUser? applicationUser
         = await _userRepository.FindByEmailAsync ( email );
@@ -96,7 +95,7 @@ public class AccountService: IAccountService
             Id = applicationUser?.Id!,
             UserName = applicationUser?.UserName,
             Email = applicationUser?.Email,
-            TenantId= tenantUser.TenantId
+            MyTenantId = tenantUser.MyTenantId
         };
 
         return applicationUserDataModel;
@@ -157,7 +156,7 @@ public class AccountService: IAccountService
         return false;
     }
 
-    public async Task<string> GetTenantUserRoleClaim (string email,string tenantId)
+    public async Task<string> GetTenantUserRoleClaim (string email,Guid tenantId)
     {
         string tenantRole = await _userRepository.GetTenantRolesAsync (email, tenantId);
 

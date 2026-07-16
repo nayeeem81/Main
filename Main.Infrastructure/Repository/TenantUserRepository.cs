@@ -20,9 +20,9 @@ public class TenantUserRepository: ITenantUserRepository
         _ = await _db.SaveChangesAsync (ct);
     }
 
-    public async Task<bool> ExistsAsync (string tenantId,string userId,CancellationToken ct = default)
-        => await _db.TenantUsers.AnyAsync (x => x.TenantId == tenantId && x.UserId == userId);
+    public async Task<bool> ExistsAsync (Guid tenantId,string userId,CancellationToken ct = default)
+        => await _db.TenantUsers.AnyAsync (x => x.MyTenantId == tenantId && x.UserId == userId);
 
-    public async Task<TenantUser?> GetByUserIdAsync (string userId,string tenantId,CancellationToken ct = default)
-        => await _db.TenantUsers.FirstOrDefaultAsync (x => x.UserId == userId && x.TenantId == tenantId,ct);
+    public async Task<TenantUser?> GetByUserIdAsync (string userId,Guid tenantId,CancellationToken ct = default)
+        => await _db.TenantUsers.FirstOrDefaultAsync (x => x.MyTenantId == tenantId && x.UserId == userId);
 }

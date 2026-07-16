@@ -1,14 +1,14 @@
-﻿using Main.Model.DomainModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Model;
 
-public class EmailSmtp: RootBaseEntity
+public class EmailSmtp: BaseEntity
 {
     public EmailSmtp ()
     {
     }
 
+    [Key]
     public int Id
     {
         get; set;
@@ -28,12 +28,12 @@ public class EmailSmtp: RootBaseEntity
 
     public bool EnableSsl { get; set; } = true;
 
-    public string? FkTenantId
+    public Guid? FkTenantId
     {
         get; set;
-    } = string.Empty;
+    }
 
-    [ForeignKey ("FkTenantId")]
+
     public virtual Tenant? Tenant
     {
         get; set;

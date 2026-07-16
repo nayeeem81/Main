@@ -13,7 +13,7 @@ public class TenantContext: ITenantContext
     ITenantSetter tenantSetter)
     {
         _httpContextAccessor = httpContextAccessor;
-        _tenantId = tenantSetter.CurrentTenantId;
+        _tenantId = tenantSetter.CurrentTenantId.ToString ();
     }
 
     public ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
@@ -27,8 +27,6 @@ public class TenantContext: ITenantContext
     {
         return User?.FindFirst ("TenantRole")?.Value ?? "";
     }
-
-
 
     public string TenantId => GetTenantId ();
 

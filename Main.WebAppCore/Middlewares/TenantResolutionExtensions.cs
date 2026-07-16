@@ -34,7 +34,7 @@ public static class TenantResolutionExtensions
             if ( tenantDisplayDataModel != null )
             {
                 SetTenantSetter (tenantSetter,tenantDisplayDataModel);
-                context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId;
+                context.Request.Headers[TenantHeaderKey] = tenantSetter.CurrentTenantId.ToString ();
                 return true;
             }
         }
@@ -45,7 +45,7 @@ public static class TenantResolutionExtensions
 
     private static void SetTenantSetter (ITenantSetter tenantSetter,TenantDisplayDataModel tenantDisplayDataModel)
     {
-        tenantSetter.CurrentTenantId = tenantDisplayDataModel.TenantId;
+        tenantSetter.CurrentTenantId = tenantDisplayDataModel.MyTenantId;
         tenantSetter.TenantStore = tenantDisplayDataModel.StoreType;
         tenantSetter.TenantName = tenantDisplayDataModel.Name;
     }

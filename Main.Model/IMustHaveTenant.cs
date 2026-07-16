@@ -3,7 +3,7 @@ namespace Domain.Model;
 
 public interface IMustHaveTenant
 {
-    string TenantId
+    Guid MyTenantId
     {
         get; set;
     }

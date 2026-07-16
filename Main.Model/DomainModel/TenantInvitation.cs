@@ -1,4 +1,5 @@
 using Main.Common;
+using System.ComponentModel.DataAnnotations;
 namespace Domain.Model;
 
 public class TenantInvitation: BaseEntity
@@ -7,6 +8,7 @@ public class TenantInvitation: BaseEntity
     {
     }
 
+    [Key]
     public Guid InviteId
     {
         get; set;
@@ -32,10 +34,10 @@ public class TenantInvitation: BaseEntity
         get; set;
     } = string.Empty;
 
-    public InvitationStatus Status
+    public InvitationStatus? Status
     {
         get; set;
-    } = InvitationStatus.Pending;
+    }
 
     public DateTime CreatedOn
     {

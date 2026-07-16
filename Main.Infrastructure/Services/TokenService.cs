@@ -35,14 +35,14 @@ public class TokenService: ITokenService
     }
 
     public async Task<string> GenerateAccessToken
-    (string userId,string tenantId,int expiryInMinutes)
+    (string userId,Guid tenantId,int expiryInMinutes)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, userId),
-            new("tenant_id", tenantId)
+            new("TenantId", tenantId.ToString())
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -64,13 +64,13 @@ public class TokenService: ITokenService
 
 
 
-    public async Task<bool> RevokeUserRefreshTokensAsync (string userId,string tenantId)
+    public async Task<bool> RevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         bool result = await _tokenRepository.LogoutRevokeUserRefreshTokensAsync(userId,tenantId);
         return result;
     }
 
-    public async Task<bool> SaveRefreshToken (string userId,string tenantId,string token)
+    public async Task<bool> SaveRefreshToken (string userId,Guid tenantId,string token)
     {
         bool result = await _tokenRepository.SaveTokenAsync(userId,tenantId,token);
         return result;
@@ -91,7 +91,7 @@ public class TokenService: ITokenService
         }
     }
 
-    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,string tenantId,string userId)
+    public async Task<TokenResponseModel> RotateRefreshTokenAsync (string currentToken,Guid tenantId,string userId)
     {
         UserRefreshToken? savedToken = await _tokenRepository.GetSavedRefreshTokenAsync(currentToken,tenantId);
 

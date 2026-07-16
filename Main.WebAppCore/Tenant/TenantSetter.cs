@@ -5,7 +5,7 @@ namespace Main.WebAppCore.Tenant;
 
 public class TenantSetter: ITenantSetter
 {
-    public string CurrentTenantId
+    public Guid CurrentTenantId
     {
         get; set;
     }

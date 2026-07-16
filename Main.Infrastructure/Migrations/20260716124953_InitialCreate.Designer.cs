@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Main.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260714182404_InitialCreate")]
+    [Migration("20260716124953_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,6 +21,9 @@ namespace Main.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -58,6 +61,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<long>("ParentValueId")
                         .HasColumnType("bigint");
 
@@ -70,16 +76,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -88,6 +84,8 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ValueID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("AValues");
                 });
@@ -132,6 +130,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -141,19 +142,11 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("AdminImageFileID");
 
                     b.HasIndex("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("AdImageFiles");
                 });
@@ -191,6 +184,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PostType")
                         .HasColumnType("int");
 
@@ -218,16 +214,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -236,6 +222,8 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("AdPosts");
                 });
@@ -280,6 +268,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -289,19 +280,11 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("AdminPostCommentID");
 
                     b.HasIndex("AdminPostID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("AdPostComments");
                 });
@@ -395,9 +378,7 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedOnUtc")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
@@ -419,6 +400,9 @@ namespace Main.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ProcessedOnUtc")
                         .HasColumnType("datetime2");
@@ -443,17 +427,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("EmailOutboxMessages");
                 });
@@ -482,8 +458,8 @@ namespace Main.Infrastructure.Migrations
                     b.Property<bool>("EnableSsl")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FkTenantId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid?>("FkTenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FromEmail")
                         .IsRequired()
@@ -509,6 +485,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -519,13 +498,21 @@ namespace Main.Infrastructure.Migrations
                     b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FkTenantId");
+                    b.HasIndex("FkTenantId")
+                        .IsUnique()
+                        .HasFilter("[FkTenantId] IS NOT NULL");
 
                     b.ToTable("EmailSmtps");
                 });
@@ -601,6 +588,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("OccurrenceCount")
                         .HasColumnType("int");
 
@@ -639,16 +629,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -658,6 +638,8 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("ExceptionLogs");
                 });
@@ -698,6 +680,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -707,17 +692,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PageID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("Pages");
                 });
@@ -755,6 +732,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PageID")
                         .HasColumnType("int");
 
@@ -777,17 +757,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("PanelID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.HasIndex("PageID");
 
@@ -834,6 +806,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
@@ -855,16 +830,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -874,6 +839,8 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.HasIndex("PanelID");
 
@@ -909,6 +876,7 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<decimal?>("Discount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("GlobalUserRole")
@@ -923,10 +891,14 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("PostType")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductName")
@@ -934,6 +906,7 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("SaleCommission")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("SearchTag")
@@ -951,17 +924,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ProductID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("Products");
                 });
@@ -1003,6 +968,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
 
@@ -1015,17 +983,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ProductCommentID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.HasIndex("ProductID");
 
@@ -1069,6 +1029,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
 
@@ -1081,17 +1044,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ProductImageFileID");
+
+                    b.HasIndex("MyTenantId");
 
                     b.HasIndex("ProductID");
 
@@ -1100,15 +1055,51 @@ namespace Main.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Model.Tenant", b =>
                 {
-                    b.Property<string>("TenantId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("TenantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GlobalUserRole")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HostName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecretKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("SmtpId")
@@ -1117,16 +1108,18 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int>("Store")
                         .HasColumnType("int");
 
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
+
                     b.Property<int>("TenantHostType")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("TenantId");
 
-                    b.HasIndex("SmtpId");
+                    b.HasIndex("MyTenantId");
 
                     b.ToTable("Tenants");
                 });
@@ -1148,9 +1141,7 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
@@ -1163,9 +1154,7 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ExpiresOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("DATEADD(day, 5, GETUTCDATE())");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("GlobalUserRole")
                         .HasColumnType("nvarchar(max)");
@@ -1182,6 +1171,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("SessionUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -1196,17 +1188,7 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TenantRole")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Token")
@@ -1215,23 +1197,69 @@ namespace Main.Infrastructure.Migrations
 
                     b.HasKey("InviteId");
 
+                    b.HasIndex("MyTenantId");
+
                     b.ToTable("TenantInvitations");
                 });
 
             modelBuilder.Entity("Domain.Model.TenantUser", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("TenantUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TenantUserId"));
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GlobalUserRole")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SessionUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantContinent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TenantCountry")
+                        .HasColumnType("int");
 
                     b.Property<string>("TenantRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "TenantId", "TenantRole");
+                    b.HasKey("TenantUserId");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("MyTenantId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TenantUsers");
                 });
@@ -1276,6 +1304,9 @@ namespace Main.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MyTenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ReplacedByToken")
                         .HasColumnType("nvarchar(max)");
 
@@ -1288,16 +1319,6 @@ namespace Main.Infrastructure.Migrations
                     b.Property<int?>("TenantCountry")
                         .HasColumnType("int");
 
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantUserRole")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1307,6 +1328,8 @@ namespace Main.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MyTenantId");
 
                     b.HasIndex("UserId");
 
@@ -1471,8 +1494,8 @@ namespace Main.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Model.EmailSmtp", b =>
                 {
                     b.HasOne("Domain.Model.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("FkTenantId");
+                        .WithOne("EmaiSmtp")
+                        .HasForeignKey("Domain.Model.EmailSmtp", "FkTenantId");
 
                     b.Navigation("Tenant");
                 });
@@ -1521,30 +1544,13 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Model.Tenant", b =>
-                {
-                    b.HasOne("Domain.Model.EmailSmtp", "EmaiSmtp")
-                        .WithMany()
-                        .HasForeignKey("SmtpId");
-
-                    b.Navigation("EmaiSmtp");
-                });
-
             modelBuilder.Entity("Domain.Model.TenantUser", b =>
                 {
-                    b.HasOne("Domain.Model.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Model.ApplicationUser", "User")
                         .WithMany("TenantUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Tenant");
 
                     b.Navigation("User");
                 });
@@ -1638,6 +1644,11 @@ namespace Main.Infrastructure.Migrations
                     b.Navigation("ListComments");
 
                     b.Navigation("ListImageFiles");
+                });
+
+            modelBuilder.Entity("Domain.Model.Tenant", b =>
+                {
+                    b.Navigation("EmaiSmtp");
                 });
 #pragma warning restore 612, 618
         }

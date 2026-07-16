@@ -14,10 +14,10 @@ public class TokenRepository: ITokenRepository
         _context = context;
     }
 
-    public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,string tenantId)
+    public async Task<bool> LogoutRevokeUserRefreshTokensAsync (string userId,Guid tenantId)
     {
         var activeTokens = await _context.UserRefreshTokens.Where
-        (t => t.UserId == userId && t.TenantId == tenantId
+        (t => t.UserId == userId && t.MyTenantId == tenantId
         && !t.IsRevoked).ToListAsync();
 
         foreach ( var token in activeTokens )
@@ -31,11 +31,11 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,string tenantId)
+    public async Task<UserRefreshToken?> GetSavedRefreshTokenAsync (string userId,Guid tenantId)
     {
         UserRefreshToken? userRefreshToken =
         await _context.UserRefreshTokens.FirstOrDefaultAsync<UserRefreshToken>
-        (a => a.UserId == userId && a.TenantId == tenantId);
+        (a => a.UserId == userId && a.MyTenantId == tenantId);
 
         return userRefreshToken;
     }
@@ -48,13 +48,13 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<bool> SaveRotateRefreshTokenAsync (string token,string userId,string tenantId)
+    public async Task<bool> SaveRotateRefreshTokenAsync (string token,string userId,Guid tenantId)
     {
         UserRefreshToken newRefreshToken = new ()
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            TenantId = tenantId,
+            MyTenantId = tenantId,
             Token = token,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7), // Rolling expiration
@@ -67,10 +67,10 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<bool> RevokeAllUserTokensAsync (string userId,string tenantId)
+    public async Task<bool> RevokeAllUserTokensAsync (string userId,Guid tenantId)
     {
         var allUserTokens = await _context.UserRefreshTokens
-        .Where(t => t.UserId == userId && t.TenantId == tenantId && !t.IsRevoked)
+        .Where(t => t.UserId == userId && t.MyTenantId == tenantId && !t.IsRevoked)
         .ToListAsync();
 
         foreach ( var token in allUserTokens )
@@ -83,13 +83,13 @@ public class TokenRepository: ITokenRepository
         return result > 0;
     }
 
-    public async Task<bool> SaveTokenAsync (string userId,string tenantId,string token)
+    public async Task<bool> SaveTokenAsync (string userId,Guid tenantId,string token)
     {
         UserRefreshToken newRefreshToken = new ()
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            TenantId = tenantId,
+            MyTenantId = tenantId,
             Token = token,
             CreatedAt = DateTime.UtcNow,
             ExpiresAt = DateTime.UtcNow.AddDays(7), // Rolling expiration
