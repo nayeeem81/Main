@@ -283,7 +283,7 @@ namespace Main.Infrastructure.Migrations
                     HostName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Store = table.Column<int>(type: "int", nullable: false),
                     SmtpId = table.Column<int>(type: "int", nullable: true),
-                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SecretKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SessionUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GlobalUserRole = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),

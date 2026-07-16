@@ -108,7 +108,14 @@ internal class Program
 
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-        await DataSeeder.SeedDataAsync (app.Services);
+        //  FIX: Create a temporary scope to resolve your Scoped DbContext safely
+        using ( var scope = app.Services.CreateScope () )
+        {
+            var services = scope.ServiceProvider;
+
+            // Pass the scoped service provider, NOT the root container
+            await DataSeeder.SeedDataAsync (services);
+        }
 
         await app.RunAsync ();
     }

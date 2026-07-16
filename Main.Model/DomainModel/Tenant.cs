@@ -56,7 +56,7 @@ public class Tenant: BaseEntity
         get; set;
     }
 
-    public string SecretKey
+    public string? SecretKey
     {
         get; set;
     }

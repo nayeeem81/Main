@@ -39,8 +39,7 @@ public static class RegisterDatabase
             options.Lockout.AllowedForNewUsers = lockOut.GetValue<bool> ("AllowedForNewUsers");
             options.User.RequireUniqueEmail = user.GetValue<bool> ("RequireUniqueEmail");
         })
-        .AddEntityFrameworkStores<ApplicationDbContext> ()
-        .AddRoles<IdentityRole> ();
+        .AddEntityFrameworkStores<ApplicationDbContext> ();
 
         _ = services.Configure<DataProtectionTokenProviderOptions>
         (options => options.TokenLifespan = TimeSpan.FromHours (2));

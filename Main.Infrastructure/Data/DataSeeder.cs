@@ -6,86 +6,72 @@ using Main.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
+
 public static class DataSeeder
 {
     public static async Task SeedDataAsync (IServiceProvider serviceProvider)
     {
-        using var scope = serviceProvider.CreateScope();
 
-        var roleManager =
-            scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>> ( );
-        var userManager =
-            scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+        // 2.  FIX: Resolve ALL services from scope.ServiceProvider, including the DbContext
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-
-
+        // Ensure database schema exists before executing queries
+        _ = await context.Database.EnsureCreatedAsync ();
 
         // ==========================================
         // 1. SEED TENANTS AND PAGES
         // ==========================================
 
-
-
         // TENANT 1
-        Tenant? tenant1 = context.Tenants.FirstOrDefault <Tenant> ( a => a.HostName == "lifestyle-local" );
+        Tenant? tenant1 = context.Tenants.FirstOrDefault<Tenant>(a => a.HostName == "lifestyle-local");
 
         if ( tenant1 == null )
         {
-            Tenant tenantNew1 = new ( )
+            tenant1 = new Tenant () //  FIX: Assign directly to tenant1 to avoid downstream null exceptions
             {
                 Name = "LifeStyle Store",
                 HostName = "lifestyle-local",
                 Store = StoreType.LifeStyles
             };
 
-            _ = context.Tenants.Add (tenantNew1);
-
+            _ = context.Tenants.Add (tenant1);
             _ = await context.SaveChangesAsync ();
 
-            tenantNew1.MyTenantId = tenantNew1.TenantId;
-            _ = context.Update (tenantNew1);
+            tenant1.MyTenantId = tenant1.TenantId;
+            _ = context.Update (tenant1);
             _ = await context.SaveChangesAsync ();
 
-
-            Guid myTenantId2 = tenantNew1.TenantId;
-            await PageSeed (context,myTenantId2);
+            await PageSeed (context,tenant1.TenantId);
         }
 
-
         // TENANT 2
-        Tenant? tenant2 = context.Tenants.FirstOrDefault <Tenant> ( a => a.HostName == "fanarts-local" );
+        Tenant? tenant2 = context.Tenants.FirstOrDefault<Tenant>(a => a.HostName == "fanarts-local");
 
         if ( tenant2 == null )
         {
-
-            Tenant tenantNew2 =  new()
+            tenant2 = new Tenant () //  FIX: Assign directly to tenant2 to avoid downstream null exceptions
             {
                 Name = "Fine Arts Store",
                 HostName = "fanarts-local",
                 Store = StoreType.FineArts
             };
 
-            _ = context.Tenants.Add (tenantNew2);
+            _ = context.Tenants.Add (tenant2);
             _ = await context.SaveChangesAsync ();
 
-
-            tenantNew2.MyTenantId = tenantNew2.TenantId;
-            _ = context.Update (tenantNew2);
+            tenant2.MyTenantId = tenant2.TenantId;
+            _ = context.Update (tenant2);
             _ = await context.SaveChangesAsync ();
 
-
-            Guid myTenantId2 = tenantNew2.TenantId;
-            await PageSeed (context,myTenantId2);
+            await PageSeed (context,tenant2.TenantId);
         }
 
-
-
         // ==========================================
-        // 1. SEED GLOBAL ROLES
+        // 2. SEED GLOBAL ROLES
         // ==========================================
-
         string[] globalRoles = ["GlobalAdmin", "User"];
         foreach ( var roleName in globalRoles )
         {
@@ -95,17 +81,14 @@ public static class DataSeeder
             }
         }
 
-
-
         // ==========================================
-        // 2. SEED GLOBAL ADMIN
+        // 3. SEED GLOBAL ADMIN
         // ==========================================
         var adminGlobalEmail = "admin@system.com";
         var adminUser = await userManager.FindByEmailAsync(adminGlobalEmail);
         if ( adminUser == null )
         {
             var newAdmin = new ApplicationUser { UserName = adminGlobalEmail, Email = adminGlobalEmail, EmailConfirmed = true };
-
             var result = await userManager.CreateAsync(newAdmin, "Focus@1nm");
             if ( result.Succeeded )
             {
@@ -113,22 +96,19 @@ public static class DataSeeder
             }
         }
 
-
-
         // ==========================================
-        // 3. SEED TENANT USERS WITH GLOBAL "User" ROLE
+        // 4. SEED TENANT USERS WITH GLOBAL "User" ROLE
         // ==========================================
-        // Define test users and their mapping details 
-
-        var testUsersConfigurationSeed = new []
+        // These will now read the safely reassigned tenant1/tenant2 tracking instances
+        var testUsersConfigurationSeed = new[]
         {
-            new { Email = "tenant1.admin@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "Admin" },
-            new { Email = "tenant1.content@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "ContentManager" },
-            new { Email = "tenant1.member@test.com", MyTenantId = tenant1!.TenantId , TenantRole = "Member" },
+            new { Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin" },
+            new { Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager" },
+            new { Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member" },
 
-            new { Email = "tenant2.admin@test.com", MyTenantId = tenant2!.TenantId  , TenantRole = "Admin" },
-            new { Email = "tenant2.content@test.com", MyTenantId = tenant2!.TenantId  , TenantRole = "ContentManager" },
-            new { Email = "tenant2.member@test.com", MyTenantId = tenant2!.TenantId , TenantRole = "Member" }
+            new { Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin" },
+            new { Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager" },
+            new { Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member" }
         };
 
         foreach ( var config in testUsersConfigurationSeed )
@@ -144,15 +124,12 @@ public static class DataSeeder
                     EmailConfirmed = true
                 };
 
-                // Create the user globally
                 var createResult = await userManager.CreateAsync(newUser, "Focus@1nm");
 
                 if ( createResult.Succeeded )
                 {
-                    // Every regular person gets the global "User" identity role
                     _ = await userManager.AddToRoleAsync (newUser,"User");
 
-                    // Link the user to their specific tenant and custom tenant role
                     var tenantMapping = new TenantUser
                     {
                         UserId = newUser.Id,
@@ -165,11 +142,8 @@ public static class DataSeeder
             }
         }
 
-        // Save all the UserTenants links to the database
         _ = await context.SaveChangesAsync ();
     }
-
-
 
     private static async Task PageSeed (ApplicationDbContext context,Guid seedTenancyId)
     {

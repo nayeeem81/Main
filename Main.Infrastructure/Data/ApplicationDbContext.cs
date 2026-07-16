@@ -11,7 +11,10 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public readonly Guid resolvedTenantId;
     public readonly ITenantContext _tenantContext;
 
-    //public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
+    public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options)
+    {
+
+    }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
     ITenantSetter tenantSetter,ITenantContext tenantContext) : base (options)
@@ -290,20 +293,23 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     // Apply BaseData and TenantId to entities implementing IMustHaveTenant interface before saving changes for (entries with added, modified and deleted sattus)
     private void ApplyBaseDataTenantId ()
     {
-        string currentTenant = resolvedTenantId.ToString();
+        string  currentTenant = resolvedTenantId.ToString ();
+        Guid?  myTenantId = (Guid? )resolvedTenantId;
 
-        Guid myTenantId = new(currentTenant);
 
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
         BaseDataModel deleteDataModel = _tenantContext.GetDeleteBaseDataModel ();
 
         var entries = ChangeTracker.Entries()
-            .Where(e => e.State == EntityState.Added && e.Entity is IMustHaveTenant);
+            .Where(e => e.Entity is IMustHaveTenant);
 
         foreach ( var entry in entries )
         {
-            ( ( IMustHaveTenant ) entry.Entity ).MyTenantId = myTenantId;
+            if ( myTenantId != null )
+            {
+                ( ( IMustHaveTenant ) entry.Entity ).MyTenantId = myTenantId.Value;
+            }
 
             var entryState = entry.State;
 

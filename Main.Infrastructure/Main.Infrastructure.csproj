@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\ApplicationDbContextFactory.cs" />
     <Compile Remove="Data\Seeder.cs" />
     <Compile Remove="Repository\Seeder.cs" />
   </ItemGroup>
