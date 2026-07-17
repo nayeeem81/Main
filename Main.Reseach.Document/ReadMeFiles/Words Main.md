@@ -1,3 +1,11 @@
+
+
+🌐 www.tenantors.com  (Main Web Portal)
+ ├── 📡 www.kaiassociates.com   (Tenant Alpha Endpoint: Domain)
+ ├── 📡 www.kaiassociates.tenantors.com   (Tenant Beta Endpoint: SubDomain)
+ └── 🔗 www.tenantors.com/kaiassociates  (Path-based Tenant Fallback)
+
+
 # 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS)
 
 **We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
