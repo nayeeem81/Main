@@ -10,3 +10,5 @@ Update-Database -Project Main.Infrastructure -StartupProject Main.WebAppCore
 Add-Migration InitialCreate1 -Context Main.Infrastructure.ApplicationDbContext
 
 Update-Database -Context Main.Infrastructure.ApplicationDbContext
+
+dotnet run --launch-profile "http"
