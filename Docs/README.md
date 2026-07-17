@@ -22,6 +22,9 @@ Initial tenant creation, this multi-tenant web application; assigns the user (em
 
 ## 🛍️Tenant Types (According to Hosting Plan)
 
+<img width="758" height="152" alt="RootWebToAlphaBetaPath" src="https://github.com/user-attachments/assets/f666510e-8ec9-45e2-a44c-915d8b6d81da" />
+
+
 ## Tenant name is: **kaiassociates**
 
 **kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
