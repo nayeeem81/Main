@@ -32,6 +32,8 @@ public class ApplicationDbContextFactory: IDesignTimeDbContextFactory<Applicatio
             throw new InvalidOperationException ("Could not find 'DefaultConnection' string in your appsettings.json.");
         }
 
+
+
         // 3. Configure your database provider (e.g., UseSqlServer, UseNpgsql, etc.)
         _ = optionsBuilder.UseSqlServer (connectionString);
 

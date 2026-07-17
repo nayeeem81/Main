@@ -1,5 +1,6 @@
 ﻿using Domain.Model;
 using Main.Common;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -121,6 +122,8 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         FluentApiConfiguration (builder);
 
         TenantGlobalQueryFilter (builder);
+
+        SeedData (builder);
     }
 
     private void FluentApiConfiguration (ModelBuilder builder)
@@ -342,4 +345,163 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         return base.SaveChangesAsync (acceptAllChangesOnSuccess,cancellationToken);
     }
 
+    public void SeedData (ModelBuilder builder)
+    {
+        // 2.  FIX: Resolve ALL services from scope.ServiceProvider, including the DbContext
+
+        // Ensure database schema exists before executing queries
+
+        // ==========================================
+        // 1. SEED TENANTS AND PAGES
+        // ==========================================
+
+        Guid id1 = Guid.NewGuid ();
+
+        Guid id2 = Guid.NewGuid ();
+
+
+
+        // TENANT 1
+
+        var tenant1 = new Tenant (id1) //  FIX: Assign directly to tenant1 to avoid downstream null exceptions
+        {
+            Name = "LifeStyle Store",
+            HostName = "lifestyle-local",
+            Store = StoreType.LifeStyles
+        };
+
+        _ = builder.Entity<Tenant> ().HasData (tenant1);
+
+
+
+        // TENANT 2
+
+        var  tenant2 = new Tenant () 
+        //  FIX: Assign directly to tenant2 to avoid downstream null exceptions
+        {
+            Name = "Fine Arts Store",
+            HostName = "fanarts-local",
+            Store = StoreType.FineArts
+        };
+
+        _ = builder.Entity<Tenant> ().HasData (tenant1);
+
+        int i = 1 ;
+        PageSeed (builder,id1,i);
+
+        int i2 = 10 ;
+        PageSeed (builder,id2,i2);
+
+        // ==========================================
+        // 2. SEED GLOBAL ROLES
+        // ==========================================
+        Guid Roleid1 = Guid.NewGuid ();
+        Guid Roleid2 = Guid.NewGuid ();
+
+        var role1 = new IdentityRole();
+        role1.Name = "GlobalAdmin";
+        role1.Id = Roleid1.ToString ();
+        _ = builder.Entity<IdentityRole> ().HasData (role1);
+
+        var role2 = new IdentityRole();
+        role2.Name = "GlobalAdmin";
+        role2.Id = Roleid1.ToString ();
+        _ = builder.Entity<IdentityRole> ().HasData (role2);
+
+
+        // ==========================================
+        // 3. SEED GLOBAL ADMIN
+        // ==========================================
+
+
+        Guid UserIdGlobal1 = Guid.NewGuid ();
+        Guid UserId2 = Guid.NewGuid ();
+        Guid UserId3 = Guid.NewGuid ();
+        Guid UserId4 = Guid.NewGuid ();
+        Guid UserId5 = Guid.NewGuid ();
+        Guid UserId6 = Guid.NewGuid ();
+        Guid UserId7 = Guid.NewGuid ();
+
+        var hasher = new PasswordHasher<ApplicationUser>();
+        var adminGlobalEmail = "admin@system.com";
+        var newAdmin = new ApplicationUser { Id = UserIdGlobal1.ToString(), UserName = adminGlobalEmail, Email = adminGlobalEmail, EmailConfirmed = true };
+
+        // 3. Hash the password
+        newAdmin.PasswordHash = hasher.HashPassword (newAdmin,"Focus@1nm");
+        _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
+
+        _ = builder.Entity<IdentityUserRole<string>> ().HasData (
+             new IdentityUserRole<string>
+             {
+                 RoleId = Roleid1.ToString ().ToString (),
+                 UserId = UserIdGlobal1.ToString ()
+             });
+
+
+        // ==========================================
+        // 4. SEED TENANT USERS WITH GLOBAL "User" ROLE
+        // ==========================================
+        // These will now read the safely reassigned tenant1/tenant2 tracking instances
+
+        var testUsersConfigurationSeed = new[]
+        {
+            new { UserId = UserId2.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1},
+
+            new { UserId = UserId3.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2 },
+
+            new { UserId = UserId4.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3 },
+
+            new { UserId = UserId5.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4 },
+
+            new { UserId = UserId6.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5 },
+
+            new { UserId = UserId7.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6 }
+        };
+
+        foreach ( var config in testUsersConfigurationSeed )
+        {
+            var user = new ApplicationUser(config.UserId) { UserName = config.Email, Email = config.Email, EmailConfirmed = true };
+            user.PasswordHash = hasher.HashPassword (user,"Focus@1nm");
+
+            _ = builder.Entity<ApplicationUser> ().HasData (user);
+
+            _ = builder.Entity<IdentityUserRole<string>> ().HasData (
+                 new IdentityUserRole<string>
+                 {
+                     RoleId = Roleid2.ToString ().ToString (),
+                     UserId = UserId2.ToString ()
+                 });
+
+
+
+            _ = builder.Entity<TenantUser> ().HasData (new TenantUser (config.TenantRoleId) { UserId = config.UserId,TenantRole = config.TenantRole });
+        }
+    }
+
+    private void PageSeed (ModelBuilder builder,Guid seedTenancyId,int id)
+    {
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.Home,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.AdsDetail,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.Resources,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.CategoryButtonMarket,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.SubCategoryDropdownMarket,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.SpecialMarketButton,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.AllMarket,seedTenancyId,true));
+
+        _ = builder.Entity<Page> ().HasData
+        (new Page (++id,EnumPublicPage.NoticeAndNews,seedTenancyId,true));
+    }
 }

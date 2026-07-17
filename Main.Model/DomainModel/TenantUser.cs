@@ -5,6 +5,11 @@ namespace Domain.Model;
 
 public class TenantUser: BaseEntity
 {
+    public TenantUser (int id)
+    {
+        TenantUserId = id;
+    }
+
     public TenantUser ()
     {
     }

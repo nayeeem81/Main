@@ -3,6 +3,11 @@ namespace Domain.Model;
 
 public class ApplicationUser: IdentityUser
 {
+    public ApplicationUser (string id)
+    {
+        Id = id;
+    }
+
     public ApplicationUser ()
     {
     }

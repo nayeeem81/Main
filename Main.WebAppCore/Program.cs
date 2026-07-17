@@ -4,6 +4,7 @@ using Main.Services;
 using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ResourceLibrary.Resources;
 using Serilog;
@@ -39,6 +40,11 @@ internal class Program
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
         _ = builder.Services.AddDatabase (builder.Configuration);
+
+        _ = builder.Services.AddDbContextFactory<ApplicationDbContext> (
+            options => options.UseSqlServer (builder.Configuration.GetConnectionString ("DefaultConnection")),
+            ServiceLifetime.Scoped
+        );
 
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
@@ -108,14 +114,6 @@ internal class Program
 
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-        //  FIX: Create a temporary scope to resolve your Scoped DbContext safely
-        using ( var scope = app.Services.CreateScope () )
-        {
-            var services = scope.ServiceProvider;
-
-            // Pass the scoped service provider, NOT the root container
-            await DataSeeder.SeedDataAsync (services);
-        }
 
         await app.RunAsync ();
     }

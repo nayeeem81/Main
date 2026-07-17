@@ -6,9 +6,10 @@ namespace Domain.Model;
 public class Tenant: BaseEntity
 {
     // seed
-    public Tenant (string key)
+    public Tenant (Guid id)
     {
-        SecretKey = key;
+        TenantId = id;
+        MyTenantId = id;
     }
 
     public Tenant ()

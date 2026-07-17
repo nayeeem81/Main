@@ -4,6 +4,23 @@ namespace Domain.Model;
 
 public class Page: BaseEntity
 {
+    public Page (int id,EnumPublicPage page,Guid seedTenancyId,bool isSeed)
+    {
+        PageID = id;
+        EnumPublicPage = page;
+        MyTenantId = seedTenancyId;
+
+        ModifiedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
+        CreatedBy = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
+        CreatedDate = DateTime.MinValue;
+        ModifiedDate = DateTime.MinValue;
+
+        TenantCountry = Country.Bangladesh;
+        IsActive = true;
+
+        SessionUserId = "e02fd0e4-00fd-000a-ca30-0F00a0898ba1";
+    }
+
     public Page ()
     {
         ListPanels = new List<Panel> ();
