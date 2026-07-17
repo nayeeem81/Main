@@ -7,6 +7,7 @@ using System.Data;
 
 namespace Main.Infrastructure;
 
+
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
     public readonly Guid resolvedTenantId;
@@ -36,7 +37,6 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options)
     {
-
     }
 
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options,
@@ -141,11 +141,33 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating (builder);
 
+        // 1. SEED ROLES FIRST
+        _ = builder.Entity<IdentityRole> ().HasData (
+            new IdentityRole
+            {
+                Id = "GlobalAdmin", // Must match exactly
+                Name = "GlobalAdmin",
+                NormalizedName = "GLOBALADMIN"
+            },
+            new IdentityRole
+            {
+                Id = "User", // Must match exactly
+                Name = "User",
+                NormalizedName = "USER"
+            }
+        );
+
+        // 2. SEED USERS NEXT
+        // Make sure your seeded IdentityUser entities have IDs matching:
+        // "00000002-0000-0000-0000-000000000000" through "00000008-0000-0000-0000-000000000000"
+
+
+
         FluentApiConfiguration (builder);
 
-        TenantGlobalQueryFilter (builder);
-
         SeedData (builder);
+
+        TenantGlobalQueryFilter (builder);
     }
 
     private void FluentApiConfiguration (ModelBuilder builder)
@@ -394,7 +416,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         };
 
         // Tenant 2
-        _ = builder.Entity<Tenant> ().HasData (tenant1);
+        _ = builder.Entity<Tenant> ().HasData (tenant2);
 
         // Page Seed (TENANT 1) 
         int pageCounterIDTenant1 = 1 ;
@@ -404,27 +426,14 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         int pageCounterIDTenant2 = 10 ;
         PageSeed (builder,TenantID2,pageCounterIDTenant2);
 
+
         // 2. SEED GLOBAL ROLES  (IdentityRoles)
-        Guid GlobalRoleID1 = guidArray[2];
+        _ = guidArray[2];
         Guid GlobalRoleID2 = guidArray[3];
 
-        // Global Role 1 
-        var role1 = new IdentityRole
-        {
-            Name = "GlobalAdmin",
-            Id = GlobalRoleID1.ToString ()
-        };
-        _ = builder.Entity<IdentityRole> ().HasData (role1);
 
-        // Global Role 2
-        var role2 = new IdentityRole
-        {
-            Name = "User",
-            Id = GlobalRoleID2.ToString ()
-        };
-        _ = builder.Entity<IdentityRole> ().HasData (role2);
 
-        // Passwor Hasher
+        // Password Hasher
         var hasher = new PasswordHasher<ApplicationUser>();
 
         // Global Admin  (User ID) 
@@ -436,16 +445,15 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
         // Hash the password (Global Admin Password Hash)
         newAdmin.PasswordHash = hasher.HashPassword (newAdmin,"Focus@1nm");
+
         // Create Global Admin User
         _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
 
-        // Assign Global Admin (Role)
+        // 3. SEED THE MAPPING LAST
         _ = builder.Entity<IdentityUserRole<string>> ().HasData (
-             new IdentityUserRole<string>
-             {
-                 RoleId = GlobalRoleID1.ToString ().ToString (),
-                 UserId = UserIdGlobal1.ToString ()
-             });
+        new IdentityUserRole<string> { RoleId = "GlobalAdmin",UserId = UserIdGlobal1.ToString () });
+
+
 
         // SEED TENANT USERS WITH GLOBAL "User" ROLE
         Guid UserId2 = guidArray[5];
@@ -481,13 +489,10 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
             // Creae Tenant User
             _ = builder.Entity<ApplicationUser> ().HasData (user);
 
-            // Assign Global Role (User)
             _ = builder.Entity<IdentityUserRole<string>> ().HasData (
-                 new IdentityUserRole<string>
-                 {
-                     RoleId = GlobalRoleID2.ToString (),
-                     UserId = UserId2.ToString ()
-                 });
+             new IdentityUserRole<string> { UserId = config.UserId.ToString (),RoleId = "User" });
+
+
 
             // Create Tenant User (Role tenant specific)
             _ = builder.Entity<TenantUser> ().HasData

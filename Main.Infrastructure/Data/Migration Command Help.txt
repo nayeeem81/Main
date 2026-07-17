@@ -7,6 +7,6 @@ Update-Database -Project Main.Infrastructure -StartupProject Main.WebAppCore
 
 
 
-Add-Migration InitialCreate -Context Main.Infrastructure.ApplicationDbContext
+Add-Migration InitialCreate1 -Context Main.Infrastructure.ApplicationDbContext
 
 Update-Database -Context Main.Infrastructure.ApplicationDbContext

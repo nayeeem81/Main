@@ -12,12 +12,6 @@ public class RootBaseEntity
         set;
     }
 
-    public string? GlobalUserRole
-    {
-        get;
-        set;
-    }
-
     public string CreatedBy
     {
         get; set;
