@@ -12,6 +12,28 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     public readonly Guid resolvedTenantId;
     public readonly ITenantContext _tenantContext;
 
+    public static readonly Guid[] guidArray = new[]
+    {
+        new Guid(1, 0, 0, new byte[8]),
+        new Guid(2, 0, 0, new byte[8]),
+        new Guid(3, 0, 0, new byte[8]),
+        new Guid(1, 0, 0, new byte[8]),
+        new Guid(2, 0, 0, new byte[8]),
+        new Guid(3, 0, 0, new byte[8]),
+        new Guid(4, 0, 0, new byte[8]),
+        new Guid(5, 0, 0, new byte[8]),
+        new Guid(6, 0, 0, new byte[8]),
+        new Guid(7, 0, 0, new byte[8]),
+        new Guid(8, 0, 0, new byte[8]),
+        new Guid(9, 0, 0, new byte[8]),
+        new Guid(10, 0, 0, new byte[8]),
+        new Guid(11, 0, 0, new byte[8]),
+        new Guid(12, 0, 0, new byte[8]),
+        new Guid(13, 0, 0, new byte[8]),
+        new Guid(14, 0, 0, new byte[8]),
+        new Guid(15, 0, 0, new byte[8])
+    };
+
     public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options)
     {
 
@@ -297,8 +319,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     private void ApplyBaseDataTenantId ()
     {
         string  currentTenant = resolvedTenantId.ToString ();
-        Guid?  myTenantId = (Guid? )resolvedTenantId;
-
+        Guid?  myTenantId = (Guid?)resolvedTenantId;
 
         BaseDataModel createDataModel = _tenantContext.GetCreateBaseDataModel ();
         BaseDataModel updateDataModel = _tenantContext.GetUpdateBaseDataModel ();
@@ -347,134 +368,130 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 
     public void SeedData (ModelBuilder builder)
     {
-        // 2.  FIX: Resolve ALL services from scope.ServiceProvider, including the DbContext
+        // Convert all elements to an array of Guids
 
-        // Ensure database schema exists before executing queries
+        // TENANT ID (1 & 2) 
+        Guid TenantID1 = guidArray[0];
+        Guid TenantID2 = guidArray[1];
 
-        // ==========================================
-        // 1. SEED TENANTS AND PAGES
-        // ==========================================
-
-        Guid id1 = Guid.NewGuid ();
-
-        Guid id2 = Guid.NewGuid ();
-
-
-
-        // TENANT 1
-
-        var tenant1 = new Tenant (id1) //  FIX: Assign directly to tenant1 to avoid downstream null exceptions
+        // Tenant 1
+        var tenant1 = new Tenant (TenantID1, guidArray[13])
         {
             Name = "LifeStyle Store",
             HostName = "lifestyle-local",
             Store = StoreType.LifeStyles
         };
 
+        // Tenant 1
         _ = builder.Entity<Tenant> ().HasData (tenant1);
 
-
-
-        // TENANT 2
-
-        var  tenant2 = new Tenant () 
-        //  FIX: Assign directly to tenant2 to avoid downstream null exceptions
+        // Tenant 2
+        var  tenant2 = new Tenant (TenantID2, guidArray[14])
         {
             Name = "Fine Arts Store",
             HostName = "fanarts-local",
             Store = StoreType.FineArts
         };
 
+        // Tenant 2
         _ = builder.Entity<Tenant> ().HasData (tenant1);
 
-        int i = 1 ;
-        PageSeed (builder,id1,i);
+        // Page Seed (TENANT 1) 
+        int pageCounterIDTenant1 = 1 ;
+        PageSeed (builder,TenantID1,pageCounterIDTenant1);
 
-        int i2 = 10 ;
-        PageSeed (builder,id2,i2);
+        // Page Seed (TENANT 2)
+        int pageCounterIDTenant2 = 10 ;
+        PageSeed (builder,TenantID2,pageCounterIDTenant2);
 
-        // ==========================================
-        // 2. SEED GLOBAL ROLES
-        // ==========================================
-        Guid Roleid1 = Guid.NewGuid ();
-        Guid Roleid2 = Guid.NewGuid ();
+        // 2. SEED GLOBAL ROLES  (IdentityRoles)
+        Guid GlobalRoleID1 = guidArray[2];
+        Guid GlobalRoleID2 = guidArray[3];
 
-        var role1 = new IdentityRole();
-        role1.Name = "GlobalAdmin";
-        role1.Id = Roleid1.ToString ();
+        // Global Role 1 
+        var role1 = new IdentityRole
+        {
+            Name = "GlobalAdmin",
+            Id = GlobalRoleID1.ToString ()
+        };
         _ = builder.Entity<IdentityRole> ().HasData (role1);
 
-        var role2 = new IdentityRole();
-        role2.Name = "GlobalAdmin";
-        role2.Id = Roleid1.ToString ();
+        // Global Role 2
+        var role2 = new IdentityRole
+        {
+            Name = "User",
+            Id = GlobalRoleID2.ToString ()
+        };
         _ = builder.Entity<IdentityRole> ().HasData (role2);
 
-
-        // ==========================================
-        // 3. SEED GLOBAL ADMIN
-        // ==========================================
-
-
-        Guid UserIdGlobal1 = Guid.NewGuid ();
-        Guid UserId2 = Guid.NewGuid ();
-        Guid UserId3 = Guid.NewGuid ();
-        Guid UserId4 = Guid.NewGuid ();
-        Guid UserId5 = Guid.NewGuid ();
-        Guid UserId6 = Guid.NewGuid ();
-        Guid UserId7 = Guid.NewGuid ();
-
+        // Passwor Hasher
         var hasher = new PasswordHasher<ApplicationUser>();
+
+        // Global Admin  (User ID) 
+        Guid UserIdGlobal1 = guidArray[4];
+
+        // Global Admin
         var adminGlobalEmail = "admin@system.com";
         var newAdmin = new ApplicationUser { Id = UserIdGlobal1.ToString(), UserName = adminGlobalEmail, Email = adminGlobalEmail, EmailConfirmed = true };
 
-        // 3. Hash the password
+        // Hash the password (Global Admin Password Hash)
         newAdmin.PasswordHash = hasher.HashPassword (newAdmin,"Focus@1nm");
+        // Create Global Admin User
         _ = builder.Entity<ApplicationUser> ().HasData (newAdmin);
 
+        // Assign Global Admin (Role)
         _ = builder.Entity<IdentityUserRole<string>> ().HasData (
              new IdentityUserRole<string>
              {
-                 RoleId = Roleid1.ToString ().ToString (),
+                 RoleId = GlobalRoleID1.ToString ().ToString (),
                  UserId = UserIdGlobal1.ToString ()
              });
 
+        // SEED TENANT USERS WITH GLOBAL "User" ROLE
+        Guid UserId2 = guidArray[5];
+        Guid UserId3 = guidArray[6];
+        Guid UserId4 = guidArray[7];
+        Guid UserId5 = guidArray[8];
+        Guid UserId6 = guidArray[9];
+        Guid UserId7 = guidArray[10];
 
-        // ==========================================
-        // 4. SEED TENANT USERS WITH GLOBAL "User" ROLE
-        // ==========================================
-        // These will now read the safely reassigned tenant1/tenant2 tracking instances
-
+        // For each tenant create 3 users seed
         var testUsersConfigurationSeed = new[]
         {
-            new { UserId = UserId2.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1},
+            new { UserId = UserId2.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.admin@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Admin", TenantRoleId = 1},
 
-            new { UserId = UserId3.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2 },
+            new { UserId = UserId3.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.content@test.com", MyTenantId = tenant1.TenantId , TenantRole = "ContentManager", TenantRoleId = 2 },
 
-            new { UserId = UserId4.ToString(),RoleId = Roleid2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3 },
+            new { UserId = UserId4.ToString(),RoleId = GlobalRoleID2.ToString (), Email = "tenant1.member@test.com", MyTenantId = tenant1.TenantId , TenantRole = "Member", TenantRoleId = 3 },
 
-            new { UserId = UserId5.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4 },
+            new { UserId = UserId5.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.admin@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "Admin", TenantRoleId = 4 },
 
-            new { UserId = UserId6.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5 },
+            new { UserId = UserId6.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.content@test.com", MyTenantId = tenant2.TenantId  , TenantRole = "ContentManager", TenantRoleId = 5 },
 
-            new { UserId = UserId7.ToString(),RoleId = Roleid2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6 }
+            new { UserId = UserId7.ToString(),RoleId = GlobalRoleID2.ToString (),  Email = "tenant2.member@test.com", MyTenantId = tenant2.TenantId , TenantRole = "Member", TenantRoleId = 6 }
         };
 
+        // Create Tenant Users 
         foreach ( var config in testUsersConfigurationSeed )
         {
+            // Create user entity
             var user = new ApplicationUser(config.UserId) { UserName = config.Email, Email = config.Email, EmailConfirmed = true };
+            // Hash the password
             user.PasswordHash = hasher.HashPassword (user,"Focus@1nm");
-
+            // Creae Tenant User
             _ = builder.Entity<ApplicationUser> ().HasData (user);
 
+            // Assign Global Role (User)
             _ = builder.Entity<IdentityUserRole<string>> ().HasData (
                  new IdentityUserRole<string>
                  {
-                     RoleId = Roleid2.ToString ().ToString (),
+                     RoleId = GlobalRoleID2.ToString (),
                      UserId = UserId2.ToString ()
                  });
 
-
-
-            _ = builder.Entity<TenantUser> ().HasData (new TenantUser (config.TenantRoleId) { UserId = config.UserId,TenantRole = config.TenantRole });
+            // Create Tenant User (Role tenant specific)
+            _ = builder.Entity<TenantUser> ().HasData
+                (new TenantUser (config.TenantRoleId) { UserId = config.UserId,TenantRole = config.TenantRole,MyTenantId = config.MyTenantId });
         }
     }
 

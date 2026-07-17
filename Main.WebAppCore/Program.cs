@@ -4,7 +4,6 @@ using Main.Services;
 using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ResourceLibrary.Resources;
 using Serilog;
@@ -40,11 +39,6 @@ internal class Program
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
 
         _ = builder.Services.AddDatabase (builder.Configuration);
-
-        _ = builder.Services.AddDbContextFactory<ApplicationDbContext> (
-            options => options.UseSqlServer (builder.Configuration.GetConnectionString ("DefaultConnection")),
-            ServiceLifetime.Scoped
-        );
 
         _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
 
@@ -113,7 +107,6 @@ internal class Program
         _ = app.MapControllers ();
 
         _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
 
         await app.RunAsync ();
     }
