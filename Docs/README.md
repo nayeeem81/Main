@@ -40,7 +40,7 @@ After creating a tenant, the user can add a sub domain for the tenant under the 
 **Unique username is the name of the subdirectory**
 After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
 
-## Login approach
+## 👤Login approach
 Tenant is registered by an user email. Verify email link sent upon registration form submission. User gets admin role and a subdirectory for the tenant (default). He/She must must verify the registered email to activate the tenant account. 
 
 Tenant user can login and access the store work space only using verified email.
