@@ -37,8 +37,6 @@
 		<Content Remove="Views\Shared\ProductTemplates\**" />
 
 		<!-- Individual Code Exclusions -->
-		<Compile Remove="CrosscuttingServices\SecureController.cs" />
-		<Compile Remove="CrosscuttingServices\UserSessionLogController.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
