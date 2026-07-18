@@ -1,14 +1,4 @@
 
-# 1. This physically creates the 'Migrations' folder inside Main.Infrastructure
-Add-Migration InitialCreate -Project Main.Infrastructure -StartupProject Main.WebAppCore
-
-# 2. This reads those physical files and generates the database tables
-Update-Database -Project Main.Infrastructure -StartupProject Main.WebAppCore
-
-
-
 Add-Migration InitialCreate1 -Context Main.Infrastructure.ApplicationDbContext
 
-Update-Database -Context Main.Infrastructure.ApplicationDbContext
-
-dotnet run --launch-profile "http"
+Update-Database -Context Main.Infrastructure.Database.ApplicationDbContext
