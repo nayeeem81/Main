@@ -27,14 +27,14 @@ internal class Program
 
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
 
+        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
+
         _ = builder.Services.AddAntiforgery (options =>
         {
             options.HeaderName = "X-XSRF-TOKEN";
         });
 
         _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
-
-        _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
         AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
         .Get<MyConfigSettings> () ?? new MyConfigSettings ();
