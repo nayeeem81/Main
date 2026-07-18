@@ -173,6 +173,7 @@ public class ConfigureAntiforgeryCookieOptions : IConfigureNamedOptions<Antiforg
 
     public void Configure(string? name, AntiforgeryOptions options)
     {
+
         var context = _httpContextAccessor.HttpContext;
 
         var tenantContext = context?.RequestServices.GetService<TenantContext>();

@@ -1,77 +1,80 @@
 {
   "$schema": "https://schemastore.org",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:59604",
+      "sslPort": 44308
+    }
+  },
   "profiles": {
     "MultiTenantProfile": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
       "applicationUrl": "https://*:7000;http://*:5000",
+      "workingDirectory": "D:\\source\\master\\Main\\Main\\Main.WebAppCore",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "KestrelProfile": {
-        "commandName": "Project",
-        "dotnetRunMessages": true,
-        "launchBrowser": true,
-        "applicationUrl": "https://localhost:7000;http://localhost:5000",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
-      },
-      "http": {
-        "commandName": "Project",
-        "launchBrowser": true,
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        },
-        "dotnetRunMessages": true,
-        "applicationUrl": "http://*:5197",
-        "nativeDebugging": true,
-        "sqlDebugging": true,
-        "jsWebView2Debugging": true
-      },
-      "https": {
-        "commandName": "Project",
-        "workingDirectory": "D:\\source\\trunk\\Projects\\Main\\Main.WebAppCore",
-        "launchBrowser": true,
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        },
-        "dotnetRunMessages": true,
-        "applicationUrl": "https://localhost:7019",
-        "nativeDebugging": true,
-        "jsWebView2Debugging": true,
-        "sqlDebugging": true,
-        "remoteDebugEnabled": true
-      },
-      "Container (Dockerfile)": {
-        "commandName": "Docker",
-        "launchBrowser": true,
-        "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-        "environmentVariables": {
-          "ASPNETCORE_HTTPS_PORTS": "8081",
-          "ASPNETCORE_HTTP_PORTS": "8080"
-        },
-        "publishAllPorts": true,
-        "useSSL": true
-      },
-      "IIS Express": {
-        "commandName": "IISExpress",
-        "workingDirectory": "D:\\source\\trunk\\Projects\\Main\\Main.WebAppCore",
-        "launchBrowser": true,
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        },
-        "ancmHostingModel": "InProcess"
+        "ASPNETCORE_ENVIRONMENT": "Production"
       }
     },
-    "$schema": "https://json.schemastore.org/launchsettings.json",
-    "iisSettings": {
-      "windowsAuthentication": false,
-      "anonymousAuthentication": false,
-      "iisExpress": {
-        "applicationUrl": "http://localhost:59604/",
-        "sslPort": 44308
+    "KestrelProfile": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7000;http://localhost:5000",
+      "workingDirectory": "D:\\source\\master\\Main\\Main\\Main.WebAppCore",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://*:5197",
+      "workingDirectory": "D:\\source\\master\\Main\\Main\\Main.WebAppCore",
+      "nativeDebugging": true,
+      "sqlDebugging": true,
+      "jsWebView2Debugging": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\source\\master\\Main\\Main\\Main.WebAppCore",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7019",
+      "nativeDebugging": true,
+      "jsWebView2Debugging": true,
+      "sqlDebugging": true,
+      "remoteDebugEnabled": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "publishAllPorts": true,
+      "useSSL": true,
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "8080"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "workingDirectory": "D:\\source\\master\\Main\\Main\\Main.WebAppCore",
+      "launchBrowser": true,
+      "ancmHostingModel": "InProcess",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
+}

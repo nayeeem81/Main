@@ -2,3 +2,19 @@
 Add-Migration InitialCreate1 -Context Main.Infrastructure.ApplicationDbContext
 
 Update-Database -Context Main.Infrastructure.Database.ApplicationDbContext
+
+
+
+
+
+:: 1. Navigate to your master working directory path
+cd /d "D:\source\master\Main\Main\Main.WebAppCore"
+
+:: 2. Drop any historical cached binaries to prevent profile caching issues
+dotnet clean -c Release
+
+:: 3. Build with full release optimizations
+dotnet build -c Release
+
+:: 4. Boot up Kestrel using your multi-tenant production configuration
+dotnet run -c Release --launch-profile "MultiTenantProfile"

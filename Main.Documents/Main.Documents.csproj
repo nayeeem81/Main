@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Research Client Html Css Java Scripts\" />
-    <Folder Include="ReadMeFiles\" />
     <Folder Include="Research\" />
   </ItemGroup>
 

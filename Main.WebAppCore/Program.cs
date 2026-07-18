@@ -5,6 +5,7 @@ using Main.WebAppCore.CrosscuttingServices;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.DepententServices;
 using Main.WebAppCore.Middleware;
+using Microsoft.AspNetCore.HttpOverrides; // Required for Nginx forwarding support
 using ResourceLibrary.Resources;
 using Serilog;
 
@@ -14,62 +15,60 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-        // Uncomment your host logger integration
+        // --- 1. Logging & Configuration ---
         _ = builder.Host.UseSerilog ();
-
         _ = builder.AddSerilogConfiguration ();
-
         _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
-
         _ = builder.Services.AddExceptionLogging (builder.Configuration);
 
+        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
+            .Get<MyConfigSettings> () ?? new MyConfigSettings ();
+
+        // --- 2. Core Infrastructure & DI Services ---
         _ = builder.Services.AddHttpContextAccessor ();
-
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
-
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
+        _ = builder.Services.AddDatabase (builder.Configuration);
+        _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
+        _ = builder.Services.AddRepository (builder.Configuration);
+        _ = builder.Services.AddService (builder.Configuration);
+        _ = builder.Services.AddSessionMemoryCache (builder.Configuration);
+        _ = builder.Services.AddEmailService (builder.Configuration);
+        _ = builder.Services.AddCustomLocalization ();
+
+        // --- 3. Antiforgery & Security Setup ---
         _ = builder.Services.AddAntiforgery (options =>
         {
             options.HeaderName = "X-XSRF-TOKEN";
         });
-
         _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
 
-        AppSettings.Current = builder.Configuration.GetSection ("MyAppSettings")
-        .Get<MyConfigSettings> () ?? new MyConfigSettings ();
-
-        _ = builder.Services.AddDatabase (builder.Configuration);
-
-        _ = builder.Services.AddDatabaseDeveloperPageExceptionFilter ();
-
-        _ = builder.Services.AddRepository (builder.Configuration);
-
-        _ = builder.Services.AddService (builder.Configuration);
-
-        _ = builder.Services.AddSessionMemoryCache (builder.Configuration);
-
+        _ = builder.Services.AddAuthorization (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
-        _ = builder.Services.AddEmailService (builder.Configuration);
-
-        _ = builder.Services.AddCustomLocalization ();
-
-        _ = builder.Services.AddAuthorization (builder.Configuration);
-
+        // --- 4. Web Optimization ---
         _ = builder.Services.AddWebOptimizer (pipeline =>
         {
             _ = pipeline.CompileLessFiles ();
         });
 
-        _ = builder.Services.AddControllers (options =>
+        // --- 5. Unified Controller Routing Registration ---
+        _ = builder.Services.AddControllersWithViews (options =>
         {
+            // Injecting the dynamic tenant anti-forgery validation filter safely
             options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof (TenantAntiforgeryFilter)));
         });
 
-        _ = builder.Services.AddControllersWithViews ();
-
         var app = builder.Build();
+
+        // --- 6. HTTP Request Pipeline Execution Order ---
+
+        // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into Kestrel HttpContext
+        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+        });
 
         if ( app.Environment.IsDevelopment () )
         {
@@ -82,36 +81,32 @@ internal class Program
         }
 
         _ = app.UseGlobalExceptionHandling ();
-
         _ = app.UseHttpsRedirection ();
-
         _ = app.UseStatusCodePages ();
-
         _ = app.UseWebOptimizer ();
-
         _ = app.UseStaticFiles ();
 
-        _ = app.UseRouting ();
-
-        _ = app.UseSession ();
-
-        _ = app.UseResponseCaching ();
-
-        _ = app.UseCustomLocalization ();
-
+        // CRITICAL: Tenant Resolution must run BEFORE Routing so path-rewriting modifies the route endpoints safely
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
+        _ = app.UseRouting ();
         _ = app.UseCors ();
+        _ = app.UseSession ();
+        _ = app.UseResponseCaching ();
+        _ = app.UseCustomLocalization ();
 
+        // --- 7. Authentication & Tenant Authorization Defenses ---
         _ = app.UseAuthentication ();
-
-        _ = app.UseMiddleware<TenantSecurityMiddleware> ();
-
         _ = app.UseAuthorization ();
 
-        _ = app.MapControllers ();
+        // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
+        _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
-        _ = app.MapControllerRoute (name: "MyArea",pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        // --- 8. Endpoint Mappings ---
+        _ = app.MapControllers ();
+        _ = app.MapControllerRoute (
+            name: "MyArea",
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
         await app.RunAsync ();
     }

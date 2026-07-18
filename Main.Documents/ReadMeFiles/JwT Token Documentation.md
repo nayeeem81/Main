@@ -455,3 +455,73 @@ app.Run();
 [27] [https://blog.devgenius.io](https://blog.devgenius.io/secure-jwt-json-web-token-authentication-implementation-in-go-a7ab3737ee7c)
 [28] [https://dev.to](https://dev.to/ossan/custom-jwt-authentication-net-5-47p7)
 [29] [https://www.themoonlight.io](https://www.themoonlight.io/en/review/agentic-jwt-a-secure-delegation-protocol-for-autonomous-ai-agents)
+
+options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; tells your application exactly how to respond when an unauthenticated user tries to access a protected resource. [1, 2, 3] 
+
+In ASP.NET Core, a "Challenge" is the action the server takes when a user is not logged in but tries to access a controller or action marked with the [Authorize] attribute. [4] 
+
+Here is the exact breakdown of why this line is used and how it behaves:
+## 1. What it does in a JWT API / SPA context
+By setting the Challenge scheme to JwtBearerDefaults.AuthenticationScheme, you are telling the application: [5] 
+
+* The Action: "If a request lacks a valid JWT token, do not redirect them to a web login page."
+* The Response: "Instead, immediately halt the request and return a raw HTTP 401 Unauthorized status code header back to the client." [6, 7, 8] 
+
+## 2. The Contrast: JWT vs. Traditional MVC Cookies
+To understand why this line is critical, look at how the application behaves without it compared to with it:
+
+* Without this line (Default MVC Cookie Behavior):
+
+If a user triggers an [Authorize] rule, the server assumes it is a standard browser app. It attempts to challenge the user by issueing an HTTP 302 Redirect to a login webpage (e.g., /Account/Login). For an API or a frontend app using Javascript fetch(), a 302 redirect breaks the script pipeline and causes CORS or parsing issues.
+
+* With this line configured:
+The server skips the redirect completely. It sends a flat 401 Unauthorized response with a WWW-Authenticate: Bearer header. [9, 10, 11, 12, 13] 
+
+------------------------------
+## 3. How it triggers your Token Refresh Interceptor
+This exact setting is what makes your frontend Javascript fetch interceptor (from Part 1) work perfectly.
+
+   1. The user's short-lived JWT expires.
+   2. The user requests a protected route like /api/tenant-data.
+   3. Because DefaultChallengeScheme is set to JwtBearerDefaults.AuthenticationScheme, Kestrel returns an HTTP 401.
+   4. Your Javascript interceptor catches the response.status === 401, pauses the user's workflow, runs refreshJwtToken(), gets a new short-lived token, and seamlessly retries the request. [14, 15, 16, 17, 18] 
+
+------------------------------
+## 4. Implementation Example in Program.cs
+When writing your authentication builder block, it is best practice to chain your default schemes together so Kestrel knows exactly how to handle both evaluating tokens (Authenticate) and blocking bad requests (Challenge): [19] 
+
+builder.Services.AddAuthentication(options =>
+{
+    // Use JWT to look at and decode incoming tokens for every request
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    
+    // Use JWT to return a 401 status code if the token is missing or dead
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options => 
+{
+    // Your token validation logic goes here...
+});
+
+To make sure your token refresh flow is secure, are you passing your long-lived refresh tokens inside a secure, HttpOnly, SameSite=Strict cookie, or are you storing them inside browser localStorage?
+
+[1] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-10.0)
+[2] [https://medium.com](https://medium.com/@stanislousvanderputt/token-based-authentication-in-asp-net-core-8-a-deep-dive-3547a1c092f5)
+[3] [https://fiodar.substack.com](https://fiodar.substack.com/p/a-guide-to-securing-net-aspire-apps)
+[4] [https://positiwise.com](https://positiwise.com/blog/a-detailed-guide-on-asp-net-core-authentication)
+[5] [https://medium.com](https://medium.com/@stanislousvanderputt/token-based-authentication-in-asp-net-core-8-a-deep-dive-3547a1c092f5)
+[6] [https://www.sitepoint.com](https://www.sitepoint.com/php-authorization-jwt-json-web-tokens/)
+[7] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-on-behalf-of-flow)
+[8] [https://www.bluehost.com](https://www.bluehost.com/blog/validation-token/)
+[9] [https://medium.com](https://medium.com/@stanislousvanderputt/token-based-authentication-in-asp-net-core-8-a-deep-dive-3547a1c092f5)
+[10] [https://www.ory.com](https://www.ory.com/docs/oathkeeper/pipeline/error)
+[11] [https://www.facebook.com](https://www.facebook.com/groups/228321510706889/posts/998897403649292/)
+[12] [https://wundergraph.com](https://wundergraph.com/blog/authentication_for_nextjs_with_graphql_and_rest_apis_and_server_side_rendering)
+[13] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0)
+[14] [https://medium.com](https://medium.com/israeli-tech-radar/oauth-2-0-and-openid-connect-for-dummies-6fa6e995d6d5)
+[15] [https://medium.com](https://medium.com/@aiagentofchange/stop-making-these-5-fatal-jwt-mistakes-and-how-to-fix-them-ad9d07046998)
+[16] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/?view=aspnetcore-10.0)
+[17] [https://codesimple.dev](https://codesimple.dev/blogPost/bbf9e1b8-82dd-4fc1-80c6-ee713f93e6d2/aspnet-core-multiple-authentication-schemes)
+[18] [https://paths.grasp.study](https://paths.grasp.study/public-courses/5514b5ac-04e3-432b-8e60-825c91487ddd/modules/d5dc492c-bd15-408e-85f8-3c946cab85d3/lessons/8aef7675-9fc5-4720-a689-56f06ba47833)
+[19] [https://www.reddit.com](https://www.reddit.com/r/dotnet/comments/8s96ae/how_does_iis_enable_windows_authentication_on/)
+
