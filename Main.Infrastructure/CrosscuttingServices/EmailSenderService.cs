@@ -4,7 +4,7 @@ using Main.Common;
 using Main.IRepository;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace Main.Infrastructure;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public class EmailSenderService: IEmailSender, IEmailSenderService
 {

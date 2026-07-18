@@ -1,10 +1,9 @@
 using Main.Infrastructure;
-using Main.Infrastructure.Services;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
+using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.Middleware;
 using Main.WebAppCore.Tenant;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.Extensions.Options;
 using ResourceLibrary.Resources;
 using Serilog;
 using WebAppCore.Helper;
@@ -18,20 +17,22 @@ internal class Program
         // Uncomment your host logger integration
         _ = builder.Host.UseSerilog ();
 
-        // Explicitly register Serilog's interface to satisfy concrete infrastructure dependencies
-        _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
-
         _ = builder.AddSerilogConfiguration ();
 
-        _ = builder.Services.AddScoped<IExceptionLoggingService,ExceptionLoggingService> ();
+        _ = builder.Services.AddSingleton<Serilog.ILogger> (Serilog.Log.Logger);
+
+        _ = builder.Services.AddExceptionLogging (builder.Configuration);
 
         _ = builder.Services.AddHttpContextAccessor ();
 
         _ = builder.Services.AddScoped<ITenantContext,TenantContext> ();
 
-        //  This fixes the framework validation error
-        _ = builder.Services.AddTransient<IConfigureOptions<AntiforgeryOptions>
-            ,TenantAntiforgeryOptions> ();
+        _ = builder.Services.AddAntiforgery (options =>
+        {
+            options.HeaderName = "X-XSRF-TOKEN";
+        });
+
+        _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
 
         _ = builder.Services.AddScoped<ITenantSetter,TenantSetter> ();
 
@@ -45,6 +46,10 @@ internal class Program
         _ = builder.Services.AddRepository (builder.Configuration);
 
         _ = builder.Services.AddService (builder.Configuration);
+
+        _ = builder.Services.AddSessionMemoryCache (builder.Configuration);
+
+        _ = builder.Services.AddAuthentication (builder.Configuration);
 
         _ = builder.Services.AddEmailService (builder.Configuration);
 

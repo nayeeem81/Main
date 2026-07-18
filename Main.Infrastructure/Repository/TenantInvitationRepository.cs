@@ -1,6 +1,6 @@
 using Domain.Model;
 using Main.Common;
-using Main.Infrastructure;
+using Main.Infrastructure.Database;
 using Main.IRepository;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,10 +1,7 @@
 ﻿
 using Domain.Model;
-
+using Main.Infrastructure.Database;
 using Main.IRepository;
-
-using Main.Infrastructure;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.Repository;
@@ -14,29 +11,29 @@ public class ProductRepository: IProductRepository
 
     private readonly ApplicationDbContext _context;
 
-    public ProductRepository ( ApplicationDbContext context )
+    public ProductRepository (ApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<bool> SaveChanges ( )
+    public async Task<bool> SaveChanges ()
     {
         var result = await _context.SaveChangesAsync();
         return result > 0;
     }
 
-    public async Task<List<Product>> GetAllProducts ( )
+    public async Task<List<Product>> GetAllProducts ()
     {
-        return await _context.Products.ToListAsync ( );
+        return await _context.Products.ToListAsync ();
     }
 
-    public async Task<bool> DeleteProduct ( int productId )
+    public async Task<bool> DeleteProduct (int productId)
     {
         var product = _context.Products.FirstOrDefault<Product>(a => a.ProductID == productId);
 
         if ( product != null )
         {
-            _context.Products.Remove ( product );
+            _ = _context.Products.Remove (product);
         }
 
         var result = await _context.SaveChangesAsync();
@@ -44,14 +41,14 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<bool> DeleteProductImage ( int id,int productId )
+    public async Task<bool> DeleteProductImage (int id,int productId)
     {
         var image = await _context.ProductImageFiles.FirstOrDefaultAsync <ProductImageFile>
                                    ( a => a.ProductImageFileID == id && a.ProductID == productId );
 
         if ( image != null )
         {
-            _context.ProductImageFiles.Remove ( image );
+            _ = _context.ProductImageFiles.Remove (image);
         }
 
         var result = await _context.SaveChangesAsync();
@@ -59,7 +56,7 @@ public class ProductRepository: IProductRepository
         return result > 0;
     }
 
-    public async Task<Product> GetProductByProductID ( int postId )
+    public async Task<Product> GetProductByProductID (int postId)
     {
         Product? product = await _context.Products.FirstOrDefaultAsync<Product>
                                                    (a => a.ProductID == postId);
@@ -69,31 +66,31 @@ public class ProductRepository: IProductRepository
             return product;
         }
 
-        return new Product ( );
+        return new Product ();
     }
 
-    public async Task<bool> SaveNewProduct ( Product productEntity )
+    public async Task<bool> SaveNewProduct (Product productEntity)
     {
-        _context.Products.Add ( productEntity );
+        _ = _context.Products.Add (productEntity);
 
         int result = await _context.SaveChangesAsync();
 
         return result > 0;
     }
 
-    public async Task<bool> UpdateProduct ( Product productEntity )
+    public async Task<bool> UpdateProduct (Product productEntity)
     {
-        _context.Products.Update ( productEntity );
+        _ = _context.Products.Update (productEntity);
 
         var result = await _context.SaveChangesAsync ();
 
         return result > 0;
     }
 
-    public async Task<List<Product>> GetSelectProducts ( )
+    public async Task<List<Product>> GetSelectProducts ()
     {
         return await _context.Products
-                .ToListAsync ( );
+                .ToListAsync ();
     }
 }
 

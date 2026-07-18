@@ -1,16 +1,13 @@
 using Domain.Model;
 using Main.Common;
-using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
+using Main.Infrastructure.Database;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Main.WebAppCore;
 
-/// <summary>
-/// API controller for managing and viewing exception logs
-/// Restricted to administrators only
-/// </summary>
 [ApiController]
 [Route ("api/[controller]")]
 [Authorize (Roles = "Admin")]
@@ -27,11 +24,7 @@ public class ExceptionLogsController: ControllerBase
         _exceptionLoggingService = exceptionLoggingService;
     }
 
-    /// <summary>
-    /// Gets paginated list of exception logs with optional filtering
-    /// </summary>
-    /// <param name="filter">Filter criteria</param>
-    /// <returns>Paginated list of exception logs</returns>
+
     [HttpPost ("search")]
     public async Task<ActionResult<PaginatedResponse<ExceptionLogViewModel>>> SearchExceptionLogs (
         [FromBody] ExceptionLogFilterRequest filter)
@@ -106,11 +99,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Gets a specific exception log by ID
-    /// </summary>
-    /// <param name="id">Exception log ID</param>
-    /// <returns>Exception log details</returns>
+
     [HttpGet ("{id}")]
     public async Task<ActionResult<ExceptionLogViewModel>> GetExceptionLog (long id)
     {
@@ -147,10 +136,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Gets exception logs summary/dashboard data
-    /// </summary>
-    /// <returns>Exception summary statistics</returns>
+
     [HttpGet ("summary/stats")]
     public async Task<ActionResult<ExceptionSummary>> GetExceptionSummary ()
     {
@@ -213,12 +199,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Marks an exception as resolved
-    /// </summary>
-    /// <param name="id">Exception log ID</param>
-    /// <param name="request">Resolution details</param>
-    /// <returns>Success response</returns>
+
     [HttpPut ("{id}/resolve")]
     public async Task<IActionResult> ResolveException (
         long id,
@@ -262,11 +243,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Exports exception logs to CSV format
-    /// </summary>
-    /// <param name="filter">Filter criteria</param>
-    /// <returns>CSV file</returns>
+
     [HttpPost ("export/csv")]
     public async Task<IActionResult> ExportExceptionsAsCsv (
         [FromBody] ExceptionLogFilterRequest filter)
@@ -339,11 +316,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Bulk delete resolved exceptions older than specified days
-    /// </summary>
-    /// <param name="days">Days to keep (delete older than this)</param>
-    /// <returns>Number of deleted records</returns>
+
     [HttpDelete ("cleanup")]
     [Authorize (Roles = "SuperAdmin")] // More restrictive for delete operations
     public async Task<IActionResult> CleanupOldExceptions ([FromQuery] int days = 90)
@@ -394,9 +367,7 @@ public class ExceptionLogsController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Maps ExceptionLog entity to ViewModel
-    /// </summary>
+
     private static ExceptionLogViewModel MapToViewModel (ExceptionLog log)
     {
         return new ExceptionLogViewModel
@@ -421,9 +392,7 @@ public class ExceptionLogsController: ControllerBase
         };
     }
 
-    /// <summary>
-    /// Escapes CSV values to handle commas and quotes
-    /// </summary>
+
     private static string EscapeCsvValue (string? value)
     {
         if ( string.IsNullOrEmpty (value) )
@@ -435,14 +404,10 @@ public class ExceptionLogsController: ControllerBase
     }
 }
 
-/// <summary>
-/// Request model for resolving exceptions
-/// </summary>
+
 public class ResolveExceptionRequest
 {
-    /// <summary>
-    /// Resolution notes from the developer
-    /// </summary>
+
     public string? Notes
     {
         get; set;

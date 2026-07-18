@@ -1,3 +1,7 @@
+🚪 Select Your Authentication Method:
+ ├── 🔑 Standard Account (Username + Password)
+ ├── 🪪 Corporate Login (Single Sign-On / SAML)
+ └── 📲 Passwordless Access (Email Magic Link)
 
 
 🌐 www.tenantors.com  (Main Web Portal)

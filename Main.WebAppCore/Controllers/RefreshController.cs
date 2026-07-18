@@ -1,10 +1,12 @@
-﻿using Main.Infrastructure;
+﻿using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Security;
 
 namespace Main.WebAppCore.Controllers
 {
-    public class RefreshController: Controller
+    [ApiController]
+    [Route ("api/[controller]")]
+    public class RefreshController: BaseController
     {
         public readonly ITenantSetter _tenantSetter;
         public readonly ITokenService _tokenService;

@@ -1,5 +1,5 @@
 ﻿using Main.Common;
-using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using System.Security.Claims;
 
 namespace Main.WebAppCore.Tenant;

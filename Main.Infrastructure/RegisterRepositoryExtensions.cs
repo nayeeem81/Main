@@ -2,12 +2,15 @@
 using Main.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 namespace Main.Infrastructure;
 
-public static class RegisterData
+public static class RegisterRepositoryExtensions
 {
     public static IServiceCollection AddRepository (
+
     this IServiceCollection services,IConfiguration configuration)
+
     {
         _ = services.AddScoped<IApplicationUserRepository,ApplicationUserRepository> ();
 

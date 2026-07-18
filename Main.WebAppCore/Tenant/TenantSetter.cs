@@ -1,5 +1,5 @@
 ﻿using Main.Common;
-using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 
 namespace Main.WebAppCore.Tenant;
 

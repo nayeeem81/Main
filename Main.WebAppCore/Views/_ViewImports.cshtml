@@ -1,16 +1,17 @@
-﻿@using Main.WebAppCore;
-@using Main.WebAppCore.Models;
+﻿@using System.Security.Claims;
 @using Main.Common;
 @using Main.Infrastructure;
-@using WebAppCore.Helper;
-@using WebAppCore.ViewModel;
-@using ResourceLibrary.Resources;
+@using Main.Infrastructure.CrosscuttingHelperServices
+@using Main.WebAppCore;
+@using Main.WebAppCore.Models;
 @using Microsoft.AspNetCore;
-@using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using Microsoft.Extensions.Localization;
-@using System.Security.Claims;
+@using ResourceLibrary.Resources;
+@using WebAppCore.Helper;
+@using WebAppCore.ViewModel;
 
 @inject ITenantSetter TenantSetter
 @inject IAuthorizationService AuthorizationService

@@ -1,5 +1,5 @@
 ﻿using DataTransferModel;
-using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Services;
 using Main.WebAppCore.Controllers.Extensions;
 using Microsoft.AspNetCore.Identity;

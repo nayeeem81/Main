@@ -1,6 +1,6 @@
 ﻿using Main.Common;
 
-namespace Main.Infrastructure;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public interface IEmailSenderService
 {

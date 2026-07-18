@@ -1,6 +1,4 @@
-using Domain.Model;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -72,51 +70,5 @@ public static class RegisterSerilogConfiguration
         return builder;
     }
 
-    public static IServiceCollection AddExceptionLogging (this IServiceCollection services)
-    {
-        // Exception logging service will be registered separately
-        //_ = services.AddSingleton (Serilog.Log.Logger);
 
-        return services;
-    }
-}
-
-
-public interface IExceptionLoggingService
-{
-    /// <summary>
-    /// Logs an exception to persistent storage
-    /// </summary>
-    Task LogExceptionAsync (
-        Exception exception,
-        string errorCode,
-        int statusCode,
-        string userMessage,
-        string? userId = null,
-        string? clientIpAddress = null,
-        string? requestUrl = null,
-        string? httpMethod = null,
-        string? requestHeaders = null,
-        string? requestBody = null,
-        string? customData = null,
-        string source = "API");
-
-
-    Task<List<ExceptionLog>> GetExceptionsAsync (
-        int? statusCode = null,
-        string? errorCode = null,
-        DateTime? startDate = null,
-        DateTime? endDate = null,
-        bool? isResolved = null,
-        int pageNumber = 1,
-        int pageSize = 20);
-
-
-    Task<(int Total,int Unresolved,int Today)> GetExceptionSummaryAsync ();
-
-
-    Task MarkAsResolvedAsync (long exceptionId,string? notes = null);
-
-
-    Task<ExceptionLog?> GetExceptionByIdAsync (long id);
 }

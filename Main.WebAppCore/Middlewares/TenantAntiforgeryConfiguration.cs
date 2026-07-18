@@ -1,13 +1,15 @@
-﻿using Main.Infrastructure;
+﻿using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
 
-public class TenantAntiforgeryOptions: IConfigureOptions<AntiforgeryOptions>
+namespace Main.WebAppCore.Middleware;
+
+public class ConfigureAntiforgeryCookieOptions: IConfigureOptions<AntiforgeryOptions>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     //  Inject the Singleton HTTP context accessor, NOT your scoped ITenantContext directly
-    public TenantAntiforgeryOptions (IHttpContextAccessor httpContextAccessor)
+    public ConfigureAntiforgeryCookieOptions (IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -24,6 +26,6 @@ public class TenantAntiforgeryOptions: IConfigureOptions<AntiforgeryOptions>
         var tenantContext = httpContext.RequestServices.GetRequiredService<ITenantContext>();
 
         // Apply your dynamic tenant logic here safely
-        options.Cookie.Name = $"Antiforgery_{tenantContext.TenantId}";
+        options.Cookie.Name = $".AspNetCore.Antiforgery{tenantContext.TenantId}";
     }
 }

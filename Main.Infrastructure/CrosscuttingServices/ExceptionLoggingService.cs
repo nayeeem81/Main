@@ -1,12 +1,10 @@
 using Domain.Model;
+using Main.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace Main.Infrastructure.Services;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
-/// <summary>
-/// Service for logging exceptions to database and file
-/// </summary>
 public class ExceptionLoggingService: IExceptionLoggingService
 {
     private readonly ApplicationDbContext _dbContext;
@@ -23,9 +21,6 @@ public class ExceptionLoggingService: IExceptionLoggingService
         _logger = logger;
     }
 
-    /// <summary>
-    /// Logs an exception to the database and file
-    /// </summary>
     public async Task LogExceptionAsync (
         Exception exception,
         string errorCode,
@@ -114,9 +109,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         }
     }
 
-    /// <summary>
-    /// Retrieves logged exceptions with pagination and filtering
-    /// </summary>
+
     public async Task<List<ExceptionLog>> GetExceptionsAsync (
         int? statusCode = null,
         string? errorCode = null,
@@ -164,9 +157,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         return exceptions;
     }
 
-    /// <summary>
-    /// Gets exception summary statistics
-    /// </summary>
+
     public async Task<(int Total,int Unresolved,int Today)> GetExceptionSummaryAsync ()
     {
         var today = DateTime.UtcNow.Date;
@@ -178,9 +169,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         return (total,unresolved,todayCount);
     }
 
-    /// <summary>
-    /// Marks an exception log as resolved
-    /// </summary>
+
     public async Task MarkAsResolvedAsync (long exceptionId,string? notes = null)
     {
         var exceptionLog = await _dbContext.ExceptionLogs.FindAsync(exceptionId);
@@ -201,9 +190,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
         }
     }
 
-    /// <summary>
-    /// Gets a specific exception by ID
-    /// </summary>
+
     public async Task<ExceptionLog?> GetExceptionByIdAsync (long id)
     {
         return await _dbContext.ExceptionLogs
@@ -211,9 +198,7 @@ public class ExceptionLoggingService: IExceptionLoggingService
             .FirstOrDefaultAsync (e => e.Id == id);
     }
 
-    /// <summary>
-    /// Truncates string to maximum length
-    /// </summary>
+
     private static string? TruncateString (string? value,int maxLength)
     {
         if ( string.IsNullOrEmpty (value) )

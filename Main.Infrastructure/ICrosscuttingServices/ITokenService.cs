@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
-namespace Main.Infrastructure;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public interface ITokenService
 {

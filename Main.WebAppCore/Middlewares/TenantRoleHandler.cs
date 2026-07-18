@@ -1,4 +1,4 @@
-﻿using Main.Infrastructure;
+﻿using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.WebAppCore.Tenant;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;

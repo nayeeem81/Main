@@ -1,5 +1,5 @@
 using Main.Common;
-using Main.Infrastructure;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text.Json;
@@ -7,10 +7,6 @@ using ILogger = Serilog.ILogger;
 
 namespace Main.WebAppCore.Middleware;
 
-/// <summary>
-/// Global exception handling middleware
-/// Catches all unhandled exceptions, logs them, and returns user-friendly responses
-/// </summary>
 public class GlobalExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
@@ -37,9 +33,7 @@ public class GlobalExceptionHandlingMiddleware
         }
     }
 
-    /// <summary>
-    /// Handles the exception by logging it and sending appropriate response
-    /// </summary>
+
     private static async Task HandleExceptionAsync (
         HttpContext context,
         Exception exception,
@@ -95,9 +89,7 @@ public class GlobalExceptionHandlingMiddleware
         await SendErrorResponseAsync (context,errorCode,statusCode,userMessage);
     }
 
-    /// <summary>
-    /// Maps exception types to error codes and status codes
-    /// </summary>
+
     private static (string ErrorCode,int StatusCode,string UserMessage) MapException (Exception exception)
     {
         return exception switch
@@ -172,9 +164,7 @@ public class GlobalExceptionHandlingMiddleware
         };
     }
 
-    /// <summary>
-    /// Sends error response to client
-    /// </summary>
+
     private static async Task SendErrorResponseAsync (
         HttpContext context,
         string errorCode,
@@ -206,9 +196,7 @@ public class GlobalExceptionHandlingMiddleware
         await context.Response.WriteAsJsonAsync (response,options);
     }
 
-    /// <summary>
-    /// Gets client IP address from request
-    /// </summary>
+
     private static string GetClientIpAddress (HttpContext context)
     {
         // Try to get IP from X-Forwarded-For header (for proxied requests)
@@ -222,9 +210,7 @@ public class GlobalExceptionHandlingMiddleware
         return context.Connection.RemoteIpAddress?.ToString () ?? "Unknown";
     }
 
-    /// <summary>
-    /// Serializes request headers for logging (excluding sensitive headers)
-    /// </summary>
+
     private static string SerializeHeaders (IHeaderDictionary headers)
     {
         var sensitiveHeaders = new[]
@@ -245,15 +231,10 @@ public class GlobalExceptionHandlingMiddleware
     }
 }
 
-/// <summary>
-/// Extension method to register the global exception handling middleware
-/// </summary>
+
 public static class GlobalExceptionHandlingMiddlewareExtensions
 {
-    /// <summary>
-    /// Adds global exception handling middleware to the pipeline
-    /// Should be called early in the middleware pipeline, after logging but before other middleware
-    /// </summary>
+
     public static IApplicationBuilder UseGlobalExceptionHandling (this IApplicationBuilder app)
     {
         return app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();

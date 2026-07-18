@@ -1,7 +1,7 @@
 ﻿using Main.Common;
 using System.Security.Claims;
 
-namespace Main.Infrastructure;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public interface ITenantContext
 {

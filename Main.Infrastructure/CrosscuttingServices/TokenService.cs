@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Main.Infrastructure;
+namespace Main.Infrastructure.CrosscuttingHelperServices;
 
 public class TokenService: ITokenService
 {

@@ -1,12 +1,12 @@
 ﻿using Domain.Model;
 using Main.Common;
+using Main.Infrastructure.CrosscuttingHelperServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace Main.Infrastructure;
-
+namespace Main.Infrastructure.Database;
 
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
