@@ -1,8 +1,9 @@
 ﻿using Main.Common;
-using Main.Infrastructure.CrosscuttingHelperServices;
+using Main.Infrastructure;
+using Main.WebAppCore.DependentServices;
 using System.Security.Claims;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.CrosscuttingServices;
 
 public class TenantContext: ITenantContext
 {

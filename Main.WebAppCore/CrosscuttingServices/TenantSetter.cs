@@ -1,7 +1,7 @@
 ﻿using Main.Common;
-using Main.Infrastructure.CrosscuttingHelperServices;
+using Main.Infrastructure;
 
-namespace Main.WebAppCore.Tenant;
+namespace Main.WebAppCore.CrosscuttingServices;
 
 public class TenantSetter: ITenantSetter
 {

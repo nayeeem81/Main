@@ -1,9 +1,9 @@
-﻿using Main.Infrastructure.CrosscuttingHelperServices;
-using Main.WebAppCore.Tenant;
+﻿using Main.Infrastructure;
+using Main.WebAppCore.DependentServices;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.DepententServices;
 
 public class TenantRoleHandler: AuthorizationHandler<TenantRoleRequirement>
 {

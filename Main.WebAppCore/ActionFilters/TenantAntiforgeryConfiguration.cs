@@ -1,8 +1,8 @@
-﻿using Main.Infrastructure.CrosscuttingHelperServices;
+﻿using Main.Infrastructure;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Options;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.ActionFilters;
 
 public class ConfigureAntiforgeryCookieOptions: IConfigureOptions<AntiforgeryOptions>
 {

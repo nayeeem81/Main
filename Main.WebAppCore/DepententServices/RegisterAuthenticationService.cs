@@ -1,4 +1,4 @@
-﻿using Main.Infrastructure.CrosscuttingHelperServices;
+﻿using Main.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 

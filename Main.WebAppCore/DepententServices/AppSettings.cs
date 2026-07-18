@@ -1,4 +1,5 @@
-﻿using WebAppCore.Helper;
+﻿namespace Main.WebAppCore.DependentServices;
+
 public static class AppSettings
 {
     public static MyConfigSettings Current

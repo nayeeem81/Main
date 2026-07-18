@@ -1,6 +1,6 @@
 ﻿using Main.Common;
 
-namespace Main.Infrastructure.CrosscuttingHelperServices;
+namespace Main.Infrastructure;
 
 public interface ITenantSetter
 {

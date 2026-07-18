@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog;
 
-namespace Main.WebAppCore.Middleware;
+namespace Main.WebAppCore.ActionFilters;
 
 public class TenantAntiforgeryFilter: IAsyncActionFilter
 {

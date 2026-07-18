@@ -1,8 +1,5 @@
 <Solution>
   <Folder Name="/Docs/">
-    <File Path="C:/Users/Naim/Downloads/FlowDiagram/FolderStructureMonolithicWebProject.png" />
-    <File Path="C:/Users/Naim/Downloads/FlowDiagram/Request Plipeline.png" />
-    <File Path="C:/Users/Naim/Downloads/FlowDiagram/SafetyNetExceptionResponcePipeline.png" />
     <File Path="Docs/CONTRIBUTING.md" />
     <File Path="Docs/DEPLOYMENT_GUIDE.md" />
     <File Path="Docs/EXCEPTION_HANDLING_GUIDE.md" />

@@ -1,6 +1,6 @@
 ﻿using Main.Common;
 
-namespace WebAppCore.Helper;
+namespace Main.WebAppCore.DependentServices;
 
 public class MyConfigSettings
 {
