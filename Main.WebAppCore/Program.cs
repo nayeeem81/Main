@@ -41,6 +41,7 @@ internal class Program
         {
             options.HeaderName = "X-XSRF-TOKEN";
         });
+
         _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
 
         _ = builder.Services.AddAuthorization (builder.Configuration);
@@ -56,19 +57,14 @@ internal class Program
         _ = builder.Services.AddControllersWithViews (options =>
         {
             // Injecting the dynamic tenant anti-forgery validation filter safely
-            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof (TenantAntiforgeryFilter)));
+            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
+            (TenantAntiforgeryFilter)));
         });
 
         var app = builder.Build();
 
         // --- 6. HTTP Request Pipeline Execution Order ---
-
-        // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into Kestrel HttpContext
-        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
-        });
-
+        // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into 
         if ( app.Environment.IsDevelopment () )
         {
             _ = app.UseMigrationsEndPoint ();
@@ -78,6 +74,11 @@ internal class Program
             _ = app.UseExceptionHandler ("/Home/Error");
             _ = app.UseHsts ();
         }
+
+        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+        });
 
         _ = app.UseGlobalExceptionHandling ();
         _ = app.UseHttpsRedirection ();

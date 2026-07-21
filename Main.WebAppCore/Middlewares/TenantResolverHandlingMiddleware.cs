@@ -8,7 +8,7 @@ namespace Main.WebAppCore.Middleware;
 public class TenantResolverHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private const string rootDomain = "localhost";
+    private const string rootDomain = "tenators.com";
 
 
     public TenantResolverHandlingMiddleware (RequestDelegate next)

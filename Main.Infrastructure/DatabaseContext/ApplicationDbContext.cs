@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace Main.Infrastructure.Database;
+namespace Main.Infrastructure.DatabaseContext;
 
 public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
 {
@@ -399,7 +399,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         var tenant1 = new Tenant (TenantID1, guidArray[13])
         {
             Name = "LifeStyle Store",
-            HostName = "lifestyle-local",
+            HostName = "lifestyles",
             Store = StoreType.LifeStyles
         };
 
@@ -410,7 +410,7 @@ public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
         var  tenant2 = new Tenant (TenantID2, guidArray[14])
         {
             Name = "Fine Arts Store",
-            HostName = "fanarts-local",
+            HostName = "finearts",
             Store = StoreType.FineArts
         };
 

@@ -1,7 +1,7 @@
 using Domain.Model;
 using Main.Common;
 using Main.Infrastructure.CrosscuttingHelperServices;
-using Main.Infrastructure.Database;
+using Main.Infrastructure.DatabaseContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

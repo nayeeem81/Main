@@ -38,7 +38,7 @@
 
 <body>
     <!-- Render this EXACTLY ONCE here for the entire application -->
-    @Html.AntiForgeryToken()
+    @* @Html.AntiForgeryToken() *@
 
     <span id="pick"></span>
 
@@ -70,11 +70,11 @@
 
             @await Component.InvokeAsync("TopHeaderPanel")
             @await Component.InvokeAsync("MainHeaderPanel")
-            @await Component.InvokeAsync( "BottomHeaderPanel",new MenuObjectModel(TenantSetter.TenantStore))
+        @*     @await Component.InvokeAsync( "BottomHeaderPanel",new MenuObjectModel(TenantSetter.TenantStore)) *@
 
         </header>
 
-        @await Component.InvokeAsync("AdvancedSearch",new MenuObjectModel(true,TenantSetter.TenantStore))
+      @*   @await Component.InvokeAsync("AdvancedSearch",new MenuObjectModel(true,TenantSetter.TenantStore)) *@
 
         @* @await Component.InvokeAsync("ShoppingCartNotification")  *@
        

@@ -1,10 +1,9 @@
 ﻿using DataTransferModel;
 
 using Domain.Model;
-
 using Main.IRepository;
 
-namespace Main.Services;
+namespace Main.Services.IServices;
 
 public class TenancyService: ITenancyService
 {

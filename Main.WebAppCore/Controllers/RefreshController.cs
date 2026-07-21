@@ -5,8 +5,7 @@ using System.Security;
 
 namespace Main.WebAppCore.Controllers
 {
-    [ApiController]
-    [Route ("api/[controller]")]
+
     public class RefreshController: BaseController
     {
         public readonly ITenantSetter _tenantSetter;

@@ -1,5 +1,5 @@
 using Domain.Model;
-using Main.Infrastructure.Database;
+using Main.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

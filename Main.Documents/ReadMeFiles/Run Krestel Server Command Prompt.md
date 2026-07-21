@@ -459,6 +459,7 @@ If you want to scale this architecture further, let me know if you would like to
 
 This string is an endpoint binding configuration used by web servers (most commonly Kestrel in ASP.NET Core) to define exactly which network interfaces, protocols, and ports the server should listen to for incoming web traffic.
 Here is the exact breakdown of what each component means:
+
 ## 1. The Structure Breakdown
 The string contains two separate routing rules separated by a semicolon (;):
 
