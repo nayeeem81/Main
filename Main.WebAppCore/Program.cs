@@ -44,7 +44,7 @@ internal class Program
 
         _ = builder.Services.ConfigureOptions<ConfigureAntiforgeryCookieOptions> ();
 
-        _ = builder.Services.AddAuthorization (builder.Configuration);
+        _ = builder.Services.AddAuthorizations (builder.Configuration);
         _ = builder.Services.AddAuthentication (builder.Configuration);
 
         // --- 4. Web Optimization ---
@@ -67,12 +67,12 @@ internal class Program
         // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into 
         if ( app.Environment.IsDevelopment () )
         {
-            _ = app.UseMigrationsEndPoint ();
+            //_ = app.UseMigrationsEndPoint ();
         }
         else
         {
             _ = app.UseExceptionHandler ("/Home/Error");
-            _ = app.UseHsts ();
+            //_ = app.UseHsts ();
         }
 
         _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
@@ -81,18 +81,31 @@ internal class Program
         });
 
         _ = app.UseGlobalExceptionHandling ();
-        _ = app.UseHttpsRedirection ();
+        //_ = app.UseHttpsRedirection ();
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
-        _ = app.UseStaticFiles ();
+
+        // 1. Unpack Nginx headers first (sets PathBase to /tenant1)
+        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedHost
+                               | ForwardedHeaders.XForwardedFor
+                               | ForwardedHeaders.XForwardedPrefix
+        });
 
         // CRITICAL: Tenant Resolution must run BEFORE Routing so path-rewriting modifies the route endpoints safely
         _ = app.UseMiddleware<TenantResolverHandlingMiddleware> ();
 
+        _ = app.UseStaticFiles ();
+
         _ = app.UseRouting ();
+
         _ = app.UseCors ();
+
         _ = app.UseSession ();
+
         _ = app.UseResponseCaching ();
+
         _ = app.UseCustomLocalization ();
 
         // --- 7. Authentication & Tenant Authorization Defenses ---

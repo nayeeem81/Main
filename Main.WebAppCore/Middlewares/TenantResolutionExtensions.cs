@@ -17,9 +17,19 @@ public static class TenantResolutionExtensions
         IMemoryCache memoryCache,
         string rootDomain)
     {
-        string? tenantHost = context.ResolveFromSubdomain()
-                            ?? context.ResolveFromDomain()
-                            ?? ReutePathExtensions.ResolveFromPath(context);
+        // 1. Get the host string from Nginx header, fallback to local host if empty
+        string? rawHost = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault();
+        // 1. Check for the Nginx subdirectory header
+        string? tenantPath = context.Request.Headers["X-Forwarded-Prefix"].FirstOrDefault();
+
+        if ( string.IsNullOrEmpty (rawHost) )
+        {
+            rawHost = context.Request.Host.Value; // Fallback for local debugging without Nginx
+        }
+
+        string? tenantHost = context.ResolveFromSubdomain(rawHost)
+                            ?? context.ResolveFromDomain(rawHost)
+                            ?? ReutePathExtensions.ResolveFromPath(context, tenantPath);
 
         if ( !string.IsNullOrEmpty (tenantHost) )
         {
@@ -50,31 +60,56 @@ public static class TenantResolutionExtensions
         tenantSetter.TenantName = tenantDisplayDataModel.Name;
     }
 
-    private static string ResolveFromSubdomain (this HttpContext context)
+    private static string ResolveFromSubdomain (this HttpContext context,string? rawHost)
     {
-        string host = context.Request.Host.Host ?? "";
-        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
-
-        segments = RemoveResevedWord (segments.Length > 0 ? segments : null);
-
-        if ( segments!.Length > 2 )
+        string? host;
+        if ( rawHost == null )
         {
-            return segments[0];
+            host = context.Request.Host.Host ?? "";
+        }
+        else
+        {
+            host = rawHost;
+        }
+
+        if ( host != null )
+        {
+            string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+            segments = RemoveResevedWord (segments.Length > 0 ? segments : null);
+
+            if ( segments!.Length > 2 )
+            {
+                return segments[0];
+            }
         }
 
         return "";
     }
 
-    private static string? ResolveFromDomain (this HttpContext context)
+    private static string? ResolveFromDomain (this HttpContext context,string? rawHost)
     {
-        string host = context.Request.Host.Host ?? "";
-        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
-
-        segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
-
-        if ( segments!.Length > 1 )
+        string? host;
+        if ( rawHost == null )
         {
-            return segments[0];
+            host = context.Request.Host.Host ?? "";
+        }
+        else
+        {
+            host = rawHost;
+        }
+
+        if ( host != null )
+        {
+
+            string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+            segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
+
+            if ( segments!.Length > 1 )
+            {
+                return segments[0];
+            }
         }
 
         return "";

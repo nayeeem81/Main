@@ -29,11 +29,14 @@ public class TenantSecurityMiddleware
                 // Sign out or short-circuit with a 403 Forbidden page
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsync ("Access Denied: You do not belong to this tenant space.");
+
+
+
                 return; // Stop the request pipeline immediately
             }
         }
 
-        ArgumentNullException.ThrowIfNull (tenantSetter);
+        /// ArgumentNullException.ThrowIfNull (tenantSetter);
 
         await _next (context);
     }

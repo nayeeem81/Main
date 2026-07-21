@@ -1,4 +1,5 @@
-﻿using Main.IRepository;
+﻿using Main.Infrastructure.CrosscuttingHelperServices;
+using Main.IRepository;
 using Main.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,12 @@ public static class RegisterRepositoryExtensions
         _ = services.AddScoped<IPageRepository,PageRepository> ();
 
         _ = services.AddScoped<IPanelRepository,PanelRepository> ();
+
+        _ = services.AddScoped<ITokenRepository,TokenRepository> ();
+
+        _ = services.AddScoped<ITokenService,TokenService> ();
+
+
 
         return services;
 

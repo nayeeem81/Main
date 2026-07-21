@@ -1,12 +1,11 @@
 ﻿using Main.WebAppCore.DependentServices;
-using Main.WebAppCore.DepententServices;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Main.WebAppCore.DepententServices;
 
 public static class TenantAuthorizationService
 {
-    public static IServiceCollection AddAuthorization (this IServiceCollection services,IConfiguration configuration)
+    public static IServiceCollection AddAuthorizations (this IServiceCollection services,IConfiguration configuration)
     {
         _ = services.AddScoped<IAuthorizationHandler,TenantRoleHandler> ();
 

@@ -24,6 +24,7 @@ public class TenantResolverHandlingMiddleware
     IMemoryCache memoryCache,
     ITokenService tokenService)
     {
+
         bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain);
 
 

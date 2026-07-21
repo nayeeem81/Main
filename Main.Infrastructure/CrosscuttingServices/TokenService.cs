@@ -20,16 +20,16 @@ public class TokenService: ITokenService
     public TokenService (IConfiguration config,ITokenRepository tokenRepository)
     {
         _tokenRepository = tokenRepository;
-        _signingKey = Encoding.UTF8.GetBytes (config["Jwt:Secret"]!);
+        _signingKey = Encoding.UTF8.GetBytes (config["Jwt:Key"]!);
         _validationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey (_signingKey),
-            ValidateIssuer = true,
-            ValidIssuer = config["Jwt:Issuer"],
-            ValidateAudience = true,
-            ValidAudience = config["Jwt:Audience"],
-            ValidateLifetime = true,
+            ValidateIssuer = false,
+            //ValidIssuer = config["Jwt:Issuer"],
+            ValidateAudience = false,
+            //ValidAudience = config["Jwt:Audience"],
+            ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero
         };
     }
