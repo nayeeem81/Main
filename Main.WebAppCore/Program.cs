@@ -4,7 +4,7 @@ using Main.WebAppCore.ActionFilters;
 using Main.WebAppCore.DependentServices;
 using Main.WebAppCore.DepententServices;
 using Main.WebAppCore.Middleware;
-using Microsoft.AspNetCore.HttpOverrides; // Required for Nginx forwarding support
+using Microsoft.AspNetCore.HttpOverrides;
 using ResourceLibrary.Resources;
 using Serilog;
 
@@ -57,8 +57,8 @@ internal class Program
         _ = builder.Services.AddControllersWithViews (options =>
         {
             // Injecting the dynamic tenant anti-forgery validation filter safely
-            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
-            (TenantAntiforgeryFilter)));
+            //options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
+            //(TenantAntiforgeryFilter)));
         });
 
         var app = builder.Build();
@@ -67,25 +67,20 @@ internal class Program
         // CRITICAL FOR NGINX: Translates Nginx reverse-proxy network metadata into 
         if ( app.Environment.IsDevelopment () )
         {
-            //_ = app.UseMigrationsEndPoint ();
+            _ = app.UseMigrationsEndPoint ();
         }
         else
         {
-            _ = app.UseExceptionHandler ("/Home/Error");
+            // _ = app.UseExceptionHandler ("/Home/Error");
             //_ = app.UseHsts ();
         }
-
-        _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
-        });
 
         _ = app.UseGlobalExceptionHandling ();
         //_ = app.UseHttpsRedirection ();
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
 
-        // 1. Unpack Nginx headers first (sets PathBase to /tenant1)
+        //1.Unpack Nginx headers first (sets PathBase to / tenant1)
         _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
         {
             ForwardedHeaders = ForwardedHeaders.XForwardedHost
@@ -110,10 +105,10 @@ internal class Program
 
         // --- 7. Authentication & Tenant Authorization Defenses ---
         _ = app.UseAuthentication ();
-        _ = app.UseAuthorization ();
+        //   _ = app.UseAuthorization ();
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
-        _ = app.UseMiddleware<TenantSecurityMiddleware> ();
+        //  _ = app.UseMiddleware<TenantSecurityMiddleware> ();
 
         // --- 8. Endpoint Mappings ---
         _ = app.MapControllers ();
