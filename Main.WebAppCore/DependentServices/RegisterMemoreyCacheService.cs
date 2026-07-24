@@ -9,6 +9,7 @@ public static class RegisterMemoreyCacheService
             {
                 options.SizeLimit = 1024;
                 options.CompactionPercentage = 0.25;
+                options.ExpirationScanFrequency = TimeSpan.Parse ("00:05:00");
             });
 
         _ = services.AddSession (options =>

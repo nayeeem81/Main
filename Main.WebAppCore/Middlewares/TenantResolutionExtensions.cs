@@ -17,26 +17,25 @@ public static class TenantResolutionExtensions
         IMemoryCache memoryCache,
         string rootDomain)
     {
-        // 1. Get the host string from Nginx header, fallback to local host if empty
-        string? rawHost = context.Request.Headers["X-Forwarded-Host"].FirstOrDefault();
-        // 1. Check for the Nginx subdirectory header
-        string? tenantPath = context.Request.Headers["X-Forwarded-Prefix"].FirstOrDefault();
-
-        if ( string.IsNullOrEmpty (rawHost) )
-        {
-            rawHost = context.Request.Host.Value; // Fallback for local debugging without Nginx
-        }
+        var rawHost = context.Request.Host.Value;
 
         string? tenantHost = context.ResolveFromSubdomain(rawHost)
-                            ?? context.ResolveFromDomain(rawHost)
-                            ?? ReutePathExtensions.ResolveFromPath(context, tenantPath);
+                            ?? context.ResolveFromDomain(rawHost);
+        //ReutePathExtensions.ResolveFromPath(context, tenantPath);
 
         if ( !string.IsNullOrEmpty (tenantHost) )
         {
             TenantDisplayDataModel? tenantDisplayDataModel =
             await memoryCache.GetOrCreateAsync($"tenant_{tenantHost}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+                // 1. MANDATORY: Set the size to satisfy your global SizeLimit
+                _ =  entry.SetSize(1) ;
+
+                // Resets the 1-hour lifetime every time this tenant is requested
+                _ =  entry.SetSlidingExpiration(TimeSpan.FromHours(1)) ;
+
+                // 2. OPTIONAL: Set how long this tenant data stays in memory
+                _ =  entry.SetAbsoluteExpiration(TimeSpan.FromHours(1)) ;
 
                 return await tenancyService.FindTenantAsync(tenantHost);
             });
@@ -49,7 +48,7 @@ public static class TenantResolutionExtensions
             }
         }
 
-        context.Response.Redirect (rootDomain);
+        //context.Response.Redirect (rootDomain);
         return false;
     }
 
@@ -60,56 +59,30 @@ public static class TenantResolutionExtensions
         tenantSetter.TenantName = tenantDisplayDataModel.Name;
     }
 
-    private static string ResolveFromSubdomain (this HttpContext context,string? rawHost)
+    private static string ResolveFromSubdomain (this HttpContext context,string host)
     {
-        string? host;
-        if ( rawHost == null )
-        {
-            host = context.Request.Host.Host ?? "";
-        }
-        else
-        {
-            host = rawHost;
-        }
 
-        if ( host != null )
+        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        segments = RemoveResevedWord (segments.Length > 0 ? segments : null);
+
+        if ( segments!.Length > 2 )
         {
-            string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
-
-            segments = RemoveResevedWord (segments.Length > 0 ? segments : null);
-
-            if ( segments!.Length > 2 )
-            {
-                return segments[0];
-            }
+            return segments[0];
         }
 
         return "";
     }
 
-    private static string? ResolveFromDomain (this HttpContext context,string? rawHost)
+    private static string? ResolveFromDomain (this HttpContext context,string host)
     {
-        string? host;
-        if ( rawHost == null )
+        string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+        segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
+
+        if ( segments!.Length > 1 )
         {
-            host = context.Request.Host.Host ?? "";
-        }
-        else
-        {
-            host = rawHost;
-        }
-
-        if ( host != null )
-        {
-
-            string[]? segments = host.Split('.', StringSplitOptions.RemoveEmptyEntries);
-
-            segments = RemoveResevedWord (segments!.Length > 0 ? segments! : null);
-
-            if ( segments!.Length > 1 )
-            {
-                return segments[0];
-            }
+            return segments[0];
         }
 
         return "";

@@ -8,7 +8,7 @@ namespace Main.WebAppCore.Middleware;
 public class TenantResolverHandlingMiddleware
 {
     private readonly RequestDelegate _next;
-    private const string rootDomain = "tenator.com";
+    private const string rootDomain = "localhost";
 
 
     public TenantResolverHandlingMiddleware (RequestDelegate next)
@@ -26,8 +26,6 @@ public class TenantResolverHandlingMiddleware
     {
 
         bool result = await TenantResolutionExtensions.TryResolveTenantAsync(context,tenantContext,tenantSetter,tenancyService,memoryCache,rootDomain);
-
-
 
         await _next (context);
     }

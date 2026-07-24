@@ -57,8 +57,8 @@ internal class Program
         _ = builder.Services.AddControllersWithViews (options =>
         {
             // Injecting the dynamic tenant anti-forgery validation filter safely
-            //options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
-            //(TenantAntiforgeryFilter)));
+            options.Filters.Add (new Microsoft.AspNetCore.Mvc.TypeFilterAttribute (typeof
+            (TenantAntiforgeryFilter)));
         });
 
         var app = builder.Build();
@@ -76,16 +76,15 @@ internal class Program
         }
 
         _ = app.UseGlobalExceptionHandling ();
-        //_ = app.UseHttpsRedirection ();
+        _ = app.UseHttpsRedirection ();
         _ = app.UseStatusCodePages ();
         _ = app.UseWebOptimizer ();
 
-        //1.Unpack Nginx headers first (sets PathBase to / tenant1)
+        // 1. Configure the app to look for NGINX proxy headers
         _ = app.UseForwardedHeaders (new ForwardedHeadersOptions
         {
-            ForwardedHeaders = ForwardedHeaders.XForwardedHost
-                               | ForwardedHeaders.XForwardedFor
-                               | ForwardedHeaders.XForwardedPrefix
+            ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto
+
         });
 
         // CRITICAL: Tenant Resolution must run BEFORE Routing so path-rewriting modifies the route endpoints safely
@@ -105,7 +104,7 @@ internal class Program
 
         // --- 7. Authentication & Tenant Authorization Defenses ---
         _ = app.UseAuthentication ();
-        //   _ = app.UseAuthorization ();
+        _ = app.UseAuthorization ();
 
         // CRITICAL: Runs after Identity sets up User context, allowing you to validate user claims against active tenant contexts
         //  _ = app.UseMiddleware<TenantSecurityMiddleware> ();
