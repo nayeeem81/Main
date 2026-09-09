@@ -6,7 +6,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": false,
       "launchUrl": "",
-      "applicationUrl": "http://127.0.0.1:5000", // 👈 Make sure this port matches what Nginx calls!
+      "applicationUrl": "http://127.0.0.1:5000;http://127.0.0.1:6000", // 👈 Make sure this port matches what Nginx calls!
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
