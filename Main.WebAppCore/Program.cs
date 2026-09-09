@@ -93,6 +93,9 @@ _ = app.UseForwardedHeaders (forwardedHeadersOptions);
 // Tenancy Context Extraction (Saves TenantId to HttpContext.Items)
 _ = app.UseMiddleware<TenantResolverMiddleware> ();
 
+// RUNS SECOND: Reads the resolved tenant from HttpContext.Items and measures performance
+app.UseMiddleware<TenantLoggingMiddleware> ();
+
 if ( app.Environment.IsDevelopment () )
 {
 

@@ -46,7 +46,7 @@ public class TenantResolverMiddleware
             tenantSetter.CurrentTenant.StoreType = resolvedTenant.StoreType;
             context.Items["TenantId"] = resolvedTenant.ResolvedTenantId;
 
-            if ( tenantTheme != null )
+            if ( tenantTheme == null )
             {
                 tenantSetter.CurrentTenant.TenantThemeModel = new TenantThemeModel ()
                 {
@@ -54,6 +54,10 @@ public class TenantResolverMiddleware
                     FontStack = tenantTheme?.FontStack ?? "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
                     LogoRelativeFilePath = tenantTheme?.LogoRelativeFilePath ?? ""
                 };
+            }
+            else
+            {
+                tenantSetter.CurrentTenant.TenantThemeModel = tenantTheme;
             }
         }
 
