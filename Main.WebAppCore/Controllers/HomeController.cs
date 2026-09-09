@@ -31,6 +31,7 @@ public class HomeController: BaseController
 
     public async Task<IActionResult> Index ()
     {
+
         PageDataModel pageDataModel = await _pageService.GetPageDataModel(EnumPublicPage.Home);
 
         PageViewModel pageViewModel = PageMapping.MapPageViewModel (pageDataModel: pageDataModel);
@@ -41,6 +42,11 @@ public class HomeController: BaseController
         };
 
         return View (homeViewModel);
+    }
+
+    public ActionResult Error ()
+    {
+        return View ();
     }
 
     //public async Task<ActionResult> Notice()
