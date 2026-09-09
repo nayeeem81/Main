@@ -95,13 +95,16 @@ _ = app.UseMiddleware<TenantResolverMiddleware> ();
 
 if ( app.Environment.IsDevelopment () )
 {
-    _ = app.UseDeveloperExceptionPage ();
+
+    //_ = app.UseDeveloperExceptionPage ();
     _ = app.UseMigrationsEndPoint ();
 }
 else
 {
     _ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
 }
+
+_ = app.UseMiddleware<GlobalExceptionHandlingMiddleware> ();
 
 // Error handling must sit at the absolute top to catch failures down the line
 _ = app.UseStatusCodePages ();

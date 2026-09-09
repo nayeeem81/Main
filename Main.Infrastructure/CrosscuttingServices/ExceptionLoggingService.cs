@@ -11,17 +11,18 @@ public class ExceptionLoggingService: IExceptionLoggingService
 {
     private readonly LogDbContext _LogContext;
     private readonly ILogger<ExceptionLoggingService> _logger;
+    private readonly ITenantSetter _tenantSetter;
 
     public ExceptionLoggingService (
         LogDbContext logContext,
-        ILogger<ExceptionLoggingService> logger)
+        ILogger<ExceptionLoggingService> logger,ITenantSetter tenantSetter)
     {
         _LogContext = logContext;
         _logger = logger;
+        _tenantSetter = tenantSetter;
     }
 
     public async Task LogExceptionAsync (
-        ITenantSetter tenantSetter,
         Exception exception,
         string errorCode,
         int statusCode,
@@ -56,47 +57,49 @@ public class ExceptionLoggingService: IExceptionLoggingService
                 .OrderByDescending(e => e.CreatedAt)
                 .FirstOrDefaultAsync();
 
-            ExceptionLogs exceptionLog;
 
+            int occuranceCount = 1;
             if ( existingLog != null &&
                 ( DateTime.UtcNow - existingLog.CreatedAt ).TotalHours < 1 )
             {
                 existingLog.OccurrenceCount++;
                 existingLog.CreatedAt = DateTime.UtcNow;
                 _ = _LogContext.ExceptionLogs.Update (existingLog);
-                exceptionLog = existingLog;
-            }
-            else
-            {
-                // Create new exception log entry
-                exceptionLog = new ExceptionLogs
-                {
-                    ExceptionType = exception.GetType ().Name,
-                    StatusCode = statusCode,
-                    ErrorCode = errorCode,
-                    DetailedMessage = exception.Message,
-                    StackTrace = exception.StackTrace,
-                    InnerException = exception.InnerException?.ToString (),
-                    UserMessage = userMessage,
-                    RequestUrl = requestUrl,
-                    HttpMethod = httpMethod,
-                    RequestHeaders = TruncateString (requestHeaders,2000),
-                    RequestBody = TruncateString (requestBody,2000),
-                    UserId = userId,
-                    ClientIpAddress = clientIpAddress,
-                    CreatedAt = DateTime.UtcNow,
-                    Source = source,
-                    Environment = System.Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") ?? "Production",
-                    CustomData = customData,
-                    IsResolved = false,
-                    OccurrenceCount = 1
-                };
 
-                _ = _LogContext.ExceptionLogs.Add (exceptionLog);
+                occuranceCount = existingLog.OccurrenceCount;
             }
+
+            ExceptionLogs exceptionLog;
+
+            // Create new exception log entry
+            exceptionLog = new ExceptionLogs
+            {
+                ExceptionType = exception.GetType ().Name,
+                StatusCode = statusCode,
+                ErrorCode = errorCode,
+                DetailedMessage = exception.Message,
+                StackTrace = exception.StackTrace,
+                InnerException = exception.InnerException?.ToString (),
+                UserMessage = userMessage,
+                RequestUrl = requestUrl,
+                HttpMethod = httpMethod,
+                RequestHeaders = TruncateString (requestHeaders,2000),
+                RequestBody = TruncateString (requestBody,2000),
+                UserId = string.IsNullOrEmpty (_tenantSetter.HttpContextUserId) ? "Anonymous" : _tenantSetter.HttpContextUserId,
+                ClientIpAddress = clientIpAddress,
+                CreatedAt = DateTime.UtcNow,
+                Source = source,
+                Environment = System.Environment.GetEnvironmentVariable ("ASPNETCORE_ENVIRONMENT") ?? "Production",
+                CustomData = customData,
+                IsResolved = false,
+                OccurrenceCount = occuranceCount
+            };
+
+            _ = _LogContext.ExceptionLogs.Add (exceptionLog);
+
 
             // Save to database
-            _ = await _LogContext.SaveChangesAsync (true);
+            _ = await _LogContext.SaveChangesAsync ();
         }
         catch ( Exception ex )
         {

@@ -25,6 +25,8 @@ public class LogDbContext: DbContext
         get; set;
     }
 
+
+
     protected override void OnModelCreating (ModelBuilder builder)
     {
         base.OnModelCreating (builder);
@@ -32,6 +34,8 @@ public class LogDbContext: DbContext
 
     private void ApplyBaseMetaData ()
     {
+        Guid ResolvedTenantId = _tenantSetter.CurrentTenant.ResolvedTenantId;
+
         BaseDataModel createDataModel = _tenantSetter.CreateMetaData;
         BaseDataModel updateDataModel = _tenantSetter.UpdateMetaData;
         BaseDataModel deleteDataModel = _tenantSetter.DeleteMetaData;
@@ -45,6 +49,7 @@ public class LogDbContext: DbContext
         foreach ( var entry in entries )
         {
             var tenantEntity = (IMustHaveTenant) entry.Entity;
+            tenantEntity.MyTenantId = ResolvedTenantId;
 
             if ( entry.State == EntityState.Added )
             {

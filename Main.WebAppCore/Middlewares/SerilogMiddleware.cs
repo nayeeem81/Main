@@ -53,7 +53,7 @@ public static class SerilogMiddleware
 
             // Write exceptions to separate file with compact JSON format
             .WriteTo.File (
-                new CompactJsonFormatter (),
+                formatter: new CompactJsonFormatter (), // explicitly name it if needed, or place first
                 path: Path.Combine (loggingPath,"exceptions-log-.json"),
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 30)

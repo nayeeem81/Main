@@ -73,7 +73,6 @@ public class GlobalExceptionHandlingMiddleware
         try
         {
             await exceptionLoggingService.LogExceptionAsync (
-                tenantSetter,
                 exception: exception,
                 errorCode: errorCode,
                 statusCode: statusCode,
