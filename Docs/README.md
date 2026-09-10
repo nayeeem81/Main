@@ -27,7 +27,8 @@ When the anti-forgery (global: submit, fetch, jQuery ajax), cross tenant bleedin
 Still working on the theme issues (changing) and with only domain-based tenant resolution tested locally. 
 
 Thanks
-N ai m - OG      [Short Key]
+
+Naim   -   OG      ( Short Key )
 08 Sep 2026
 
 
