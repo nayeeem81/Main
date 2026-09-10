@@ -1,358 +1,575 @@
-🚪 Select Your Authentication Method:
- ├── 🔑 Standard Account (Username + Password)
- ├── 🪪 Corporate Login (Single Sign-On / SAML)
- └── 📲 Passwordless Access (Email Magic Link)
+# Difference between scoped service and transient DI in .NET 8.0 in program.cs
+In .NET 8, the difference between Scoped and Transient services lies in their lifetime and how often the Dependency Injection (DI) container creates a new instance.
+Here is the direct comparison of how they behave when registered in Program.cs:
+
+## The Core Difference
+* Transient (AddTransient): Creates a new instance every single time it is requested. If two different classes inject this service during the same web request, they each get their own separate instance.
+
+* Scoped (AddScoped): Creates a single instance per HTTP request (or per container scope). All classes that inject this service during the same web request share the exact same instance.
+
+------------------------------
+## Registration in Program.cs
+You register these lifetimes using the builder.Services collection:
+
+var builder = WebApplication.CreateBuilder(args);
+### A new instance is created every time anyone asks for it
+builder.Services.AddTransient<IMyTransientService, MyTransientService>();
+
+### One instance is created per HTTP request and shared across that request
+builder.Services.AddScoped<IMyScopedService, MyScopedService>();
+var app = builder.Build();
+
+------------------------------
+# Behavioral Comparison
+## Transient (AddTransient):
+Instance Lifetime : Shortest possible lifetime. 
+Sharing: Never shared. 
+Best Used For: Lightweight, stateless services (e.g., calculators, formatters). 
+Memory Footprint: Can increase memory if created frequently. 
+
+## Scoped (AddScoped):
+Instance Lifetime: Tied to the lifecycle of the HTTP request. 
+Sharing: Shared across components in the same request. 
+Best Used For: Services holding state for a request (e.g., Entity Framework DbContext). 
+Memory Footprint: Disposed automatically at the end of the HTTP request.
+
+### The "Captive Dependency" Warning ⚠️
+In .NET 8, be careful not to inject a Scoped service into a Singleton service. Because a Singleton never dies, the Scoped service will get trapped inside it forever, effectively turning your Scoped service into a Singleton. .NET 8 throws a runtime exception in development mode by default to prevent this.
+------------------------------
+
+## Question (Naim): 
+I have multi startup projects; each are running in different ports. One web app is behind the nginx, other one is a web api (http with different port). Now, web api is called once on a while (for downloading an excel file). The dbcontext has one table only. The web project uses (data infrastructure) and api project also uses same project. The table just receives an entry when an exception is generated in the web project. Now, since both are using the infrastructure project. My question is: the reference of the LogDbContext will have two instances for the web and api?
+------------------------------
+## Google AI:
+Yes, they will have completely separate instances.
+
+Because your Web project and API project run as two entirely separate operating system processes on different ports, they do not share memory.
+
+Here is exactly how the LogDbContext reference behaves in your architecture:
+
+### Why They Are Independent
+
+### * Separate DI Containers: 
+Each project builds its own Dependency Injection (DI) container at startup. The builder.Services.AddDbContext configuration in your Web project knows nothing about the one in your API project.
+
+### * Isolated Scopes: 
+When the Web project hits an error, its DI container creates an instance of LogDbContext specifically for that Web HTTP request scope. When the API project is called to download the Excel file, its DI container creates a completely separate instance for that API request scope.
+
+Sharing the underlying "Data Infrastructure" class library project only means they share the code definition (the blueprint), not the live objects in memory.
+------------------------------
+## Potential Issues to Watch Out For
+Since both processes are independently connecting to the exact same SQL Server table, keep these two .NET 8 best practices in mind:
+
+### * Connection Pooling is Process-Isolated: 
+SQL Server connection pooling happens per process. The Web project has its own pool, and the API project has its own pool. This is perfectly fine for your scale, but they will maintain separate active connections to your database.
+
+### * Concurrency is Safe: 
+Because AddDbContext is scoped, a new instance is created and destroyed per request in both apps. They will not block each other or cause EF Core multi-threading crashes, even if a user is downloading an Excel file at the exact same millisecond an error log is being written.
+
+------------------------------
+### To ensure your dual-project setup runs smoothly, let me know:
+* Are you experiencing any database locking or timeout issues when both run simultaneously?
+* Do you need help configuring Nginx routing to pass traffic seamlessly between the Web and API ports?
+* Would you like to see how to optimize the LogDbContext specifically for high-speed write-only logging?
+
+### Connection pooling is process-isolated:
+means that a standard database connection pool exists entirely within the boundary of a single operating system process. It cannot inherently share its cached connections with other processes, even if those processes are running the same code on the same server. [1, 2] 
+
+## Why Connection Pools Are Process-Isolated
+When you use a client-side library like HikariCP in Java, PyMongo in Python, or the built-in poolers in Node.js, the connection pool is instantiated as an in-memory data structure inside that specific application runtime. [1, 2, 3] 
+Operating systems strictly enforce memory isolation between different processes for security and stability. Because one process cannot access the memory space of another, it cannot "see" or borrow database connections managed by a pool in a separate process.
+
+## The Problem This Creates in Modern Architectures
+
+ ###  1. Multi-Process Application Servers (Prefork Models):
+ If you run a Python Gunicorn server or a Ruby Unicorn server with 10 worker processes, each worker is a distinct OS process. If you configure a max pool size of 20, each worker spins up its own pool. Your application will open up to 200 database connections (10 workers × 20 connections), rather than sharing a single pool of 20. [3, 4] 
+
+ ###  2. Horizontal Scaling and Microservices:
+ When your application autoscales to 50 independent container instances (like AWS ECS tasks or Kubernetes pods), each container runs its own isolated process and pool. The database is suddenly forced to handle a massive multiplier of physical connections, which can lead to connection exhaustion. [4, 5] 
+
+ ###  3. Serverless Functions (AWS Lambda / Vercel):
+ Serverless platforms scale by spinning up an independent, isolated execution environment (process) for every concurrent request. Because the pool cannot be shared across these environments, serverless architectures easily overwhelm database connection limits during traffic spikes. [5] 
+
+### How to Break Out of Process Isolation
+To share connections across different processes, servers, or serverless instances, you must move the connection pool outside of the application process. This is achieved using a Server-Side Proxy or Managed Pooler. [5, 6] 
+
+## Solution | Type | How it works?
+### [PgBouncer](https://www.pgbouncer.org/) 
+(Standalone Proxy) 
+A lightweight, external process dedicated to PostgreSQL. All your application processes connect to PgBouncer via fast, cheap connections, and PgBouncer multiplexes them into a small, shared pool of heavy physical connections to the actual database. 
+
+### [AWS RDS Proxy](https://aws.amazon.com/rds/proxy/) 
+(Managed Cloud Pooler) 
+A cloud-managed database proxy that sits between your application (e.g., thousands of AWS Lambda processes) and your RDS database, centralizing the pool so individual processes don't crash the engine.
+
+### [Prisma Accelerate](https://www.prisma.io/products/accelerate)
+(Data Proxy Layer)
+A cloud-based proxy tailored for modern web frameworks and serverless functions, handling global connection pooling outside the application environment.
+
+## Summary
+If Process A and Process B both want to talk to the database, their internal connection pools will act completely independently, unaware of each other's idle connections. To optimize database resource consumption across multiple processes, you must introduce a centralized proxy layer to bridge the gap. [1, 5, 6, 7] 
+------------------------------
+### If you are dealing with a specific application bottleneck, let me know:
+* What programming language/framework are you using?
+* How is your application deployed (e.g., Kubernetes, serverless, multi-process VMs)?
+* Which database engine are you connecting to?
+
+I can help you calculate the ideal pool size or design the right proxy architecture for your stack. [4] 
+
+[1] [https://dev.to](https://dev.to/hadeedtariq/from-slow-queries-to-fast-responses-the-power-of-connection-pooling-3gpk)
+[2] [https://nagarjungopalaswamy.medium.com](https://nagarjungopalaswamy.medium.com/tech-stack-101-ep-41-connection-pools-explained-app-side-vs-db-side-whats-best-for-your-ad6ee09ba802)
+[3] [https://www.youtube.com](https://www.youtube.com/watch?v=rcoBTlvvOqA&t=145)
+[4] [https://medium.com](https://medium.com/backend-engineers-club/connection-pools-6ebfb6f29645)
+[5] [https://thecodinggopher.substack.com](https://thecodinggopher.substack.com/p/database-connection-pooling-explained)
+[6] [https://www.youtube.com](https://www.youtube.com/watch?v=udRVby27AhY&t=644)
+[7] [https://www.youtube.com](https://www.youtube.com/watch?v=c4-ZXggYOsA&t=32)
+
+### Naim: Connection pooling is process-isolated, for multi tenant application; in a single server; if the dbcontext is partitioned & loaded foreach tenant and the users of same tenant; shall they access the same in memory database? Also, explain the in memory database (the dbcontext), like tenant suffixed (memory cache), each use uses same memory cache? Difference between the memory cache and in memory dbcontext.
+
+In a multi-tenant application running on a single server, if the DbContext is partitioned and loaded for each tenant, the behavior of the in-memory database (DbContext) and memory cache will depend on how you configure them.
+
+Let’s break down exactly how memory, multi-tenancy, and connection pooling interact when you use an In-Memory database provider (like EF Core In-Memory) versus a standard Memory Cache (like IMemoryCache).
+------------------------------
+## 1. Will users of the same tenant access the same In-Memory Database?
+Yes, but only if they are sharing the exact same underlying database name/identifier.
+Because connection pooling and memory are process-isolated, any data stored in memory exists only within that single running application server process.
+If you partition your DbContext per tenant (e.g., using a strategy like naming the database TenantA_Db or TenantB_Db), here is how the boundary works:
+
+* Same Tenant, Different Users: When User 1 and User 2 belong to "Tenant A", their HTTP requests hitting this server will load the DbContext configured for TenantA_Db. Because they target the same named in-memory root, they will see and share the exact same data.
+* Different Tenants: A user from "Tenant B" will hit the DbContext for TenantB_Db. They are completely isolated from Tenant A's data, even though both exist inside the same server's RAM.
+
+Crucial Caveat: Because it is in-memory, if your single server restarts, or if you ever autoscale to a second server, that data is wiped or split. Process-isolation means Server 2 cannot see the in-memory database of Server 1.
+------------------------------
+## 2. The Tenant-Suffixed In-Memory DbContext
+In-memory database providers (like EF Core's) do not use traditional connection strings. Instead, they use a Named Internal Network Root.
+When you suffix your database name by tenant, the application creates distinct logical database instances inside the server's memory:
+
+// How it looks under the hood per request
+optionsBuilder.UseInMemoryDatabase(databaseName: $"Database_{tenantId}");
+
+## Do all users of the same tenant use the same "Memory Cache" under the hood?
+Yes. EF Core manages a central, internal cache of data stores within the process. When User 1 updates a record in Database_TenantA, EF Core writes it to the internal memory structure allocated for Database_TenantA. When User 2 requests Database_TenantA, EF Core points them to that exact same block of memory.
+------------------------------
+## 3. Difference Between Memory Cache vs. In-Memory DbContext
+While both store data in your server's RAM (and both are process-isolated), they serve entirely different purposes and operate with completely different mechanics.
+
+## Features of In-Memory DbContext (e.g., EF Core In-Memory) and  Memory Cache (e.g., IMemoryCache) 
+
+### Primary Purpose
+
+1) In-Memory DbContext (e.g., EF Core In-Memory): Simulating a relational database for testing or fast prototyping. 
+2) Memory Cache (e.g., IMemoryCache): Storing computed, heavy, or frequently read data to boost performance. 
+
+### Data Structure 
+
+1) In-Memory DbContext (e.g., EF Core In-Memory): Relational tables, rows, foreign keys, and change tracking state. 
+
+2) Memory Cache (e.g., IMemoryCache): Simple Key-Value pairs (string key -> object value).
+
+### Query Capability 
+
+1) In-Memory DbContext (e.g., EF Core In-Memory): Complex queries using LINQ (joins, grouping, filtering). 
+
+2) Memory Cache (e.g., IMemoryCache): Direct key lookup only (e.g., cache.Get("TenantA_UserList")). 
+
+### Eviction Policy 
+1) In-Memory DbContext (e.g., EF Core In-Memory): Data stays until the process dies or is explicitly deleted. 
+
+2) Memory Cache (e.g., IMemoryCache):  Supports automatic expiration (e.g., delete after 10 minutes, or slide expiration). 
+
+### Overhead
+
+1) In-Memory DbContext (e.g., EF Core In-Memory): High overhead (simulates constraints, transactions, tracking). 
+
+2) Memory Cache (e.g., IMemoryCache): Extremely low overhead (raw memory pointer lookup). 
 
 
-🌐 www.tenantors.com  (Main Web Portal)
- ├── 📡 www.kaiassociates.com   (Tenant Alpha Endpoint: Domain)
- ├── 📡 www.kaiassociates.tenantors.com   (Tenant Beta Endpoint: SubDomain)
- └── 🔗 www.tenantors.com/kaiassociates  (Path-based Tenant Fallback)
+# Visualizing how they live in your Server Process:
+
+### [ Your Single Server Process (RAM) ]
+### ├── Memory Cache (IMemoryCache)
+### │    ├── Key: "TenantA_Theme" -> Value: "Blue"
+### │    └── Key: "TenantB_Theme" -> Value: "Red"
+### │
+### └── EF Core In-Memory Engine
+###     ├── Engine Root ("Database_TenantA") -> [Table: Users] -> [Rows of Data]
+###     └── Engine Root ("Database_TenantB") -> [Table: Users] -> [Rows of Data]
+
+## Summary of the Flow
+ 1. Tenant Isolation: Achieved by dynamically suffixing the databaseName in your DbContext factory based on the incoming request's tenant ID.
+ 2. User Sharing: All users under "Tenant A" point to the same suffixed database root name, meaning they read and write to the same shared in-memory tables.
+ 3. The Cache Distinction: Use the In-Memory DbContext if you need to query entities relationally using LINQ. Use a Memory Cache if you just want to quickly save a specific string, configuration object, or pre-rendered HTML block per tenant.
+
+------------------------------
+### To help refine your architecture, tell me a bit more about your project:
+* Is this architecture for production use, or is it strictly for unit/integration testing?
+* Which framework are you building this in (e.g., .NET / EF Core, Node.js)?
+* What is the ultimate goal of using an in-memory database instead of a lightweight physical database like SQLite or an isolated schema approach?
+
+The snippet you provided is the foundational structural setup for an NGINX configuration file (nginx.conf). [1] 
+Here is what these settings mean and how to optimize them:
+## Core Breakdowns
+
+* 
+* worker_processes 1;: Defines the number of independent single-threaded processes NGINX will spawn. Setting this to 1 is often the default, but the best practice for production is using worker_processes auto;, which automatically creates one worker process per available CPU core to optimize performance.
+* events { ... }: This is a core NGINX context block that manages network connection handling directives.
+* worker_connections 1024;: Sets the maximum number of simultaneous network connections a single worker process can handle at one time. [1, 2, 3, 4] 
+* 
+
+## Calculating Total Connection Capacity
+Your total theoretical maximum concurrent connections is calculated with this formula:
+$$\text{Max Connections} = \text{worker\_processes} \times \text{worker\_connections}$$ 
+
+* 
+* Your current setup: $1 \times 1024 = \mathbf{1,024}$ concurrent connections.
+* Important Caveat: If NGINX acts as a reverse proxy (forwarding traffic to a backend like Node.js, Python, or PHP-FPM), it uses two connection slots per request (one for the client to NGINX, and one from NGINX to your backend). This slashes your concurrent user capacity in half. [5, 6] 
+* 
+
+## Recommended Production Template
+To scale this configuration effectively for higher traffic, optimize it like this:
+
+# Automatically matches your system's CPU core count
+worker_processes auto;
+
+# Overrides the OS file descriptor limit so NGINX can handle large connection volumes
+worker_rlimit_nofile 65535;
+
+events {
+    # Allows each worker process to handle more simultaneous traffic
+    worker_connections 4096;
+    
+    # Instructs NGINX to accept all new connections simultaneously as they arrive
+    multi_accept on;
+}
+
+http {
+    # Your web server, proxy, and routing configurations go here
+}
+
+## Essential System Tuning Note
+Each active network connection consumes an operating system file descriptor (FD). By default, Linux limits single processes to 1024 FDs. If you scale your worker_connections beyond 1024, you must include the worker_rlimit_nofile directive at the global level to stop NGINX from logging worker_connections are not enough errors. [4, 6, 7] 
+------------------------------
+If you want to tailor this further, tell me:
+
+* 
+* What kind of app or stack is NGINX serving? (e.g., static HTML, reverse proxying a Node/Python backend, PHP)
+* How many CPU cores or how much RAM does your server have?
+* 
 
 
-# 🏬🛍️Shopping Mall Web App (Multi-Tenant SaaS)
+[1] [https://medium.com](https://medium.com/pickme-engineering-blog/nginx-the-secret-behind-handling-thousands-of-connections-with-just-a-few-workers-68c92bcd441b)
+[2] [https://stackoverflow.com](https://stackoverflow.com/questions/23386986/what-is-worker-processes-and-worker-connections-in-nginx)
+[3] [https://medium.com](https://medium.com/@caring_smitten_gerbil_914/nginx-core-directives-take-full-control-of-your-web-server-0a86c8647e7a)
+[4] [https://www.f5.com](https://www.f5.com/company/blog/nginx/avoiding-top-10-nginx-configuration-mistakes)
+[5] [https://www.netdata.cloud](https://www.netdata.cloud/guides/nginx/nginx-worker-connections-tuning/)
+[6] [https://proginter.com](https://proginter.com/blog/how-to-configure-nginx-worker-processes-for-maximum-throughput)
+[7] [https://www.netdata.cloud](https://www.netdata.cloud/guides/nginx/nginx-worker-connections-are-not-enough/)
 
-**We are developing a multi-tenant stores web application. A store is called tenant ⇄ A tenant is a store. (vice versa)** 
+To deploy a .NET 8.0 MVC web application behind NGINX, you will configure NGINX as a reverse proxy. NGINX will handle public internet traffic and forward requests to Kestrel (the fast, internal web server built into .NET).
+Here is a comprehensive production configuration optimized for a .NET 8 MVC app:
+## Updated nginx.conf
 
-### **🛍️store is a 🛍️shop inside 🏬shopping mall**
+# Global Configuration
+worker_processes auto;          # Spawns one worker process per CPU core
+worker_rlimit_nofile 65535;     # Increases OS file descriptor limit for heavy traffic
 
-The owner of the shop/store can be a legitimate business (with a trade license) or individual (not a professional seller, a freelance seller using the store for his or her own product selling purpose).  We treat the tenant as a shop. Anyone registering in the multitenant web application is the admin of a shop. The registration is for the shop with an email address from the multi-tenant portal:
+events {
+    worker_connections 4096;    # Handles up to 4,096 connections per core
+    multi_accept on;            # Accepts all new connections immediately
+}
 
-### www.tenantors.com
+http {
+    # Basic settings
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile      on;
+    keepalive_timeout 65;
 
-The registration is for the shop with an email address from the portal (example: www.tenantors.com). An email can be used for multiple tenants. Just like a single sign in across all tenants. Read followng for understanding the detail, about the multi-tenant web application. We explain first, the application related keywords and objects. We must undertand them to get a complete view about the concept & story of the multi-tenant SaaS.
+    # Gzip Compression (Highly recommended for MVC apps to shrink HTML/JS/CSS payloads)
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+    gzip_min_length 1000;
 
-## Tenant🛍️ & User🔑 
+    # The .NET 8 App Backend (Kestrel usually runs on port 5000 or 5001)
+    upstream dotnet_mvc_app {
+        server 127.0.0.1:5000;
+        keepalive 32;           # Keeps persistent connections open to Kestrel for speed
+    }
 
-### Further Details To Understand the story better next...
+    server {
+        listen 80;
+        server_name yourdomain.com ://yourdomain.com; # Replace with your actual domain
 
-### 1. 🛍️Tenants:
-Tenants are a shop. Tenant is created with an email address. The person who owns the email address is the first admin user of the shop, may be the owner. He can create it on behalf of the owner.
+        # Security Headers
+        add_header X-Frame-Options "SAMEORIGIN";
+        add_header X-XSS-Protection "1; mode=block";
+        add_header X-Content-Type-Options "nosniff";
 
-### 2. 🔑Users:
-Initial tenant creation, this multi-tenant web application; assigns the user (email) as an admin of the shop. Then, he/she can add more users by invitation (email) link. A user can own multiple Tenant with the same email address. He/she can work under a Tenant (from an invite) keeping his/her own tenants. A user can work for multiple tenants with one email address.
-
-## 🛍️Tenant Types (According to Hosting Plan)
-
-### Tenant name is: **kaiassociates**
-           
-**kaiassociates** can host in 3 differnt ways to use our **Multi Tenant Web App Store Features**
-
-### Domain: www.kaiassociates.com
-After creating a tenant, the user can add a domain for the tenant. The tenant needs to add the web application Ip address to his domain provider as his shop website host. The tenant will use their own domain URL and use the multi-tenant web application provided with shop-related features.
-
-### Subdomain: www.kaiassociates.tenantors.com
-**Unique username is the name of the subdomain**
-After creating a tenant, the user can add a sub domain for the tenant under the web application domain. The tenant needs no Ip address or domain provider. Rather, the tenant needs to provide a unique name (if nobody is using the same name) as their sub domain. The tenants use their own subdomain-based URL and use the multi-tenant web application provided with shop-related features.
+        # Root Location - Proxying to .NET
+        location / {
+            proxy_pass http://dotnet_mvc_app;
             
-### Subdirectory: www.tenantors.com/kaiassociates/
-**Unique username is the name of the subdirectory**
-After creating a tenant, the user by default gets a directory for the tenant under the web application domain. The sub directory will be created by the unique username during the creation of the Tenant. The tenants use their subdirectory-based URL and use the multi-tenant web application provided with shop-related features.
+            # Essential HTTP headers for .NET Reverse Proxy middleware
+            proxy_http_version 1.1;
+            proxy_set_header   Upgrade $http_upgrade;
+            proxy_set_header   Connection $connection_upgrade;
+            proxy_set_header   Host $host;
+            proxy_cache_bypass $http_upgrade;
+            
+            # Forwarded headers so .NET knows the original client IP and Scheme (HTTP/HTTPS)
+            proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_set_header   X-Forwarded-Host $host;
+
+            # Timeouts
+            proxy_connect_timeout 60s;
+            proxy_read_timeout 60s;
+            proxy_send_timeout 60s;
+        }
+
+        # Optional Optimization: Let NGINX serve static files directly bypass Kestrel entirely
+        location /dist/ {
+            root /var/www/your-app-folder/wwwroot; # Path to your published wwwroot folder
+            expires 30d;
+            access_log off;
+        }
+    }
+
+    # Required map block for WebSockets / SignalR support (placed inside http context)
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+}
+
+## Critical Next Steps inside your .NET 8 App
+Because NGINX sits in front of your application, .NET will think all requests originate from 127.0.0.1 over HTTP. To fix broken links, authorization redirects, and security policies, you must configure Forwarded Headers Middleware in your C# code.
+Add this to your Program.cs file before any authentication or routing middleware:
+
+using Microsoft.AspNetCore.HttpOverrides;
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllersWithViews();
+var app = builder.Build();
+// 1. Configure the middleware to accept headers sent by NGINX
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+// 2. Existing standard MVC middlewareif (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
+------------------------------
+To wrap up this deployment perfectly, let me know:
+
+* Are you setting up SSL/HTTPS (e.g., using Let's Encrypt)?
+* Will your MVC application use SignalR for real-time features?
+
+In computer software, "spawn" means to create, start, or launch a new process.
+Think of it like a parent process giving birth to a child process.
+Here is exactly how NGINX uses "spawning" to handle your .NET 8 MVC app traffic:
+
+## The NGINX Master and Worker Relationship
+When you start NGINX, it actually starts two different types of processes:
+
+   1. The Master Process (The Parent):
+   * This starts up first.
+      * It reads your nginx.conf file.
+      * It does not handle web traffic.
+      * Its only job is to spawn (create) and manage worker processes.
+   2. The Worker Processes (The Children):
+   * These are the actual single-threaded processes that the master process creates.
+      * They listen for incoming network traffic and pass it to your .NET app.
+   
+## A Real-World Analogy
+Imagine a restaurant owner (the Master Process).
+
+* The owner opens the building and reads the restaurant rules.
+* The owner hires and spawns 4 waiters (the Worker Processes) to work the floor.
+* The owner sits in the back office. If a waiter accidentally falls sick (the process crashes), the owner immediately spawns a brand-new waiter to take their place so service never stops.
+
+## Why worker_processes auto; matters
+If your server has 4 CPU cores and you write worker_processes auto;:
+
+* The Master process will spawn exactly 4 individual worker processes.
+* Each process binds to one CPU core.
+* They run simultaneously, side-by-side, allowing your server to handle thousands of requests to your .NET app at the exact same time.
+
+------------------------------
+To help you manage these processes, let me know:
 
-## Login approach
-Tenant is registered by an user email. Verify email link sent upon registration form submission. User gets admin role and a subdirectory for the tenant (default). He/She must must verify the registered email to activate the tenant account. 
+* Are you running NGINX on Linux (like Ubuntu/Debian) or Windows?
+* Would you like to know the terminal commands to see these spawned processes running live on your system?
 
-Tenant user can login and access the store work space only using verified email.
+No, it does not mean a simple "1 request = 1 connection" count.
+A single network connection represents an active network pipe (socket) kept open between two points. Because NGINX is acting as a reverse proxy for your .NET 8 MVC app, the way connections are counted is different than a standard web server.
+## The Reverse Proxy Connection Multiplier
+When a user visits your .NET MVC application, NGINX must handle two separate connections for that single request:
 
-**After email verification, user will login in the website, from where the user was registered. (example:tenantors.com)**
+   1. Client Connection: The connection from the user's web browser to NGINX.
+   2. Backend Connection: The connection from NGINX to your .NET Kestrel server (e.g., 127.0.0.1:5000).
 
-1. After successful Login, the tenant admin can add a domain for his own store. Once the domain is configured, the user can login from there own domain.
+Therefore, if worker_connections is set to 1024, that single worker process can handle a maximum of 512 concurrent active user requests at that exact moment because each request consumes 2 connection slots.
+## How Modern Browsers Change the Math
+Modern web browsers (like Chrome, Edge, and Safari) do not open just one connection per user.
 
-🆔🪪www.kaiassociates.com
+* HTTP/1.1: Browsers typically open 6 parallel connections to a single domain to download assets (HTML, CSS, JS, images) faster. If a user is actively downloading page assets, they might use up 6 client connections and 6 backend connections simultaneously.
+* HTTP/2 or HTTP/3: If you enable HTTP/2 in NGINX, the browser multiplexes everything over 1 single connection. This drastically reduces the connection load on NGINX.
 
-2. After successful Login, the tenant admin can configure the subdomain in the website. They will get a sub domain for his store. the user will continue login from the same website or with the subdomain website.
+## Active vs. Idle Connections (Keep-Alive)
+A connection stays active even after a response is sent if Keep-Alive is enabled.
 
-📲🪪www.kaiassociates.tenantors.com
+* When NGINX sends the HTML back to the user, it keeps the network pipe open for a few seconds (e.g., keepalive_timeout 65;).
+* This allows the user's next click to load instantly without waiting to build a new network connection.
+* An idle Keep-Alive connection still counts toward your worker_connections total limit.
 
-3. After successful Login, the tenant admin can configure the domain or subdomain in the website. They will get a domain/sub domain for his store. Otherwise the user from default subdirectory workspace continue login from the same website.
+## Summary Rule of Thumb
+If your NGINX configuration has:
 
-🏢🪪www.tenantors.com/kaiassociates
+worker_processes 2;
+worker_connections 1024;
 
-### Summary:
+Your server can hold 2,048 total open network pipes. In a standard .NET reverse proxy setup, this safely supports roughly 500 to 1,000 highly active concurrent users browsing the site at the same absolute second.
+------------------------------
+If you want to optimize how your server manages these connections, let me know:
 
-### 🛍️ Tenant View:
-In the above three cases: it is the way how the tenant (store) users will login, use their own work space and how customers will find their online store. The tenants may boost their online presence using media, social media or use web url in a name card.
+* Do you expect high-burst traffic spikes (like a flash sale or launch day)?
+* Are you planning to enable HTTP/2 or HTTP/3 for faster asset delivery?
 
-### 🛠️Technical View:
-It will confirm the isolation of the store identity and their  independent work space for each tenant inside the multi tenant web application.
+In simple terms, a File Descriptor (FD) is a unique, positive integer (a number like 3, 12, or 105) that a Linux/Unix operating system gives to a program to track an open resource.
+To the operating system, almost everything is treated as a file.
+## What counts as an FD?
+When NGINX is running, the operating system assigns an FD every time NGINX opens:
 
-## 🛍️Tenant Work Space
+* A network socket (a user connecting to your website)
+* A backend socket (NGINX connecting to your .NET 8 Kestrel app)
+* A physical file on disk (like a static .css, .js, or image file)
+* A system log file (like access.log or error.log)
 
-### Tenant Shop Website (URL):
+## The Airport Baggage Claim Analogy
+Imagine you check your luggage at an airport. Instead of making you carry your heavy bags everywhere, the agent takes them and hands you a small ticket with a number on it: Ticket #42.
 
-**Tenant has it's own work space. Users can upload products, add ads (images, links) and arrange the pages by their choice.**
+* The heavy luggage is the actual network connection or file data sitting in the server's memory.
+* The ticket (#42) is the File Descriptor.
 
+Whenever NGINX wants to send data back to a user, it doesn't search the entire system. It just tells Linux: "Hey, send this data to Ticket #42." Linux looks up its master table, finds the network pipe matching #42, and transfers the data. When the user leaves, the ticket (#42) is recycled for someone else.
+## Why do FDs matter for your .NET app?
+By default, Linux places a strict safety limit on how many "tickets" a single process can hold at once—typically 1,024 FDs.
+If your .nginx.conf looks like this:
 
-**Think the workspace as your shop in a shopping mall:**
+events {
+    worker_connections 4096;
+}
 
+A single NGINX worker will try to handle 4,096 connections. However, because Linux caps the process at 1,024 FDs, NGINX will run out of tickets around connection number 1,000. It will start dropping user requests and crashing with a Too many open files error in your logs.
+This is why you must use the worker_rlimit_nofile 65535; directive at the top of your NGINX config. It forces Linux to grant NGINX a much larger pool of tickets.
+------------------------------
+If you are setting this up right now, let me know:
 
-**You plan in similar concept: the way the owner and managers plan, design interior and arrange products of a shop to display!**
+* Would you like the commands to check your server's current FD limits via the Linux terminal?
+* Are you running into any connection timeout or 502 Bad Gateway errors yet?
 
-### 🏢 Store Features (Tenant):
+No, your current setup is not a "Tenant-Suffixed In-Memory DbContext."
+What you are currently doing is called a Shared Database with Discriminator Columns (Multi-Tenant via Query Filters).
+Here is the exact difference between what you have built and what that specific phrase actually means.
+## 1. What You Have Built (Shared DbContext + Query Filter)
+In your current architecture:
 
-1. **🏢Tenant Profile: (domain setup / buy domain, invite users) 🔄(50%)**   2. **🔒 Security & Isolation: Manage user account and change password 🔄(100%)**                    
-3. **📦Product Manager: Manage Products (add, edit, delete, view) with admin dashboard 🔄(100%)**                  
-4. **🖼️Advertisement Manager: (create ads with images, texts, links) 🔄(100%)** 
-5. **🎛️Page Manager: (small CMS to organize the products and ads with different templates) 🔄(100%)**
-6. **🛒Shopping Cart and Order Processing: (Pending Development) 🟥(0%)**
-7. **📝Payment Manager: (Pending Development) 🟥(0%)**
+* You have one physical database.
+* Your tables have a column like TenantId.
+* When a request comes in, a scoped service resolves the TenantId.
+* EF Core automatically applies .Where(x => x.TenantId == resolvedTenantId) to all queries via a Global Query Filter.
 
-## 👑Conecpt of the Story
+This is a standard, highly efficient way to do multi-tenancy in a single database.
+## 2. What "Tenant-Suffixed In-Memory DbContext" Means
+This phrase refers to a highly specific strategy typically used in automated testing (Unit/Integration Tests) or isolated caching, rather than standard production database routing.
+Let's break the phrase down piece-by-piece:
 
-You have a business with a valid trade license and do business professionally. You can register to open a shop. To open a shop, you need an email address to register. You are the owner of the shop. You are the admin on the shop website.
+* In-Memory DbContext: Instead of connecting to SQL Server or PostgreSQL, EF Core is configured to use its lightweight, RAM-only provider (options.UseInMemoryDatabase(...)).
+* Tenant-Suffixed: EF Core's In-Memory provider identifies distinct databases entirely by a string name. If you name two contexts the same thing, they share data. To keep tenants 100% isolated in memory, developers append (suffix) the Tenant ID to the database name.
 
-You have staff in your business. After registering at the shop, you can add staff with an invite link. You need to provide the email address of the staff to work for your online shop. You are the administrator of the shop. You can invite staff to join. You can add an invitation to join as an admin or a manager.
+## Code Example of a Tenant-Suffixed Setup:
 
-The staff can accept or reject your invitation to join. If the staff accepts your invitation, they must have an account on the multi-tenant web application. Your invitation will create his account in the application. An email will be sent from the Web Application to verify his/her email address. Once he/she verifies the link in his/her email inbox, he/she can login with the email and password in your shop.  Based on the type of invitation, the staff can perform specific tasks of the shop.
+string tenantId = "tenant_abc";
+// The database name is explicitly "suffixed" with the tenant IDstring databaseName = $"MyApplicationDb_{tenantId}"; 
 
-## ☁️🐧Hosting Environment (Linux VPS)
+options.UseInMemoryDatabase(databaseName);
 
-### 🐧Linux Environment In ☁️Cloud VPS
+## The Key Difference
 
-### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️➡️   Router to Web App🖥️
+| Feature | Your Current Setup | Tenant-Suffixed In-Memory |
+|---|---|---|
+| Data Separation | Logical (Tenants share tables; separated by a TenantId column) [1] | Physical (Tenants live in entirely separate memory spaces) |
+| Database Type | Real Database (SQL Server, PostgreSQL, etc.) | RAM Only (EF Core In-Memory provider) |
+| Primary Use Case | Production web application traffic [1] | Parallel integration testing / Isolated mocking |
 
-He/she will go to the link of the tenant URL; browser sends the request to the server (multi-tenant shopping host). Multi-tenant web application hosted on a Linux VPS: Nginx reverse proxy receives the request and acts as router for Multi-Tenant Web Application. This layer of security is a Sheild for the shopping host.
+## Summary
+You are using a Scoped, Tenant-Filtered Shared DbContext. You only need a "Tenant-Suffixed In-Memory DbContext" if you are writing automated unit tests and want to ensure that Test Runner A (testing Tenant 1) doesn't accidentally see data from Test Runner B (testing Tenant 2) running at the same time.
+------------------------------
+To make sure your production setup is fully optimized, let me know:
 
-### Internet🌐➡️   Nginx Reverce Proxy🔒🛡️🔀   Load Balance🖥️🖥️🖥️
+* Are you using EF Core Global Query Filters (HasQueryFilter) inside your OnModelCreating method?
+* Do you ever need to disable the tenant filter for global admin operations (e.g., using IgnoreQueryFilters())?
 
-Nginx convert https (encrypted) requests to http (decrypted) requests, Routing for (domain, sub domain) tenants to the host, Scale during high traffic times as load balancer, by shop visitors to multiple instances of VPS or different ports of the same VPS, limit the request per tenant to stop crashing the server by any abusive user or DDOS attack. The response from the shopping host is again encrypted and returned to the browser by Nginx.
+No, a Tenant-Suffixed In-Memory DbContext is almost never used in a production web environment. It is fundamentally a development and testing tool.
+Furthermore, you do not need to build your own in-memory database to handle speed because SQL Server has powerful, built-in caching systems that do this automatically.
+Here is a breakdown of why that setup is avoided in production and how SQL Server handles caching for you.
+------------------------------
+## Why "Tenant-Suffixed In-Memory" is Avoided in Production
+Using EF Core's UseInMemoryDatabase provider for production traffic is highly discouraged by Microsoft for several critical reasons:
 
-## 🚀 Architecture
+* No Relational Enforcement: It does not support foreign key constraints, unique indexes, or transactions. If your code tries to save invalid data, it won't throw an error like SQL Server would.
+* Data Loss on Restart: Because it lives strictly in your server's RAM (tied to your NGINX/.NET process), restarting your application or deploying an update wipes out all data instantly.
+* Concurrency Issues: It is not built to handle thousands of simultaneous users trying to read and write data at the exact same millisecond.
 
-**Monolithic Architecture:** Monolithic architecture is a traditional software design where all components of an application—such as the user interface, business logic, and database access—are combined into a single, unified, and self-contained codebase. It runs and deploys as one single unit. We chose monolithic architecture for this project because it simplifies development, testing, and deployment. It allows us to focus on building a cohesive application without the overhead of managing multiple services or microservices. This approach is particularly suitable for small to medium-sized applications where the complexity of a distributed system is not justified.
+------------------------------
+## How SQL Server Benches Data in Memory (Built-In Caching)
+SQL Server is incredibly smart with RAM. You do not need to worry about manually pulling your tenant data into memory because SQL Server does it behind the scenes using these built-in systems:
+## 1. The Buffer Pool (Data Cache)
+When your .NET app runs a query for a specific tenant, SQL Server doesn't read it directly from the slow hard drive (SSD/HDD) every time.
 
-**Tenant Isolation:** We provided effort in the scaling process by providing optimized database queries by query filters and implementing efficient caching strategies and tenant isolation strategies using .Net 8.0 middleware pipeline. We are provideing Tenant resolution for domain, subdomains and subdirectory based tenants and Policy based Tenant Roles handelig and validating against the request and server memory cache. In the process of Tenant Role assignment, we keet isolatin in our concern. We keep the tenant, country, region, host type, user and tenant roles inconsideration in each tables in database. TenantId is the primary filter. But we validate together with the tenant's other attributes in combinatin and logging and carefully doing cacheing the request pipeline, tryig to keep the tenant isolatin as the number one priority of the application design and architecture design structure.
+* First Request: SQL Server reads the data from the disk, hands it to your app, and copies those data pages directly into the server's RAM (The Buffer Pool).
+* Subsequent Requests: As long as that tenant's data is frequently requested, SQL Server reads it straight out of RAM instantly. It only goes back to the disk if the data hasn't been used in a long time and needs to make room for other data.
 
-**Scale the Monolithic Application:** To scale a monolithic architecture for a multi-tenant store using a shared database, must optimize, how the single application handle resources and how the database separates tenant data. Scaling a monolith involves two distinct paths: vertical scaling (making the single server stronger) and horizontal scaling (cloning the entire monolith across multiple servers). For a multi-tenant store, horizontal scaling is often more effective, as it allows for better load distribution and fault tolerance. However, it requires careful management of shared resources (distributed cache redis) and tenant data isolation.
+## 2. Plan Caching
+Every time you run an EF Core query, SQL Server has to calculate the most efficient path to find that data (an execution plan). SQL Server caches these plans in memory. When a tenant makes a repeat request, SQL Server skips the math and executes the pre-compiled plan instantly.
+## 3. SQL Server In-Memory OLTP (Advanced Feature)
+If you have a hyper-specific scenario where a table must never touch a physical disk and needs maximum possible speed, SQL Server has a native production feature called In-Memory OLTP (Memory-Optimized Tables).
 
-## 🚀Multi-Tenant application .NET 8.0
-### Monolithic Architecture: Clean Architecture - One Application - Shared Database
+* These are true, transactional, relational tables that live entirely in RAM but are continuously backed up to disk automatically by SQL Server to prevent data loss.
 
-Multi-tenant applications in .NET 8.0 are highly scalable because they pool infrastructure, allowing a single deployed instance or web cluster to serve thousands of customers (tenants) efficiently.Instead of scaling the entire web project, developers scale specific high-traffic services horizontally, such as background jobs, database queries, and microservices.
+------------------------------
+## Summary Recommendation for Your .NET 8 App
+Stick with your current architecture: One shared SQL Server database utilizing EF Core Global Query Filters.
+SQL Server will naturally cache your tenants' hottest, most-frequently accessed data pages in its Buffer Pool RAM. Your app will get the lightning-fast speed of an in-memory database combined with the safety and reliability of a true relational database.
+------------------------------
+To help you tune this setup for speed, let me know:
 
-## How to scale this application:
+* Have you added a Composite Index on your tables that includes the TenantId column to speed up SQL Server's lookups?
+* Are you currently experiencing any slow query response times during your local testing?
 
-Even though you have separated the code into different projects (Web, Service, Domain, Infrastructure), they are compiled together and run as a single process on your Linux VPS.
 
-Here is exactly how to scale your monolithic architecture, how introducing a separate API project changes the strategy, and how routing works across multiple instances.
 
-Following are the strategies for scaling your current monolithic architecture and the potential benefits of introducing a separate API project:
 
-### Strategy 1: Scaling Your Current monolithic Architecture
 
-Because your entire application runs as a single process, you cannot scale just the "Shared Service project" on its own. You must scale the entire monolith together.
 
-Vertical Scaling First:
 
-Upgrade your Linux VPS to a higher tier with more CPU cores and RAM. This is the fastest, zero-code way to handle more traffic.
 
-Database Connection Pooling:
 
-Since you use a shared database, multiple application threads will compete for database connections. You must optimize your connection pool size in your appsettings.json connection string so the database doesn't choke.
 
-In-Memory Caching:
-
-Use .AddMemoryCache() in .NET 8.0 to store frequently requested, non-tenant-specific data directly in the VPS RAM to avoid hitting the shared database.
-
-Strategy 2: Scaling by Introducing an API Project
-
-If you split your architecture so that the Web Project (frontend/UI) communicates with a separate API Project (backend logic, services, and database access), you gain better scaling flexibility.
-
-Independent Scaling:
-
-You can deploy the Web project and the API project onto two completely separate Linux VPS instances.
-
-Targeted Resource Allocation:
-
-If your traffic involves heavy data processing, your API VPS will need high CPU/RAM. If your traffic is just users loading static web pages, your Web VPS can remain small and cheap.
-
-API Worker Pools:
-
-If the API becomes the bottleneck, you can duplicate only the API project across 3 or 4 separate Linux servers, while keeping only 1 server for the Web frontend.
-
-How one Instance Becomes Multiple Instances:
-
-To turn one instance into multiple instances on a Linux VPS infrastructure, you use a process called Horizontal Scaling (Scaling Out).
-
-You provision 2 or more separate Linux VPS instances (e.g., VPS 1, VPS 2, VPS 3).
-
-Deploy the Code:
-
-You deploy the exact same compiled .NET 8.0 published folder to all of those VPS instances.
-
-Keep them Stateless:
-
-For this to work, the application must not save files (like uploaded user images) or user sessions locally on the VPS disk. Sessions should be stored in a shared distributed cache (like Redis), and files should go to an object storage service (like AWS S3 or MinIO).
-
-How Traffic Routes to These Instances:
-
-To split traffic among your multiple VPS instances, you must place a Reverse Proxy / Load Balancer in front of them. On Linux, Nginx or HAProxy are the industry standards for this.
-
-### Step 1: [ Incoming User Traffic ]
-When a user goes to your domain name (e.g., www.example.com). The DNS resolves this to the public IP of your Nginx server:
-
-### Step 2: [ Nginx Load Balancer ]
-(Public IP: 192.168.1.1) :
-Seneds the traffic to your multiple VPS instances based on the load balancing algorithm you choose:
-
-### Step 3:
-1. [ VPS Instance 1 ] :(Port: 5000)
-2. [ VPS Instance 2 ] :(Port: 5000)
-3. [ VPS Instance 3 ] :(Port: 5000)
-
-The Entry Point:
-
-Your domain name points directly to the single IP address of the Nginx server.
-
-The Routing Rules:
-You configure Nginx with the private IP addresses of your .NET 8.0 VPS instances.
-
-Load Balancing Algorithms:
-
-Nginx passes the traffic using specific rules:
-1. Round Robin:
-Sends request 1 to VPS 1, request 2 to VPS 2, request 3 to VPS 3, and repeats.
-
-2. Least Connections:
-Sends the next user request to whichever VPS is currently handling the least amount of active traffic.
-
-3. Ip Hash (Sticky Sessions):
-Ensures a specific tenant or user always hits the exact same VPS instance, which is helpful if you cannot use a shared distributed cache yet.
-
-## Knowledge Cultivation
-
-### Project goals
-
-### Volunteering for Code Reuse
-Volunteering your time is one of the best examples of giving back to the community. While this can be one of the more time-consuming ways to give back, it can also be the most fulfilling and hands-on.
-
-“Knowledge is meant to be shared. I am dedicated to empowering the next generation of engineers. Goal is to create a community with same motivation.”
-
-**Deliver code & build community**
-
-This community is tring to deliver and engage engineers to practice collaborative production-grade software engineering. Our goal is to collectively design, build, and document a complete Multi-Tenant SaaS Storefront using .NET 8.0 ASP.NET Core MVC. Our focus is to encourage, engage new engineers and learners to join, learn and contribute in this community & project.
-
-**Learn & Create Code**
-
-**🚑 Real-World Problem Solving**
-We solve production challenges like tenant isolation pipelines, global database filtering with EF Core, and secure client-side scripting.
-
-**📝 Interactive Course Materials**
-Every major architectural component is accompanied by step-by-step documentation, real-life examples, and actionable lab challenges.
-
-**✨Co-Authoring Code**
-Community members collaborate directly through GitHub Pull Requests, code reviews, and automated CI/CD pipeline building.
-
-**👍 DevOps & Delivery**
-We hopefully will finish by publishing our codebases to live Linux VPS servers, mastering the entire software development lifecycle (SDLC).
-
-**Hi there, I'm Naim Ul Islam Prodhan 👋**
-                   
-I am an engineer, father, and community advocate from Bangladesh. My journey has taken me from local corporate offices to travels abroad, and now into the world of open-source and self-taught engineering.
-
-**📖 Perseverance**
-In January 2024, I survived a mild brain stroke that temporarily took away my ability to speak. Facing a long recovery and time away from full-time work, I chose to redirect my energy toward continuous learning and technology. I rebuilt my skills step-by-step—using my phone and tools like Google Colab to learn new programming languages and frameworks.
-
-**Today, I am healthy, speaking again, and driven by a new purpose: to share my knowledge and give back to the tech community.**
-
-**“Knowledge is meant to be shared. I am dedicated to empowering the next generation of engineers. Goal is to create a community with same motivation.”**
-
-
-
-## GitHub Action (Continuous Integration CI) 
-✅ 1. This repository is now configured with automated CI workflows (dotnet.yml: Tests on every push/PR to master) 
-
-<img width="901" height="487" alt="GithubSocialImag1" src="https://github.com/user-attachments/assets/96d62ec1-4457-4c2f-914c-10e41e301e66" />
-
-# Links Google AI used to generate Contents based on my search ad questions:
-
-## For Jwt Token for Multi Tenant Impementation
-
-[1] [https://andrewlock.net](https://andrewlock.net/implementing-custom-token-providers-for-passwordless-authentication-in-asp-net-core-identity/)
-[2] [https://stackoverflow.com](https://stackoverflow.com/questions/42593188/how-to-customize-reset-password-token-in-asp-net-core-identity)
-[3] [https://www.mindbowser.com](https://www.mindbowser.com/spring-security-multi-provider-authentication/)
-[4] [https://csharp-video-tutorials.blogspot.com](https://csharp-video-tutorials.blogspot.com/2019/10/aspnet-core-custom-token-provider.html)
-[5] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/previous-versions/aspnet/dn613280%28v=vs.108%29)
-[6] [https://aspnet-docs-example.readthedocs.io](https://aspnet-docs-example.readthedocs.io/en/latest/autoapi/Microsoft/AspNet/Identity/DataProtectorTokenProvider/)
-[7] [https://www.stevejgordon.co.uk](https://www.stevejgordon.co.uk/asp-net-core-identity-token-providers)
-[8] [https://dotnettutorials.net](https://dotnettutorials.net/lesson/how-to-store-tokens-in-asp-net-core-identity/)
-[9] [https://docs.tetrate.io](https://docs.tetrate.io/service-bridge/operations/multiple-iam-keys)
-[10] [https://dotnettutorials.net](https://dotnettutorials.net/lesson/how-to-store-tokens-in-asp-net-core-identity/)
-[11] [https://stackoverflow.com](https://stackoverflow.com/questions/59394909/asp-net-core-identity-make-tokens-email-confirmation-password-reset-etc-va)
-[12] [https://stackoverflow.com](https://stackoverflow.com/questions/77986146/asp-net-core-custom-token-provider-use-across-different-projects)
-[13] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-10.0)
-[14] [https://stackoverflow.com](https://stackoverflow.com/questions/74110441/net-core-identity-server-custom-token-provider-generating-long-token-string)
-
-## Configure Session Options
-
-[1] [https://antondevtips.com](https://antondevtips.com/blog/master-configuration-in-asp-net-core-with-the-options-pattern)
-[2] [https://www.freedesktop.org](https://www.freedesktop.org/software/fontconfig/fontconfig-user.html)
-[3] [https://commons.apache.org](https://commons.apache.org/proper/commons-configuration/userguide/howto_builders.html)
-[4] [https://medium.com](https://medium.com/asp-dotnet/why-anti-forgery-tokens-use-in-net-core-75ab11f6c2da)
-[5] [https://medium.com](https://medium.com/@robert0321/asp-net-security-best-practices-protecting-your-web-applications-a9ea012d7434)
-[6] [https://www.youtube.com](https://www.youtube.com/watch?v=G910vWOdhQ8)
-
-## Default ValidateAntiForgeryToken
-
-[1] [https://www.syncfusion.com](https://www.syncfusion.com/blogs/post/10-practices-secure-asp-net-core-mvc-app)
-[2] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/controller-methods-views?view=aspnetcore-10.0)
-[3] [https://www.itb.ec.europa.eu](https://www.itb.ec.europa.eu/docs/guides/latest/installingValidatorProduction/index.html)
-[4] [https://steeltoe.io](https://steeltoe.io/docs/v3/management/cloud-foundry.html)
-[5] [https://www.linkedin.com](https://www.linkedin.com/posts/amrsaafan_one-of-the-common-issues-that-appear-in-any-activity-7385279767153037312-18ab)
-[6] [https://docs.umbraco.com](https://docs.umbraco.com/umbraco-forms/13.latest/developer/configuration)
-[7] [https://www.red-gate.com](https://www.red-gate.com/simple-talk/development/web/how-to-secure-legacy-asp-net-mvc-against-csrf-attacks/)
-[8] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/article/learn-about-action-filters-in-asp-net-mvc/)
-[9] [https://andrewlock.net](https://andrewlock.net/automatically-validating-anti-forgery-tokens-in-asp-net-core-with-the-autovalidateantiforgerytokenattribute/)
-[10] [https://fiware-orion.readthedocs.io](https://fiware-orion.readthedocs.io/en/master/orion-api.html)
-
-## Global Excepton Handling
-
-[1] [https://medium.com](https://medium.com/@Moltech/middleware-in-net-enhancing-request-handling-with-custom-logic-7bf4f7a648a6)
-[2] [https://medium.com](https://medium.com/@mina.abdo/middleware-and-request-pipeline-in-asp-net-core-73044052c88a)
-[3] [https://www.linkedin.com](https://www.linkedin.com/pulse/kiss-try-catch-goodbye-middleware-cleaner-more-manageable-islam-5dmhc)
-[4] [https://medium.com](https://medium.com/we-are-developers/middleware-in-asp-net-core-c94d82dc3ef6)
-[5] [https://medium.com](https://medium.com/@AntonAntonov88/handling-errors-with-iexceptionhandler-in-asp-net-core-8-0-48c71654cc2e)
-[6] [https://blog.elmah.io](https://blog.elmah.io/error-logging-middleware-in-aspnetcore/)
-[7] [https://learn.microsoft.com](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-10.0)
-[8] [https://www.infoworld.com](https://www.infoworld.com/article/2257411/how-to-use-serilog-in-aspnet-core.html)
-[9] [https://antondevtips.com](https://antondevtips.com/blog/logging-best-practices-in-asp-net-core)
-[10] [https://last9.io](https://last9.io/blog/serilog-configuration/)
-[11] [https://www.c-sharpcorner.com](https://www.c-sharpcorner.com/UploadFile/a3d5d0/structured-logging-with-serilog-and-seq-part-2/)
-
-## View and Analyze Your Serilog/Log files
-
-[1] [https://dzone.com](https://dzone.com/articles/multi-tenancy-implementation-using-spring-boot-and)
-[2] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-01-27-nodejs-multi-tenancy/view)
-[3] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-01-26-multi-tenant-apps-dotnet/view)
-[4] [https://dev.to](https://dev.to/heterl0/building-multi-tenant-applications-with-nextjs-a-custom-subdomain-approach-5105)
-[5] [https://medium.com](https://medium.com/@odenigbo67/subdomain-driven-schema-isolated-multi-tenancy-using-nestjs-872c0f279b44)
-[6] [https://dev.to](https://dev.to/leandroveiga/building-a-multi-tenant-minimal-api-architecture-with-net-8-40he)
-[7] [https://milantoncic.medium.com](https://milantoncic.medium.com/structured-logging-in-asp-net-core-using-serilog-421de2679867)
-[8] [https://www.euphoricthought.com](https://www.euphoricthought.com/enhancing-log-management-with-serilog-and-graylog/)
-[9] [https://blog.angelwebdesigns.com.au](https://blog.angelwebdesigns.com.au/structured-logging-with-serilog-in-asp-net-core/)
-
-## Keep Log Seperately in Places (layers)
-
-[1] [https://www.youtube.com](https://www.youtube.com/watch?v=T-EiJQOKNpk)
-[2] [https://www.linkedin.com](https://www.linkedin.com/pulse/structured-logging-logs-management-case-study-using-aspnet-sofer-%E7%A7%8B%E7%A6%8F)
-[3] [https://www.reddit.com](https://www.reddit.com/r/selfhosted/comments/14ykic7/simple_app_for_monitoring_server_log/)
-[4] [https://www.alexhyett.com](https://www.alexhyett.com/app-logs-dotnet-seq-5-serilog/)
-[5] [https://medium.com](https://medium.com/@nithidol/spring-boot-3-logging-for-monitoring-1a42e157bcd9)
-[6] [https://dev.to](https://dev.to/iamcymentho/mastering-distributed-tracing-with-serilog-and-seq-in-net-fp)
-[7] [https://benfoster.io](https://benfoster.io/blog/serilog-best-practices/)
-[8] [https://yisusvii.medium.com](https://yisusvii.medium.com/structured-logging-in-net-8-isolated-a-comprehensive-guide-3da16ce62e4b)
-[9] [https://satyampushkar.medium.com](https://satyampushkar.medium.com/serilog-logging-to-console-seq-elasticsearch-file-using-dotnet6-d9536b534209)
-[10] [https://dev.to](https://dev.to/iamcymentho/mastering-distributed-tracing-with-serilog-and-seq-in-net-fp)
-[11] [https://logmanager.com](https://logmanager.com/blog/log-management/log-file-analysis-tools/)
-[12] [https://www.papertrail.com](https://www.papertrail.com/solution/tips/logging-in-docker-how-to-get-it-right/)
-[13] [https://medium.com](https://medium.com/django-unleashed/get-visibility-into-your-docker-container-logs-with-grafana-loki-of-a-django-application-9584bddfe540)
-[14] [https://oneuptime.com](https://oneuptime.com/blog/post/2026-01-30-centralized-logging-architecture/view)
-
-**🎬📺 SaaS Business Model:** In SaaS business model users/tenants instead of (buying and installing software) locally, access tools (applicatin features) via web browsers or apps, eliminating upfront infrastructure and maintenance costs.
-
-**🔑🏢 Multi-Tenant SaaS:** This is a specific underlying technical architecture where all customers share the exact same software instance and physical infrastructure for receiving the application features. 
-
-**🏬🛍️🛒Multi-Tenant Web Application:** is one example of the underling multi-Tenant SaaS. In this Model, Tenant is a store/shop.
 
 
 
