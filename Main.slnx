@@ -125,5 +125,6 @@
     <BuildDependency Project="Main.Model/Main.Model.csproj" />
   </Project>
   <Project Path="MyDevelopers.Logging.Api/MyDevelopers.Logging.Api.csproj" Id="4656e5d8-ea10-4a9d-8361-95b5744ecb91" />
+  <Project Path="OutboxEmailSender.WorkerService/OutboxEmailSender.WorkerService.csproj" Id="5978aa5d-bf3d-4d8e-85f5-36094e3db9ee" />
   <Project Path="ResourceLibrary/ResourceLibrary.csproj" Id="4c814463-ebb6-41cf-b094-8467255e7a55" />
 </Solution>

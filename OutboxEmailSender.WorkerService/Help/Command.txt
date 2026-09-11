@@ -1,0 +1,13 @@
+﻿New-Service -Name "OutboxEmailSender.WorkerService" -BinaryPathName "C:\OutboxEmailService\OutboxEmailSender.WorkerService.exe" -StartupType Automatic
+
+Start-Service -Name "OutboxEmailSender.WorkerService"
+
+Get-Service -Name "OutboxEmailSender.WorkerService"
+
+Stop-Service -Name "OutboxEmailSender.WorkerService"
+
+Restart-Service -Name "OutboxEmailSender.WorkerService"
+
+
+
+

@@ -454,3 +454,56 @@ If you would like to proceed with configuring this application, let me know:
 [7] [https://medium.com](https://medium.com/@shelton.estibeiro/creating-a-background-worker-in-asp-net-core-a-step-by-step-guide-508a451590f9)
 [8] [https://www.linkedin.com](https://www.linkedin.com/pulse/building-background-worker-service-net-nick-proud-3ogrf)
 [9] [https://medium.com](https://medium.com/@hilalyazbek/creating-a-background-service-using-ihostedservice-in-c-2b9664dcd21c)
+
+
+sc.exe create "OutboxEmailSender.WorkerService" 'binPath= C:\OutboxEmailService\OutboxEmailSender.WorkerService.exe' 'start= auto'
+
+The error "Invalid start= field" occurs because legacy sc.exe values are highly sensitive to case formatting when passed through PowerShell's argument parser. It does not recognize the string value auto. It strictly requires the word automatic or demand instead.Here are the two working solutions to resolve this error immediately:Solution 1: Use the PowerShell Native Command (Fastest & Safest)PowerShell provides its own modern built-in command which completely bypasses the legacy sc.exe syntax quirks. Run this command instead:
+
+New-Service -Name "OutboxEmailSender.WorkerService" -BinaryPathName "C:\OutboxEmailService\OutboxEmailSender.WorkerService.exe" -StartupType Automatic
+
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  OutboxEmailSend... OutboxEmailSender.WorkerService
+
+The output shows that your service has been successfully created and registered in the system database. However, it is currently in a Stopped status.
+Run the following commands in your administrative PowerShell window to start the service and ensure it runs continuously in the background.
+## Step 1: Start the Service
+Execute this command to launch the worker execution loop:
+
+Start-Service -Name "OutboxEmailSender.WorkerService"
+
+## Step 2: Confirm it is Running
+Verify that the status transitions from Stopped to Running:
+
+Get-Service -Name "OutboxEmailSender.WorkerService"
+
+------------------------------
+## Troubleshooting Common Startup Failures
+If the service starts but immediately crashes back to a Stopped state, it usually means the code threw an unhandled exception during initialization (such as a bad database connection string or a missing appsettings.json property).
+To pinpoint the exact error, look at the system logs directly from PowerShell:
+
+* View the latest errors in the Event Viewer:
+
+Get-EventLog -LogName Application -Source "OutboxEmailSender.WorkerService" -Newest 5 | Format-List
+
+* Alternative Generic Application Log Check:
+
+
+# Commands
+New-Service -Name "OutboxEmailSender.WorkerService" -BinaryPathName "C:\OutboxEmailService\OutboxEmailSender.WorkerService.exe" -StartupType Automatic
+
+Start-Service -Name "OutboxEmailSender.WorkerService"
+
+Get-Service -Name "OutboxEmailSender.WorkerService"
+
+Stop-Service -Name "OutboxEmailSender.WorkerService"
+
+Restart-Service -Name "OutboxEmailSender.WorkerService"
+
+Get-EventLog -LogName Application -EntryType Error -Newest 5 | Format-Table TimeGenerated, Source, Message -Wrap
+
+
+------------------------------
+Let me know if the service stays in the Running status after starting it, or if you need help deciphering an error message from the Event Viewer logs!
+
