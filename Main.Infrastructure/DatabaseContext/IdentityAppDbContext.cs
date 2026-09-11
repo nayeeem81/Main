@@ -78,10 +78,7 @@ public class IdentityAppDbContext: IdentityDbContext<ApplicationUser>
         get; set;
     }
 
-    public DbSet<EmailOutboxMessage> EmailOutboxMessages
-    {
-        get; set;
-    }
+
 
     protected override void OnModelCreating (ModelBuilder builder)
     {

@@ -1,9 +1,9 @@
 
-Add-Migration InitialCreateIdentity27 -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
+Add-Migration InitialCreateIdentity30 -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
 
-Add-Migration InitialCreateTenant27 -Context Main.Infrastructure.DatabaseContext.TenantDbContext
+Add-Migration InitialCreateTenant30 -Context Main.Infrastructure.DatabaseContext.TenantDbContext
 
-Add-Migration InitialCreateLog27 -Context Main.Infrastructure.DatabaseContext.LogDbContext
+Add-Migration InitialCreateLog30 -Context Main.Infrastructure.DatabaseContext.LogDbContext
 
 Update-Database -Context Main.Infrastructure.DatabaseContext.IdentityAppDbContext
 
@@ -11,15 +11,3 @@ Update-Database -Context Main.Infrastructure.DatabaseContext.TenantDbContext
 
 Update-Database -Context Main.Infrastructure.DatabaseContext.LogDbContext
 
-
-:: 1. Navigate to your master working directory path
-cd /d "D:\source\master\Main\Main\Main.WebAppCore"
-
-:: 2. Drop any historical cached binaries to prevent profile caching issues
-dotnet clean -c Release
-
-:: 3. Build with full release optimizations
-dotnet build -c Release
-
-:: 4. Boot up Kestrel using your multi-tenant production configuration
-dotnet run -c Release --launch-profile "MultiTenantProfile"

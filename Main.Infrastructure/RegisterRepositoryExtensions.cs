@@ -38,6 +38,8 @@ public static class RegisterRepositoryExtensions
 
         _ = services.AddScoped<IPagePanelSettingsRepository,PagePanelSettingsRepository> ();
 
+        _ = services.AddScoped<IEmailOutboxRepository,EmailOutboxRepository> ();
+
         return services;
 
     }

@@ -51,7 +51,7 @@ public class AccountService: IAccountService
         Tenant? tenant = new ()
         {
             TenantName = userAccountDataModel.TenantName,
-            HostType = HostType.SubDomain,
+            HostType = HostType.Domain,
             Host = StringRelated.GetTrimmedRemovedSpaseString(userAccountDataModel.UserName.Trim())
         };
 
@@ -170,7 +170,7 @@ public class AccountService: IAccountService
         {
             Email = userAccountDataModel.Email,
             PhoneNumber = userAccountDataModel.PhoneNumber,
-            NormalizedUserName = userAccountDataModel.Email.ToUpper(),
+            NormalizedUserName = userAccountDataModel.UserName.ToUpperInvariant(),
             UserName = userAccountDataModel.UserName
         };
 

@@ -1,31 +1,29 @@
-﻿using FluentEmail.Core;
-using Main.Common;
+﻿using Main.Common;
 using Main.Common.Models;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.IRepository;
 using Main.Model.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Main.Infrastructure.CrosscuttingHelperServices;
 
-public class EmailSenderService: IEmailSender, IEmailSenderService
+public class EmailSenderService: IEmailSenderService
 {
-    private readonly IFluentEmailFactory _emailFactory;
     private readonly IApplicationUserRepository _userRepositry;
+    private readonly IEmailOutboxRepository _emailOutboxRepository;
 
     public EmailSenderService ()
     {
     }
 
     public EmailSenderService (
-        IFluentEmailFactory emailFactory,
-        IApplicationUserRepository userRepositry)
+
+        IApplicationUserRepository userRepositry,
+        IEmailOutboxRepository emailOutboxRepository)
     {
-        _emailFactory = emailFactory;
+
         _userRepositry = userRepositry;
+        _emailOutboxRepository = emailOutboxRepository;
     }
-
-
 
     public async Task<string> SendEmailAsync (string userId)
     {
@@ -43,17 +41,8 @@ public class EmailSenderService: IEmailSender, IEmailSenderService
 
     public async Task SendEmailAsync (string email,string subject,string htmlMessage)
     {
-        var response = await _emailFactory
-                            .Create()
-                            .To(email)
-                            .Subject(subject)
-                            .Body(htmlMessage, isHtml: true)
-                            .SendAsync();
-
-        if ( !response.Successful )
-        {
-            throw new Exception ($"Email delivery failed: {string.Join (", ",response.ErrorMessages)}");
-        }
+        // Save the email to the outbox
+        _ = await _emailOutboxRepository.SaveChangesAsync (email,subject,htmlMessage);
     }
 
     public async Task SendEmailVerificationAsync (VerifyDataModel verifyEmailDataModel)

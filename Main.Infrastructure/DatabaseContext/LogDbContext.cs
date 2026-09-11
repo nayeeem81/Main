@@ -1,5 +1,6 @@
 ﻿using Main.Common.Models;
 using Main.Model.Base;
+using Main.Model.Identity;
 using Main.Model.Log;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -21,6 +22,11 @@ public class LogDbContext: DbContext
     }
 
     public DbSet<ExceptionLogs> ExceptionLogs
+    {
+        get; set;
+    }
+
+    public DbSet<EmailOutboxMessage> EmailOutboxMessages
     {
         get; set;
     }

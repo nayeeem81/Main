@@ -1,10 +1,9 @@
 ﻿using Main.Model.Base;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Main.Model.Identity;
 
-public class EmailOutboxMessage: RootBaseEntity
+public class EmailOutboxMessage: BaseEntity
 {
     public EmailOutboxMessage ()
     {
@@ -47,17 +46,6 @@ public class EmailOutboxMessage: RootBaseEntity
     }
 
     public int? RetryCount
-    {
-        get; set;
-    }
-
-    public Guid TenantId
-    {
-        get; set;
-    }
-
-    [ForeignKey ("TenantId")]
-    public virtual Tenant? Tenant
     {
         get; set;
     }

@@ -5,10 +5,6 @@
       {
         "Path": "Main.WebAppCore\\Main.WebAppCore.csproj",
         "Action": "Start"
-      },
-      {
-        "Path": "MyDevelopers.Logging.Api\\MyDevelopers.Logging.Api.csproj",
-        "Action": "Start"
       }
     ]
   }

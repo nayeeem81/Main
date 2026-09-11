@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Main.Infrastructure\Main.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Help\" />
-  </ItemGroup>
-
 </Project>
