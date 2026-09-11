@@ -1,7 +1,6 @@
 ﻿using DataTransferModel;
 using Main.Common;
 using Main.Infrastructure;
-using Main.Infrastructure.CrosscuttingHelperServices;
 using Main.Infrastructure.ICrosscuttingServices;
 using Main.Services;
 using Main.WebAppCore.Controllers.ControllerExtensions;
@@ -20,21 +19,18 @@ public class AuthController: BaseController
     private readonly IAccountService _userAccountService;
     private readonly IEmailSenderService _emailService;
     private readonly ITokenService _tokenService;
-    private readonly ILogger<ExceptionLoggingService>  _logger;
 
     public AuthController (
         IAccountService userAccountService,
         IEmailSenderService emailService,
         ITenantSetter tenantSetter,
-        ITokenService tokenService,
-        ILogger<ExceptionLoggingService> logger
+        ITokenService tokenService
        )
     {
         _userAccountService = userAccountService;
         _emailService = emailService;
         _tenantSetter = tenantSetter;
         _tokenService = tokenService;
-        _logger = logger;
     }
 
     // Registration Flow 1: User accesses the registration page
@@ -52,39 +48,33 @@ public class AuthController: BaseController
     [TypeFilter (typeof (TransactionAttribute))]
     public async Task<IActionResult> Registration (RegistrationViewModel registrationViewModel)
     {
-        if ( ModelState.IsValid )
+        if ( !ModelState.IsValid )
         {
             return View (registrationViewModel);
         }
 
-        try
-        {
-            var that = this!;
+        _ = this!;
 
-            UserAccountDataModel userAccountDataModel
+        UserAccountDataModel userAccountDataModel
             = AuthExtensions.MapToDataModel(registrationViewModel != null ?
             registrationViewModel : new RegistrationViewModel());
 
-            // Create the tenant user account (ApplicationUser)
-            IdentityResult result =
+        // Create the tenant user account (ApplicationUser)
+        IdentityResult result =
             await _userAccountService.CreateApplicationUserAccount
             ( userAccountDataModel );
 
-            string email =  registrationViewModel?.Email ?? string.Empty;
+        string email =  registrationViewModel?.Email ?? string.Empty;
 
-            if ( result.Succeeded )
-            {
-                await SendVerifyEmail (email,HttpContext);
-
-                return RedirectToAction ("VerifyEmailSent");
-            }
-
-            return View (registrationViewModel);
-        }
-        catch
+        if ( result.Succeeded )
         {
-            throw;
+            await SendVerifyEmail (email,HttpContext);
+
+            return RedirectToAction ("VerifyEmailSent");
         }
+
+        return View (registrationViewModel);
+
     }
 
     public async Task SendVerifyEmail
