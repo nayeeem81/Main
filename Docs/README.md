@@ -331,7 +331,7 @@ It will confirm the isolation of the store identity and their  independent work 
 
 ## 🏢 Store Features (Tenant):
 
-1. **🏢🔄(50%) Tenant Profile: (domain setup / buy domain, invite users)**   
+1. **🏢🔄(80%) Tenant Profile: (domain setup / buy domain, invite users)**   
 2. **🔒🔄(100%) Security & Isolation: Manage user account and change password**                    
 3. **📦🔄(100%) Product Manager: Manage Products (add, edit, delete, view) with admin dashboard**                  
 4. **🖼️🔄(100%) Advertisement Manager: (create ads with images, texts, links)** 
@@ -457,7 +457,7 @@ See the Web App Project Folder Structure:
 1. **For the domain ad sub domain based tenants:** always get the default route bacause of the technology (asp.net core mvc). It is the defaut routeing middleware behavior in .Net 8.0 multi tennat SaaS.
 2. **For the Sub Direcoty tenants:** we need to use extra measure to either rewire the the base path to perfrom the default behavior. Or implement the per tennat directory which we explained earlier. Technically, the tenant who use sub directory (www.tenantors.com/tt  khai, here ttkhai is the tenant), we are rewriteing the base path to tenantors.com/ inside the route pipeline, so the route donot consider the ttkhai as an end point. It will search for the end point but actualy, this is the name of the tenant. We are doing url rewrite touse the default route. As a reasult the  applcation is serving same dynamic and static and resources forsame one instance. From same same site.css forall tenants. We make the colors dynamic using the global variable to create themes.
 
-# Multi Tenant Architecture 🔄(00%) 🟥(20%)
+# Multi Tenant Architecture 🔄(100%) 🟥(0%)
 
 ## SaaS Cross-Cutting Concerns 
 In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns represent technical functionalities that span your entire system and must execute across various endpoints, layers, or microservices without altering the core business rules. In a multi-tenant SaaS application, these concerns become highly critical because they must almost always be evaluated in the context of a specific tenant.Core 
@@ -467,9 +467,9 @@ In a .NET Software-as-a-Service (SaaS) architecture, cross-cutting concerns repr
 2. **Data Isolation:** Dynamically appending global query filters or swapping out connection strings based on the resolved tenant ID.🔄(100%)
 3. **Authentication & Authorization:** Ensuring users are authenticated globally and verified for specific tenant-level permissions or subscription tiers.🔄(100%)
 4. **Feature Management & Billing Flags:** Enabling or disabling code execution branches dynamically according to the tenant’s subscription tier.🟥(0%)
-5. **Structured Logging & Tracing:** Injecting a TenantId attribute into every log context to isolate logs per customer across microservices.🔄(70%)
-6. **Rate Limiting & Throttling:** Restricting request limits at the tenant level to prevent noisy neighbor scenarios.🟥(0%)
-7. **Global Exception Handling:** Mapping all unexpected errors to standardized JSON problem details while hiding internal infrastructure quirks.🔄(70%)
+5. **Structured Logging & Tracing:** Injecting a TenantId attribute into every log context to isolate logs per customer across microservices.🔄(100%)
+6. **Rate Limiting & Throttling:** Restricting request limits at the tenant level to prevent noisy neighbor scenarios.🟥(80%)
+7. **Global Exception Handling:** Mapping all unexpected errors to standardized JSON problem details while hiding internal infrastructure quirks.🔄(100%)
 
 ## Structural Implementation Patterns in .NET:
 To adhere to the Single Responsibility Principle and avoid mixing business logic with infrastructure noise, .NET applications use three distinct design patterns to implement these concerns:
@@ -477,8 +477,8 @@ To adhere to the Single Responsibility Principle and avoid mixing business logic
 1. **Middleware Pipeline** 
 ASP.NET Core Middleware Pipeline: Middleware handles concerns at the outer HTTP level before a request ever reaches your API endpoints. Best used for: Tenant resolution, global rate limiting, global authentication, and top-level exception handling. The Rule of Ordering: The order of your middleware configuration in Program.cs dictates execution. Rate limiting should execute before authentication to conserve server resources, while authentication must run before authorization.🔄(100%) 
 
-2. **MediatR Pipeline Behaviors (CQRS)** 
-If your architecture uses Clean Architecture 🔄(100%) or Vertical Slices with the MediatR 🟥(Not Using) library on GitHub, Pipeline Behaviors operate as intra-application middleware🔄(100%). Best used for: Domain validation (via FluentValidation)🔄(0%), transactional database boundaries🔄(100%), application-level logging🔄(100%), and in-memory query caching🔄(100%). Benefit: It allows the application layer to remain independent of the ASP.NET Core HttpContext.
+2. **MediatR/Sockets Pipeline Behaviors (Krestel Server behind Nginx Reverses Proxy** 
+If your architecture uses Clean Architecture 🔄(100%) or Vertical Slices 🔄(100%) with the MediatR 🟥(Not Using) library on GitHub. The Nginx Reverse Proxy (two Sockets Pipeline for each Request Pipeline Behaviors 🔄(100%) ) operate as intra-application middleware 🔄(100%). 
 
 3. **EF Core Global Query Filters & Interceptors** 
 When relying on Entity Framework Core, your database access layer can natively manage data separation rules🔄(100%) . Best used for: Automated multi-tenant data filtering🔄(100%) , soft deletes, and automated database auditing🔄(100%)  (such as injecting CreatedByTenantId or timestamp fields)🔄(100%).
@@ -491,16 +491,16 @@ Monolithic Application & Shared Database
 ## Global Eception Handle (Middleware)
 
 ### **Key Features**
-✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks🔄(100%)  
-✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks🔄(100%) 
-✅ **Intelligent mapping** - 18 exception types → error codes + HTTP status codes🔄(100%)  
-✅ **Serilog logging** - 3 log streams (application, errors, JSON) with daily rotation🔄(100%)  
-✅ **Database persistence** - Stores full context with multi-tenant isolation🔄(100%)  
-✅ **Automatic deduplication** - Repeating exceptions increment counter (within 1 hour)  
-✅ **6 database indexes** - Optimized for fast queries and filtering🔄(100%)  
-✅ **Secure** - Excludes auth headers, cookies, API keys; generic user messages🔄(100%)  
-✅ **Admin API** - Search, filter, export CSV, view stats, mark resolved, cleanup  
-✅ **Multi-tenant** - Automatic tenant scoping via query filters🔄(100%)  
+✅ **Global middleware** - Catches all unhandled exceptions without try-catch blocks 🔄(100%)  
+✅ **Intelligent mapping** - 18 exception types → error codes + HTTP status codes 🔄(100%)  
+✅ **Serilog logging** - 3 log streams (application, errors, JSON) with daily rotation in files. 🔄(100%)  
+✅ **Database persistence** - Stores full context with multi-tenant isolation (application exceptions) 🔄(100%)  
+✅ **Automatic deduplication Keeping** - Repeating exceptions increment counter (counter with extra records) (within 1 hour condition stopped) 🔄(100%)   
+✅ **database indexes** - Optimized for fast queries and filtering 🔄(100%)  
+✅ **Secure** - Excludes auth headers, cookies, API keys; generic user messages 🔄(100%)  
+✅ **Developer Logging API** - export excel 📂 files 🔄(100%)  
+✅ **Multi-tenant** - Automatic tenant scoping via query filters 🔄(100%)  
+✅ **Separate Database for Log Exceptions** 🔄(100%)   
 
 ## Authentication 🔄(100%)
 
