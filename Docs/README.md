@@ -69,21 +69,21 @@ These are the people who make the actual use of the working product or the softw
 ### 2. It means, it is easy. Do not get scared to setup the code and tools in the laptop.
 ### 3. Download the zip file for copy and paste in the required places shown in the video. [Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
 
-## VIDEO 1 [Step 1: VS 2026 Download](https://1drv.ms/v/c/93d70fb51193cb6b/IQBPuCnZNZYvSrM6KyzEHLj_AR7li3IJKuE4Jx5dCSx9zYk?e=UZ2cq5) 
+## VIDEO 1 [Step 1: VS 2026 Download](https://youtu.be/JX4WnexPvPE) 
 
-## VIDEO 2 [Step 2.0 Download SQL Server Express](https://1drv.ms/v/c/93d70fb51193cb6b/IQDitAIgZh89T6XtjTnnFdb7ARO6jI6i3fCBX2uORdIabKc?e=DbFMe3)
+## VIDEO 2 [Step 2.0 Download SQL Server Express](https://youtu.be/mvb8XGVaHDQ?si=d-hAprSIAfwubz_R)
 
-## VIDEO 3 [Step 2.1 SQL Server (For Exploration)](https://1drv.ms/v/c/93d70fb51193cb6b/IQCKWcGjPTMoTZ6I8NYcYTJEAcuZDCoiPcpZDsZjTXbsjUA?e=W6CdID)
+## VIDEO 3 [Step 2.1 SQL Server (For Exploration)](https://youtu.be/n7fg_V2-5FU?si=JBN0xZxoC2l0_qSJ)
 
-## VIDEO 4 [Step 3 Clone Git Hub Repository](https://1drv.ms/v/c/93d70fb51193cb6b/IQDI7gRXjoUwQKUdcw22TjD_Ac-p4oMAuV-roDcIuiN5n6E?e=q9WKsT)
+## VIDEO 4 [Step 3 Clone Git Hub Repository](https://youtu.be/2zRAFTmoNdM?si=Y8Bx5RrJkWDVn_th)
 
-## VIDEO 5 [Step 4 Create Database (Add Migration & Update Database)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDI7gRXjoUwQKUdcw22TjD_Ac-p4oMAuV-roDcIuiN5n6E?e=q9WKsT)
+## VIDEO 5 [Step 4 Create Database (Add Migration & Update Database)](https://youtu.be/a2VEGjYfk8Q?si=4geGYzeJl0Y6n_kd)
 
-## VIDEO 6 [Step 5 Copy and Paste Host File (Know the database)](https://1drv.ms/v/c/93d70fb51193cb6b/IQBjskyEhcplTZY5smFjgOQpAR4UESh5_MAIfOC6LQei6hc?e=TeOjxE)
+## VIDEO 6 [Step 5 Copy and Paste Host File (Know the database)](https://youtu.be/N8gvuxiHJ8w?si=jHxS0VjMQShiIfQZ)
 
-## VIDEO 7 [Step 6 - Download Nginx, Add Settings, Create Certificate](https://1drv.ms/v/c/93d70fb51193cb6b/IQAAcwExJ9goTI9PqOFSNudcARIW65oDMeyrIhrm17R8uYA?e=erERDO)
+## VIDEO 7 [Step 6 - Download Nginx, Add Settings, Create Certificate](https://youtu.be/to3lt2XTuqI?si=FZwUY7Oo_TKi_zBl)
 
-## VIDEO 8 [Step 7 Run The Application and Nginx, Test in Browser](https://1drv.ms/v/c/93d70fb51193cb6b/IQDncVwUWAZQQqP-FNgAOJclAa1cP2CBHgt1EIUSumMQbGs?e=iETG20)
+## VIDEO 8 [Step 7 Run The Application and Nginx, Test in Browser](https://youtu.be/Q2j-4RyEliY?si=TCIoO9aOWubE4d_D)
 
 
 # Latest Videos 🆕🎬
