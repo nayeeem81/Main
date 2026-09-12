@@ -5,6 +5,7 @@
 ## Table of Contents
 
 - [Project Overview](#project-overview)
+- [Code Fostering (GitHub Repository)](#code-fostering-github-repository)
 - [Quick Start — Installation & Setup](#quick-start--installation--setup)
 - [Architecture & Tutorial Notes](#architecture--tutorial-notes)
 - [Progress & Timeline (Condensed)](#progress--timeline-condensed)
@@ -17,21 +18,41 @@ This repository contains a multi-tenant store implementation using ASP.NET Core 
 
 The project is intended as a template and learning resource for building multi-tenant SaaS applications with practical guidance on configuration, tenant isolation, and deployment.
 
+## Code Fostering (GitHub Repository):  
+With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
+
+Hardware Fostering:  
+
+To make the code fostering working and impactful, stacks technologies, domain, hardware, datacenter vendors host them; are all part of the ecosystem. 
+
+Service Fostering:  
+
+Maintainers, the operation of the data related to the application, smooth maintenance for the users. 
+
+Fostering the Business Knowledge: 
+
+Business Executives can use their business knowledge to bring them (stores) to a place, engage them, educate them, and get the most value from the code, hardware and the production ecosystem. 
+
+Users Fostering (Small Businesses/Stores): 
+
+These are the people who make the actual use of the working product or the software in the cheapest possible way that education fostering is impactful.
+
 ## Quick Start — Installation & Setup
+1) [Step 1: VS 2026 Download](https://youtu.be/JX4WnexPvPE) 
+2) [Step 2.0 Download SQL Server Express](https://youtu.be/mvb8XGVaHDQ?si=d-hAprSIAfwubz_R)
+3) [Step 2.1 SQL Server (For Exploration)](https://youtu.be/n7fg_V2-5FU?si=JBN0xZxoC2l0_qSJ)
+4) [Step 3 Clone Git Hub Repository](https://youtu.be/2zRAFTmoNdM?si=Y8Bx5RrJkWDVn_th)
+5) [Step 4 Create Database (Add Migration & Update Database)](https://youtu.be/a2VEGjYfk8Q?si=4geGYzeJl0Y6n_kd)
+6) [Step 5 Copy and Paste Host File (Know the database)](https://youtu.be/N8gvuxiHJ8w?si=jHxS0VjMQShiIfQZ)
+7) [Step 6 - Download Nginx, Add Settings, Create Certificate](https://youtu.be/to3lt2XTuqI?si=FZwUY7Oo_TKi_zBl)
+8) [Step 7 Run The Application and Nginx, Test in Browser](https://youtu.be/Q2j-4RyEliY?si=TCIoO9aOWubE4d_D)
 
-Prerequisites
+Configuration (NGINX, HOST FILE)
 
-- .NET 8 SDK (download from https://dotnet.microsoft.com/)
-- Visual Studio 2022/2026 or VS Code
+Download the zip file for copy and paste in the required places shown in the video. [Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
 
-Build and run
 
-1. Restore and build:
-
-   dotnet restore
-   dotnet build
-
-2. Run the solution (from Visual Studio or CLI):
+Run the solution (from Visual Studio or CLI):
 
    - To run the web app project: dotnet run --project src/YourWebProject/YourWebProject.csproj
    - To run the worker service: dotnet run --project src/OutboxEmailSender.WorkerService/OutboxEmailSender.WorkerService.csproj
@@ -69,24 +90,12 @@ This project is maintained by Naim (OG). It reflects years of experience and is 
 
 ## Contact & License
 
-For questions, contact: ritesh2901@gmail.com
+For questions, contact: 
+naimul.prodhan81@hotmail.com
 
 License: See LICENSE file in the repository (or include preferred license here).
 
-## 1. Code Fostering (GitHub Repository):  
-With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
 
-## 2. Hardware Fostering:  
-To make the code fostering working and impactful, stacks technologies, domain, hardware, datacenter vendors host them; are all part of the ecosystem. 
-
-## 3. Service Fostering:  
-Maintainers, the operation of the data related to the application, smooth maintenance for the users. 
-
-## 4. Fostering the Business Knowledge: 
-Business Executives can use their business knowledge to bring them (stores) to a place, engage them, educate them, and get the most value from the code, hardware and the production ecosystem. 
-
-## 5. Users Fostering (Small Businesses/Stores): 
-These are the people who make the actual use of the working product or the software in the cheapest possible way that education fostering is impactful.
 
 
 # Multi-Tenant ASP.NET Core .NET 8.0 (Multi-Tenant SAAS)
@@ -95,23 +104,6 @@ These are the people who make the actual use of the working product or the softw
 
 ### 1. One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
 ### 2. It means, it is easy. Do not get scared to setup the code and tools in the laptop.
-### 3. Download the zip file for copy and paste in the required places shown in the video. [Commands.zip](https://github.com/user-attachments/files/31552456/Commands.zip)
-
-## VIDEO 1 [Step 1: VS 2026 Download](https://youtu.be/JX4WnexPvPE) 
-
-## VIDEO 2 [Step 2.0 Download SQL Server Express](https://youtu.be/mvb8XGVaHDQ?si=d-hAprSIAfwubz_R)
-
-## VIDEO 3 [Step 2.1 SQL Server (For Exploration)](https://youtu.be/n7fg_V2-5FU?si=JBN0xZxoC2l0_qSJ)
-
-## VIDEO 4 [Step 3 Clone Git Hub Repository](https://youtu.be/2zRAFTmoNdM?si=Y8Bx5RrJkWDVn_th)
-
-## VIDEO 5 [Step 4 Create Database (Add Migration & Update Database)](https://youtu.be/a2VEGjYfk8Q?si=4geGYzeJl0Y6n_kd)
-
-## VIDEO 6 [Step 5 Copy and Paste Host File (Know the database)](https://youtu.be/N8gvuxiHJ8w?si=jHxS0VjMQShiIfQZ)
-
-## VIDEO 7 [Step 6 - Download Nginx, Add Settings, Create Certificate](https://youtu.be/to3lt2XTuqI?si=FZwUY7Oo_TKi_zBl)
-
-## VIDEO 8 [Step 7 Run The Application and Nginx, Test in Browser](https://youtu.be/Q2j-4RyEliY?si=TCIoO9aOWubE4d_D)
 
 
 # Latest Videos 🆕🎬
@@ -770,8 +762,7 @@ It is extended to use tenants (IdentityUser is now:
 
 ## Software Scope:
 1. **Module: Account Management (Multi Tenant Model)** Anyone can create an account to purchase products, registration requires email verification before login is allowed, email Verification process: a verification email is sent after registration, the link is valid for 2 hours; after that, it expires, Without verification, users cannot log in; getting a new verification link, try logging in with your registered email and password; a new verification email will be sent, use the “Forgot Password” link, enter your email, and receive a fresh verification link, Security Policy: No user can log in until their email is confirmed, Password reset and account recovery options are built in. In short: the page outlines a strict email verification policy to ensure that only confirmed users can access accounts, with built-in methods to resend verification links if needed. **For multi tenant integration, some new fetures are being added**
-2. **Module: Manage Advertisement Posts** Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to advertise or give messages to the visitors about a business or advertisement. These are for giving ads for a third-party company or businesses or for self. The purpose of such contents is to show images or ads with links to go to the actual website link or open a YouTube video. Tenant Admin User: He/she can add, update and delete content and see the list of contents for the shop; he is the Admin. A Content has few fields: Poster Name, Poster Contact Number, Post Title, Type of Post: (Ad Space, Short Note, YouTube Video), Website: The link of the advertainment (company) or YouTube link, Search Tag, Images (any number). **Use of these Contents:** When you configure the pages of the website, you can select template for the panel (a row in a page) to select from the (Ad Space, Short Note, YouTube Video) contents. This module will setup the contents to use in the pages. Templates are designed for these contents. These templates are only for showing advertisement with or without a link to navigate to the ad website or video. Remember that there are other templates for Products (shop owners/tenant) which includes the add to cart button.
-3. **Module: Manage Products** Here in this shop example, we are considering Product (Name, Price, Description, Images) which are the shop owner's/tenant's items to sell. These are to be sold to online users. Users can add the products to the shopping cart and order them from the tenant store. Company User/Tenant Content Mananger: he/she can add, update and delete a product and see the list of products for the shop. The purpose of this module is: add a product, update an existing product, delete a product, see the list of all products. Each Products can have as many images as he/she (shop owners/tenant) wants. Until now, no validation has been provided to restrict users from entering a limited number of product images. A product has few fields: product name, description, category, subcategory, price, discount, sale commission (if the shop/tenant wants to sell by any third-party shop/tenant), search tag, images (any number)
+2. **Module: Manage Advertisement Posts** Here in this shop example, we are considering content (image, link, short note, YouTube link) which are not the shop owner's products to sell. These are to be sold to online users. Users can add the products to the shopping cart and order them from the tenant store. Company User/Tenant Content Mananger: he/she can add, update and delete a product and see the list of products for the shop. The purpose of this module is: add a product, update an existing product, delete a product, see the list of all products. Each Products can have as many images as he/she (shop owners/tenant) wants. Until now, no validation has been provided to restrict users from entering a limited number of product images. A product has few fields: product name, description, category, subcategory, price, discount, sale commission (if the shop/tenant wants to sell by any third-party shop/tenant), search tag, images (any number)
 4. **Module: Page Settings &  Configuration** When Shop Admin/Tenant Admin will configure the pages of the website, he/she can select template for the panel (a row in a page) to select from the products. This module will setup the products to display on the pages. Templates are designed for these products. These templates only show products with links to view details of the product or to add to cart. Remember that there are other templates for ad posts (shop admin/tenant admin) created in mosule 2, which can also be added in a row of a page.
 
 ## NuGet Packages 

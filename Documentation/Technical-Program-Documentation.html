@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Technical Documentation: Program.cs and Related Files</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+  <style>
+    body { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,"Helvetica Neue",Arial; line-height:1.6; padding: 2rem; color: #222; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    pre { background: #f6f8fa; padding: 1rem; overflow: auto; }
+    code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; }
+    h1, h2, h3 { color: #0b3d91; }
+    .mermaid { background: white; margin: 1rem 0; }
+    nav { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <a href="#top">Top</a>
+    </nav>
+
+    <div id="content">Loading...</div>
+  </div>
+
+  <!-- Embedded markdown source to avoid CORS when opening locally -->
+  <script id="md" type="text/plain">
+# Technical Documentation: Program.cs and Related Files
+
+Status: Draft
+
+This document explains the composition of the ASP.NET Core entry pipeline (Program.cs) and all directly related code files inspected in the repository. It is intended for maintainers who need to understand tenancy handling, token refresh behavior, exception logging, session scoping per-tenant, and local storage services.
+
+## Environment
+- Target Framework: .NET 8
+- C# language version: 12.0
+- App type: ASP.NET Core web application (Razor Pages / MVC controllers present)
+
+## Goals
+- Describe what Program.cs wires up (DI, middleware, key features)
+- Provide file-by-file explanations for each middleware and dependent service referenced from Program.cs
+- Provide diagrams that explain request flow and token refresh flow
+- List missing extension methods / follow-ups and recommended next steps
+
+## Program.cs — overview
+
+Key responsibilities performed in Program.cs:
+- Build WebApplication and configure Kestrel to read from configuration
+- Map application configuration section `MyAppSettings` into a ConfigurationSettings object and store in AppSettings.Current
+- Register common framework services: controllers with views, session, memory cache, HTTP context accessor, antiforgery, output cache
+- Register tenant-related services (ITenantSetter, IStorageService, ITenantAssetResolver, ITenantCacheService)
+- Configure Serilog (via AddSerilogConfiguration and Host.UseSerilog)
+- Apply custom service registration extension methods (AddDatabase, AddRepository, AddService, AddEmailService, AddCustomLocalization, AddAuthorizations, AddAuthentication)
+- Wire middleware in a particular order to support multi-tenancy, token refresh, authentication/authorization, antiforgery, static files, and output caching
+
+Key code excerpts (representative):
+
+Program.cs excerpts
+
+```csharp
+// Ensure Kestrel hooks into your appsettings.json "Kestrel" section
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+    options.Configure(context.Configuration.GetSection("Kestrel"));
+});
+
+AppSettings.Current = builder.Configuration.GetSection("MyAppSettings").Get<ConfigurationSettings>()!;
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(...);
+
+builder.Services.AddScoped<ITenantSetter, ResolvedTenantSetter>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
+
+// Serilog
+builder.AddSerilogConfiguration();
+builder.Host.UseSerilog();
+
+// Build
+var app = builder.Build();
+
+// Forwarded headers
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
+// Tenancy / Logging / Exception handling
+app.UseMiddleware<TenantResolverMiddleware>();
+app.UseMiddleware<TenantLoggingMiddleware>();
+if (app.Environment.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
+else { app.UseMiddleware<GlobalExceptionHandlingMiddleware>(); }
+
+// Static files, routing, session, localization, token refresh, auth, tenant validation, authorization
+app.UseWebOptimizer();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseMiddleware<TenantSessionMiddleware>();
+app.UseSession();
+app.UseCustomLocalization();
+app.UseMiddleware<TokenRefreshMiddleware>();
+app.UseAuthentication();
+app.UseMiddleware<TenantValidationMiddleware>();
+app.UseAuthorization();
+app.UseAntiforgery();
+app.UseOutputCache();
+
+app.MapControllers();
+
+await app.RunAsync();
+```
+
+Note: Several extension methods are referenced but not present in the inspected files — these are listed in the Follow-ups section.
+
+---
+
+## File-by-file documentation
+
+Below are concise descriptions of the files inspected, responsibilities, and key snippets.
+
+### Middlewares
+
+- TenantResolverMiddleware (Main.WebAppCore/Middlewares/TenantResolverMiddleware.cs)
+  - Purpose: Resolve the requested tenant from the incoming request host (domain/subdomain) and populate the ITenantSetter and HttpContext.Items with the tenant id and theme.
+  - Dependencies: ITenantSetter, ITenancyService, IThemeService, IMemoryCache
+  - Behavior: Uses a cached tenancy lookup, caches tenant theme, sets tenant info in tenantSetter and HttpContext.Items["TenantId"].
+
+  Excerpt:
+
+  ```csharp
+  TenantDataModel? resolvedTenant =
+      await TenantResolutionExtensions.TryResolveTenantAsync(context, tenancyService, memoryCache);
+
+  if (resolvedTenant != null)
+  {
+      tenantSetter.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
+      tenantSetter.CurrentTenant = resolvedTenant;
+      context.Items["TenantId"] = resolvedTenant.ResolvedTenantId;
+  }
+  await _next(context);
+  ```
+
+- TenantLoggingMiddleware (Main.WebAppCore/Middlewares/TenantLoggingMiddleware.cs)
+  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration.
+  - Behavior: Reads HttpContext.Items["TenantId"], defaults to "Unknown-Tenant", wraps request in LogContext.PushProperty and logs at the end including elapsed ms and response code.
+
+  Excerpt:
+
+  ```csharp
+  using (LogContext.PushProperty("TenantId", tenantId))
+  {
+     await _next(context);
+     Log.ForContext<TenantLoggingMiddleware>().Information("Tenant: {TenantId} | {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms", ...);
+  }
+  ```
+
+- GlobalExceptionHandlingMiddleware (Main.WebAppCore/Middlewares/GlobalExceptionHandlingMiddleware.cs)
+  - Purpose: Centralized catch-all error handler for non-development environments. Logs exception details via IExceptionLoggingService and redirects to a user-friendly error page.
+  - Behavior: Maps exception types to error codes/status messages, captures request context (URL, headers, body if buffered), determines client IP using X-Forwarded-For, logs via ExceptionLoggingService, and redirects to /Home/Error with query params.
+
+  Excerpt:
+
+  ```csharp
+  catch (Exception exception)
+  {
+      await HandleExceptionAsync(context, exception, exceptionLoggingService, tenantSetter);
+  }
+  ```
+
+  Important: Uses ExceptionLoggingService to persist errors into a Log DB; sensitive headers are filtered before serialization.
+
+- TenantSessionMiddleware (Main.WebAppCore/Middlewares/TenantSessionMiddleware.cs)
+  - Purpose: Per-request manipulation of session cookie options so that session cookie names are tenant-scoped. Ensures session isolation per tenant.
+  - Behavior: If tenantSetter.ResolvedTenantId is set, it sets Cookie.Name to ".Session.{tenantId}" and other cookie properties for the current request's SessionOptions.
+
+  Excerpt:
+
+  ```csharp
+  _globalSessionOptions.Value.Cookie.Name = $".Session.{tenantId}";
+  ```
+
+- TokenRefreshMiddleware (Main.WebAppCore/Middlewares/TokenRefreshMiddleware.cs)
+  - Purpose: Intercept requests and attempt to rotate the access token using a refresh token when the access token is missing or invalid.
+  - Behavior:
+    - Skips certain auth endpoints (login/logout)
+    - Checks for access token cookie ".App.AccessToken.{tenantId}", validates it via ITokenService.ValidateAndDec
+
+## Token refresh sequence diagram (HTML)
+
+Below is a sequence diagram that describes the token refresh flow used by TokenRefreshMiddleware. This block is provided as raw HTML/mermaid so it will render when the markdown is converted to HTML and the page includes the mermaid script.
+
+<div class="sequence-diagram">
+  <h3>Token refresh sequence diagram</h3>
+  <div class="mermaid">
+    sequenceDiagram
+      participant Browser
+      participant WebApp as WebApp (Middleware)
+      participant TokenSvc as TokenService
+      participant Auth as AuthServer
+
+      Browser->>WebApp: HTTP request (expired or missing access token)
+      WebApp->>TokenSvc: ValidateAccessToken(cookie)
+      TokenSvc-->>WebApp: Access token invalid/expired
+      WebApp->>Browser: (reads refresh token cookie sent with request)
+      WebApp->>TokenSvc: ExchangeRefreshToken(refreshToken)
+      TokenSvc->>Auth: Refresh token request (client creds)
+      Auth-->>TokenSvc: New access token + (optional) refresh token
+      TokenSvc-->>WebApp: Return new tokens
+      WebApp->>Browser: Set-Cookie: new access token, (new refresh token)
+      WebApp->>WebApp: Retry original request with new access token
+      WebApp-->>Browser: Return original endpoint response
+  </div>
+
+  <!-- Load mermaid from CDN when this HTML is rendered. If your documentation generator already includes mermaid, these scripts can be omitted. -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true});</script>
+</div>
+
+---
+
+## File-by-file documentation (continued)
+
+<!-- The remainder of the original markdown follows unchanged -->
+
+### Services
+
+- ITokenService (Main.WebAppCore/Services/TokenService.cs)
+  - Purpose: Provide token validation, decoding, and refresh exchange logic.
+  - Key methods: ValidateAndDec(accessToken), ExchangeRefreshTokenAsync(refreshToken)
+
+- IExceptionLoggingService (Main.WebAppCore/Services/ExceptionLoggingService.cs)
+  - Purpose: Persist exception payloads to a database for later analysis and alerting.
+
+### Helpers / Extensions
+
+- TenantResolutionExtensions
+  - Purpose: Shared helper used by TenantResolverMiddleware to map hostnames -> tenant records (cached)
+
+- AppSettings
+  - Purpose: Static holder for application configuration read during startup.
+
+## Follow-ups / Missing items
+
+- AddSerilogConfiguration extension method not present in inspected files
+- AddDatabase/AddRepository/AddService/AddEmailService not present
+- AddCustomLocalization extension method referenced but not included
+
+## Diagrams and flow notes
+
+- Add a sequence diagram describing token refresh (included above)
+- Consider adding a sequence diagram for tenancy resolution and request logging
+
+<!-- End of markdown -->
+  </script>
+
+  <!-- Marked.js for Markdown -> HTML conversion -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Mermaid for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    (function () {
+      const md = document.getElementById('md').textContent || '';
+      // Configure marked if needed
+      marked.setOptions({
+        gfm: true,
+        breaks: true,
+        headerIds: true
+      });
+
+      // Convert
+      let html = marked.parse(md);
+
+      // Convert mermaid fenced code blocks into <div class="mermaid"> blocks
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+
+      temp.querySelectorAll('pre > code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        const mer = document.createElement('div');
+        mer.className = 'mermaid';
+        mer.textContent = el.textContent;
+        pre.parentElement.replaceChild(mer, pre);
+      });
+
+      document.getElementById('content').innerHTML = temp.innerHTML;
+
+      // Initialize mermaid after mermaid blocks are in DOM
+      if (window.mermaid) {
+        try {
+          mermaid.initialize({ startOnLoad: true });
+          // run mermaid on the dynamically added diagrams
+          mermaid.run();
+        } catch (e) {
+          console.warn('mermaid init failed', e);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
