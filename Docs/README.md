@@ -78,6 +78,611 @@ Quick example — run the worker locally
 2. Start the database (localdb or Docker container).
 3. Run the Worker Service project from Visual Studio or CLI to process the email outbox.
 
+This document explains the composition of the ASP.NET Core entry pipeline (Program.cs) and all directly related code files inspected in the repository. It is intended for maintainers who need to understand tenancy handling, token refresh behavior, exception logging, session scoping per-tenant, and local storage services.
+
+## Environment
+- Target Framework: .NET 8
+- C# language version: 12.0
+- App type: ASP.NET Core web application (Razor Pages / MVC controllers present)
+
+## Goals
+- Describe what Program.cs wires up (DI, middleware, key features)
+- Provide file-by-file explanations for each middleware and dependent service referenced from Program.cs
+- Provide diagrams that explain request flow and token refresh flow
+- List missing extension methods / follow-ups and recommended next steps
+
+## Program.cs — overview
+
+Key responsibilities performed in Program.cs:
+- Build WebApplication and configure Kestrel to read from configuration
+- Map application configuration section `MyAppSettings` into a ConfigurationSettings object and store in AppSettings.Current
+- Register common framework services: controllers with views, session, memory cache, HTTP context accessor, antiforgery, output cache
+- Register tenant-related services (ITenantSetter, IStorageService, ITenantAssetResolver, ITenantCacheService)
+- Configure Serilog (via AddSerilogConfiguration and Host.UseSerilog)
+- Apply custom service registration extension methods (AddDatabase, AddRepository, AddService, AddEmailService, AddCustomLocalization, AddAuthorizations, AddAuthentication)
+- Wire middleware in a particular order to support multi-tenancy, token refresh, authentication/authorization, antiforgery, static files, and output caching
+
+Key code excerpts (representative):
+
+Program.cs excerpts
+
+```csharp
+// Ensure Kestrel hooks into your appsettings.json "Kestrel" section
+builder.WebHost.ConfigureKestrel((context, options) =>
+{
+	options.Configure(context.Configuration.GetSection("Kestrel"));
+});
+
+AppSettings.Current = builder.Configuration.GetSection("MyAppSettings").Get<ConfigurationSettings>()!;
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(...);
+
+builder.Services.AddScoped<ITenantSetter, ResolvedTenantSetter>();
+builder.Services.AddScoped<IStorageService, LocalStorageService>();
+
+// Serilog
+builder.AddSerilogConfiguration();
+builder.Host.UseSerilog();
+
+// Build
+var app = builder.Build();
+
+// Forwarded headers
+app.UseForwardedHeaders(forwardedHeadersOptions);
+
+// Tenancy / Logging / Exception handling
+app.UseMiddleware<TenantResolverMiddleware>();
+app.UseMiddleware<TenantLoggingMiddleware>();
+if (app.Environment.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
+else { app.UseMiddleware<GlobalExceptionHandlingMiddleware>(); }
+
+// Static files, routing, session, localization, token refresh, auth, tenant validation, authorization
+app.UseWebOptimizer();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseMiddleware<TenantSessionMiddleware>();
+app.UseSession();
+app.UseCustomLocalization();
+app.UseMiddleware<TokenRefreshMiddleware>();
+app.UseAuthentication();
+app.UseMiddleware<TenantValidationMiddleware>();
+app.UseAuthorization();
+app.UseAntiforgery();
+app.UseOutputCache();
+
+app.MapControllers();
+
+await app.RunAsync();
+```
+
+Note: Several extension methods are referenced but not present in the inspected files — these are listed in the Follow-ups section.
+
+---
+
+## File-by-file documentation
+
+Below are concise descriptions of the files inspected, responsibilities, and key snippets.
+
+### Middlewares
+
+- TenantResolverMiddleware (Main.WebAppCore/Middlewares/TenantResolverMiddleware.cs)
+  - Purpose: Resolve the requested tenant from the incoming request host (domain/subdomain) and populate the ITenantSetter and HttpContext.Items with the tenant id and theme.
+  - Dependencies: ITenantSetter, ITenancyService, IThemeService, IMemoryCache
+  - Behavior: Uses a cached tenancy lookup, caches tenant theme, sets tenant info in tenantSetter and HttpContext.Items["TenantId"].
+
+  Excerpt:
+
+  ```csharp
+  TenantDataModel? resolvedTenant =
+	  await TenantResolutionExtensions.TryResolveTenantAsync(context, tenancyService, memoryCache);
+
+  if (resolvedTenant != null)
+  {
+	  tenantSetter.ResolvedTenantId = resolvedTenant.ResolvedTenantId;
+	  tenantSetter.CurrentTenant = resolvedTenant;
+	  context.Items["TenantId"] = resolvedTenant.ResolvedTenantId;
+  }
+  await _next(context);
+  ```
+
+- TenantLoggingMiddleware (Main.WebAppCore/Middlewares/TenantLoggingMiddleware.cs)
+  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration.
+  - Behavior: Reads HttpContext.Items["TenantId"], defaults to "Unknown-Tenant", wraps request in LogContext.PushProperty and logs at the end including elapsed ms and response code.
+
+  Excerpt:
+
+  ```csharp
+  using (LogContext.PushProperty("TenantId", tenantId))
+  {
+	 await _next(context);
+	 Log.ForContext<TenantLoggingMiddleware>().Information("Tenant: {TenantId} | {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms", ...);
+  }
+  ```
+
+- GlobalExceptionHandlingMiddleware (Main.WebAppCore/Middlewares/GlobalExceptionHandlingMiddleware.cs)
+  - Purpose: Centralized catch-all error handler for non-development environments. Logs exception details via IExceptionLoggingService and redirects to a user-friendly error page.
+  - Behavior: Maps exception types to error codes/status messages, captures request context (URL, headers, body if buffered), determines client IP using X-Forwarded-For, logs via ExceptionLoggingService, and redirects to /Home/Error with query params.
+
+  Excerpt:
+
+  ```csharp
+  catch (Exception exception)
+  {
+	  await HandleExceptionAsync(context, exception, exceptionLoggingService, tenantSetter);
+  }
+  ```
+
+  Important: Uses ExceptionLoggingService to persist errors into a Log DB; sensitive headers are filtered before serialization.
+
+- TenantSessionMiddleware (Main.WebAppCore/Middlewares/TenantSessionMiddleware.cs)
+  - Purpose: Per-request manipulation of session cookie options so that session cookie names are tenant-scoped. Ensures session isolation per tenant.
+  - Behavior: If tenantSetter.ResolvedTenantId is set, it sets Cookie.Name to ".Session.{tenantId}" and other cookie properties for the current request's SessionOptions.
+
+  Excerpt:
+
+  ```csharp
+  _globalSessionOptions.Value.Cookie.Name = $".Session.{tenantId}";
+  ```
+
+- TokenRefreshMiddleware (Main.WebAppCore/Middlewares/TokenRefreshMiddleware.cs)
+  - Purpose: Intercept requests and attempt to rotate the access token using a refresh token when the access token is missing or invalid.
+  - Behavior:
+	- Skips certain auth endpoints (login/logout)
+	- Checks for access token cookie ".App.AccessToken.{tenantId}", validates it via ITokenService.ValidateAndDecryptToken
+
+## Token refresh sequence diagram (HTML)
+
+Below is a sequence diagram that describes the token refresh flow used by TokenRefreshMiddleware. This block is provided as raw HTML/mermaid so it will render when the markdown is converted to HTML and the page includes the mermaid script.
+
+<div class="sequence-diagram">
+  <h3>Token refresh sequence diagram</h3>
+  <div class="mermaid">
+	sequenceDiagram
+	  participant Browser
+	  participant WebApp as WebApp (Middleware)
+	  participant TokenSvc as TokenService
+	  participant Auth as AuthServer
+
+	  Browser->>WebApp: HTTP request (expired or missing access token)
+	  WebApp->>TokenSvc: ValidateAccessToken(cookie)
+	  TokenSvc-->>WebApp: Access token invalid/expired
+	  WebApp->>Browser: (reads refresh token cookie sent with request)
+	  WebApp->>TokenSvc: ExchangeRefreshToken(refreshToken)
+	  TokenSvc->>Auth: Refresh token request (client creds)
+	  Auth-->>TokenSvc: New access token + (optional) refresh token
+	  TokenSvc-->>WebApp: Return new tokens
+	  WebApp->>Browser: Set-Cookie: new access token, (new refresh token)
+	  WebApp->>WebApp: Retry original request with new access token
+	  WebApp-->>Browser: Return original endpoint response
+  </div>
+
+  <!-- Load mermaid from CDN when this HTML is rendered. If your documentation generator already includes mermaid, these scripts can be omitted. -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({startOnLoad:true});</script>
+</div>
+	- If the access token is invalid or absent but a refresh cookie ".App.RefreshToken.{tenantId}" exists, it calls tokenService.RotateRefreshTokenAsync
+	- On successful rotation, writes new cookies/headers via AuthorizationExtensions.AddTenantRefreshHeaderToken and places the new access token in context.Items["JwtBearer:Token"] so downstream JwtBearer middleware will read it
+
+  Excerpt:
+
+  ```csharp
+  if (context.Request.Cookies.TryGetValue(refreshCookieName, out var refreshToken))
+  {
+	  var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken.ToString(), tenantSetter.ResolvedTenantId, 15, 7);
+	  if (rotationResult != null) {
+		  await AuthorizationExtensions.AddTenantRefreshHeaderToken(context, tenantSetter.ResolvedTenantId, rotationResult, 15, 7);
+		  context.Items["JwtBearer:Token"] = rotationResult.AccessToken;
+	  }
+  }
+  await _next(context);
+  ```
+
+- TenantValidationMiddleware (Main.WebAppCore/Middlewares/TenantValidationMiddleware.cs)
+  - Purpose: Protect against cross-tenant access by ensuring the authenticated token's TenantId claim matches the active routing tenant.
+  - Behavior: If user is authenticated, compares token TenantId claim to tenantSetter.ResolvedTenantId and returns 403 if mismatch.
+
+### Dependent services and helpers
+
+- ResolvedTenantSetter (Main.WebAppCore/DependentServices/ResolvedTenantSetter.cs)
+  - Implements ITenantSetter: stores CurrentTenant, ResolvedTenantId, helper properties for HttpContext.User id and tenant role, and metadata helpers (CreateMetaData/UpdateMetaData/DeleteMetaData) that embed tenant/user/time info.
+
+  Excerpt:
+
+  ```csharp
+  public DateTime GetLocalNow() {
+	  string timeZoneId = "Bangladesh Standard Time";
+	  var userTimeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+	  return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, userTimeZone);
+  }
+  ```
+
+- LocalStorageService (Main.WebAppCore/DependentServices/LocalStorageService.cs)
+  - Purpose: Save tenant static assets (logos, session image files) in filesystem under web root and move them from session staging to tenant destination folders.
+  - Key behavior: Creates tenant-specific folders, writes files to them, returns relative URLs (e.g., /TenantLogos/filename)
+
+- TenantResolutionExtensions (Main.WebAppCore/DependentServices/TenantResolutionExtensions.cs)
+  - Purpose: Helper extension that resolves the tenant host/subdomain from HttpContext and uses ITenancyService and IMemoryCache to cache tenancy lookup.
+
+### Models and Interfaces
+
+- ConfigurationSettings (Main.Common/Models/ConfigurationSettings.cs)
+  - Holds numeric and enum configuration values (EnumCountry, EnumCurrency, PostImageSize) mapped from config at MyAppSettings.
+
+- AppSettings (Main.WebAppCore/DependentServices/AppSettings.cs)
+  - Static holder for mapped ConfigurationSettings: AppSettings.Current
+
+- ITenantSetter (Main.Infrastructure/ITenantSetter.cs)
+  - Interface used across infrastructure and services to access tenant-aware metadata and helper methods.
+
+- IExceptionLoggingService (Main.Infrastructure/ICrosscuttingServices/IExceptionLoggingService.cs)
+  - Interface used by GlobalExceptionHandlingMiddleware to persist exceptions into storage and query them.
+
+- ITokenService (Main.Infrastructure/ICrosscuttingServices/ITokenService.cs)
+  - Token operations used by TokenRefreshMiddleware: ValidateAndDecryptToken, RotateRefreshTokenAsync, GenerateAccessToken, GenerateRefreshToken, SaveRefreshToken, RevokeUserRefreshTokensAsync.
+
+- ITenancyService (Main.Services/IServices/ITenancyService.cs)
+  - Service to find tenant by host name (FindHostAsync)
+
+- IThemeService (Main.Services/IServices/IThemeService.cs)
+  - Service for tenant themes (GetThemeByTenantAsync, GetTenantThemeAsync, UpdateTenantThemeAsync)
+
+### ExceptionLoggingService
+- Main.Infrastructure/CrosscuttingHelperServices/ExceptionLoggingService.cs
+  - Concrete implementation of IExceptionLoggingService that persists exception logs into a LogDbContext, handles duplicate recent occurrences by incrementing occurrence count, and truncates long request headers/bodies.
+
+  Excerpt responsibilities:
+  - Log exception metadata (type, stacktrace, request headers/body, createdAt, userId, tenant info)
+  - Provide queries and summary counts
+  - Mark exceptions as resolved
+
+---
+
+## Diagrams
+
+1) HTTP request pipeline (simplified, top-to-bottom execution order):
+
+```
+Client --> [Ingress (Nginx / Proxy)] --> Forwarded Headers middleware
+	--> TenantResolverMiddleware (resolve tenant, set HttpContext.Items["TenantId"]) 
+	--> TenantLoggingMiddleware (push TenantId into LogContext, measure request)
+	--> DeveloperExceptionPage OR GlobalExceptionHandlingMiddleware (catch unhandled exceptions in production)
+	--> StatusCodePages
+	--> HTTPS Redirection
+	--> CORS
+	--> WebOptimizer (asset pipeline)
+	--> StaticFiles
+	--> Routing
+	--> TenantSessionMiddleware (adjust session cookie name per tenant)
+	--> Session
+	--> UseCustomLocalization
+	--> TokenRefreshMiddleware (validate access token, try refresh with refresh token)
+	--> Authentication (unpack claims principal)
+	--> TenantValidationMiddleware (ensure token tenant matches resolved tenant)
+	--> Authorization
+	--> Antiforgery
+	--> OutputCache
+	--> Endpoint execution (Controllers/Pages)
+
+Notes: Some steps such as CORS and StatusCodePages must appear before static files/routing depending on desired behavior. The pipeline order in Program.cs reflects the project's security and tenancy needs.
+```
+
+2) Token refresh flow (TokenRefreshMiddleware):
+
+```
+Request arrives -> skip if path is Login/Logout ->
+Check access cookie ".App.AccessToken.{tenantId}" ->
+  if access token present and ValidateAndDecryptToken succeeds -> continue pipeline
+  else -> check refresh cookie ".App.RefreshToken.{tenantId}" ->
+	 if refresh exists -> call RotateRefreshTokenAsync(refresh, tenantId, accessExpiry, refreshExpiry)
+		 if rotation succeeds ->
+			 write new cookies/headers via AuthorizationExtensions.AddTenantRefreshHeaderToken
+			 set context.Items["JwtBearer:Token"] = newAccessToken
+			 continue pipeline (Authentication middleware will consume new token)
+		 else -> continue pipeline without token (request may be anonymous or fail later)
+	 else -> continue pipeline
+```
+
+Important: TokenRefreshMiddleware sets context.Items["JwtBearer:Token"] so JwtBearer or custom authentication can pick up the freshly rotated token for the *current* request.
+
+---
+
+## Configuration notes
+
+- Kestrel: Program.cs configures Kestrel via builder.WebHost.ConfigureKestrel((context, options) => options.Configure(context.Configuration.GetSection("Kestrel"))). Ensure appsettings.json contains a Kestrel section when hosting with Kestrel-specific options.
+- AppSettings mapping: AppSettings.Current is assigned from configuration section "MyAppSettings" and mapped to ConfigurationSettings class. Verify MyAppSettings exists in appsettings.json and contains EnumCountry/EnumCurrency/PostImageSize entries in expected formats.
+- Session: IdleTimeout is set to 30 minutes and TenantSessionMiddleware overrides Cookie.Name per-tenant using the resolved tenant id.
+
+---
+
+## Located extension methods and consolidated token flow
+
+The following section replaces the original "missing items" list by documenting where each Program.cs extension method was located in the repository and providing a short representative excerpt. It also consolidates the JWT access/refresh rotation flow and provides an ASCII sequence diagram and integration notes.
+
+Located extension methods (Program.cs → implementation)
+
+Below are every extension method referenced from Main.WebAppCore/Program.cs with the file path and a short representative excerpt (3-8 lines) showing the implementation signature and core registration.
+
+- AddSerilogConfiguration
+  - Path: Main.WebAppCore/Middlewares/SerilogMiddleware.cs
+  - Excerpt:
+	```csharp
+	public static WebApplicationBuilder AddSerilogConfiguration(this WebApplicationBuilder builder)
+	{
+		Log.Logger = new LoggerConfiguration()
+			.MinimumLevel.Information()
+			.Enrich.FromLogContext()
+			.WriteTo.Console(...)
+			.CreateLogger();
+		builder.Logging.ClearProviders();
+		builder.Logging.AddSerilog(Log.Logger);
+		return builder;
+	}
+	```
+
+- AddExceptionLoggingMiddleware
+  - Path: Main.WebAppCore/Middlewares/ExceptionLoggingMiddleware.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddExceptionLoggingMiddleware(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddScoped<IExceptionLoggingService, ExceptionLoggingService>();
+		return services;
+	}
+	```
+
+- AddDatabase
+  - Path: Main.Infrastructure/RegisterDatabase.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+	{
+		var connectionString = configuration.GetConnectionString("DefaultConnection");
+		services.AddDbContext<TenantDbContext>(options => options.UseSqlServer(connectionString));
+		services.AddDbContext<IdentityAppDbContext>(...) 
+			.AddIdentity<ApplicationUser, IdentityRole>(...);
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
+		return services;
+	}
+	```
+
+- AddRepository
+  - Path: Main.Infrastructure/RegisterRepositoryExtensions.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddRepository(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+		services.AddScoped<ITokenRepository, TokenRepository>();
+		services.AddScoped<ITokenService, TokenService>();
+		return services;
+	}
+	```
+
+- AddService
+  - Path: Main.Services/RegisterServices.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddService(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddScoped<ITenancyService, TenancyService>();
+		services.AddScoped<IAccountService, AccountService>();
+		return services;
+	}
+	```
+
+- AddEmailService
+  - Path: Main.Infrastructure/RegisterEmailService.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+	{
+		var smtpSection = configuration.GetSection("SmtpSettings");
+		services.AddFluentEmail(smtpSection["SenderEmail"], smtpSection["SenderName"])
+				.AddSmtpSender(...);
+		services.AddScoped<IEmailSenderService, EmailSenderService>();
+		return services;
+	}
+	```
+
+- AddCustomLocalization / UseCustomLocalization
+  - Path: ResourceLibrary/RegisterLocalizationExtensions.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddCustomLocalization(this IServiceCollection services)
+	{
+		services.AddLocalization();
+		services.AddControllersWithViews()
+			.AddViewLocalization()
+			.AddDataAnnotationsLocalization(...);
+		return services;
+	}
+	public static IApplicationBuilder UseCustomLocalization(this IApplicationBuilder app)
+	{
+		app.UseRequestLocalization(...);
+		return app;
+	}
+	```
+
+- AddAuthorizations
+  - Path: Main.WebAppCore/Middlewares/TenantAuthorizationMiddleware.cs
+  - Excerpt:
+	```csharp
+	public static IServiceCollection AddAuthorizations(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.AddScoped<IAuthorizationHandler, ApplicationUserRoleMiddleware>();
+		services.AddAuthorization(options => { options.AddPolicy("TenantAdmin", ...); });
+		return services;
+	}
+	```
+
+- AddAuthentication
+  - Path: Main.WebAppCore/Middlewares/AuthenticationMiddleware.cs
+  - Excerpt (JwtBearer + OnMessageReceived snippet):
+	```csharp
+	builder.Services.AddAuthentication()
+		.AddJwtBearer("Bearer", options =>
+		{
+			options.TokenValidationParameters = new TokenValidationParameters { ... };
+			options.Events = new JwtBearerEvents
+			{
+				OnMessageReceived = context =>
+				{
+					var tenantSetter = context.HttpContext.RequestServices.GetRequiredService<ITenantSetter>();
+					var accessCookieName = $".App.AccessToken.{tenantSetter.ResolvedTenantId}";
+					if (context.Request.Cookies.TryGetValue(accessCookieName, out var accessToken))
+					{
+						var tokenService = context.HttpContext.RequestServices.GetRequiredService<ITokenService>();
+						var validateResult = tokenService.ValidateAndDecryptToken(accessToken, out _);
+						if (validateResult != null) { context.Principal = validateResult; context.Success(); }
+					}
+					// Also consider context.HttpContext.Items["JwtBearer:Token"]
+					return Task.CompletedTask;
+				}
+			};
+		});
+	```
+
+- AddWebOptimizer / UseWebOptimizer
+  - Usage site: Main.WebAppCore/Program.cs
+  - Note: Implementation is provided by the WebOptimizer NuGet package. Program.cs uses:
+	```csharp
+	builder.Services.AddWebOptimizer(pipeline => { pipeline.CompileLessFiles(); });
+	app.UseWebOptimizer();
+	```
+
+- AddOutputCache / UseOutputCache
+  - Note: Provided by the Microsoft output caching package (or similar). Program.cs calls:
+	- builder.Services.AddOutputCache(); app.UseOutputCache();
+  - Implementation is not repo-local (check package reference).
+
+- AuthorizationExtensions.AddTenantRefreshHeaderToken
+  - Path: Main.WebAppCore/AuthorizationExtensions.cs (helpers)
+  - Excerpt:
+	```csharp
+	public static async Task AddTenantRefreshHeaderToken(HttpContext context, string tenantId, RotationResult rotationResult, int accessMinutes, int refreshDays)
+	{
+		context.Response.Cookies.Append($".App.AccessToken.{tenantId}", rotationResult.AccessToken, ...);
+		context.Response.Cookies.Append($".App.RefreshToken.{tenantId}", rotationResult.RefreshToken, ...);
+		// Optionally set context.Items["JwtBearer:Token"] or context.User
+		await Task.CompletedTask;
+	}
+	```
+
+Token-based auth: consolidated login → refresh (rotation) → logout flow
+
+High-level behavior across Controller, Middleware, and Authentication setup:
+
+- Login (AuthController)
+  - Generates a signed access JWT and a refresh token string.
+  - Persists refresh token server-side (via ITokenService/ITokenRepository) associated with user + tenant.
+  - Writes tenant-scoped cookies:
+	- .App.AccessToken.{tenantId} and .App.RefreshToken.{tenantId} (HttpOnly, Secure).
+
+  Excerpt:
+  ```csharp
+  var accessJwt = await _tokenService.GenerateAccessToken(...);
+  var refreshTokenStr = _tokenService.GenerateRefreshToken();
+  await _tokenService.SaveRefreshToken(..., refreshTokenStr);
+  HttpContext.Response.Cookies.Append($".App.AccessToken.{tenant}", accessJwt, ...);
+  HttpContext.Response.Cookies.Append($".App.RefreshToken.{tenant}", refreshTokenStr, ...);
+  ```
+
+- Per-request handling (TokenRefreshMiddleware)
+  - Runs before UseAuthentication in the pipeline.
+  - If access cookie missing/expired, checks refresh cookie `.App.RefreshToken.{tenantId}` and calls RotateRefreshTokenAsync.
+  - On rotation success:
+	- Writes new cookies via AuthorizationExtensions.AddTenantRefreshHeaderToken.
+	- Sets context.Items["JwtBearer:Token"] = rotationResult.AccessToken so JwtBearer can pick it up.
+  - Continues pipeline (Authentication will see either cookie or context.Items token).
+
+  Excerpt (conceptual):
+  ```csharp
+  if (context.Request.Cookies.TryGetValue(refreshCookieName, out var refreshToken))
+  {
+	  var rotationResult = await tokenService.RotateRefreshTokenAsync(refreshToken, tenantId, 15, 7);
+	  if (rotationResult != null)
+	  {
+		  await AuthorizationExtensions.AddTenantRefreshHeaderToken(context, tenantId, rotationResult, 15, 7);
+		  context.Items["JwtBearer:Token"] = rotationResult.AccessToken;
+	  }
+  }
+  await _next(context);
+  ```
+
+- JwtBearer integration (OnMessageReceived)
+  - JwtBearer's OnMessageReceived checks:
+	- Cookie `.App.AccessToken.{tenant}` (preferred)
+	- context.Items["JwtBearer:Token"] placed by TokenRefreshMiddleware
+  - Validation uses ITokenService.ValidateAndDecryptToken and sets context.Principal + context.Success() when valid.
+
+- Logout (AuthController)
+  - Calls _tokenService.RevokeUserRefreshTokensAsync(userId, tenantId) to invalidate server-side refresh tokens and deletes cookies.
+
+ASCII sequence diagram (token rotation)
+
+Client -> Server: HTTP Request (cookies include access and refresh)
+Server(TokenRefreshMiddleware) -> Check: access cookie valid?
+alt access valid
+	Server -> JwtBearer: process existing access token
+else access missing/expired
+	Server -> TokenService: RotateRefreshTokenAsync(refreshCookie)
+	alt rotation success
+		TokenService -> Server: {access:new, refresh:new}
+		Server -> AuthorizationExtensions: write cookies, set context.Items["JwtBearer:Token"]
+		Server -> JwtBearer: OnMessageReceived reads context.Items or cookie -> set context.Principal
+	else rotation fail
+		Server -> Response: anonymous or 401 (handled later)
+	end
+end
+
+Tenant scoping & EF Core global filter
+
+- TenantDbContext applies HasQueryFilter for IMustHaveTenant entities using ResolvedTenantId so all queries are tenant-scoped.
+
+Antiforgery per-tenant
+
+- TenantAntiforgeryOptionMiddleware configures antiforgery cookie name per tenant: `.AspNetCore.Antiforgery.{tenantId}` and sets header `X-XSRF-TOKEN`.
+- Client JS (wwwroot/js/global-ajax.js) reads the token meta tag and sets `X-XSRF-TOKEN` with credentials: 'include' so tenant cookies are sent.
+
+Integration & Risks
+
+- Ensure JwtBearer's OnMessageReceived accepts a principal created by ITokenService.ValidateAndDecryptToken (the implementation sets context.Principal + context.Success()).
+- Token rotation requires both: (a) middleware to place rotated access token where JwtBearer will find it (cookie or context.Items) and (b) JwtBearer to check that location. This repo implements both.
+- Mutating SessionOptions.Value.Cookie.Name per-request is used intentionally but be aware it mutates a shared object — consider a request-scoped wrapper to avoid concurrency surprises.
+
+References / files inspected
+
+- Main.WebAppCore/Program.cs
+- Main.WebAppCore/Middlewares/AuthenticationMiddleware.cs
+- Main.Infrastructure/RegisterDatabase.cs
+- Main.Infrastructure/RegisterRepositoryExtensions.cs
+- Main.Infrastructure/RegisterEmailService.cs
+- Main.WebAppCore/Middlewares/SerilogMiddleware.cs
+- ResourceLibrary/RegisterLocalizationExtensions.cs
+- Main.WebAppCore/Middlewares/TenantAuthorizationMiddleware.cs
+- Main.WebAppCore/Middlewares/ExceptionLoggingMiddleware.cs
+- TokenService, TokenRefreshMiddleware, AuthorizationExtensions, AuthController, TenantDbContext, TenantAntiforgeryOptionMiddleware, wwwroot/js/global-ajax.js
+
+Suggested commit message
+
+docs: add located extension methods and consolidate auth token rotation flow in Technical-Program-Documentation.md
+
+Follow-ups
+
+- Optional: add a middleware integration test that asserts JwtBearer picks up rotated token from context.Items.
+- Confirm package references for WebOptimizer and OutputCache and include package/version in this doc if desired.
+
+---
+
+## Known risks and suggestions
+
+- Global exception handling redirects to /Home/Error with query string parameters. When building APIs, consider returning JSON ProblemDetails for API endpoints instead of redirecting.
+- Token rotation: The middleware rotates tokens for the current request if a refresh token is valid and inserts the new access token into context.Items["JwtBearer:Token"]. Ensure your authentication scheme reads that item before validating the token (custom JwtBearer events may be needed).
+- Session cookie name mutation uses IOptions<SessionOptions>.Value per request; this mutates the singleton object for the lifetime of the app. Code uses it intentionally for per-request override, but consider using a request-scoped wrapper to avoid concurrency surprises.
+- Tenant cookie naming and file paths should be validated for characters and length to avoid invalid cookie names or file system errors.
+
 ## Progress & Timeline (Condensed)
 
 - May 2026: Began migration from legacy .NET Framework 4.6 to ASP.NET Core. Evaluated Identity membership and cross-platform support.
@@ -104,23 +709,6 @@ License: See LICENSE file in the repository (or include preferred license here).
 
 ### 1. One Hour Video for Kids to a Cook (kitchen) or a Computer User from any Discipline follow the steps; You can run the Application in your Laptop.
 ### 2. It means, it is easy. Do not get scared to setup the code and tools in the laptop.
-
-
-# Latest Videos 🆕🎬
-
-1. [Video: Bottom Header - 1. Dynamic Product Category Menu, 2. Fixed Scroll-Menu (Home Page/All Pages)](https://1drv.ms/v/c/93d70fb51193cb6b/IQDIvxEUH5tcR5AofCnZmpZfAYgosaxW98BVEvhy8FOVbx0?e=1Zex41) **NEW!**
-2. [Video: Home Page: Setup (Panels: Add - Drag & Drop, Edit - Up & Down](https://1drv.ms/v/c/93d70fb51193cb6b/IQB4198G_WMSRpVZBD2l6J5DARgBU77fxnTsPz2KCSk37eE?e=ZBSUSb) 
-3. [Video: Product UX, Page Setup (Panels, Drag & Drop](https://1drv.ms/v/c/93d70fb51193cb6b/IQDP8Vj1-bABR6M5FOHG1L3eAXVYFZk3p0-CCl2cSB2nAvc?e=d6g8c6) 
-4. [Video - Tenant Product Module Full](https://1drv.ms/v/c/93d70fb51193cb6b/IQCiwVnAVKW4SpTsNHp_KRpnAUll_aWmsJVLTm5ICW5szCI?e=7ebxyv) 
-5. [Video Multi Tenant with Theme and Logo](https://1drv.ms/v/c/93d70fb51193cb6b/IQCbPoQogKj0Sp4JcSrTqlTdAaTPrdYOCt7i2xo-eiRa1Nk?e=zW63vs) 
-6. [Latest video](https://1drv.ms/v/c/93d70fb51193cb6b/IQAdpVbw9SSUTIkiv8jbxnrzAWtZcojWwLbMsDhPbqOcFBc?e=bbNRme)
-7. [From VS and Nginx](https://1drv.ms/v/c/93d70fb51193cb6b/IQA-f-V2ZcA3RKPQmD1k3q_QAaFFDqIFFMMyGS7K9kcHEQ8?e=Z6BhbS)
-8. [Theme Seed & Database SQL Script](https://1drv.ms/u/c/93d70fb51193cb6b/IQAUlLSDaKNySocpGhJc6rwRAZbMUTp5WKFcbGST3aEP4Ak?e=Kl0cxT)
-9. [Video - Debugging of Tenant Product & Photos](https://1drv.ms/v/c/93d70fb51193cb6b/IQDVNYSAQMf8Rb45NWgIdiaHAVuqanStaSjo0pe7yMQjdio?e=GJ37yG)
-10. [Video - Refined Theme](https://1drv.ms/v/c/93d70fb51193cb6b/IQBmlArEE1UzTYF15imEdp-7AV6PBRUxTHaiPr0GXF_nPm4?e=0O69CQ)
-11. [Videos - ](https://1drv.ms/v/c/93d70fb51193cb6b/IQBfJQMns98vRo8xccLLZUWFAWyI4iURrX5QWuM9g4Iia-Q?e=CXsNkt) 
-12.  [VIDEO 4th Sep 2026: Home Page, Configuration](https://1drv.ms/v/c/93d70fb51193cb6b/IQCijybVm3feT5cbg_rdlmLSAXTbDHlti52qHOttcTj-bTI?e=KXbDRM)
-13.  6th Sep 2026: VIDEO [Home Page, Menus, Menu Type, SubType, Product Details](https://1drv.ms/v/c/93d70fb51193cb6b/IQBNefqwFvPLR4EQH-iAaH8dAXEvuoWP7pDzVvotBTowS9Q?e=D8LL2u) *NEW VIDEO!*
 
 
 # Multi-Tenant ASP.NET Core Middleware Pipeline Architecture
