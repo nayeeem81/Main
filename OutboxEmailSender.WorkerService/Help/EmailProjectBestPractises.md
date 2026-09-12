@@ -507,3 +507,390 @@ Get-EventLog -LogName Application -EntryType Error -Newest 5 | Format-Table Time
 ------------------------------
 Let me know if the service stays in the Running status after starting it, or if you need help deciphering an error message from the Event Viewer logs!
 
+This error happens because Windows Services run under the NT AUTHORITY\SYSTEM (Local System) user account by default. When your background worker attempts to connect to SQL Server using a trusted connection (Trusted_Connection=True or Integrated Security=True), it passes the credentials of the SYSTEM account, which does not have permission to access your CloneLogDatabase database.
+Here are the two ways to fix this permission issue. Choose the method that best fits your environment.
+------------------------------
+## Fix 1: Grant SQL Server Access to the SYSTEM Account (Recommended for Local Dev)
+You can give the SYSTEM account the necessary permissions inside your database using SQL Server Management Studio (SSMS) or by executing a script:
+
+   1. Open SSMS and connect to your database engine.
+   2. Click New Query and execute the following SQL script (replace CloneLogDatabase with your actual database name if it differs):
+
+-- 1. Create a server login for the Windows SYSTEM account if it doesn't existIF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = 'NT AUTHORITY\SYSTEM')BEGIN
+    CREATE LOGIN [NT AUTHORITY\SYSTEM] FROM WINDOWS WITH DEFAULT_DATABASE=[master];END
+GO
+-- 2. Switch to your target background worker database
+USE [CloneLogDatabase];
+GO
+-- 3. Create a database user mapping for the loginIF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'NT AUTHORITY\SYSTEM')BEGIN
+    CREATE USER [NT AUTHORITY\SYSTEM] FOR LOGIN [NT AUTHORITY\SYSTEM];END
+GO
+-- 4. Grant read and write permissions to the service accountALTER ROLE [db_datareader] ADD MEMBER [NT AUTHORITY\SYSTEM];ALTER ROLE [db_datawriter] ADD MEMBER [NT AUTHORITY\SYSTEM];
+GO
+
+------------------------------
+## Fix 2: Change the Windows Service Run-As Identity
+Instead of modifying database permissions, you can configure the Windows Service to run using your regular Windows user account (which already has access to the SQL database).
+
+   1. Press Windows Key + R, type services.msc, and press Enter.
+   2. Scroll down and locate OutboxEmailSender.WorkerService.
+   3. Right-click the service and select Properties.
+   4. Go to the Log On tab at the top.
+   5. Change the selection from Local System account to This account.
+   6. Click Browse, type your current Windows account username, click Check Names, and click OK.
+   7. Provide your regular Windows login password in both fields.
+   8. Click Apply and OK.
+   9. Restart the service to apply the identity changes.
+
+------------------------------
+## Optional: Enable Transient Retry Resiliency
+As noted in your error log snippet, network glitches or brief drops during service startups can crash the query loop. Open your Program.cs and add EnableRetryOnFailure() inside your UseSqlServer configuration block to prevent transient database hiccups from breaking the service:
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null
+        )
+    )
+);
+
+------------------------------
+Let me know if Fix 1 or Fix 2 gets the service connecting cleanly to your database, or if you encounter a new SMTP/Email delivery block next!
+
+For a production Windows Service, a Framework-Dependent deployment is generally recommended if you control the server, while a Self-Contained deployment is best if you want zero environmental dependencies.
+Here is the direct breakdown to help you choose the best option for your deployment:
+## Option A: Framework-Dependent (Recommended)
+This approach produces a small publish folder. It relies on the target server already having the matching .NET Runtime installed.
+
+* Pros: Small file sizes (often under 5 MB), fast deployment transfers, and security updates to the .NET runtime are managed globally on the server.
+* Cons: The service will crash or fail to start if someone uninstalls or upgrades the server's .NET runtime to an incompatible version.
+
+## Option B: Self-Contained
+This approach bundles the entire .NET runtime engine and all system DLLs directly inside your publish folder.
+
+* Pros: Complete isolation. The service will run perfectly on the server even if no .NET runtime is installed at all. It eliminates the "it works on my machine but not on the server" framework version conflicts.
+* Cons: Large file sizes (typically 60 MB to 100+ MB) and you must manually re-publish the service whenever Microsoft releases critical security patches for the .NET runtime.
+
+------------------------------
+## Recommended Production Publish Settings
+To get the most robust, high-performance binary for a Windows Service, use the following deployment settings in your Visual Studio Publish profile or CLI:
+
+* Deployment Mode: Framework-Dependent (if server has .NET installed) or Self-Contained (if it does not).
+* Target Runtime: win-x64 (Do not use Portable. Specifying the OS allows the compiler to optimize the service specifically for Windows architecture).
+* File Publish Options:
+* Check Produce single file (Bundles your service into a single clean .exe file rather than a messy folder filled with hundreds of underlying dependency .dll files).
+   * Check Enable ReadyToRun compilation (Pre-compiles the application code into native machine code to drastically lower startup times and initial memory consumption when the service starts up).
+
+------------------------------
+Let me know if you would like me to generate the exact dotnet CLI publish command for your terminal, or if you want help optimizing your appsettings.json transformations for the published environment!
+
+The core issue with choosing Portable is not that it is broken, but that it introduces specific mechanical constraints and operational overhead when running as a native Windows Service.
+Here is exactly why choosing a specific target runtime (win-x64) is superior to Portable for background architecture:
+## 1. The "Single File" Extraction Behavior
+When you publish an application as a Single File (which is highly recommended for clean Windows Services):
+
+* If you choose win-x64: The compiler outputs a true, native, monolithic binary. The Windows Service control manager executes it instantly directly from its location.
+* If you choose Portable: The operating system doesn't natively know how to execute the portable bundle. When the service starts, it must first unpack its inner architecture and dependencies into a temporary directory on the hard drive (usually under AppData\Local\Temp\.net) before it can actually run.
+
+## 2. Startup Latency and Timeouts
+Windows Services are highly sensitive to startup speeds. When you run sc start, the Windows Service Control Manager expects the background service to check in and report a "Running" status within a strict 30-second window.
+
+* If your service is marked Portable, the time spent disk-extracting the application runtime inside the temp directory counts against this limit.
+* On slower server hard drives or virtual machines under heavy load, this self-extraction delay can cause the service to hit the 30-second timeout, resulting in a "Service did not respond to the start or control request in a timely fashion" crash.
+
+## 3. Permissions and Anti-Virus Triggers
+Because a Portable single-file application dynamically extracts executable DLL components into the user's Temp directory at runtime, it frequently triggers modern Endpoint Detection and Response (EDR) systems or strict Corporate Enterprise Anti-Virus software. Security software often flags binary code executing out of temporary directories as suspicious "malware-like" behavior and blocks the background service from running.
+## 4. Loss of Compilation Optimizations
+When you target win-x64, you unlock advanced compiler flags like ReadyToRun (R2R). ReadyToRun pre-compiles your C# code into native x64 assembly instructions during compilation. If you choose Portable, the compiler must leave the code generic so it can theoretically run on Linux or macOS. This forces the .NET Just-In-Time (JIT) compiler to do all the heavy lifting on the server when the service boots up, increasing both CPU spikes and memory consumption.
+## Summary
+Use Portable for web applications or desktop tools where cross-platform flexibility matters. For a dedicated, persistent background routine bound to Windows Service architecture, win-x64 ensures the service boots instantly, runs natively, and stays out of the Windows temporary folders.
+------------------------------
+Let me know if you would like to look into:
+
+* How to configure your Logging pipeline to write directly to the Windows Event Viewer instead of just a console window.
+* Setting up automatic Crash Recovery options so Windows restarts your service automatically if the database falls over.
+
+When you migrate your hosting architecture to a Linux VPS, you cannot use native Windows Services (sc.exe or New-Service) because they are strictly Windows operating system components.
+Instead, the enterprise standard for running a .NET background worker continuously on Linux is systemd. It treats your compiled .NET binary as a native system daemon service that runs continuously, restarts automatically on failure, and boots up when the server restarts.
+Here is the step-by-step guide to publishing and running your background service on Linux.
+------------------------------
+## Step 1: Update your Code for Linux (Optional but Recommended)
+If you previously added .AddWindowsService() in your Program.cs, you can swap it for the cross-platform extension, or simply leave it out, as modern .NET Web and Worker templates automatically handle system signals natively on Linux.
+If you want explicit integration with the Linux system logs (journald), install the NuGet package Microsoft.Extensions.Hosting.Systemd and update your Program.cs:
+
+var builder = Host.CreateApplicationBuilder(args);
+// Automatically hooks into Linux systemd journal logs when running on Linux
+builder.Services.AddSystemd(); 
+
+builder.Services.AddDbContext<AppDbContext>(...);
+builder.Services.AddHostedService<Worker>();
+
+------------------------------
+## Step 2: Publish for Linux VPS
+When publishing the service for your Linux VPS, your target parameters change to optimize for Linux system hardware:
+
+* Deployment Mode: Framework-Dependent (if .NET Runtime is installed on the VPS) or Self-Contained (zero dependencies on the VPS).
+* Target Runtime: linux-x64 (or linux-arm64 if using an ARM-based VPS like Oracle Cloud or AWS Graviton).
+* File Publish Options: Check Produce single file to get one neat executable binary.
+
+If using the command line to publish, run this command in your project directory:
+
+dotnet publish -c Release -r linux-x64 --self-contained false -p:PublishSingleFile=true
+
+------------------------------
+## Step 3: Upload and Configure Permissions on the VPS
+
+   1. Upload your published files to a directory on your VPS (e.g., /var/www/emailworker/).
+   2. Connect to your VPS via SSH.
+   3. Linux requires explicit execution permissions to run binary files. Give your app execution rights using chmod:
+   
+   sudo chmod +x /var/www/emailworker/EmailNotifierService
+   
+   
+------------------------------
+## Step 4: Create a systemd Service File
+To make Linux manage your service in the background, create a configuration file:
+
+   1. Open a new configuration file using the nano text editor:
+   
+   sudo nano /etc/systemd/system/emailworker.service
+   
+   2. Paste the following configuration block into the file (adjust paths and names to match your setup):
+   
+   [Unit]
+   Description=.NET EF Core Email Outbox Worker Service
+   After=network.target
+   
+   [Service]
+   Type=notify
+   WorkingDirectory=/var/www/emailworker
+   ExecStart=/var/www/emailworker/EmailNotifierService
+   SyslogIdentifier=emailworker
+   
+   # Automatically restart the service if it crashes
+   Restart=always
+   RestartSec=10
+   
+   # Security best practice: Run as a standard user, not root
+   User=www-data
+   
+   # Environment variables (Optional: overrides appsettings.json connection strings)
+   Environment=ASPNETCORE_ENVIRONMENT=Production
+   
+   [Install]
+   WantedBy=multi-user.target
+   
+   3. Press Ctrl + O then Enter to save, and Ctrl + X to exit the editor.
+
+------------------------------
+## Step 5: Start and Enable the Linux Service
+Run these commands to tell Linux to read the new file and spin up your background process:
+
+   1. Reload systemd to read your new file:
+   
+   sudo systemctl daemon-reload
+   
+   2. Start the service immediately:
+   
+   sudo systemctl start emailworker.service
+   
+   3. Enable the service to boot automatically when the VPS restarts:
+   
+   sudo systemctl enable emailworker.service
+   
+   4. Verify it is running cleanly:
+   
+   sudo systemctl status emailworker.service
+   
+   
+------------------------------
+## Useful Linux Service Management Commands
+
+* To Stop the service: sudo systemctl stop emailworker.service
+* To Restart the service: sudo systemctl restart emailworker.service
+* To view live application logs (Console outputs/EF Core errors):
+
+sudo journalctl -u emailworker.service -f
+
+
+------------------------------
+Let me know if you would like to proceed with:
+
+* Setting up your database connection string securely on Linux using Environment Variables.
+* Hosting this alongside a web application using Nginx or Apache as a reverse proxy.
+
+The error log confirms that your database connection is still failing because the background worker is running as NT AUTHORITY\SYSTEM and does not have login permissions for the CloneLogDatabase database.
+Because you mentioned configuring the project for a Linux VPS, you need to resolve this error by switching from Windows-specific integrated authentication (Trusted_Connection=True or Integrated Security=True) to SQL Server Authentication (Username and Password). Linux environments cannot authenticate using Windows NT AUTHORITY accounts.
+Follow these steps to update your database user access and update your service configuration.
+------------------------------
+## Step 1: Create a Dedicated SQL Server Login
+Open SQL Server Management Studio (SSMS), open a New Query window, and execute the following script to create a secure, dedicated database user account for your service instead of using the system account:
+
+-- 1. Create a secure login on the SQL Server instance
+USE [master];
+GOCREATE LOGIN [EmailWorkerUser] WITH PASSWORD = 'YourStrongPassword123!', DEFAULT_DATABASE=[CloneLogDatabase];
+GO
+-- 2. Switch to your target background service database
+USE [CloneLogDatabase];
+GO
+-- 3. Create a database user linked to that loginCREATE USER [EmailWorkerUser] FOR LOGIN [EmailWorkerUser];
+GO
+-- 4. Grant read and write permissions to this userALTER ROLE [db_datareader] ADD MEMBER [EmailWorkerUser];ALTER ROLE [db_datawriter] ADD MEMBER [EmailWorkerUser];
+GO
+
+------------------------------
+## Step 2: Update Your Connection String
+Open your appsettings.json file. Remove Trusted_Connection=True; or Integrated Security=True; and add the new User ID and Password credentials you just created:
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CloneLogDatabase;User Id=EmailWorkerUser;Password=YourStrongPassword123!;TrustServerCertificate=True;"
+  }
+}
+
+(Note: Adding TrustServerCertificate=True; ensures that your background application successfully establishes a secure connection even if your SQL Server is using a self-signed development SSL certificate).
+------------------------------
+## Step 3: Enable the Suggested Retry Resiliency
+As highlighted by the EventId: 10100 error message, you should also add transient error handling. Open your Program.cs file and update your AddDbContext configuration block to include the EnableRetryOnFailure option:
+
+builder.Services.AddDbContext<LogDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,                  // Maximum number of retry attempts
+            maxRetryDelay: TimeSpan.FromSeconds(30), // Max delay between retries
+            errorNumbersToAdd: null            // Additional SQL error numbers to optimize for
+        )
+    )
+);
+
+------------------------------
+## Step 4: Restart Your Service
+Once you save your updated configuration changes, restart your background service via your Administrator PowerShell terminal to apply the new login credentials:
+
+Restart-Service -Name "OutboxEmailSender.WorkerService"
+
+------------------------------
+Let me know if updating to SQL Server Authentication clears the login failure exception, or if you need help encrypting these credentials before publishing your code to production!
+
+The error log continues to show Login failed for user 'NT AUTHORITY\SYSTEM'.
+This persistent failure means your Windows Service is still attempting to connect to SQL Server using your machine's system account rather than the SQL username and password you defined, or the permissions were not fully applied.
+Follow this definitive workflow to completely cut off NT AUTHORITY\SYSTEM and fix the problem.
+------------------------------
+## Step 1: Force SQL Authentication in the Connection String
+If you modified your appsettings.json, the Windows Service might still be reading an old or cached connection string, or a fallback setting is forcing Integrated Security.
+Open appsettings.json and verify it looks exactly like this. Ensure Trusted_Connection and Integrated Security are completely deleted:
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=CloneLogDatabase;User Id=EmailWorkerUser;Password=YourStrongPassword123!;Integrated Security=False;Trusted_Connection=False;TrustServerCertificate=True;"
+  }
+}
+
+
+* Integrated Security=False; and Trusted_Connection=False; explicitly order .NET to ignore the Windows SYSTEM account and use the provided User Id instead.
+* Replace YOUR_SERVER_NAME with your actual SQL instance name (e.g., localhost or (localdb)\mssqllocaldb).
+
+------------------------------
+## Step 2: Clear the Publish Directory and Re-Publish
+Windows Services often cache configuration settings if you overwrite an active directory.
+
+   1. Run Stop-Service -Name "OutboxEmailSender.WorkerService" in your administrator PowerShell.
+   2. Go to your publish folder (e.g., C:\YourPublishFolder\) and delete every file inside it manually.
+   3. In Visual Studio, right-click your project, select Publish, and run the publish process again.
+   4. Check the published appsettings.json file in that folder to confirm the new connection string is actually there.
+
+------------------------------
+## Step 3: Implement the Requested EnableRetryOnFailure
+The log explicitly reminds you to add error resilience to prevent transient network drops from breaking your background iteration loop. Update your Program.cs file:
+
+builder.Services.AddDbContext<LogDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null
+        )
+    )
+);
+
+------------------------------
+## Step 4: Verify SQL Server Mixed Mode Authentication
+If your database engine is set to "Windows Authentication Only", it will reject SQL user credentials (EmailWorkerUser) outright and force a fallback failure.
+
+   1. Open SQL Server Management Studio (SSMS).
+   2. Right-click your main Server Instance name at the top of the Object Explorer sidebar and select Properties.
+   3. Select the Security page on the left menu.
+   4. Under Server authentication, change the radio button to SQL Server and Windows Authentication mode (Mixed Mode).
+   5. Click OK.
+   6. Right-click your Server Instance name again and click Restart for the authentication changes to take effect.
+
+------------------------------
+## Step 5: Start the Service
+Return to your administrator PowerShell terminal and spin the service back up:
+
+Start-Service -Name "OutboxEmailSender.WorkerService"
+
+------------------------------
+Let me know if forcing Integrated Security=False and enabling Mixed Mode stops the NT AUTHORITY\SYSTEM error, or if you need to verify the exact server name syntax used in your environment!
+
+
+To replace your existing service with a newly published version under the exact same name, you must stop it, delete its system registry entry, and then register the new executable path.
+Follow these steps using an Administrator PowerShell terminal.
+## Step 1: Stop and Delete the Existing Service
+Run these commands to remove the current service from the Windows Service Database:
+
+   1. Stop the running service:
+   
+   Stop-Service -Name "OutboxEmailSender.WorkerService"
+   
+   2. Delete the service entry:
+   
+   Remove-Service -Name "OutboxEmailSender.WorkerService"
+   
+   (Note: If you receive a legacy error or are using an older version of PowerShell, you can alternatively use sc.exe delete "OutboxEmailSender.WorkerService").
+
+⚠️ Important: If your Services Management window (services.msc) is currently open, close it. Keeping it open can lock the service database and mark the service as "Disabled/Marked for deletion" instead of removing it completely.
+
+------------------------------
+## Step 2: Clear and Overwrite the Publish Folder
+Before creating the new service, ensure you clear out the old compiled code to avoid file locking and caching issues:
+
+   1. Navigate to your target deployment folder (e.g., C:\YourPublishFolder\).
+   2. Delete all existing files.
+   3. In Visual Studio, right-click your project, select Publish, and run the publish process to generate the fresh binaries into that folder.
+
+------------------------------
+## Step 3: Register the New Published Service
+Now, register the fresh executable path under the exact same name using the modern PowerShell cmdlet:
+
+New-Service -Name "OutboxEmailSender.WorkerService" -BinaryPathName "C:\YourPublishFolder\EmailNotifierService.exe" -StartupType Automatic
+
+(Make sure to replace C:\YourPublishFolder\EmailNotifierService.exe with your actual file path).
+------------------------------
+## Step 4: Start and Verify
+Spin up your updated service and confirm that it launches into a healthy execution state:
+
+   1. Start the service:
+   
+   Start-Service -Name "OutboxEmailSender.WorkerService"
+   
+   2. Check the live status:
+   
+   Get-Service -Name "OutboxEmailSender.WorkerService"
+   
+   
+------------------------------
+Let me know if the service registers and turns to Running smoothly, or if you need to double-check the Event Viewer logs to confirm the NT AUTHORITY\SYSTEM error is fully gone!
+
+
+
+
+
+
+
+

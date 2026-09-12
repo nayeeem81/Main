@@ -1,13 +1,15 @@
-﻿New-Service -Name "OutboxEmailSender.WorkerService" -BinaryPathName "C:\OutboxEmailService\OutboxEmailSender.WorkerService.exe" -StartupType Automatic
+﻿New-Service -Name "Email.WorkerService" -BinaryPathName "C:\Email.WorkerService\OutboxEmailSender.WorkerService.exe" -StartupType Automatic
 
-Start-Service -Name "OutboxEmailSender.WorkerService"
+Start-Service -Name "Email.WorkerService"
 
-Get-Service -Name "OutboxEmailSender.WorkerService"
+Get-Service -Name "Email.WorkerService"
 
-Stop-Service -Name "OutboxEmailSender.WorkerService"
+Stop-Service -Name "Email.WorkerService"
 
-Restart-Service -Name "OutboxEmailSender.WorkerService"
+Remove-Service -Name "Email.WorkerService"
+or
+ (Get-WmiObject Win32_Service -Filter "Name='Email.WorkerService'").Delete()
 
+Restart-Service -Name "Email.WorkerService"
 
-
-
+ Get-EventLog -LogName Application -EntryType Error -Newest 5 | Format-Table TimeGenerated, Source, Message -Wrap
