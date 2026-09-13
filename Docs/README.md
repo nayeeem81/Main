@@ -5,6 +5,7 @@
 ## Table of Contents
 
 - [Project Overview](#project-overview)
+- [Features summary](#Store-features-(per-tenant)-—-Summary)
 - [Code Fostering (GitHub Repository)](#code-fostering-github-repository)
 - [Quick Start — Installation & Setup](#quick-start--installation--setup)
 - [Architecture & Tutorial Notes](#architecture--tutorial-notes)
@@ -17,6 +18,28 @@
 This repository contains a multi-tenant store implementation using ASP.NET Core MVC targeting .NET 8. It follows a monolithic, clean-architecture approach with a focus on separation of concerns, Identity membership, and multi-tenant readiness. The solution includes a web project (Razor Pages / MVC), infrastructure and data layers, and a Worker Service for background tasks such as email outbox processing.
 
 The project is intended as a template and learning resource for building multi-tenant SaaS applications with practical guidance on configuration, tenant isolation, and deployment.
+
+# Store features (per-tenant) — Summary
+
+- Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware.
+- Tenant home page: public storefront per tenant with theme, logo, hero/banner, and contact info.
+- Page settings (tenant-scoped): store name, description, contact, localization, theme selection, and custom pages.
+- Product catalog (public): tenant-specific product list with pagination, search, filters, and tenant-aware caching.
+- Product view (public): product details page with images, price, description, inventory, and add-to-cart UI; renders tenant branding.
+- Product admin:
+  - List: paged grid showing only current-tenant products.
+  - View: admin view of product details.
+  - Edit/Create: forms for title, description, price, inventory, categories, variants, validation, and media uploads.
+- Media & logo upload: tenant-scoped asset upload via `IStorageService` (local by default) and resolved by `ITenantAssetResolver`.
+- Authentication & authorization: shared identity with tenant-scoped policies (e.g. `TenantAdmin`); token refresh middleware and tenant-isolated JWT cookies.
+- Session & isolation: tenant-scoped session cookie names via `TenantSessionMiddleware` and DB query filters enforcing tenant isolation.
+- Background processing: Worker Service for email outbox (SMTP configured under `SmtpSettings`) and other background tasks.
+- Deployment & config: Nginx reverse proxy, local host-file setup for tenants, Kestrel settings, and `appsettings.*` for connection strings and tenant settings.
+- Extensibility: storage, caching, and logging are pluggable (swap `LocalStorageService` for cloud storage implementations).
+
+Notes:
+- Keep cache keys and cookie names tenant-scoped (include `TenantId`).
+- Ensure admin operations are protected by the tenant authorization policy.
 
 ## Code Fostering (GitHub Repository):  
 With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
