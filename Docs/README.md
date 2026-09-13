@@ -18,18 +18,20 @@ This repository contains a multi-tenant store implementation using ASP.NET Core 
 The project is intended as a template and learning resource for building multi-tenant SaaS applications with practical guidance on configuration, tenant isolation, and deployment.
 
 ## Store Features
-
-- Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware.
+- Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware. (domain is tested)
 - Tenant home page: public storefront per tenant with theme, logo, hero/banner, and contact info.
-- Page settings (tenant-scoped): store name, description, contact, localization, theme selection, and custom pages.
-- Product catalog (public): tenant-specific product list with pagination, search, filters, and tenant-aware caching.
-- Product view (public): product details page with images, price, description, inventory, and add-to-cart UI; renders tenant branding.
+- Page settings (tenant-scoped): store name, description, contact, localization, theme selection, and custom pages (organize the home page with own products and template panles (drag & drop & panel arrange).
+- Product catalog (public): tenant-specific product list with tenant-aware caching (with multipe images per product).
+- Product view (public): product details page with images, price, description and add-to-cart UI; renders tenant branding.
 - Product admin:
-  - List: paged grid showing only current-tenant products.
+  - List: grid showing only current-tenant products.
   - View: admin view of product details.
   - Edit/Create: forms for title, description, price, inventory, categories, variants, validation, and media uploads.
 - Media & logo upload: tenant-scoped asset upload via `IStorageService` (local by default) and resolved by `ITenantAssetResolver`.
 - Authentication & authorization: shared identity with tenant-scoped policies (e.g. `TenantAdmin`); token refresh middleware and tenant-isolated JWT cookies.
+
+Based on Tenant Request (Extension):
+
 - Session & isolation: tenant-scoped session cookie names via `TenantSessionMiddleware` and DB query filters enforcing tenant isolation.
 - Background processing: Worker Service for email outbox (SMTP configured under `SmtpSettings`) and other background tasks.
 - Deployment & config: Nginx reverse proxy, local host-file setup for tenants, Kestrel settings, and `appsettings.*` for connection strings and tenant settings.
@@ -93,7 +95,6 @@ This document explains the composition of the ASP.NET Core entry pipeline (Progr
 - Describe what Program.cs wires up (DI, middleware, key features)
 - Provide file-by-file explanations for each middleware and dependent service referenced from Program.cs
 - Provide diagrams that explain request flow and token refresh flow
-- List missing extension methods / follow-ups and recommended next steps
 
 ## Program.cs — overview
 
@@ -138,22 +139,37 @@ app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // Tenancy / Logging / Exception handling
 app.UseMiddleware<TenantResolverMiddleware>();
+
 app.UseMiddleware<TenantLoggingMiddleware>();
+
 if (app.Environment.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
+
 else { app.UseMiddleware<GlobalExceptionHandlingMiddleware>(); }
 
 // Static files, routing, session, localization, token refresh, auth, tenant validation, authorization
+
 app.UseWebOptimizer();
+
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseMiddleware<TenantSessionMiddleware>();
+
 app.UseSession();
+
 app.UseCustomLocalization();
+
 app.UseMiddleware<TokenRefreshMiddleware>();
+
 app.UseAuthentication();
+
 app.UseMiddleware<TenantValidationMiddleware>();
+
 app.UseAuthorization();
+
 app.UseAntiforgery();
+
 app.UseOutputCache();
 
 app.MapControllers();
@@ -161,13 +177,9 @@ app.MapControllers();
 await app.RunAsync();
 ```
 
-Note: Several extension methods are referenced but not present in the inspected files — these are listed in the Follow-ups section.
 
 ---
 
-## File-by-file documentation
-
-Below are concise descriptions of the files inspected, responsibilities, and key snippets.
 
 ### Middlewares
 
@@ -669,14 +681,6 @@ References / files inspected
 - Main.WebAppCore/Middlewares/ExceptionLoggingMiddleware.cs
 - TokenService, TokenRefreshMiddleware, AuthorizationExtensions, AuthController, TenantDbContext, TenantAntiforgeryOptionMiddleware, wwwroot/js/global-ajax.js
 
-Suggested commit message
-
-docs: add located extension methods and consolidate auth token rotation flow in Technical-Program-Documentation.md
-
-Follow-ups
-
-- Optional: add a middleware integration test that asserts JwtBearer picks up rotated token from context.Items.
-- Confirm package references for WebOptimizer and OutputCache and include package/version in this doc if desired.
 
 ---
 
@@ -723,6 +727,29 @@ For questions, contact:
 naimul.prodhan81@hotmail.com
 
 License: See LICENSE file in the repository (or include preferred license here).
+[LICENSE](#LICENSE.txt)
+
+MIT License
+
+Copyright (c) [2026] [Naim Ul Islam Prodhan]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 
