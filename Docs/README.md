@@ -1,16 +1,14 @@
 # Multi-Tenant SAAS Stores (ASP.NET Core MVC, .NET 8)
 
-[YouTube playlist](https://www.youtube.com/playlist?list=PLIK1B9HNGKX8) • [Repository](https://github.com/nayeeem81/Main)
+[YouTube playlist](https://www.youtube.com/playlist?list=PLIK1B9HNGKX8) • [Code Fostering (GitHub Repository)](#code-fostering-github-repository) • [Author Note](#author-note)
 
 ## Table of Contents
 
 - [Project Overview](#project-overview)
 - [Store Features](#Store-Features)
-- [Code Fostering (GitHub Repository)](#code-fostering-github-repository)
 - [Quick Start — Installation & Setup](#quick-start--installation--setup)
 - [Architecture & Tutorial Notes](#architecture--tutorial-notes)
 - [Progress & Timeline (Condensed)](#progress--timeline-condensed)
-- [Author Note](#author-note)
 - [Contact & License](#contact--license)
 
 ## Project Overview
@@ -41,24 +39,7 @@ Notes:
 - Keep cache keys and cookie names tenant-scoped (include `TenantId`).
 - Ensure admin operations are protected by the tenant authorization policy.
 
-## Code Fostering (GitHub Repository):  
-With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
 
-Hardware Fostering:  
-
-To make the code fostering working and impactful, stacks technologies, domain, hardware, datacenter vendors host them; are all part of the ecosystem. 
-
-Service Fostering:  
-
-Maintainers, the operation of the data related to the application, smooth maintenance for the users. 
-
-Fostering the Business Knowledge: 
-
-Business Executives can use their business knowledge to bring them (stores) to a place, engage them, educate them, and get the most value from the code, hardware and the production ecosystem. 
-
-Users Fostering (Small Businesses/Stores): 
-
-These are the people who make the actual use of the working product or the software in the cheapest possible way that education fostering is impactful.
 
 ## Quick Start — Installation & Setup
 1) [Step 1: VS 2026 Download](https://youtu.be/JX4WnexPvPE) 
@@ -711,6 +692,26 @@ Follow-ups
 - May 2026: Began migration from legacy .NET Framework 4.6 to ASP.NET Core. Evaluated Identity membership and cross-platform support.
 - June 2026: Modernized the solution; targeted .NET 8 after resolving package compatibility and build issues.
 - July–Sep 2026: Focused on multi-tenant architecture, query filters, middleware, and deployment considerations.
+
+## Code Fostering (GitHub Repository):  
+
+With the knowledge of technology-based work experiences; I can prepare a container (consider a GitHub repository). It is a part of the fostering education (knowledge and experience based, delivery of code). In the fostering process, code is a part (fostering education); I can deliver some engineers to read, learn, enrich and adopt. To make the code fostering more impactful; to make the code; into a software product which can be usable in a production environment, not just a prototype.  
+
+Hardware Fostering:  
+
+To make the code fostering working and impactful, stacks technologies, domain, hardware, datacenter vendors host them; are all part of the ecosystem. 
+
+Service Fostering:  
+
+Maintainers, the operation of the data related to the application, smooth maintenance for the users. 
+
+Fostering the Business Knowledge: 
+
+Business Executives can use their business knowledge to bring them (stores) to a place, engage them, educate them, and get the most value from the code, hardware and the production ecosystem. 
+
+Users Fostering (Small Businesses/Stores): 
+
+These are the people who make the actual use of the working product or the software in the cheapest possible way that education fostering is impactful.
 
 ## Author Note
 
