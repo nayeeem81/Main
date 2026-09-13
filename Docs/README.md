@@ -62,6 +62,7 @@ Run the solution (from Visual Studio or CLI):
 
    - To run the web app project: dotnet run --project src/YourWebProject/YourWebProject.csproj
    - To run the worker service: dotnet run --project src/OutboxEmailSender.WorkerService/OutboxEmailSender.WorkerService.csproj
+	- Video : [Run the Worker Service](https://youtu.be/0g1k6J7r5xM?si=3X8j2n9q4v0W7Z1G)
 
 Configuration
 
@@ -82,7 +83,7 @@ Quick example — run the worker locally
 
 1. Ensure appsettings.Development.json contains a valid connection string and SmtpSettings.
 2. Start the database (localdb or Docker container).
-3. Run the Worker Service project from Visual Studio or CLI to process the email outbox.
+3. Run the Worker Service project from Visual Studio or CLI to process the email outbox. [Run the Worker Service](https://youtu.be/0g1k6J7r5xM?si=3X8j2n9q4v0W7Z1G)
 
 This document explains the composition of the ASP.NET Core entry pipeline (Program.cs) and all directly related code files inspected in the repository. It is intended for maintainers who need to understand tenancy handling, token refresh behavior, exception logging, session scoping per-tenant, and local storage services.
 
@@ -204,7 +205,7 @@ await app.RunAsync();
   ```
 
 - TenantLoggingMiddleware (Main.WebAppCore/Middlewares/TenantLoggingMiddleware.cs)
-  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration.
+  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration. [Tenant Logging](https://youtu.be/BUOWSoEFlPQ?si=skNsM_GlDxuwYPy5)
   - Behavior: Reads HttpContext.Items["TenantId"], defaults to "Unknown-Tenant", wraps request in LogContext.PushProperty and logs at the end including elapsed ms and response code.
 
   Excerpt:
@@ -346,7 +347,7 @@ Below is a sequence diagram that describes the token refresh flow used by TokenR
 
 ### ExceptionLoggingService
 - Main.Infrastructure/CrosscuttingHelperServices/ExceptionLoggingService.cs
-  - Concrete implementation of IExceptionLoggingService that persists exception logs into a LogDbContext, handles duplicate recent occurrences by incrementing occurrence count, and truncates long request headers/bodies.
+  - Concrete implementation of IExceptionLoggingService that persists exception logs into a LogDbContext, handles duplicate recent occurrences by incrementing occurrence count, and truncates long request headers/bodies.  [Global Exception Logging](https://youtu.be/BUOWSoEFlPQ?si=skNsM_GlDxuwYPy5)
 
   Excerpt responsibilities:
   - Log exception metadata (type, stacktrace, request headers/body, createdAt, userId, tenant info)
