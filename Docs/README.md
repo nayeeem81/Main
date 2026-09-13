@@ -18,11 +18,12 @@ This repository contains a multi-tenant store implementation using ASP.NET Core 
 The project is intended as a template and learning resource for building multi-tenant SaaS applications with practical guidance on configuration, tenant isolation, and deployment.
 
 ## Store Features
-- Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware. (domain is tested)
-- Tenant home page: public storefront per tenant with theme, logo, hero/banner, and contact info.
+- Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware. (domain is tested) [Domain resolved & Isolated Page Settings](https://youtu.be/f5OsQIjiqWQ?si=XAH71ESAGATMIPXZ)
+- Tenant home page: public storefront per tenant with theme, [logo](https://youtu.be/mAzMkRouGys?si=xTOPki61ezr8ik5v), hero/banner, and contact info. [Home Page](https://youtu.be/-LjX4LwCpa8?si=WelrB2nSTxWe89Zm)
 - Page settings (tenant-scoped): store name, description, contact, localization, theme selection, and custom pages (organize the home page with own products and template panles (drag & drop & panel arrange).
+[Configure Home Page (using templates) - Tenant 2](https://youtu.be/HKa_ty44JhI)
 - Product catalog (public): tenant-specific product list with tenant-aware caching (with multipe images per product).
-- Product view (public): product details page with images, price, description and add-to-cart UI; renders tenant branding.
+- Product view (public): product details page with images, price, description and add-to-cart UI; renders tenant branding. [Product Details](https://youtu.be/CReGc1Pq6E0?si=Y_mr1SRGCcqN24jf)
 - Product admin:
   - List: grid showing only current-tenant products.
   - View: admin view of product details.
@@ -40,8 +41,6 @@ Based on Tenant Request (Extension):
 Notes:
 - Keep cache keys and cookie names tenant-scoped (include `TenantId`).
 - Ensure admin operations are protected by the tenant authorization policy.
-
-
 
 ## Quick Start — Installation & Setup
 1) [Step 1: VS 2026 Download](https://youtu.be/JX4WnexPvPE) 
@@ -205,7 +204,7 @@ await app.RunAsync();
   ```
 
 - TenantLoggingMiddleware (Main.WebAppCore/Middlewares/TenantLoggingMiddleware.cs)
-  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration. [Tenant Logging](https://youtu.be/BUOWSoEFlPQ?si=skNsM_GlDxuwYPy5)
+  - Purpose: Push the resolved TenantId into Serilog's LogContext for per-tenant structured logging and measure request duration. [Tenant Logging](https://youtu.be/-lMSkP7ynPY?si=JyP2gglbuAtYgrj0)
   - Behavior: Reads HttpContext.Items["TenantId"], defaults to "Unknown-Tenant", wraps request in LogContext.PushProperty and logs at the end including elapsed ms and response code.
 
   Excerpt:
