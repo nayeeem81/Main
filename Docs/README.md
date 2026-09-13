@@ -5,7 +5,7 @@
 ## Table of Contents
 
 - [Project Overview](#project-overview)
-- [Features summary](#Store-features-(per-tenant)-—-Summary)
+- [Store Features](#Store-Features)
 - [Code Fostering (GitHub Repository)](#code-fostering-github-repository)
 - [Quick Start — Installation & Setup](#quick-start--installation--setup)
 - [Architecture & Tutorial Notes](#architecture--tutorial-notes)
@@ -19,7 +19,7 @@ This repository contains a multi-tenant store implementation using ASP.NET Core 
 
 The project is intended as a template and learning resource for building multi-tenant SaaS applications with practical guidance on configuration, tenant isolation, and deployment.
 
-# Store features (per-tenant) — Summary
+## Store Features
 
 - Tenant hosting modes: domain, subdomain, subdirectory — tenant resolution by middleware.
 - Tenant home page: public storefront per tenant with theme, logo, hero/banner, and contact info.
