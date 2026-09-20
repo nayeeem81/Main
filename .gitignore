@@ -365,3 +365,6 @@ FodyWeavers.xsd
 /Main.slnx
 /TextFileDatabaseDegradatinMultiTenant.txt
 *.md
+/Main.WebAppCore/LICENSE.txt
+/Main.WebAppCore/LICENSE.txt
+/Docs/LICENSE.txt
