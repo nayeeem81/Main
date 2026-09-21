@@ -1,3 +1,6 @@
+<img width="1765" height="783" alt="tensor-lens-adjusted5" src="https://github.com/user-attachments/assets/f24c4262-3f22-49de-86a6-ef37ab839cfc" />
+
+
 # Multi-Tenant SAAS Stores (ASP.NET Core MVC, .NET 8)
 
 [YouTube playlist](https://www.youtube.com/playlist?list=PLIK1B9HNGKX8) • [Code Fostering (GitHub Repository)](#code-fostering-github-repository) • [Author Note](#author-note)
